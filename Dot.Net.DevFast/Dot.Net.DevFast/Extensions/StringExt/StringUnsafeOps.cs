@@ -1,10 +1,11 @@
 ﻿using System;
+using System.IO;
 using Dot.Net.DevFast.Etc;
 
 namespace Dot.Net.DevFast.Extensions.StringExt
 {
     /// <summary>
-    /// Extension method on UnSafe string transformation
+    /// Extension method on UnSafe (with possible error throw) string operations
     /// </summary>
     public static class StringUnsafeOps
     {
@@ -45,6 +46,38 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             where T : struct
         {
             return Enum.TryParse(input, ignoreCase, out value);
+        }
+
+        /// <summary>
+        /// Returns a new <seealso cref="FileInfo"/> instance after joining filename with extension
+        /// to the <paramref name="folderPath"/>.
+        /// </summary>
+        /// <param name="folderPath">Folder path to the file</param>
+        /// <param name="filename">filename without extension</param>
+        /// <param name="extension">extension without period, e.g., "txt", "json" etc</param>
+        public static FileInfo ToFileInfo(this string folderPath, string filename, string extension)
+        {
+            return folderPath.ToFileInfo(filename + "." + extension);
+        }
+
+        /// <summary>
+        /// Returns a new <seealso cref="FileInfo"/> instance after joining <paramref name="filenameWithExt"/>
+        /// to the <paramref name="folderPath"/>.
+        /// </summary>
+        /// <param name="folderPath">Folder path to the file</param>
+        /// <param name="filenameWithExt">file name with extensions, e.g., "abc.txt", "mydata.json" etc</param>
+        public static FileInfo ToFileInfo(this string folderPath, string filenameWithExt)
+        {
+            return Path.Combine(folderPath, filenameWithExt).ToFileInfo();
+        }
+
+        /// <summary>
+        /// Returns a new <seealso cref="FileInfo"/> instance from given <paramref name="fullFilePath"/>.
+        /// </summary>
+        /// <param name="fullFilePath">Complete path of the file</param>
+        public static FileInfo ToFileInfo(this string fullFilePath)
+        {
+            return new FileInfo(fullFilePath);
         }
     }
 }

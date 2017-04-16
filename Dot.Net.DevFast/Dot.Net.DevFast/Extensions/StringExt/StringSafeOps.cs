@@ -3,7 +3,7 @@
 namespace Dot.Net.DevFast.Extensions.StringExt
 {
     /// <summary>
-    /// Extension method on Safe string transformation
+    /// Extension method on Safe (non-error throwing) string operations
     /// </summary>
     public static class StringSafeOps
     {
