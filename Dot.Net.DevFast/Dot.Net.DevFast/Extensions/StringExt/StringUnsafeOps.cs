@@ -10,8 +10,8 @@ namespace Dot.Net.DevFast.Extensions.StringExt
     {
         /// <summary>
         /// Trims string when not null.
-        /// <para>Also check <seealso cref="StringSafeOps.SafeTrim"/>, 
-        /// <seealso cref="StringSafeOps.NullSafeTrim"/> and 
+        /// <para>Also check <seealso cref="StringSafeOps.SafeTrimOrEmpty"/>, 
+        /// <seealso cref="StringSafeOps.SafeTrimOrNull"/> and 
         /// <seealso cref="StringSafeOps.SafeTrimOrDefault"/></para>
         /// </summary>
         /// <param name="input">Value to trim safe</param>
