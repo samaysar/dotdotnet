@@ -14,6 +14,16 @@
         /// <summary>
         /// String instance is null
         /// </summary>
-        NullString
+        NullString,
+
+        /// <summary>
+        /// When supplied array is a null instance.
+        /// </summary>
+        NullArray,
+
+        /// <summary>
+        /// When supplied array is has no element.
+        /// </summary>
+        EmptyArray
     }
 }

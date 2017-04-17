@@ -51,6 +51,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <summary>
         /// Returns a new <seealso cref="FileInfo"/> instance after joining filename with extension
         /// to the <paramref name="folderPath"/>.
+        /// <para>Expect all <seealso cref="FileInfo"/> related errors.</para>
         /// </summary>
         /// <param name="folderPath">Folder path to the file</param>
         /// <param name="filename">filename without extension</param>
@@ -63,6 +64,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <summary>
         /// Returns a new <seealso cref="FileInfo"/> instance after joining <paramref name="filenameWithExt"/>
         /// to the <paramref name="folderPath"/>.
+        /// <para>Expect all <seealso cref="FileInfo"/> related errors.</para>
         /// </summary>
         /// <param name="folderPath">Folder path to the file</param>
         /// <param name="filenameWithExt">file name with extensions, e.g., "abc.txt", "mydata.json" etc</param>
@@ -73,11 +75,51 @@ namespace Dot.Net.DevFast.Extensions.StringExt
 
         /// <summary>
         /// Returns a new <seealso cref="FileInfo"/> instance from given <paramref name="fullFilePath"/>.
+        /// <para>Expect all <seealso cref="FileInfo"/> related errors.</para>
         /// </summary>
         /// <param name="fullFilePath">Complete path of the file</param>
         public static FileInfo ToFileInfo(this string fullFilePath)
         {
             return new FileInfo(fullFilePath);
+        }
+
+        /// <summary>
+        /// Returns a new <seealso cref="DirectoryInfo"/> instance from combined path using
+        /// <paramref name="basePath"/> and <paramref name="subPaths"/>.
+        /// <para>Expect all <seealso cref="DirectoryInfo"/> related errors.</para>
+        /// </summary>
+        /// <param name="basePath">base path</param>
+        /// <param name="subPaths">individual path components</param>
+        /// <param name="create">if true <seealso cref="Directory.CreateDirectory(string)"/> will be called</param>
+        /// <exception cref="DdnDfException">When null array is passed as input
+        /// <seealso cref="DdnDfException.ErrorCode"/> is 
+        /// <seealso cref="DdnDfErrorCode.NullArray"/> and for empty array it is
+        /// <seealso cref="DdnDfErrorCode.EmptyArray"/></exception>
+        public static DirectoryInfo ToDirectoryInfo(this string basePath, string[] subPaths, bool create = false)
+        {
+            if (ReferenceEquals(null, subPaths))
+            {
+                throw new DdnDfException(DdnDfErrorCode.NullArray, $"{nameof(subPaths)} is null");
+            }
+            if (subPaths.Length == 0)
+            {
+                throw new DdnDfException(DdnDfErrorCode.EmptyArray, $"{nameof(subPaths)} is empty");
+            }
+            var paths = new string[1 + subPaths.Length];
+            paths[0] = basePath;
+            Array.Copy(subPaths, 0, paths, 1, subPaths.Length);
+            return Path.Combine(paths).ToDirectoryInfo(create);
+        }
+
+        /// <summary>
+        /// Returns a new <seealso cref="DirectoryInfo"/> instance from given <paramref name="fullPath"/>.
+        /// <para>Expect all <seealso cref="DirectoryInfo"/> related errors.</para>
+        /// </summary>
+        /// <param name="fullPath">Full path to the directory</param>
+        /// <param name="create">if true <seealso cref="Directory.CreateDirectory(string)"/> will be called</param>
+        public static DirectoryInfo ToDirectoryInfo(this string fullPath, bool create = false)
+        {
+            return create ? Directory.CreateDirectory(fullPath) : new DirectoryInfo(fullPath);
         }
     }
 }
