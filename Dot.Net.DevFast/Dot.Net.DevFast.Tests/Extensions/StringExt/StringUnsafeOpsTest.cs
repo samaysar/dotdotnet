@@ -183,6 +183,20 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
             Assert.True(withSubPathDi.FullName.Equals(Path.Combine(directory.FullName, "SubPathTest1")));
         }
 
+        [Test]
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ToDirectoryInfo_With_FullPath_Works_As_Expected(bool create)
+        {
+            var directory = FileSys.TestFolderNonExisting();
+            var withSubPathDi = directory.FullName.ToDirectoryInfo(create);
+            directory.Refresh();
+
+            Assert.True(withSubPathDi.Exists == create);
+            Assert.True(directory.Exists == create);
+            Assert.True(withSubPathDi.FullName.Equals(directory.FullName));
+        }
+
         private static bool PerformToEnumUnsafe<T>(string input, out T value, bool ignoreCase = true)
             where T : struct
         {
