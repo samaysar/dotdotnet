@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.StringExt;
+using Dot.Net.DevFast.Tests.TestHelpers;
 using NUnit.Framework;
 
 namespace Dot.Net.DevFast.Tests.Extensions.StringExt
@@ -123,9 +124,8 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [Test]
         public void ToFileInfo_Works_As_Expected()
         {
-            var counter = Interlocked.Increment(ref _counter);
-            var filename = nameof(StringUnsafeOpsTest) + counter;
-            var folder = Directory.GetCurrentDirectory();
+            var filename = nameof(StringUnsafeOpsTest);
+            var folder = FileSys.TestFolderNonExisting().FullName;
             const string ext = "json";
 
             var fileInfo1 = folder.ToFileInfo(filename, ext);
@@ -155,7 +155,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [Test]
         [TestCase(false)]
         [TestCase(true)]
-        public void ToDirectoryInfo_Throws_Error_When_Array_Is_NullOrEmpty(bool useNull)
+        public void ToDirectoryInfo_Throws_Error_When_SubPath_Array_Is_NullOrEmpty(bool useNull)
         {
             if (useNull)
             {
@@ -172,9 +172,15 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [Test]
         [TestCase(false)]
         [TestCase(true)]
-        public void ToDirectoryInfo_Works_As_Expected(bool create)
+        public void ToDirectoryInfo_With_Given_SubPath_Works_As_Expected(bool create)
         {
-            //var directory = 
+            var directory = FileSys.TestFolderNonExisting();
+            var withSubPathDi = directory.FullName.ToDirectoryInfo(new[] {"SubPathTest1"}, create);
+            directory.Refresh();
+
+            Assert.True(withSubPathDi.Exists == create);
+            Assert.True(directory.Exists == create);
+            Assert.True(withSubPathDi.FullName.Equals(Path.Combine(directory.FullName, "SubPathTest1")));
         }
 
         private static bool PerformToEnumUnsafe<T>(string input, out T value, bool ignoreCase = true)
@@ -182,9 +188,6 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         {
             return input.ToEnumUnsafe(out value, ignoreCase);
         }
-
-        private volatile int _counter = 0;
-
 #pragma warning restore 420
     }
 }
