@@ -152,6 +152,31 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
             Assert.True(fileInfo3.Directory.FullName.Equals(folder));
         }
 
+        [Test]
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ToDirectoryInfo_Throws_Error_When_Array_Is_NullOrEmpty(bool useNull)
+        {
+            if (useNull)
+            {
+                Assert.True(Assert.Throws<DdnDfException>(() => string.Empty.ToDirectoryInfo(null))
+                    .ErrorCode == DdnDfErrorCode.NullArray);
+            }
+            else
+            {
+                Assert.True(Assert.Throws<DdnDfException>(() => string.Empty.ToDirectoryInfo(new string[0]))
+                    .ErrorCode == DdnDfErrorCode.EmptyArray);
+            }
+        }
+
+        [Test]
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ToDirectoryInfo_Works_As_Expected(bool create)
+        {
+            //var directory = 
+        }
+
         private static bool PerformToEnumUnsafe<T>(string input, out T value, bool ignoreCase = true)
             where T : struct
         {
