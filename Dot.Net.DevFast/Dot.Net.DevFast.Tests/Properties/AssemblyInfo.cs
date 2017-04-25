@@ -2,13 +2,18 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Dot.Net.DevFast.Tests")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Dot.Net.DevFast.Tests")]
-[assembly: AssemblyCopyright("Copyright ©  2017")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
+[assembly: AssemblyDescription("Test project for Dot.Net.DevFast.Tests")]
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug")]
+#else
+[assembly: AssemblyConfiguration("Release")]
+#endif
+[assembly: AssemblyCompany("Divya Sarthi MAHESHWARI")]
+[assembly: AssemblyCopyright("Copyright © Divya Sarthi MAHESHWARI 2017")]
+[assembly: AssemblyTrademark("Divya Sarthi MAHESHWARI")]
+[assembly: AssemblyCulture("en-US")]
+
 
 [assembly: ComVisible(false)]
 
@@ -17,3 +22,4 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyInformationalVersion("1.0.0.0")]
