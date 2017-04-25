@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("Divya Sarthi MAHESHWARI")]
 [assembly: AssemblyCopyright("Copyright © Divya Sarthi MAHESHWARI 2017")]
 [assembly: AssemblyTrademark("Divya Sarthi MAHESHWARI")]
-[assembly: AssemblyCulture("en-US")]
+[assembly: AssemblyCulture("")]
 
 
 [assembly: ComVisible(false)]
