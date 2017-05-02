@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <id>Dot.Net.DevFast</id>
+    <version>$(version)</version>
+    <authors>Divya Sarthi MAHESHWARI</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Extension methods' package offering quotidian programming needs for faster development.</description>
+  </metadata>
+  <files>
+    <file src="..\Dot.Net.DevFast\Dot.Net.DevFast\bin\Release\Dot.Net.DevFast.dll" target="lib" />
+  </files>
+</package>
