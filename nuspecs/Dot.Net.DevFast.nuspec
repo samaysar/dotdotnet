@@ -8,6 +8,6 @@
     <description>Extension methods' package offering quotidian programming needs for faster development.</description>
   </metadata>
   <files>
-    <file src="..\Dot.Net.DevFast\Dot.Net.DevFast\bin\Release\Dot.Net.DevFast.dll" target="lib" />
+    <file src="..\Dot.Net.DevFast\Dot.Net.DevFast\bin\Release\Dot.Net.DevFast.dll" target="lib\net40" />
   </files>
 </package>
