@@ -9,6 +9,96 @@ namespace Dot.Net.DevFast.Extensions
     public static class ThrowError
     {
         /// <summary>
+        /// Throws exception when <paramref name="truthValue"/> is true.
+        /// </summary>
+        /// <param name="truthValue">truth value</param>
+        /// <typeparam name="TEx">Exception type to throw</typeparam>
+        public static void ThrowIf<TEx>(this bool truthValue) where TEx : Exception, new()
+        {
+            if (truthValue) throw new TEx();
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="truthValue"/> is true.
+        /// </summary>
+        /// <param name="truthValue">truth value</param>
+        /// <param name="errorCode">error code of the exception</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        public static void ThrowIf(this bool truthValue, DdnDfErrorCode errorCode)
+        {
+            if(truthValue) errorCode.Throw();
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="truthValue"/> is true.
+        /// </summary>
+        /// <param name="truthValue">truth value</param>
+        /// <param name="errorCode">error code of the exception</param>
+        /// <param name="errorMessage">Error message</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        public static void ThrowIf(this bool truthValue, DdnDfErrorCode errorCode, string errorMessage)
+        {
+            if (truthValue) errorCode.Throw(errorMessage);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="truthValue"/> is true.
+        /// </summary>
+        /// <param name="truthValue">truth value</param>
+        /// <param name="errorCode">error code of the exception</param>
+        /// <param name="errorMessageDelegate">Error message delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        public static void ThrowIf(this bool truthValue, DdnDfErrorCode errorCode, Func<string> errorMessageDelegate)
+        {
+            if (truthValue) errorCode.Throw(errorMessageDelegate());
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="truthValue"/> is false.
+        /// </summary>
+        /// <param name="truthValue">truth value</param>
+        /// <typeparam name="TEx">Exception type to throw</typeparam>
+        public static void ThrowIfNot<TEx>(this bool truthValue) where TEx : Exception, new()
+        {
+            (!truthValue).ThrowIf<TEx>();
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="truthValue"/> is false.
+        /// </summary>
+        /// <param name="truthValue">truth value</param>
+        /// <param name="errorCode">error code of the exception</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        public static void ThrowIfNot(this bool truthValue, DdnDfErrorCode errorCode)
+        {
+            (!truthValue).ThrowIf(errorCode);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="truthValue"/> is false.
+        /// </summary>
+        /// <param name="truthValue">truth value</param>
+        /// <param name="errorCode">error code of the exception</param>
+        /// <param name="errorMessage">Error message</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        public static void ThrowIfNot(this bool truthValue, DdnDfErrorCode errorCode, string errorMessage)
+        {
+            (!truthValue).ThrowIf(errorCode, errorMessage);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="truthValue"/> is false.
+        /// </summary>
+        /// <param name="truthValue">truth value</param>
+        /// <param name="errorCode">error code of the exception</param>
+        /// <param name="errorMessageDelegate">Error message delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        public static void ThrowIfNot(this bool truthValue, DdnDfErrorCode errorCode, Func<string> errorMessageDelegate)
+        {
+            (!truthValue).ThrowIf(errorCode, errorMessageDelegate);
+        }
+
+        /// <summary>
         /// Throws exception when provided object is null else same object instance is returned
         /// to performed method chaining.
         /// </summary>
@@ -17,10 +107,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
         public static T ThrowIfNull<T>(this T obj) where T : class
         {
-            if (ReferenceEquals(obj, null))
-            {
-                DdnDfErrorCode.NullObject.Throw();
-            }
+            ReferenceEquals(obj, null).ThrowIf(DdnDfErrorCode.NullObject);
             return obj;
         }
 
@@ -34,10 +121,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
         public static T ThrowIfNull<T>(this T obj, string errorMessage) where T : class
         {
-            if (ReferenceEquals(obj, null))
-            {
-                DdnDfErrorCode.NullObject.Throw(errorMessage);
-            }
+            ReferenceEquals(obj, null).ThrowIf(DdnDfErrorCode.NullObject, errorMessage);
             return obj;
         }
 
@@ -51,10 +135,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
         public static T ThrowIfNull<T>(this T obj, Func<string> errorMessageDelegate) where T : class
         {
-            if (ReferenceEquals(obj, null))
-            {
-                DdnDfErrorCode.NullObject.Throw(errorMessageDelegate());
-            }
+            ReferenceEquals(obj, null).ThrowIf(DdnDfErrorCode.NullObject, errorMessageDelegate);
             return obj;
         }
 
@@ -69,10 +150,7 @@ namespace Dot.Net.DevFast.Extensions
             where T : class
             where TEx : Exception, new()
         {
-            if (ReferenceEquals(obj, null))
-            {
-                throw new TEx();
-            }
+            ReferenceEquals(obj, null).ThrowIf<TEx>();
             return obj;
         }
 
