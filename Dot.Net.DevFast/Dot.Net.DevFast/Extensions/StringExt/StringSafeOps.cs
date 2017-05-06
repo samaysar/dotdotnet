@@ -60,45 +60,43 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         }
 
         /// <summary>
-        /// If value is null or contains only whitespaces,
-        /// <seealso cref="string.Empty"/> is returned else trimmed string.
-        /// <para>Also check <seealso cref="StringUnsafeOps.UnsafeTrim"/>,
-        /// <seealso cref="SafeTrimOrNull"/> and <seealso cref="SafeTrimOrDefault"/></para>
+        /// If value is null <seealso cref="string.Empty"/> is returned else trimmed string.
+        /// <para>Also check <seealso cref="StringUnsafeOps.TrimUnsafe"/>,
+        /// <seealso cref="TrimSafeOrNull"/> and <seealso cref="TrimSafeOrDefault"/></para>
         /// </summary>
         /// <param name="input">Value to trim safe</param>
         /// <param name="trimChars">optional. when not given any char set,
         /// whitespaces will be removed</param>
-        public static string SafeTrimOrEmpty(this string input, params char[] trimChars)
+        public static string TrimSafeOrEmpty(this string input, params char[] trimChars)
         {
-            return input.SafeTrimOrDefault(string.Empty, trimChars);
+            return input.TrimSafeOrDefault(string.Empty, trimChars);
         }
 
         /// <summary>
-        /// If value is null or contains only whitespaces, null is returned else trimmed string.
-        /// <para>Also check <seealso cref="StringUnsafeOps.UnsafeTrim"/>,
-        /// <seealso cref="SafeTrimOrEmpty"/> and <seealso cref="SafeTrimOrDefault"/></para>
+        /// If value is null, null is returned else trimmed string.
+        /// <para>Also check <seealso cref="StringUnsafeOps.TrimUnsafe"/>,
+        /// <seealso cref="TrimSafeOrEmpty"/> and <seealso cref="TrimSafeOrDefault"/></para>
         /// </summary>
         /// <param name="input">Value to trim safe</param>
         /// <param name="trimChars">optional. when not given any char set,
         /// whitespaces will be removed</param>
-        public static string SafeTrimOrNull(this string input, params char[] trimChars)
+        public static string TrimSafeOrNull(this string input, params char[] trimChars)
         {
-            return input.SafeTrimOrDefault(null, trimChars);
+            return input.TrimSafeOrDefault(null, trimChars);
         }
 
         /// <summary>
-        /// If value is null or contains only whitespaces,
-        /// <paramref name="defaultValue"/> is returned else trimmed string.
-        /// <para>Also check <seealso cref="StringUnsafeOps.UnsafeTrim"/> and
-        /// <seealso cref="SafeTrimOrEmpty"/> and <seealso cref="SafeTrimOrNull"/></para>
+        /// If value is null <paramref name="defaultValue"/> is returned else trimmed string.
+        /// <para>Also check <seealso cref="StringUnsafeOps.TrimUnsafe"/>,
+        /// <seealso cref="TrimSafeOrEmpty"/> and <seealso cref="TrimSafeOrNull"/></para>
         /// </summary>
         /// <param name="input">Value to trim safe</param>
-        /// <param name="defaultValue">default value to return when input is Null or whitespaces.</param>
+        /// <param name="defaultValue">default value to return when input is null.</param>
         /// <param name="trimChars">optional. when not given any char set,
         /// whitespaces will be removed</param>
-        public static string SafeTrimOrDefault(this string input, string defaultValue, params char[] trimChars)
+        public static string TrimSafeOrDefault(this string input, string defaultValue, params char[] trimChars)
         {
-            return string.IsNullOrWhiteSpace(input) ? defaultValue : input.Trim(trimChars);
+            return ReferenceEquals(input, null) ? defaultValue : input.Trim(trimChars);
         }
     }
 }

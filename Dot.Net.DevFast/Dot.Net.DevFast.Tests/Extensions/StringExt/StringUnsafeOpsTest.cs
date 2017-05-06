@@ -152,7 +152,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         public void UnsafeTrim_Throws_Error_When_Input_Is_Null(string input)
         {
             Assert.True(Assert.Throws<DdnDfException>(() =>
-                            input.UnsafeTrim()).ErrorCode == DdnDfErrorCode.NullString);
+                            input.TrimUnsafe()).ErrorCode == DdnDfErrorCode.NullString);
         }
 
         [Test]
@@ -161,7 +161,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
             params char[] trimChars)
         {
             Assert.True(Assert.Throws<DdnDfException>(() =>
-                            input.UnsafeTrim(trimChars)).ErrorCode == DdnDfErrorCode.NullString);
+                            input.TrimUnsafe(trimChars)).ErrorCode == DdnDfErrorCode.NullString);
         }
 
         [Test]
@@ -175,7 +175,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [TestCase("    AB", "AB")]
         public void UnsafeTrim_Outcomes_Are_Consistent(string input, string expectation)
         {
-            Assert.True(input.UnsafeTrim().Equals(expectation));
+            Assert.True(input.TrimUnsafe().Equals(expectation));
         }
 
         [Test]
@@ -190,7 +190,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         public void UnsafeTrim_With_TrimChars_Gives_Consistent_Outcomes(string input, string expectation,
             params char[] trimChars)
         {
-            Assert.True(input.UnsafeTrim(trimChars).Equals(expectation));
+            Assert.True(input.TrimUnsafe(trimChars).Equals(expectation));
         }
 
         [Test]
@@ -211,9 +211,9 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
             Assert.True(fileInfo1.FullName.Equals(fileInfo2.FullName));
             Assert.True(fileInfo1.FullName.Equals(fileInfo3.FullName));
 
-            Assert.True(fileInfo1.Extension.SafeTrimOrNull('.').Equals(ext));
-            Assert.True(fileInfo2.Extension.SafeTrimOrNull('.').Equals(ext));
-            Assert.True(fileInfo3.Extension.SafeTrimOrNull('.').Equals(ext));
+            Assert.True(fileInfo1.Extension.TrimSafeOrNull('.').Equals(ext));
+            Assert.True(fileInfo2.Extension.TrimSafeOrNull('.').Equals(ext));
+            Assert.True(fileInfo3.Extension.TrimSafeOrNull('.').Equals(ext));
 
             Assert.NotNull(fileInfo1.Directory);
             Assert.NotNull(fileInfo2.Directory);

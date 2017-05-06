@@ -5,7 +5,7 @@ using Dot.Net.DevFast.Etc;
 namespace Dot.Net.DevFast.Extensions.StringExt
 {
     /// <summary>
-    /// Extension methods to parse string to different types.
+    /// Extension methods to parse string to different structs.
     /// </summary>
     public static class StringTryTo
     {

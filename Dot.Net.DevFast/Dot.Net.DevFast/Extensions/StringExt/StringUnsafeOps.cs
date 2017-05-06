@@ -5,7 +5,7 @@ using Dot.Net.DevFast.Etc;
 namespace Dot.Net.DevFast.Extensions.StringExt
 {
     /// <summary>
-    /// Extension method on UnSafe (with possible error throw) string operations
+    /// Extension method on UnSafe (possible exception or invalid results) string operations
     /// </summary>
     public static class StringUnsafeOps
     {
@@ -59,10 +59,10 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         }
 
         /// <summary>
-        /// Trims string when not null.
-        /// <para>Also check <seealso cref="StringSafeOps.SafeTrimOrEmpty"/>, 
-        /// <seealso cref="StringSafeOps.SafeTrimOrNull"/> and 
-        /// <seealso cref="StringSafeOps.SafeTrimOrDefault"/></para>
+        /// Trims string when not null else throws error (another way to avoid <seealso cref="NullReferenceException"/>)
+        /// <para>Also check <seealso cref="StringSafeOps.TrimSafeOrEmpty"/>, 
+        /// <seealso cref="StringSafeOps.TrimSafeOrNull"/> and 
+        /// <seealso cref="StringSafeOps.TrimSafeOrDefault"/></para>
         /// </summary>
         /// <param name="input">Value to trim safe</param>
         /// <param name="trimChars">optional. when not given any char set,
@@ -70,11 +70,11 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <exception cref="DdnDfException">When null string is passed as input.
         /// <seealso cref="DdnDfException.ErrorCode"/> is 
         /// <seealso cref="DdnDfErrorCode.NullString"/></exception>
-        public static string UnsafeTrim(this string input, params char[] trimChars)
+        public static string TrimUnsafe(this string input, params char[] trimChars)
         {
             if (ReferenceEquals(null, input))
             {
-                throw new DdnDfException(DdnDfErrorCode.NullString);
+                DdnDfErrorCode.NullString.Throw("cannot trim");
             }
             return input.Trim(trimChars);
         }
@@ -112,6 +112,31 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static FileInfo ToFileInfo(this string fullFilePath)
         {
             return new FileInfo(fullFilePath);
+        }
+
+        /// <summary>
+        /// Returns a new <seealso cref="FileInfo"/> instance after joining filename with extension
+        /// to <seealso cref="FileSystemInfo.FullName"/> of the <paramref name="folderInfo"/>.
+        /// <para>Expect all <seealso cref="FileInfo"/> related errors.</para>
+        /// </summary>
+        /// <param name="folderInfo">FolderInfo to which fileInfo is associated</param>
+        /// <param name="filename">filename without extension</param>
+        /// <param name="extension">extension without period, e.g., "txt", "json" etc</param>
+        public static FileInfo ToFileInfo(this DirectoryInfo folderInfo, string filename, string extension)
+        {
+            return folderInfo.ToFileInfo(filename + "." + extension);
+        }
+
+        /// <summary>
+        /// Returns a new <seealso cref="FileInfo"/> instance after joining <paramref name="filenameWithExt"/>
+        /// to <seealso cref="FileSystemInfo.FullName"/> of the <paramref name="folderInfo"/>.
+        /// <para>Expect all <seealso cref="FileInfo"/> related errors.</para>
+        /// </summary>
+        /// <param name="folderInfo">FolderInfo to which fileInfo is associated</param>
+        /// <param name="filenameWithExt">file name with extensions, e.g., "abc.txt", "mydata.json" etc</param>
+        public static FileInfo ToFileInfo(this DirectoryInfo folderInfo, string filenameWithExt)
+        {
+            return folderInfo.FullName.ToFileInfo(filenameWithExt);
         }
 
         /// <summary>

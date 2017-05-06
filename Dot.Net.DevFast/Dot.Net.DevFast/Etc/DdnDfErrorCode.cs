@@ -24,6 +24,11 @@
         /// <summary>
         /// When supplied array is has no element.
         /// </summary>
-        EmptyArray
+        EmptyArray,
+
+        /// <summary>
+        /// When supplied object instance is null.
+        /// </summary>
+        NullObject
     }
 }

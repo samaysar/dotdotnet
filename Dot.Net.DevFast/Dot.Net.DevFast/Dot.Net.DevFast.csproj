@@ -49,7 +49,9 @@
     <Compile Include="Extensions\StringExt\StringSafeOps.cs" />
     <Compile Include="Extensions\StringExt\StringTryTo.cs" />
     <Compile Include="Extensions\StringExt\StringUnsafeOps.cs" />
+    <Compile Include="Extensions\ThrowError.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

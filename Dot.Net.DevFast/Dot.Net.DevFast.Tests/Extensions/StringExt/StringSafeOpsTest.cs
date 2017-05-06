@@ -154,7 +154,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [TestCase("    AB", "AB")]
         public void SafeTrimOrEmpty_Outcomes_Are_Consistent(string input, string expectation)
         {
-            Assert.True(input.SafeTrimOrEmpty().Equals(expectation));
+            Assert.True(input.TrimSafeOrEmpty().Equals(expectation));
         }
 
         [Test]
@@ -170,13 +170,13 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         public void SafeTrimOrEmpty_With_TrimChars_Gives_Consistent_Outcomes(string input, string expectation,
             params char[] trimChars)
         {
-            Assert.True(input.SafeTrimOrEmpty(trimChars).Equals(expectation));
+            Assert.True(input.TrimSafeOrEmpty(trimChars).Equals(expectation));
         }
 
         [Test]
         [TestCase(null, null)]
-        [TestCase("", null)]
-        [TestCase("           ", null)]
+        [TestCase("", "")]
+        [TestCase("           ", "")]
         [TestCase("   a        ", "a")]
         [TestCase("    A       ", "A")]
         [TestCase("    A     B  ", "A     B")]
@@ -185,12 +185,12 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [TestCase("    AB", "AB")]
         public void SafeTrimOrNull_Outcomes_Are_Consistent(string input, string expectation)
         {
-            Assert.True(input.SafeTrimOrNull() == expectation);
+            Assert.True(input.TrimSafeOrNull() == expectation);
         }
 
         [Test]
         [TestCase(null, null, ' ', ',')]
-        [TestCase("", null, ' ', ',')]
+        [TestCase("", "", ' ', ',')]
         [TestCase("        ,,   ", "", ' ', ',')]
         [TestCase("   ,a     ,   ", "a", ' ', ',')]
         [TestCase("    A   ,    ", "A", ' ', ',')]
@@ -201,13 +201,13 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         public void SafeTrimOrNull_With_TrimChars_Gives_Consistent_Outcomes(string input, string expectation,
             params char[] trimChars)
         {
-            Assert.True(input.SafeTrimOrNull(trimChars) == expectation);
+            Assert.True(input.TrimSafeOrNull(trimChars) == expectation);
         }
 
         [Test]
         [TestCase(null, null, null)]
         [TestCase("", "", "")]
-        [TestCase("           ", "aaaa", "aaaa")]
+        [TestCase("           ", "", "aaaa")]
         [TestCase("   a        ", "a", "aaaa")]
         [TestCase("    A       ", "A", "aaaa")]
         [TestCase("    A     B  ", "A     B", null)]
@@ -216,12 +216,12 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [TestCase("    AB", "AB", "  A ")]
         public void SafeTrimOrDefault_Outcomes_Are_Consistent(string input, string expectation, string defaultVal)
         {
-            Assert.True(input.SafeTrimOrDefault(defaultVal) == expectation);
+            Assert.True(input.TrimSafeOrDefault(defaultVal) == expectation);
         }
 
         [Test]
         [TestCase(null, "A","A", ' ', ',')]
-        [TestCase("", " a w ", " a w ", ' ', ',')]
+        [TestCase("", "", " a w ", ' ', ',')]
         [TestCase("        ,,   ", "", "aFw", ' ', ',')]
         [TestCase("   ,a     ,   ", "a", null, ' ', ',')]
         [TestCase("    A   ,    ", "A", null, ' ', ',')]
@@ -232,7 +232,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         public void SafeTrimOrDefault_With_TrimChars_Gives_Consistent_Outcomes(string input, string expectation, 
             string defaultVal, params char[] trimChars)
         {
-            Assert.True(input.SafeTrimOrDefault(defaultVal, trimChars) == expectation);
+            Assert.True(input.TrimSafeOrDefault(defaultVal, trimChars) == expectation);
         }
 
         private static bool PerformToEnumSafe<T>(string input, out T value, bool ignoreCase = true)
