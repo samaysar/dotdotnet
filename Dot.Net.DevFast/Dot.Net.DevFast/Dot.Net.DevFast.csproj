@@ -45,7 +45,7 @@
   <ItemGroup>
     <Compile Include="Etc\DdnDfErrorCode.cs" />
     <Compile Include="Etc\DdnDfException.cs" />
-    <Compile Include="Etc\FixedValues.cs" />
+    <Compile Include="Etc\StdLookUps.cs" />
     <Compile Include="Extensions\StringExt\StringSafeOps.cs" />
     <Compile Include="Extensions\StringExt\StringTryTo.cs" />
     <Compile Include="Extensions\StringExt\StringUnsafeOps.cs" />

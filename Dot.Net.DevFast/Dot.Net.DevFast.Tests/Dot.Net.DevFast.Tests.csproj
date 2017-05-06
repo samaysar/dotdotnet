@@ -40,7 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Etc\DdnDfExceptionTest.cs" />
-    <Compile Include="Etc\FixedValueTest.cs" />
+    <Compile Include="Etc\StdLookUpsTest.cs" />
     <Compile Include="Extensions\StringExt\StringSafeOpsTest.cs" />
     <Compile Include="Extensions\StringExt\StringTryToTest.cs" />
     <Compile Include="Extensions\StringExt\StringUnsafeOpsTest.cs" />

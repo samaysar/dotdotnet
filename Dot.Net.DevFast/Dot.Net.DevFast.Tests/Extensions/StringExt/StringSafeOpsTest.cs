@@ -8,11 +8,11 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
     public class StringSafeOpsTest
     {
         [Test]
-        public void ToEnumSafe_Retruns_False_For_Invalid_Cases()
+        public void ToEnumSafe_ThrowsError_For_Invalid_Cases()
         {
-            Assert.False(PerformToEnumSafe("", out DateTime wrongDateTime, false));
-            Assert.False(PerformToEnumSafe("", out double wrongDouble));
-            Assert.False(PerformToEnumSafe("", out int wrongInt));
+            Assert.Throws<ArgumentException>(() => PerformToEnumSafe("", out DateTime wrongType, false));
+            Assert.Throws<ArgumentException>(() => PerformToEnumSafe("", out double wrongType));
+            Assert.Throws<ArgumentException>(() => PerformToEnumSafe("", out int wrongType));
         }
 
         [Test]
@@ -38,7 +38,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [TestCase("   invalidString   ", default(DateTimeKind), false)]
         [TestCase("", default(DateTimeKind), false)]
         [TestCase(null, default(DateTimeKind), false)]
-        public void ToEnumUnsafe_Returns_Consistent_Results_When_IgnoreCase_Is_True(string input,
+        public void ToEnumSafe_Returns_Consistent_Results_When_IgnoreCase_Is_True(string input,
             DateTimeKind expected, bool returnValue)
         {
             Assert.True(PerformToEnumSafe(input, out DateTimeKind value) == returnValue);
@@ -62,10 +62,83 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [TestCase("   invalidString   ", default(DateTimeKind), false)]
         [TestCase("", default(DateTimeKind), false)]
         [TestCase(null, default(DateTimeKind), false)]
-        public void ToEnumUnsafe_Returns_Consistent_Results_When_IgnoreCase_Is_False(string input,
+        public void ToEnumSafe_Returns_Consistent_Results_When_IgnoreCase_Is_False(string input,
             DateTimeKind expected, bool returnValue)
         {
             Assert.True(PerformToEnumSafe(input, out DateTimeKind value, false) == returnValue);
+            Assert.True(value.Equals(expected));
+        }
+
+        [Test]
+        public void ToEnumSafe_For_NullableEnum_ThrowsError_For_Invalid_Cases()
+        {
+            Assert.Throws<ArgumentException>(() => PerformToEnumSafe("anything", out DateTime? wrongType, false));
+            Assert.Throws<ArgumentException>(() => PerformToEnumSafe("anything", out double? wrongType));
+            Assert.Throws<ArgumentException>(() => PerformToEnumSafe("anything", out int? wrongType));
+        }
+
+        [Test]
+        public void ToEnumSafe_For_NullableEnum_Always_Returns_True_With_Null_OutValue_When_String_IsNoWS()
+        {
+            Assert.True(PerformToEnumSafe("", out DateTime? wrongDt, false) && wrongDt == null);
+            Assert.True(PerformToEnumSafe("", out double? wrongDob) && wrongDob == null);
+            Assert.True(PerformToEnumSafe("", out int? wrongInt) && wrongInt == null);
+            Assert.True(PerformToEnumSafe("", out DateTimeKind? goodEnumType) && goodEnumType == null);
+        }
+
+        [Test]
+        [TestCase(int.MaxValue)]
+        [TestCase(int.MinValue)]
+        public void ToEnumSafe_For_NullableEnum_Returns_False_For_Invalid_Parsable_Strings(int invalidInput)
+        {
+            Assert.False(PerformToEnumSafe(invalidInput.ToString(), out DateTimeKind? value));
+            Assert.True(value == null);
+        }
+
+        [Test]
+        [TestCase("Unspecified", DateTimeKind.Unspecified, true)]
+        [TestCase("Local", DateTimeKind.Local, true)]
+        [TestCase("Utc", DateTimeKind.Utc, true)]
+        [TestCase("unspecified", DateTimeKind.Unspecified, true)]
+        [TestCase("local", DateTimeKind.Local, true)]
+        [TestCase("utc", DateTimeKind.Utc, true)]
+        [TestCase("  unspecified  ", DateTimeKind.Unspecified, true)]
+        [TestCase("   local   ", DateTimeKind.Local, true)]
+        [TestCase("   utc   ", DateTimeKind.Utc, true)]
+        [TestCase("anything", null, false)]
+        [TestCase("   invalidString   ", null, false)]
+        [TestCase("         ", null, true)]
+        [TestCase("", null, true)]
+        [TestCase(null, null, true)]
+        public void ToEnumSafe_For_NullableEnum_Returns_Consistent_Results_When_IgnoreCase_Is_True(string input,
+            DateTimeKind? expected, bool returnValue)
+        {
+            Assert.True(PerformToEnumSafe(input, out DateTimeKind? value) == returnValue);
+            Assert.True(value.Equals(expected));
+        }
+
+        [Test]
+        [TestCase("Unspecified", DateTimeKind.Unspecified, true)]
+        [TestCase("Local", DateTimeKind.Local, true)]
+        [TestCase("Utc", DateTimeKind.Utc, true)]
+        [TestCase("    Unspecified     ", DateTimeKind.Unspecified, true)]
+        [TestCase("    Local  ", DateTimeKind.Local, true)]
+        [TestCase("  Utc   ", DateTimeKind.Utc, true)]
+        [TestCase("unspecified", null, false)]
+        [TestCase("local", null, false)]
+        [TestCase("utc", null, false)]
+        [TestCase("  unspecified  ", null, false)]
+        [TestCase("   local   ", null, false)]
+        [TestCase("   utc   ", null, false)]
+        [TestCase("anything", null, false)]
+        [TestCase("   invalidString   ", null, false)]
+        [TestCase("         ", null, true)]
+        [TestCase("", null, true)]
+        [TestCase(null, null, true)]
+        public void ToEnumSafe_For_NullableEnum_Returns_Consistent_Results_When_IgnoreCase_Is_False(string input,
+            DateTimeKind? expected, bool returnValue)
+        {
+            Assert.True(PerformToEnumSafe(input, out DateTimeKind? value, false) == returnValue);
             Assert.True(value.Equals(expected));
         }
 
@@ -163,6 +236,12 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         }
 
         private static bool PerformToEnumSafe<T>(string input, out T value, bool ignoreCase = true)
+            where T : struct
+        {
+            return input.ToEnumSafe(out value, ignoreCase);
+        }
+
+        private static bool PerformToEnumSafe<T>(string input, out T? value, bool ignoreCase = true)
             where T : struct
         {
             return input.ToEnumSafe(out value, ignoreCase);

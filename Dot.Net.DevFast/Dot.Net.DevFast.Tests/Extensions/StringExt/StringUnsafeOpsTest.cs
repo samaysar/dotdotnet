@@ -11,54 +11,6 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
     [TestFixture]
     public class StringUnsafeOpsTest
     {
-#pragma warning disable 420
-
-        [Test]
-        [TestCase(null)]
-        public void UnsafeTrim_Throws_Error_When_Input_Is_Null(string input)
-        {
-            Assert.True(Assert.Throws<DdnDfException>(() =>
-                            input.UnsafeTrim()).ErrorCode == DdnDfErrorCode.NullString);
-        }
-
-        [Test]
-        [TestCase(null, char.MinValue, char.MaxValue)]
-        public void UnsafeTrim_With_TrimChars_Throws_Error_When_Input_Is_Null(string input,
-            params char[] trimChars)
-        {
-            Assert.True(Assert.Throws<DdnDfException>(() =>
-                            input.UnsafeTrim(trimChars)).ErrorCode == DdnDfErrorCode.NullString);
-        }
-
-        [Test]
-        [TestCase("", "")]
-        [TestCase("           ", "")]
-        [TestCase("   a        ", "a")]
-        [TestCase("    A       ", "A")]
-        [TestCase("    A     B  ", "A     B")]
-        [TestCase("    AB  ", "AB")]
-        [TestCase("AB  ", "AB")]
-        [TestCase("    AB", "AB")]
-        public void UnsafeTrim_Outcomes_Are_Consistent(string input, string expectation)
-        {
-            Assert.True(input.UnsafeTrim().Equals(expectation));
-        }
-
-        [Test]
-        [TestCase("", "", ' ', ',')]
-        [TestCase("        ,,   ", "", ' ', ',')]
-        [TestCase("   ,a     ,   ", "a", ' ', ',')]
-        [TestCase("    A   ,    ", "A", ' ', ',')]
-        [TestCase("  , ,  A     B ,,, ", "A     B", ' ', ',', '\0')]
-        [TestCase("    A,B  ", "A,B", ' ', ',')]
-        [TestCase("AB  ", "AB", ' ', char.MaxValue)]
-        [TestCase("    AB", "AB", ' ', char.MinValue)]
-        public void UnsafeTrim_With_TrimChars_Gives_Consistent_Outcomes(string input, string expectation,
-            params char[] trimChars)
-        {
-            Assert.True(input.UnsafeTrim(trimChars).Equals(expectation));
-        }
-
         [Test]
         public void ToEnumUnsafe_ThrowsError_For_Invalid_Cases()
         {
@@ -122,6 +74,126 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         }
 
         [Test]
+        public void ToEnumUnsafe_For_NullableEnum_ThrowsError_For_Invalid_Cases()
+        {
+            Assert.Throws<ArgumentException>(() => PerformToEnumUnsafe("anything", out DateTime? wrongType, false));
+            Assert.Throws<ArgumentException>(() => PerformToEnumUnsafe("anything", out double? wrongType));
+            Assert.Throws<ArgumentException>(() => PerformToEnumUnsafe("anything", out int? wrongType));
+        }
+
+        [Test]
+        public void ToEnumUnsafe_For_NullableEnum_Always_Returns_True_With_Null_OutValue_When_String_IsNoWS()
+        {
+            Assert.True(PerformToEnumUnsafe("", out DateTime? wrongDt, false) && wrongDt == null);
+            Assert.True(PerformToEnumUnsafe("", out double? wrongDob) && wrongDob == null);
+            Assert.True(PerformToEnumUnsafe("", out int? wrongInt) && wrongInt == null);
+            Assert.True(PerformToEnumUnsafe("", out DateTimeKind? goodEnumType) && goodEnumType == null);
+        }
+
+        [Test]
+        [TestCase(int.MaxValue)]
+        [TestCase(int.MinValue)]
+        public void ToEnumUnsafe_For_NullableEnum_Returns_True_For_Invalid_Parsable_Strings(int invalidInput)
+        {
+            Assert.True(PerformToEnumUnsafe(invalidInput.ToString(), out DateTimeKind? value) &&
+                        value.Equals((DateTimeKind)invalidInput));
+            Assert.True(value.Equals((DateTimeKind?)invalidInput));
+        }
+
+        [Test]
+        [TestCase("Unspecified", DateTimeKind.Unspecified, true)]
+        [TestCase("Local", DateTimeKind.Local, true)]
+        [TestCase("Utc", DateTimeKind.Utc, true)]
+        [TestCase("unspecified", DateTimeKind.Unspecified, true)]
+        [TestCase("local", DateTimeKind.Local, true)]
+        [TestCase("utc", DateTimeKind.Utc, true)]
+        [TestCase("  unspecified  ", DateTimeKind.Unspecified, true)]
+        [TestCase("   local   ", DateTimeKind.Local, true)]
+        [TestCase("   utc   ", DateTimeKind.Utc, true)]
+        [TestCase("anything", null, false)]
+        [TestCase("   invalidString   ", null, false)]
+        [TestCase("          ", null, true)]
+        [TestCase("", null, true)]
+        [TestCase(null, null, true)]
+        public void ToEnumUnsafe_For_NullableEnum_Returns_Consistent_Results_When_IgnoreCase_Is_True(string input,
+            DateTimeKind? expected, bool returnValue)
+        {
+            Assert.True(PerformToEnumUnsafe(input, out DateTimeKind? value) == returnValue);
+            Assert.True(value.Equals(expected));
+        }
+
+        [Test]
+        [TestCase("Unspecified", DateTimeKind.Unspecified, true)]
+        [TestCase("Local", DateTimeKind.Local, true)]
+        [TestCase("Utc", DateTimeKind.Utc, true)]
+        [TestCase("    Unspecified     ", DateTimeKind.Unspecified, true)]
+        [TestCase("    Local  ", DateTimeKind.Local, true)]
+        [TestCase("  Utc   ", DateTimeKind.Utc, true)]
+        [TestCase("unspecified", null, false)]
+        [TestCase("local", null, false)]
+        [TestCase("utc", null, false)]
+        [TestCase("  unspecified  ", null, false)]
+        [TestCase("   local   ", null, false)]
+        [TestCase("   utc   ", null, false)]
+        [TestCase("anything", null, false)]
+        [TestCase("   invalidString   ", null, false)]
+        [TestCase("          ", null, true)]
+        [TestCase("", null, true)]
+        [TestCase(null, null, true)]
+        public void ToEnumUnsafe_For_NullableEnum_Returns_Consistent_Results_When_IgnoreCase_Is_False(string input,
+            DateTimeKind? expected, bool returnValue)
+        {
+            Assert.True(PerformToEnumUnsafe(input, out DateTimeKind? value, false) == returnValue);
+            Assert.True(value.Equals(expected));
+        }
+
+        [Test]
+        [TestCase(null)]
+        public void UnsafeTrim_Throws_Error_When_Input_Is_Null(string input)
+        {
+            Assert.True(Assert.Throws<DdnDfException>(() =>
+                            input.UnsafeTrim()).ErrorCode == DdnDfErrorCode.NullString);
+        }
+
+        [Test]
+        [TestCase(null, char.MinValue, char.MaxValue)]
+        public void UnsafeTrim_With_TrimChars_Throws_Error_When_Input_Is_Null(string input,
+            params char[] trimChars)
+        {
+            Assert.True(Assert.Throws<DdnDfException>(() =>
+                            input.UnsafeTrim(trimChars)).ErrorCode == DdnDfErrorCode.NullString);
+        }
+
+        [Test]
+        [TestCase("", "")]
+        [TestCase("           ", "")]
+        [TestCase("   a        ", "a")]
+        [TestCase("    A       ", "A")]
+        [TestCase("    A     B  ", "A     B")]
+        [TestCase("    AB  ", "AB")]
+        [TestCase("AB  ", "AB")]
+        [TestCase("    AB", "AB")]
+        public void UnsafeTrim_Outcomes_Are_Consistent(string input, string expectation)
+        {
+            Assert.True(input.UnsafeTrim().Equals(expectation));
+        }
+
+        [Test]
+        [TestCase("", "", ' ', ',')]
+        [TestCase("        ,,   ", "", ' ', ',')]
+        [TestCase("   ,a     ,   ", "a", ' ', ',')]
+        [TestCase("    A   ,    ", "A", ' ', ',')]
+        [TestCase("  , ,  A     B ,,, ", "A     B", ' ', ',', '\0')]
+        [TestCase("    A,B  ", "A,B", ' ', ',')]
+        [TestCase("AB  ", "AB", ' ', char.MaxValue)]
+        [TestCase("    AB", "AB", ' ', char.MinValue)]
+        public void UnsafeTrim_With_TrimChars_Gives_Consistent_Outcomes(string input, string expectation,
+            params char[] trimChars)
+        {
+            Assert.True(input.UnsafeTrim(trimChars).Equals(expectation));
+        }
+
+        [Test]
         public void ToFileInfo_Works_As_Expected()
         {
             var filename = nameof(StringUnsafeOpsTest);
@@ -160,12 +232,12 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
             if (useNull)
             {
                 Assert.True(Assert.Throws<DdnDfException>(() => string.Empty.ToDirectoryInfo(null))
-                    .ErrorCode == DdnDfErrorCode.NullArray);
+                                .ErrorCode == DdnDfErrorCode.NullArray);
             }
             else
             {
                 Assert.True(Assert.Throws<DdnDfException>(() => string.Empty.ToDirectoryInfo(new string[0]))
-                    .ErrorCode == DdnDfErrorCode.EmptyArray);
+                                .ErrorCode == DdnDfErrorCode.EmptyArray);
             }
         }
 
@@ -202,6 +274,11 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         {
             return input.ToEnumUnsafe(out value, ignoreCase);
         }
-#pragma warning restore 420
+
+        private static bool PerformToEnumUnsafe<T>(string input, out T? value, bool ignoreCase = true)
+            where T : struct
+        {
+            return input.ToEnumUnsafe(out value, ignoreCase);
+        }
     }
 }
