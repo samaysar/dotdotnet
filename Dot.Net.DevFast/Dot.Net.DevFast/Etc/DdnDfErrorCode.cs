@@ -1,7 +1,7 @@
 ﻿namespace Dot.Net.DevFast.Etc
 {
     /// <summary>
-    /// Error codes associated with <seealso cref="DdnDfException"/>.
+    /// Default Error codes associated with <seealso cref="DdnException{T}"/>.
     /// </summary>
     public enum DdnDfErrorCode
     {

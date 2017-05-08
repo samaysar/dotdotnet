@@ -11,6 +11,6 @@ namespace Dot.Net.DevFast.Etc
         /// <summary>
         /// US english culture.
         /// </summary>
-        public static CultureInfo CurrentCulture => Thread.CurrentThread.CurrentCulture;
+        public static CultureInfo Invariant => CultureInfo.InvariantCulture;
     }
 }

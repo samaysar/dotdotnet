@@ -10,7 +10,7 @@ namespace Dot.Net.DevFast.Tests.Etc
         [Test]
         public void Values_Are_Consistent()
         {
-            Assert.True(StdLookUps.CurrentCulture.Equals(new CultureInfo("en-US")));
+            Assert.True(StdLookUps.Invariant.Equals(CultureInfo.InvariantCulture));
         }
     }
 }

@@ -67,8 +67,8 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="input">Value to trim safe</param>
         /// <param name="trimChars">optional. when not given any char set,
         /// whitespaces will be removed</param>
-        /// <exception cref="DdnDfException">When null string is passed as input.
-        /// <seealso cref="DdnDfException.ErrorCode"/> is 
+        /// <exception cref="DdnException{T}">When null string is passed as input.
+        /// <seealso cref="DdnException{T}.ErrorCode"/> is 
         /// <seealso cref="DdnDfErrorCode.NullString"/></exception>
         public static string TrimUnsafe(this string input, params char[] trimChars)
         {
@@ -147,19 +147,19 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="basePath">base path</param>
         /// <param name="subPaths">individual path components</param>
         /// <param name="create">if true <seealso cref="Directory.CreateDirectory(string)"/> will be called</param>
-        /// <exception cref="DdnDfException">When null array is passed as input
-        /// <seealso cref="DdnDfException.ErrorCode"/> is 
+        /// <exception cref="DdnException{T}">When null array is passed as input
+        /// <seealso cref="DdnException{T}.ErrorCode"/> is 
         /// <seealso cref="DdnDfErrorCode.NullArray"/> and for empty array it is
         /// <seealso cref="DdnDfErrorCode.EmptyArray"/></exception>
         public static DirectoryInfo ToDirectoryInfo(this string basePath, string[] subPaths, bool create = false)
         {
             if (ReferenceEquals(null, subPaths))
             {
-                throw new DdnDfException(DdnDfErrorCode.NullArray, $"{nameof(subPaths)} is null");
+                DdnDfErrorCode.NullArray.Throw($"{nameof(subPaths)} is null");
             }
             if (subPaths.Length == 0)
             {
-                throw new DdnDfException(DdnDfErrorCode.EmptyArray, $"{nameof(subPaths)} is empty");
+                DdnDfErrorCode.EmptyArray.Throw($"{nameof(subPaths)} is empty");
             }
             var paths = new string[1 + subPaths.Length];
             paths[0] = basePath;

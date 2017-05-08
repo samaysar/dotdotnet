@@ -150,7 +150,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [TestCase(null)]
         public void UnsafeTrim_Throws_Error_When_Input_Is_Null(string input)
         {
-            Assert.True(Assert.Throws<DdnDfException>(() =>
+            Assert.True(Assert.Throws<DdnException<DdnDfErrorCode>>(() =>
                             input.TrimUnsafe()).ErrorCode == DdnDfErrorCode.NullString);
         }
 
@@ -159,7 +159,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         public void UnsafeTrim_With_TrimChars_Throws_Error_When_Input_Is_Null(string input,
             params char[] trimChars)
         {
-            Assert.True(Assert.Throws<DdnDfException>(() =>
+            Assert.True(Assert.Throws<DdnException<DdnDfErrorCode>>(() =>
                             input.TrimUnsafe(trimChars)).ErrorCode == DdnDfErrorCode.NullString);
         }
 
@@ -230,12 +230,12 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         {
             if (useNull)
             {
-                Assert.True(Assert.Throws<DdnDfException>(() => string.Empty.ToDirectoryInfo(null))
+                Assert.True(Assert.Throws<DdnException<DdnDfErrorCode>>(() => string.Empty.ToDirectoryInfo(null))
                                 .ErrorCode == DdnDfErrorCode.NullArray);
             }
             else
             {
-                Assert.True(Assert.Throws<DdnDfException>(() => string.Empty.ToDirectoryInfo(new string[0]))
+                Assert.True(Assert.Throws<DdnException<DdnDfErrorCode>>(() => string.Empty.ToDirectoryInfo(new string[0]))
                                 .ErrorCode == DdnDfErrorCode.EmptyArray);
             }
         }
