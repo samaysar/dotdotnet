@@ -5,7 +5,7 @@
     <version>$version$</version>
     <authors>Divya Sarthi MAHESHWARI</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Extension methods' package offering quotidian programming needs for faster development.</description>
+    <description>Extension method package offering quotidian programming needs for faster development.</description>
   </metadata>
   <files>
     <file src="..\Dot.Net.DevFast\Dot.Net.DevFast\bin\Release\Dot.Net.DevFast.*" target="lib\net461" />
