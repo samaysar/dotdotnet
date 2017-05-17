@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 
 namespace Dot.Net.DevFast.Extensions.StringExt
@@ -14,6 +15,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="input">string to parse</param>
         /// <param name="value">parsed value</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out bool value)
         {
             return bool.TryParse(input, out value);
@@ -26,6 +28,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="value">parsed value</param>
         /// <param name="ignoreCase">true to ignore string casing else false to consider casing</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out Type value, bool ignoreCase = true)
         {
             value = default(Type);
@@ -41,6 +44,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out int value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -55,6 +59,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out long value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -69,6 +74,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out byte value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -83,6 +89,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out sbyte value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -97,6 +104,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out short value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -111,6 +119,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out ushort value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -125,6 +134,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out uint value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -139,6 +149,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out ulong value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -153,6 +164,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out float value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -167,6 +179,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out double value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -181,6 +194,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out decimal value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -196,6 +210,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="formatProvider">format provider</param>
         /// <param name="style">datetime style</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out DateTime value, string format,
             DateTimeStyles style = DateTimeStyles.AssumeLocal, IFormatProvider formatProvider = null)
         {
@@ -212,6 +227,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="formatProvider">format provider</param>
         /// <param name="style">datetime style</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, string[] formats, out DateTime value,
             DateTimeStyles style = DateTimeStyles.AssumeLocal, IFormatProvider formatProvider = null)
         {
@@ -226,6 +242,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="formatProvider">format provider</param>
         /// <param name="style">datetime style</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out DateTime value,
             DateTimeStyles style = DateTimeStyles.AssumeLocal, IFormatProvider formatProvider = null)
         {
@@ -247,6 +264,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="input">string to parse</param>
         /// <param name="value">parsed value</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out bool? value)
         {
             value = null;
@@ -273,6 +291,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out int? value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -300,6 +319,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out long? value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -327,6 +347,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out byte? value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -354,6 +375,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out sbyte? value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -381,6 +403,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out short? value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -408,6 +431,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out ushort? value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -435,6 +459,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out uint? value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -462,6 +487,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out ulong? value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -489,6 +515,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out float? value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -516,6 +543,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out double? value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -543,6 +571,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="style">style to use during parsing</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out decimal? value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
@@ -571,6 +600,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="formatProvider">format provider</param>
         /// <param name="style">datetime style</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out DateTime? value, string format,
             DateTimeStyles style = DateTimeStyles.AssumeLocal, IFormatProvider formatProvider = null)
         {
@@ -600,6 +630,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="formatProvider">format provider</param>
         /// <param name="style">datetime style</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, string[] formats, out DateTime? value,
             DateTimeStyles style = DateTimeStyles.AssumeLocal, IFormatProvider formatProvider = null)
         {
@@ -627,6 +658,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="formatProvider">format provider</param>
         /// <param name="style">datetime style</param>
         /// <returns>True if parsing is successful else false</returns>
+        [Pure]
         public static bool TryTo(this string input, out DateTime? value,
             DateTimeStyles style = DateTimeStyles.AssumeLocal, IFormatProvider formatProvider = null)
         {

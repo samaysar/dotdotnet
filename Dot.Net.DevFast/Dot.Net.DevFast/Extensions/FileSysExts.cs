@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics.Contracts;
+using System.IO;
 using Dot.Net.DevFast.Extensions.StringExt;
 
 namespace Dot.Net.DevFast.Extensions
@@ -16,6 +17,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="folderInfo">FolderInfo to which fileInfo is associated</param>
         /// <param name="filename">filename without extension</param>
         /// <param name="extension">extension without period, e.g., "txt", "json" etc</param>
+        [Pure]
         public static FileInfo CreateFileInfo(this DirectoryInfo folderInfo, string filename, string extension)
         {
             return folderInfo.FullName.ToFileInfo(filename, extension);
@@ -28,6 +30,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="folderInfo">FolderInfo to which fileInfo is associated</param>
         /// <param name="filenameWithExt">file name with extensions, e.g., "abc.txt", "mydata.json" etc</param>
+        [Pure]
         public static FileInfo CreateFileInfo(this DirectoryInfo folderInfo, string filenameWithExt)
         {
             return folderInfo.FullName.ToFileInfo(filenameWithExt);

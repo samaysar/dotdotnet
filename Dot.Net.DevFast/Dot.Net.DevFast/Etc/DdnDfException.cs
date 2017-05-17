@@ -24,15 +24,15 @@ namespace Dot.Net.DevFast.Etc
         /// </summary>
         NullOrEmptyCollection,
 
-        ///// <summary>
-        ///// When supplied array is a null instance.
-        ///// </summary>
-        //NullArray,
+        /// <summary>
+        /// When supplied array is a null instance.
+        /// </summary>
+        KeyNotFound,
 
-        ///// <summary>
-        ///// When supplied array is has no element.
-        ///// </summary>
-        //EmptyArray,
+        /// <summary>
+        /// When supplied array is has no element.
+        /// </summary>
+        ValueNotInCollection,
 
         /// <summary>
         /// When supplied object instance is null.
