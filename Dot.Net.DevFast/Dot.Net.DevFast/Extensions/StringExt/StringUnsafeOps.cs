@@ -67,16 +67,11 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="input">Value to trim safe</param>
         /// <param name="trimChars">optional. when not given any char set,
         /// whitespaces will be removed</param>
-        /// <exception cref="DdnException{T}">When null string is passed as input.
-        /// <seealso cref="DdnException{T}.ErrorCode"/> is 
-        /// <seealso cref="DdnDfErrorCode.NullString"/></exception>
+        /// <exception cref="DdnDfException">When null string is passed as input
+        /// (refer <seealso cref="DdnDfErrorCode.NullString"/>)</exception>
         public static string TrimUnsafe(this string input, params char[] trimChars)
         {
-            if (ReferenceEquals(null, input))
-            {
-                DdnDfErrorCode.NullString.Throw("cannot trim");
-            }
-            return input.Trim(trimChars);
+            return ReferenceEquals(null, input).ThrowIf(DdnDfErrorCode.NullString, "cannot trim", input).Trim(trimChars);
         }
 
         /// <summary>
@@ -115,31 +110,6 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         }
 
         /// <summary>
-        /// Returns a new <seealso cref="FileInfo"/> instance after joining filename with extension
-        /// to <seealso cref="FileSystemInfo.FullName"/> of the <paramref name="folderInfo"/>.
-        /// <para>Expect all <seealso cref="FileInfo"/> related errors.</para>
-        /// </summary>
-        /// <param name="folderInfo">FolderInfo to which fileInfo is associated</param>
-        /// <param name="filename">filename without extension</param>
-        /// <param name="extension">extension without period, e.g., "txt", "json" etc</param>
-        public static FileInfo ToFileInfo(this DirectoryInfo folderInfo, string filename, string extension)
-        {
-            return folderInfo.ToFileInfo(filename + "." + extension);
-        }
-
-        /// <summary>
-        /// Returns a new <seealso cref="FileInfo"/> instance after joining <paramref name="filenameWithExt"/>
-        /// to <seealso cref="FileSystemInfo.FullName"/> of the <paramref name="folderInfo"/>.
-        /// <para>Expect all <seealso cref="FileInfo"/> related errors.</para>
-        /// </summary>
-        /// <param name="folderInfo">FolderInfo to which fileInfo is associated</param>
-        /// <param name="filenameWithExt">file name with extensions, e.g., "abc.txt", "mydata.json" etc</param>
-        public static FileInfo ToFileInfo(this DirectoryInfo folderInfo, string filenameWithExt)
-        {
-            return folderInfo.FullName.ToFileInfo(filenameWithExt);
-        }
-
-        /// <summary>
         /// Returns a new <seealso cref="DirectoryInfo"/> instance from combined path using
         /// <paramref name="basePath"/> and <paramref name="subPaths"/>.
         /// <para>Expect all <seealso cref="DirectoryInfo"/> related errors.</para>
@@ -147,20 +117,13 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="basePath">base path</param>
         /// <param name="subPaths">individual path components</param>
         /// <param name="create">if true <seealso cref="Directory.CreateDirectory(string)"/> will be called</param>
-        /// <exception cref="DdnException{T}">When null array is passed as input
-        /// <seealso cref="DdnException{T}.ErrorCode"/> is 
-        /// <seealso cref="DdnDfErrorCode.NullArray"/> and for empty array it is
-        /// <seealso cref="DdnDfErrorCode.EmptyArray"/></exception>
+        /// <exception cref="DdnDfException">When null array is passed as input
+        /// (refer  <seealso cref="DdnDfErrorCode.NullOrEmptyArray"/>)</exception>
         public static DirectoryInfo ToDirectoryInfo(this string basePath, string[] subPaths, bool create = false)
         {
-            if (ReferenceEquals(null, subPaths))
-            {
-                DdnDfErrorCode.NullArray.Throw($"{nameof(subPaths)} is null");
-            }
-            if (subPaths.Length == 0)
-            {
-                DdnDfErrorCode.EmptyArray.Throw($"{nameof(subPaths)} is empty");
-            }
+            subPaths = (ReferenceEquals(null, subPaths) || subPaths.Length == 0)
+                .ThrowIf(DdnDfErrorCode.NullOrEmptyArray,
+                    $"{nameof(subPaths)} array invalid inside {nameof(ToDirectoryInfo)}", subPaths);
             var paths = new string[1 + subPaths.Length];
             paths[0] = basePath;
             Array.Copy(subPaths, 0, paths, 1, subPaths.Length);

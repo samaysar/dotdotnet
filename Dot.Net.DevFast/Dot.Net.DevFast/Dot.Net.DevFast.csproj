@@ -46,9 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Etc\DdnDfErrorCode.cs" />
+    <Compile Include="Etc\DdnDfException.cs" />
     <Compile Include="Etc\DdnException.cs" />
     <Compile Include="Etc\StdLookUps.cs" />
+    <Compile Include="Extensions\FileSysExts.cs" />
     <Compile Include="Extensions\StringExt\StringSafeOps.cs" />
     <Compile Include="Extensions\StringExt\StringTryTo.cs" />
     <Compile Include="Extensions\StringExt\StringUnsafeOps.cs" />

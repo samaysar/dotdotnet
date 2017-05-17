@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using Dot.Net.DevFast.Etc;
 
 namespace Dot.Net.DevFast.Extensions.StringExt
 {
@@ -45,7 +44,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static bool TryTo(this string input, out int value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
-            return int.TryParse(input, style, formatProvider ?? StdLookUps.Invariant, out value);
+            return int.TryParse(input, style, formatProvider, out value);
         }
 
         /// <summary>
@@ -59,7 +58,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static bool TryTo(this string input, out long value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
-            return long.TryParse(input, style, formatProvider ?? StdLookUps.Invariant, out value);
+            return long.TryParse(input, style, formatProvider, out value);
         }
 
         /// <summary>
@@ -73,7 +72,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static bool TryTo(this string input, out byte value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
-            return byte.TryParse(input, style, formatProvider ?? StdLookUps.Invariant, out value);
+            return byte.TryParse(input, style, formatProvider, out value);
         }
 
         /// <summary>
@@ -87,7 +86,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static bool TryTo(this string input, out sbyte value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
-            return sbyte.TryParse(input, style, formatProvider ?? StdLookUps.Invariant, out value);
+            return sbyte.TryParse(input, style, formatProvider, out value);
         }
 
         /// <summary>
@@ -101,7 +100,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static bool TryTo(this string input, out short value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
-            return short.TryParse(input, style, formatProvider ?? StdLookUps.Invariant, out value);
+            return short.TryParse(input, style, formatProvider, out value);
         }
 
         /// <summary>
@@ -115,7 +114,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static bool TryTo(this string input, out ushort value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
-            return ushort.TryParse(input, style, formatProvider ?? StdLookUps.Invariant, out value);
+            return ushort.TryParse(input, style, formatProvider, out value);
         }
 
         /// <summary>
@@ -129,7 +128,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static bool TryTo(this string input, out uint value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
-            return uint.TryParse(input, style, formatProvider ?? StdLookUps.Invariant, out value);
+            return uint.TryParse(input, style, formatProvider, out value);
         }
 
         /// <summary>
@@ -143,7 +142,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static bool TryTo(this string input, out ulong value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
-            return ulong.TryParse(input, style, formatProvider ?? StdLookUps.Invariant, out value);
+            return ulong.TryParse(input, style, formatProvider, out value);
         }
 
         /// <summary>
@@ -157,7 +156,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static bool TryTo(this string input, out float value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
-            return float.TryParse(input, style, formatProvider ?? StdLookUps.Invariant, out value);
+            return float.TryParse(input, style, formatProvider, out value);
         }
 
         /// <summary>
@@ -171,7 +170,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static bool TryTo(this string input, out double value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
-            return double.TryParse(input, style, formatProvider ?? StdLookUps.Invariant, out value);
+            return double.TryParse(input, style, formatProvider, out value);
         }
 
         /// <summary>
@@ -185,7 +184,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static bool TryTo(this string input, out decimal value, NumberStyles style = NumberStyles.Any,
             IFormatProvider formatProvider = null)
         {
-            return decimal.TryParse(input, style, formatProvider ?? StdLookUps.Invariant, out value);
+            return decimal.TryParse(input, style, formatProvider, out value);
         }
 
         /// <summary>
@@ -200,7 +199,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static bool TryTo(this string input, out DateTime value, string format,
             DateTimeStyles style = DateTimeStyles.AssumeLocal, IFormatProvider formatProvider = null)
         {
-            return DateTime.TryParseExact(input, format, formatProvider ?? StdLookUps.Invariant, style, out value);
+            return DateTime.TryParseExact(input, format, formatProvider, style, out value);
         }
 
         /// <summary>
@@ -216,7 +215,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static bool TryTo(this string input, string[] formats, out DateTime value,
             DateTimeStyles style = DateTimeStyles.AssumeLocal, IFormatProvider formatProvider = null)
         {
-            return DateTime.TryParseExact(input, formats, formatProvider ?? StdLookUps.Invariant, style, out value);
+            return DateTime.TryParseExact(input, formats, formatProvider, style, out value);
         }
 
         /// <summary>
@@ -230,7 +229,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static bool TryTo(this string input, out DateTime value,
             DateTimeStyles style = DateTimeStyles.AssumeLocal, IFormatProvider formatProvider = null)
         {
-            return DateTime.TryParse(input, formatProvider ?? StdLookUps.Invariant, style, out value);
+            return DateTime.TryParse(input, formatProvider, style, out value);
         }
 
         /// <summary>

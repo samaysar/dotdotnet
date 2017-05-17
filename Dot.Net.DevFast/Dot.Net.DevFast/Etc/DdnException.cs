@@ -7,7 +7,7 @@ namespace Dot.Net.DevFast.Etc
     /// <para>All libraries must throw this exception for known error cases.</para>
     /// <typeparam name="T">Normally should be ENUM type explaining the cause behind the exception</typeparam>
     /// </summary>
-    public sealed class DdnException<T> : DdnException where T: struct, IFormattable
+    public abstract class DdnException<T> : DdnException where T: struct, IFormattable
     {
         /// <summary>
         /// Gets the error code associated.
@@ -18,7 +18,7 @@ namespace Dot.Net.DevFast.Etc
         /// Ctor.
         /// </summary>
         /// <param name="errorCode">Associated Error code</param>
-        public DdnException(T errorCode) : base($"{errorCode:G}")
+        protected DdnException(T errorCode) : base($"{errorCode}")
         {
             ErrorCode = errorCode;
         }
@@ -28,7 +28,7 @@ namespace Dot.Net.DevFast.Etc
         /// </summary>
         /// <param name="errorCode">Associated Error code</param>
         /// <param name="message">message text</param>
-        public DdnException(T errorCode, string message) : base($"{errorCode:G}", message)
+        protected DdnException(T errorCode, string message) : base($"{errorCode}", message)
         {
             ErrorCode = errorCode;
         }
@@ -39,8 +39,8 @@ namespace Dot.Net.DevFast.Etc
         /// <param name="errorCode">Associated Error code</param>
         /// <param name="message">message text</param>
         /// <param name="inner">Inner exception</param>
-        public DdnException(T errorCode, string message, Exception inner)
-            : base($"{errorCode:G}", message, inner)
+        protected DdnException(T errorCode, string message, Exception inner)
+            : base($"{errorCode}", message, inner)
         {
             ErrorCode = errorCode;
         }
@@ -49,42 +49,42 @@ namespace Dot.Net.DevFast.Etc
     /// <summary>
     /// Non generic base exception class for Dot.Net libraries.
     /// </summary>
-    public class DdnException : Exception
+    public abstract class DdnException : Exception
     {
         /// <summary>
         /// Gets the error reason string.
         /// </summary>
-        public string ErrorReason { get; }
+        public string Reason { get; }
 
         /// <summary>
         /// Ctor.
         /// </summary>
-        /// <param name="errorReason">Associated Error reason</param>
-        public DdnException(string errorReason) : base(errorReason)
+        /// <param name="reason">Associated Error reason</param>
+        protected DdnException(string reason) : base(reason)
         {
-            ErrorReason = errorReason;
+            Reason = reason;
         }
 
         /// <summary>
         /// Ctor.
         /// </summary>
-        /// <param name="errorReason">Associated Error code</param>
+        /// <param name="reason">Associated Error code</param>
         /// <param name="message">message text</param>
-        public DdnException(string errorReason, string message) : base($"{errorReason}. {message}")
+        protected DdnException(string reason, string message) : base($"{reason}. {message}")
         {
-            ErrorReason = errorReason;
+            Reason = reason;
         }
 
         /// <summary>
         /// Ctor.
         /// </summary>
-        /// <param name="errorReason">Associated Error code</param>
+        /// <param name="reason">Associated Error code</param>
         /// <param name="message">message text</param>
         /// <param name="inner">Inner exception</param>
-        public DdnException(string errorReason, string message, Exception inner)
-            : base($"{errorReason}. {message}", inner)
+        protected DdnException(string reason, string message, Exception inner)
+            : base($"{reason}. {message}", inner)
         {
-            ErrorReason = errorReason;
+            Reason = reason;
         }
     }
 }

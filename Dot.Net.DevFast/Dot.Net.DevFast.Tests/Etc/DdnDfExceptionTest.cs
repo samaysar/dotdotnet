@@ -11,12 +11,13 @@ namespace Dot.Net.DevFast.Tests.Etc
         [TestCase(DdnDfErrorCode.NullString)]
         public void Ctor_Sets_Error_Code_As_Message(DdnDfErrorCode errorCode)
         {
-            var error = Assert.Throws<DdnException<DdnDfErrorCode>>(() =>
+            var error = Assert.Throws<DdnDfException>(() =>
             {
-                throw new DdnException<DdnDfErrorCode>(errorCode);
+                throw new DdnDfException(errorCode);
             });
-            Assert.True(error.ErrorCode == errorCode);
-            Assert.True(error.Message.Equals(errorCode.ToString("G")));
+            Assert.True(error.ErrorCode.Equals(errorCode));
+            Assert.True(error.Reason.Equals(errorCode.ToString()));
+            Assert.True(error.Message.Equals(errorCode.ToString()));
         }
 
         [Test]
@@ -27,12 +28,13 @@ namespace Dot.Net.DevFast.Tests.Etc
         public void Ctor_Concats_ErrorCode_N_Message_As_Base_Message(DdnDfErrorCode errorCode,
             string message)
         {
-            var error = Assert.Throws<DdnException<DdnDfErrorCode>>(() =>
+            var error = Assert.Throws<DdnDfException>(() =>
             {
-                throw new DdnException<DdnDfErrorCode>(errorCode, message);
+                throw new DdnDfException(errorCode, message);
             });
-            Assert.True(error.ErrorCode == errorCode);
-            Assert.True(error.Message.Equals($"{errorCode:G}. {message}"));
+            Assert.True(error.ErrorCode.Equals(errorCode));
+            Assert.True(error.Reason.Equals(errorCode.ToString()));
+            Assert.True(error.Message.Equals($"{errorCode}. {message}"));
         }
 
         [Test]
@@ -43,17 +45,18 @@ namespace Dot.Net.DevFast.Tests.Etc
         public void Ctor_Passes_Inner_Exception_To_Base_As_It_Is(DdnDfErrorCode errorCode,
             string message)
         {
-            var inner = Assert.Throws<DdnException<DdnDfErrorCode>>(() =>
+            var inner = Assert.Throws<DdnDfException>(() =>
             {
-                throw new DdnException<DdnDfErrorCode>(errorCode, message);
+                throw new DdnDfException(errorCode, message);
             });
 
-            var error = Assert.Throws<DdnException<DdnDfErrorCode>>(() =>
+            var error = Assert.Throws<DdnDfException>(() =>
             {
-                throw new DdnException<DdnDfErrorCode>(errorCode, message, inner);
+                throw new DdnDfException(errorCode, message, inner);
             });
-            Assert.True(error.ErrorCode == errorCode);
-            Assert.True(error.Message.Equals($"{errorCode:G}. {message}"));
+            Assert.True(error.ErrorCode.Equals(errorCode));
+            Assert.True(error.Reason.Equals(errorCode.ToString()));
+            Assert.True(error.Message.Equals($"{errorCode}. {message}"));
             Assert.True(ReferenceEquals(error.InnerException, inner));
         }
     }

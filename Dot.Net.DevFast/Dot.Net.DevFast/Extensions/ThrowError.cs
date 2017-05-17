@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Dot.Net.DevFast.Etc;
 
 namespace Dot.Net.DevFast.Extensions
@@ -9,46 +10,39 @@ namespace Dot.Net.DevFast.Extensions
     public static class ThrowError
     {
         /// <summary>
-        /// Throws <seealso cref="DdnException{T}"/> with provided code.
+        /// Throws <seealso cref="DdnDfException"/> with provided code.
         /// </summary>
         /// <param name="code">Code of the exception</param>
-        /// <exception cref="DdnException{T}"></exception>
-        public static void Throw<T>(this T code) where T : struct, IFormattable
+        /// <exception cref="DdnDfException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowDfError(this DdnDfErrorCode code)
         {
-            throw new DdnException<T>(code);
+            throw new DdnDfException(code);
         }
 
         /// <summary>
-        /// Throws <seealso cref="DdnException{T}"/> with provided code and message.
+        /// Throws <seealso cref="DdnDfException"/> with provided code and message.
         /// </summary>
         /// <param name="code">Code of the exception</param>
         /// <param name="message">message</param>
-        /// <exception cref="DdnException{T}"></exception>
-        public static void Throw<T>(this T code, string message) where T : struct, IFormattable
+        /// <exception cref="DdnDfException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowDfError(this DdnDfErrorCode code, string message)
         {
-            throw new DdnException<T>(code, message);
+            throw new DdnDfException(code, message);
         }
 
         /// <summary>
-        /// Throws <seealso cref="DdnException{T}"/> with provided code, message and inner exception
+        /// Throws <seealso cref="DdnDfException"/> with provided code, message and inner exception
         /// </summary>
         /// <param name="code">Code of the exception</param>
         /// <param name="message">message</param>
         /// <param name="innerException">inner exception</param>
-        /// <exception cref="DdnException{T}"></exception>
-        public static void Throw<T>(this T code, string message, Exception innerException) where T : struct, IFormattable
+        /// <exception cref="DdnDfException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowDfError(this DdnDfErrorCode code, string message, Exception innerException)
         {
-            throw new DdnException<T>(code, message, innerException);
-        }
-
-        /// <summary>
-        /// Throws exception when <paramref name="truthValue"/> is true.
-        /// </summary>
-        /// <param name="truthValue">truth value</param>
-        /// <typeparam name="TEx">Exception type to throw</typeparam>
-        public static void ThrowIf<TEx>(this bool truthValue) where TEx : Exception, new()
-        {
-            if (truthValue) throw new TEx();
+            throw new DdnDfException(code, message, innerException);
         }
 
         /// <summary>
@@ -56,10 +50,13 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="truthValue">truth value</param>
         /// <param name="errorCode">error code of the exception</param>
-        /// <exception cref="DdnException{T}">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
-        public static void ThrowIf(this bool truthValue, DdnDfErrorCode errorCode)
+        /// <param name="obj">Object to return if condition is false</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T ThrowIf<T>(this bool truthValue, DdnDfErrorCode errorCode, T obj)
         {
-            if (truthValue) errorCode.Throw();
+            if (truthValue) errorCode.ThrowDfError();
+            return obj;
         }
 
         /// <summary>
@@ -68,10 +65,13 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="truthValue">truth value</param>
         /// <param name="errorCode">error code of the exception</param>
         /// <param name="errorMessage">Error message</param>
-        /// <exception cref="DdnException{T}">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
-        public static void ThrowIf(this bool truthValue, DdnDfErrorCode errorCode, string errorMessage)
+        /// <param name="obj">Object to return if condition is false</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T ThrowIf<T>(this bool truthValue, DdnDfErrorCode errorCode, string errorMessage, T obj)
         {
-            if (truthValue) errorCode.Throw(errorMessage);
+            if (truthValue) errorCode.ThrowDfError(errorMessage);
+            return obj;
         }
 
         /// <summary>
@@ -80,20 +80,14 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="truthValue">truth value</param>
         /// <param name="errorCode">error code of the exception</param>
         /// <param name="errorMessageDelegate">Error message delegate</param>
-        /// <exception cref="DdnException{T}">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
-        public static void ThrowIf(this bool truthValue, DdnDfErrorCode errorCode, Func<string> errorMessageDelegate)
+        /// <param name="obj">Object to return if condition is false</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T ThrowIf<T>(this bool truthValue, DdnDfErrorCode errorCode, Func<string> errorMessageDelegate,
+            T obj)
         {
-            if (truthValue) errorCode.Throw(errorMessageDelegate());
-        }
-
-        /// <summary>
-        /// Throws exception when <paramref name="truthValue"/> is false.
-        /// </summary>
-        /// <param name="truthValue">truth value</param>
-        /// <typeparam name="TEx">Exception type to throw</typeparam>
-        public static void ThrowIfNot<TEx>(this bool truthValue) where TEx : Exception, new()
-        {
-            (!truthValue).ThrowIf<TEx>();
+            if (truthValue) errorCode.ThrowDfError(errorMessageDelegate());
+            return obj;
         }
 
         /// <summary>
@@ -101,10 +95,12 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="truthValue">truth value</param>
         /// <param name="errorCode">error code of the exception</param>
-        /// <exception cref="DdnException{T}">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
-        public static void ThrowIfNot(this bool truthValue, DdnDfErrorCode errorCode)
+        /// <param name="obj">Object to return if condition is true</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T ThrowIfNot<T>(this bool truthValue, DdnDfErrorCode errorCode, T obj)
         {
-            (!truthValue).ThrowIf(errorCode);
+            return (!truthValue).ThrowIf(errorCode, obj);
         }
 
         /// <summary>
@@ -113,10 +109,12 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="truthValue">truth value</param>
         /// <param name="errorCode">error code of the exception</param>
         /// <param name="errorMessage">Error message</param>
-        /// <exception cref="DdnException{T}">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
-        public static void ThrowIfNot(this bool truthValue, DdnDfErrorCode errorCode, string errorMessage)
+        /// <param name="obj">Object to return if condition is true</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T ThrowIfNot<T>(this bool truthValue, DdnDfErrorCode errorCode, string errorMessage, T obj)
         {
-            (!truthValue).ThrowIf(errorCode, errorMessage);
+            return (!truthValue).ThrowIf(errorCode, errorMessage, obj);
         }
 
         /// <summary>
@@ -125,10 +123,13 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="truthValue">truth value</param>
         /// <param name="errorCode">error code of the exception</param>
         /// <param name="errorMessageDelegate">Error message delegate</param>
-        /// <exception cref="DdnException{T}">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
-        public static void ThrowIfNot(this bool truthValue, DdnDfErrorCode errorCode, Func<string> errorMessageDelegate)
+        /// <param name="obj">Object to return if condition is true</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T ThrowIfNot<T>(this bool truthValue, DdnDfErrorCode errorCode, Func<string> errorMessageDelegate,
+            T obj)
         {
-            (!truthValue).ThrowIf(errorCode, errorMessageDelegate);
+            return (!truthValue).ThrowIf(errorCode, errorMessageDelegate, obj);
         }
 
         /// <summary>
@@ -137,11 +138,10 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <typeparam name="T">Any reference type</typeparam>
         /// <param name="obj">instance</param>
-        /// <exception cref="DdnException{T}">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
         public static T ThrowIfNull<T>(this T obj) where T : class
         {
-            ReferenceEquals(obj, null).ThrowIf(DdnDfErrorCode.NullObject);
-            return obj;
+            return ReferenceEquals(obj, null).ThrowIf(DdnDfErrorCode.NullObject, obj);
         }
 
         /// <summary>
@@ -151,11 +151,10 @@ namespace Dot.Net.DevFast.Extensions
         /// <typeparam name="T">Any reference type</typeparam>
         /// <param name="obj">instance</param>
         /// <param name="errorMessage">error message of the exception</param>
-        /// <exception cref="DdnException{T}">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
         public static T ThrowIfNull<T>(this T obj, string errorMessage) where T : class
         {
-            ReferenceEquals(obj, null).ThrowIf(DdnDfErrorCode.NullObject, errorMessage);
-            return obj;
+            return ReferenceEquals(obj, null).ThrowIf(DdnDfErrorCode.NullObject, errorMessage, obj);
         }
 
         /// <summary>
@@ -165,26 +164,50 @@ namespace Dot.Net.DevFast.Extensions
         /// <typeparam name="T">Any reference type</typeparam>
         /// <param name="obj">instance</param>
         /// <param name="errorMessageDelegate">error message generating delegate</param>
-        /// <exception cref="DdnException{T}">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
         public static T ThrowIfNull<T>(this T obj, Func<string> errorMessageDelegate) where T : class
         {
-            ReferenceEquals(obj, null).ThrowIf(DdnDfErrorCode.NullObject, errorMessageDelegate);
-            return obj;
+            return ReferenceEquals(obj, null).ThrowIf(DdnDfErrorCode.NullObject, errorMessageDelegate, obj);
         }
 
         /// <summary>
-        /// Throws exception when provided object is null else same object instance is returned
+        /// Throws exception when provided array is either null or empty. Same object instance is returned
         /// to performed method chaining.
         /// </summary>
-        /// <typeparam name="T">Any reference type</typeparam>
-        /// <typeparam name="TEx">Exception type thats required to be thrown</typeparam>
+        /// <typeparam name="T">Array type</typeparam>
         /// <param name="obj">instance</param>
-        public static T ThrowIfNull<T, TEx>(this T obj)
-            where T : class
-            where TEx : Exception, new()
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullOrEmptyArray"/></exception>
+        public static T[] ThrowIfNullOrEmpty<T>(this T[] obj)
         {
-            ReferenceEquals(obj, null).ThrowIf<TEx>();
-            return obj;
+            return (ReferenceEquals(obj, null) || obj.Length < 1).ThrowIf(DdnDfErrorCode.NullOrEmptyArray, obj);
+        }
+
+        /// <summary>
+        /// Throws exception when provided array is either null or empty. Same object instance is returned
+        /// to performed method chaining.
+        /// </summary>
+        /// <typeparam name="T">Array type</typeparam>
+        /// <param name="obj">instance</param>
+        /// <param name="errorMessage">error message of the exception</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullOrEmptyArray"/></exception>
+        public static T[] ThrowIfNullOrEmpty<T>(this T[] obj, string errorMessage)
+        {
+            return (ReferenceEquals(obj, null) || obj.Length < 1).ThrowIf(DdnDfErrorCode.NullOrEmptyArray, errorMessage,
+                obj);
+        }
+
+        /// <summary>
+        /// Throws exception when provided array is either null or empty. Same object instance is returned
+        /// to performed method chaining.
+        /// </summary>
+        /// <typeparam name="T">Array type</typeparam>
+        /// <param name="obj">instance</param>
+        /// <param name="errorMessageDelegate">error message generating delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullOrEmptyArray"/></exception>
+        public static T[] ThrowIfNullOrEmpty<T>(this T[] obj, Func<string> errorMessageDelegate)
+        {
+            return (ReferenceEquals(obj, null) || obj.Length < 1).ThrowIf(DdnDfErrorCode.NullOrEmptyArray,
+                errorMessageDelegate, obj);
         }
     }
 }
