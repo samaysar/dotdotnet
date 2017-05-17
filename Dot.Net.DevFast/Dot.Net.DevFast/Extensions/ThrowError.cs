@@ -51,7 +51,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="truthValue">truth value</param>
         /// <param name="errorCode">error code of the exception</param>
         /// <param name="obj">Object to return if condition is false</param>
-        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        /// <exception cref="DdnDfException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T ThrowIf<T>(this bool truthValue, DdnDfErrorCode errorCode, T obj)
         {
@@ -66,7 +66,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="errorCode">error code of the exception</param>
         /// <param name="errorMessage">Error message</param>
         /// <param name="obj">Object to return if condition is false</param>
-        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        /// <exception cref="DdnDfException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T ThrowIf<T>(this bool truthValue, DdnDfErrorCode errorCode, string errorMessage, T obj)
         {
@@ -81,7 +81,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="errorCode">error code of the exception</param>
         /// <param name="errorMessageDelegate">Error message delegate</param>
         /// <param name="obj">Object to return if condition is false</param>
-        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        /// <exception cref="DdnDfException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T ThrowIf<T>(this bool truthValue, DdnDfErrorCode errorCode, Func<string> errorMessageDelegate,
             T obj)
@@ -96,7 +96,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="truthValue">truth value</param>
         /// <param name="errorCode">error code of the exception</param>
         /// <param name="obj">Object to return if condition is true</param>
-        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        /// <exception cref="DdnDfException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T ThrowIfNot<T>(this bool truthValue, DdnDfErrorCode errorCode, T obj)
         {
@@ -110,7 +110,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="errorCode">error code of the exception</param>
         /// <param name="errorMessage">Error message</param>
         /// <param name="obj">Object to return if condition is true</param>
-        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        /// <exception cref="DdnDfException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T ThrowIfNot<T>(this bool truthValue, DdnDfErrorCode errorCode, string errorMessage, T obj)
         {
@@ -124,7 +124,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="errorCode">error code of the exception</param>
         /// <param name="errorMessageDelegate">Error message delegate</param>
         /// <param name="obj">Object to return if condition is true</param>
-        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullObject"/></exception>
+        /// <exception cref="DdnDfException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T ThrowIfNot<T>(this bool truthValue, DdnDfErrorCode errorCode, Func<string> errorMessageDelegate,
             T obj)
