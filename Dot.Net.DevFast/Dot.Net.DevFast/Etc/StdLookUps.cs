@@ -5,6 +5,9 @@
     /// </summary>
     public static class StdLookUps
     {
-
+        /// <summary>
+        /// Character used to join fileName and extension.
+        /// </summary>
+        public const char ExtSeparator = '.';
     }
 }

@@ -84,7 +84,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="extension">extension without period, e.g., "txt", "json" etc</param>
         public static FileInfo ToFileInfo(this string folderPath, string filename, string extension)
         {
-            return folderPath.ToFileInfo(filename + "." + extension);
+            return folderPath.ToFileInfo(filename + StdLookUps.ExtSeparator + extension);
         }
 
         /// <summary>
