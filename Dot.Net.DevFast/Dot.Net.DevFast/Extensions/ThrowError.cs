@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using Dot.Net.DevFast.Etc;
 
@@ -9,40 +10,16 @@ namespace Dot.Net.DevFast.Extensions
     /// </summary>
     public static class ThrowError
     {
-        /// <summary>
-        /// Throws <seealso cref="DdnDfException"/> with provided code.
-        /// </summary>
-        /// <param name="code">Code of the exception</param>
-        /// <exception cref="DdnDfException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowDfError(this DdnDfErrorCode code)
+        private static void ThrowDfError(this DdnDfErrorCode code)
         {
             throw new DdnDfException(code);
         }
 
-        /// <summary>
-        /// Throws <seealso cref="DdnDfException"/> with provided code and message.
-        /// </summary>
-        /// <param name="code">Code of the exception</param>
-        /// <param name="message">message</param>
-        /// <exception cref="DdnDfException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowDfError(this DdnDfErrorCode code, string message)
+        private static void ThrowDfError(this DdnDfErrorCode code, string message)
         {
             throw new DdnDfException(code, message);
-        }
-
-        /// <summary>
-        /// Throws <seealso cref="DdnDfException"/> with provided code, message and inner exception
-        /// </summary>
-        /// <param name="code">Code of the exception</param>
-        /// <param name="message">message</param>
-        /// <param name="innerException">inner exception</param>
-        /// <exception cref="DdnDfException"></exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowDfError(this DdnDfErrorCode code, string message, Exception innerException)
-        {
-            throw new DdnDfException(code, message, innerException);
         }
 
         /// <summary>
@@ -176,10 +153,10 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <typeparam name="T">Array type</typeparam>
         /// <param name="obj">instance</param>
-        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullOrEmptyArray"/></exception>
-        public static T[] ThrowIfNullOrEmpty<T>(this T[] obj)
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullOrEmptyCollection"/></exception>
+        public static T ThrowIfNullOrEmpty<T>(this T obj) where T : ICollection
         {
-            return (ReferenceEquals(obj, null) || obj.Length < 1).ThrowIf(DdnDfErrorCode.NullOrEmptyArray, obj);
+            return (ReferenceEquals(obj, null) || obj.Count < 1).ThrowIf(DdnDfErrorCode.NullOrEmptyCollection, obj);
         }
 
         /// <summary>
@@ -189,10 +166,10 @@ namespace Dot.Net.DevFast.Extensions
         /// <typeparam name="T">Array type</typeparam>
         /// <param name="obj">instance</param>
         /// <param name="errorMessage">error message of the exception</param>
-        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullOrEmptyArray"/></exception>
-        public static T[] ThrowIfNullOrEmpty<T>(this T[] obj, string errorMessage)
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullOrEmptyCollection"/></exception>
+        public static T ThrowIfNullOrEmpty<T>(this T obj, string errorMessage) where T : ICollection
         {
-            return (ReferenceEquals(obj, null) || obj.Length < 1).ThrowIf(DdnDfErrorCode.NullOrEmptyArray, errorMessage,
+            return (ReferenceEquals(obj, null) || obj.Count < 1).ThrowIf(DdnDfErrorCode.NullOrEmptyCollection, errorMessage,
                 obj);
         }
 
@@ -203,10 +180,10 @@ namespace Dot.Net.DevFast.Extensions
         /// <typeparam name="T">Array type</typeparam>
         /// <param name="obj">instance</param>
         /// <param name="errorMessageDelegate">error message generating delegate</param>
-        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullOrEmptyArray"/></exception>
-        public static T[] ThrowIfNullOrEmpty<T>(this T[] obj, Func<string> errorMessageDelegate)
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.NullOrEmptyCollection"/></exception>
+        public static T ThrowIfNullOrEmpty<T>(this T obj, Func<string> errorMessageDelegate) where T : ICollection
         {
-            return (ReferenceEquals(obj, null) || obj.Length < 1).ThrowIf(DdnDfErrorCode.NullOrEmptyArray,
+            return (ReferenceEquals(obj, null) || obj.Count < 1).ThrowIf(DdnDfErrorCode.NullOrEmptyCollection,
                 errorMessageDelegate, obj);
         }
     }

@@ -231,12 +231,12 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
             if (useNull)
             {
                 Assert.True(Assert.Throws<DdnDfException>(() => string.Empty.ToDirectoryInfo(null))
-                                .ErrorCode == DdnDfErrorCode.NullOrEmptyArray);
+                                .ErrorCode == DdnDfErrorCode.NullOrEmptyCollection);
             }
             else
             {
                 Assert.True(Assert.Throws<DdnDfException>(() => string.Empty.ToDirectoryInfo(new string[0]))
-                                .ErrorCode == DdnDfErrorCode.NullOrEmptyArray);
+                                .ErrorCode == DdnDfErrorCode.NullOrEmptyCollection);
             }
         }
 

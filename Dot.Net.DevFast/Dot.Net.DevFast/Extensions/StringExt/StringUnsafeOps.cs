@@ -118,11 +118,11 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="subPaths">individual path components</param>
         /// <param name="create">if true <seealso cref="Directory.CreateDirectory(string)"/> will be called</param>
         /// <exception cref="DdnDfException">When null array is passed as input
-        /// (refer  <seealso cref="DdnDfErrorCode.NullOrEmptyArray"/>)</exception>
+        /// (refer  <seealso cref="DdnDfErrorCode.NullOrEmptyCollection"/>)</exception>
         public static DirectoryInfo ToDirectoryInfo(this string basePath, string[] subPaths, bool create = false)
         {
             subPaths = (ReferenceEquals(null, subPaths) || subPaths.Length == 0)
-                .ThrowIf(DdnDfErrorCode.NullOrEmptyArray,
+                .ThrowIf(DdnDfErrorCode.NullOrEmptyCollection,
                     $"{nameof(subPaths)} array invalid inside {nameof(ToDirectoryInfo)}", subPaths);
             var paths = new string[1 + subPaths.Length];
             paths[0] = basePath;

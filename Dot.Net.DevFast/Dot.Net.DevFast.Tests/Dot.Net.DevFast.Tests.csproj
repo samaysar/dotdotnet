@@ -46,6 +46,7 @@
     <Compile Include="Extensions\StringExt\StringSafeOpsTest.cs" />
     <Compile Include="Extensions\StringExt\StringTryToTest.cs" />
     <Compile Include="Extensions\StringExt\StringUnsafeOpsTest.cs" />
+    <Compile Include="Extensions\ThrowErrorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelpers\FileSys.cs" />
   </ItemGroup>

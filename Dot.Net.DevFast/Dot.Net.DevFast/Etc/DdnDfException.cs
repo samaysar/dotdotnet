@@ -20,9 +20,9 @@ namespace Dot.Net.DevFast.Etc
         NullString,
 
         /// <summary>
-        /// When the supplied array is null or empty.
+        /// When the supplied collection is null or empty.
         /// </summary>
-        NullOrEmptyArray,
+        NullOrEmptyCollection,
 
         ///// <summary>
         ///// When supplied array is a null instance.
