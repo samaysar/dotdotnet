@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace Dot.Net.DevFast.Tests.Extensions
 {
     [TestFixture]
-    public class ThrowErrorTest
+    public class ThrowIfPredicateTest
     {
         [Test]
         [TestCase(DdnDfErrorCode.Unspecified)]

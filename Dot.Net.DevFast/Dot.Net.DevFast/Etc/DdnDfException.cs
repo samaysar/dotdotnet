@@ -37,7 +37,27 @@ namespace Dot.Net.DevFast.Etc
         /// <summary>
         /// When supplied object instance is null.
         /// </summary>
-        NullObject
+        NullObject,
+
+        /// <summary>
+        /// When given number is less than threshold.
+        /// </summary>
+        ValueLessThanThreshold,
+
+        /// <summary>
+        /// When given number is greater than threshold.
+        /// </summary>
+        ValueGreaterThanThreshold,
+
+        /// <summary>
+        /// When given number is out of lower and upper bound.
+        /// </summary>
+        ValueOutOfBound,
+
+        /// <summary>
+        /// When given number is within lower and upper bound.
+        /// </summary>
+        ValueInBound
     }
 
     /// <summary>
