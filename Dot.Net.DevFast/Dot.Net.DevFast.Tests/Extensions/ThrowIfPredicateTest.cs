@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Dot.Net.DevFast.Etc;
@@ -276,6 +277,48 @@ namespace Dot.Net.DevFast.Tests.Extensions
         }
 
         [Test]
+        [TestCase(1)]
+        [TestCase(-1)]
+        [TestCase(int.MinValue)]
+        [TestCase(int.MaxValue)]
+        public void ThrowIfNotZero_ThrowsError_If_Value_Is_Not_Zero(int val)
+        {
+            var ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNotZero("test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotEqual);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNotZero());
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotEqual);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNotZero(() => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotEqual);
+            Assert.True(ex.Message.Contains("some error message"));
+        }
+
+        [Test]
+        [TestCase(1)]
+        [TestCase(-1)]
+        [TestCase(int.MinValue)]
+        [TestCase(int.MaxValue)]
+        [TestCase(long.MinValue)]
+        [TestCase(long.MaxValue)]
+        public void ThrowIfNotZero_ThrowsError_If_Value_Is_Not_Zero(long val)
+        {
+            var ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNotZero("test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotEqual);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNotZero());
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotEqual);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNotZero(() => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotEqual);
+            Assert.True(ex.Message.Contains("some error message"));
+        }
+
+        [Test]
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(-1)]
@@ -319,6 +362,205 @@ namespace Dot.Net.DevFast.Tests.Extensions
             Assert.True(ex.Message.Contains("some error message"));
         }
 
+        [Test]
+        [TestCase("")]
+        [TestCase("       ")]
+        [TestCase("a")]
+        public void ThrowIfEqual_ThrowsError_If_Values_Are_Equal(string val)
+        {
+            var ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, "test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, () => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(ex.Message.Contains("some error message"));
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(-1.1)]
+        [TestCase(double.MinValue)]
+        [TestCase(double.MaxValue)]
+        public void ThrowIfEqual_ThrowsError_If_Values_Are_Equal(double val)
+        {
+            var comparer = EqualityComparer<double>.Default;
+            var ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, comparer, "test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, comparer));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, comparer, () => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(ex.Message.Contains("some error message"));
+        }
+
+        [Test]
+        [TestCase("", null)]
+        [TestCase("       ", "")]
+        [TestCase("a", "       ")]
+        public void ThrowIfEqual_Returns_Value_If_Values_Are_Not_Equal(string val, string comparend)
+        {
+            Assert.True(val.ThrowIfEqual(comparend, "test message").Equals(val));
+            Assert.True(val.ThrowIfEqual(comparend).Equals(val));
+            Assert.True(val.ThrowIfEqual(comparend, () => "some error message").Equals(val));
+        }
+
+        [Test]
+        [TestCase(0, 1)]
+        [TestCase(-1.1, 0)]
+        [TestCase(double.MinValue, double.MaxValue)]
+        [TestCase(double.MaxValue, double.MinValue)]
+        public void ThrowIfEqual_Returns_Value_If_Values_Are_Not_Equal(double val, double comparend)
+        {
+            Assert.True(val.ThrowIfEqual(comparend, "test message").Equals(val));
+            Assert.True(val.ThrowIfEqual(comparend).Equals(val));
+            Assert.True(val.ThrowIfEqual(comparend, () => "some error message").Equals(val));
+        }
+
+        [Test]
+        [TestCase("", null)]
+        [TestCase("       ", "")]
+        [TestCase("a", "       ")]
+        public void ThrowIfNotEqual_Throws_Error_If_Values_Are_Not_Equal(string val, string comparend)
+
+        {
+            var ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNotEqual(comparend, "test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotEqual);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNotEqual(comparend));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotEqual);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNotEqual(comparend, () => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotEqual);
+            Assert.True(ex.Message.Contains("some error message"));
+        }
+
+        [Test]
+        [TestCase(0, 1)]
+        [TestCase(-1.1, 0)]
+        [TestCase(double.MinValue, double.MaxValue)]
+        [TestCase(double.MaxValue, double.MinValue)]
+        public void ThrowIfNotEqual_Throws_Error_If_Values_Are_Not_Equal(double val, double comparend)
+
+        {
+            var comparer = EqualityComparer<double>.Default;
+            var ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNotEqual(comparend, comparer, "test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotEqual);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNotEqual(comparend, comparer));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotEqual);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex =
+                Assert.Throws<DdnDfException>(() => val.ThrowIfNotEqual(comparend, comparer, () => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotEqual);
+            Assert.True(ex.Message.Contains("some error message"));
+        }
+
+        [Test]
+        [TestCase(0, 1)]
+        [TestCase(-1, 1)]
+        [TestCase(int.MinValue, int.MaxValue)]
+        public void ThrowIfNotEqual_Throws_Error_If_Values_Are_Not_Equal(int val, int comparend)
+        {
+            var ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNotEqual(comparend, "test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotEqual);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNotEqual(comparend));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotEqual);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNotEqual(comparend, () => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotEqual);
+            Assert.True(ex.Message.Contains("some error message"));
+        }
+
+        [Test]
+        [TestCase(0, 1)]
+        [TestCase(-1, 1)]
+        [TestCase(int.MinValue, int.MaxValue)]
+        [TestCase(int.MinValue, long.MaxValue)]
+        [TestCase(int.MinValue, long.MinValue)]
+        [TestCase(int.MaxValue, int.MinValue)]
+        [TestCase(int.MaxValue, long.MaxValue)]
+        [TestCase(int.MaxValue, long.MinValue)]
+        [TestCase(long.MaxValue, long.MinValue)]
+        public void ThrowIfNotEqual_Throws_Error_If_Values_Are_Not_Equal(long val, long comparend)
+        {
+            var ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNotEqual(comparend, "test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotEqual);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNotEqual(comparend));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotEqual);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNotEqual(comparend, () => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotEqual);
+            Assert.True(ex.Message.Contains("some error message"));
+        }
+
+        [Test]
+        [TestCase("")]
+        [TestCase("       ")]
+        [TestCase("a")]
+        public void ThrowIfNotEqual_Retruns_Values_If_Values_Are_Equal(string val)
+        {
+            Assert.True(val.ThrowIfNotEqual(val, "test message").Equals(val));
+            Assert.True(val.ThrowIfNotEqual(val).Equals(val));
+            Assert.True(val.ThrowIfNotEqual(val, () => "some error message").Equals(val));
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(-1.1)]
+        [TestCase(double.MinValue)]
+        [TestCase(double.MaxValue)]
+        public void ThrowIfNotEqual_Retruns_Values_If_Values_Are_Equal(double val)
+        {
+            var comparer = EqualityComparer<double>.Default;
+            Assert.True(val.ThrowIfNotEqual(val, comparer, "test message").Equals(val));
+            Assert.True(val.ThrowIfNotEqual(val, comparer).Equals(val));
+            Assert.True(val.ThrowIfNotEqual(val, comparer, () => "some error message").Equals(val));
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(int.MinValue)]
+        [TestCase(int.MaxValue)]
+        public void ThrowIfNotEqual_Retruns_Values_If_Values_Are_Equal(int val)
+        {
+            Assert.True(val.ThrowIfNotEqual(val, "test message").Equals(val));
+            Assert.True(val.ThrowIfNotEqual(val).Equals(val));
+            Assert.True(val.ThrowIfNotEqual(val, () => "some error message").Equals(val));
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(int.MinValue)]
+        [TestCase(int.MaxValue)]
+        [TestCase(long.MinValue)]
+        [TestCase(long.MaxValue)]
+        public void ThrowIfNotEqual_Retruns_Values_If_Values_Are_Equal(long val)
+        {
+            Assert.True(val.ThrowIfNotEqual(val, "test message").Equals(val));
+            Assert.True(val.ThrowIfNotEqual(val).Equals(val));
+            Assert.True(val.ThrowIfNotEqual(val, () => "some error message").Equals(val));
+        }
 
         [Test]
         [TestCase(0)]
@@ -372,6 +614,20 @@ namespace Dot.Net.DevFast.Tests.Extensions
         }
 
         [Test]
+        public void ThrowIfNotZero_Returns_The_Value_When_It_Is_Zero()
+        {
+            const int val = 0;
+            Assert.True(val.ThrowIfNotZero("test message").Equals(0));
+            Assert.True(val.ThrowIfNotZero().Equals(0));
+            Assert.True(val.ThrowIfNotZero(() => "some error message").Equals(0));
+
+            const long valLong = 0;
+            Assert.True(valLong.ThrowIfNotZero("test message").Equals(0));
+            Assert.True(valLong.ThrowIfNotZero().Equals(0));
+            Assert.True(valLong.ThrowIfNotZero(() => "some error message").Equals(0));
+        }
+
+        [Test]
         [TestCase(1, 0)]
         [TestCase(-1, 0)]
         [TestCase(int.MinValue, int.MaxValue)]
@@ -421,7 +677,34 @@ namespace Dot.Net.DevFast.Tests.Extensions
         [TestCase(-10, -9)]
         [TestCase(int.MinValue, -10)]
         [TestCase(long.MinValue, int.MinValue)]
+        [TestCase(long.MinValue, int.MaxValue)]
+        [TestCase(long.MinValue, long.MaxValue)]
         public void ThrowIfLess_ThrowsError_If_Value_Is_Strictly_Less_Than_Threshold(long value, long threshold)
+        {
+            var ex = Assert.Throws<DdnDfException>(() => value.ThrowIfLess(threshold, "test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueLessThanThreshold);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => value.ThrowIfLess(threshold));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueLessThanThreshold);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => value.ThrowIfLess(threshold, () => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueLessThanThreshold);
+            Assert.True(ex.Message.Contains("some error message"));
+        }
+
+        [Test]
+        [TestCase(-1, 0)]
+        [TestCase(-10, -9)]
+        [TestCase(int.MinValue, -10)]
+        [TestCase(long.MinValue, int.MinValue)]
+        [TestCase(long.MinValue, int.MaxValue)]
+        [TestCase(long.MinValue, long.MaxValue)]
+        [TestCase(double.MinValue, int.MinValue)]
+        [TestCase(double.MinValue, long.MinValue)]
+        [TestCase(double.MinValue, double.MaxValue)]
+        public void ThrowIfLess_ThrowsError_If_Value_Is_Strictly_Less_Than_Threshold(double value, double threshold)
         {
             var ex = Assert.Throws<DdnDfException>(() => value.ThrowIfLess(threshold, "test message"));
             Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueLessThanThreshold);
@@ -463,6 +746,29 @@ namespace Dot.Net.DevFast.Tests.Extensions
         [TestCase(long.MaxValue, int.MaxValue)]
         [TestCase(long.MaxValue, long.MaxValue)]
         public void ThrowIfLess_Returns_The_Value_It_Is_Greater_Or_Equal_To_Threshold(long value, long threshold)
+        {
+            Assert.True(value.ThrowIfLess(threshold, "test message").Equals(value));
+            Assert.True(value.ThrowIfLess(threshold).Equals(value));
+            Assert.True(value.ThrowIfLess(threshold, () => "some error message").Equals(value));
+        }
+
+        [Test]
+        [TestCase(-1, -2)]
+        [TestCase(0, 0)]
+        [TestCase(-10, -11)]
+        [TestCase(int.MinValue, int.MinValue)]
+        [TestCase(int.MaxValue, int.MinValue)]
+        [TestCase(int.MaxValue, int.MaxValue)]
+        [TestCase(long.MinValue, long.MinValue)]
+        [TestCase(long.MaxValue, long.MinValue)]
+        [TestCase(long.MaxValue, int.MinValue)]
+        [TestCase(long.MaxValue, int.MaxValue)]
+        [TestCase(long.MaxValue, long.MaxValue)]
+        [TestCase(double.MinValue, double.MinValue)]
+        [TestCase(double.MaxValue, double.MaxValue)]
+        [TestCase(double.MaxValue, int.MaxValue)]
+        [TestCase(double.MaxValue, long.MaxValue)]
+        public void ThrowIfLess_Returns_The_Value_It_Is_Greater_Or_Equal_To_Threshold(double value, double threshold)
         {
             Assert.True(value.ThrowIfLess(threshold, "test message").Equals(value));
             Assert.True(value.ThrowIfLess(threshold).Equals(value));
@@ -570,6 +876,48 @@ namespace Dot.Net.DevFast.Tests.Extensions
             ex = Assert.Throws<DdnDfException>(() => value.ThrowIfGreater(threshold, () => "some error message"));
             Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueGreaterThanThreshold);
             Assert.True(ex.Message.Contains("some error message"));
+        }
+
+        [Test]
+        [TestCase(1, 0)]
+        [TestCase(10, 9)]
+        [TestCase(int.MaxValue, 10)]
+        [TestCase(long.MaxValue, int.MaxValue)]
+        [TestCase(double.MaxValue, int.MaxValue)]
+        [TestCase(double.MaxValue, long.MaxValue)]
+        [TestCase(double.MaxValue, double.MinValue)]
+        public void ThrowIfGreater_ThrowsError_If_Value_Is_Strictly_Greater_Than_Threshold(double value, double threshold)
+        {
+            var ex = Assert.Throws<DdnDfException>(() => value.ThrowIfGreater(threshold, "test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueGreaterThanThreshold);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => value.ThrowIfGreater(threshold));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueGreaterThanThreshold);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => value.ThrowIfGreater(threshold, () => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueGreaterThanThreshold);
+            Assert.True(ex.Message.Contains("some error message"));
+        }
+
+        [Test]
+        [TestCase(-1, 1)]
+        [TestCase(0, 0)]
+        [TestCase(-10, -9)]
+        [TestCase(int.MinValue, int.MinValue)]
+        [TestCase(int.MinValue, int.MaxValue)]
+        [TestCase(int.MaxValue, int.MaxValue)]
+        [TestCase(double.MinValue, int.MaxValue)]
+        [TestCase(double.MinValue, long.MaxValue)]
+        [TestCase(double.MinValue, int.MinValue)]
+        [TestCase(double.MinValue, long.MinValue)]
+        [TestCase(double.MinValue, double.MaxValue)]
+        public void ThrowIfGreater_Returns_The_Value_It_Is_Less_Or_Equal_To_Threshold(double value, double threshold)
+        {
+            Assert.True(value.ThrowIfGreater(threshold, "test message").Equals(value));
+            Assert.True(value.ThrowIfGreater(threshold).Equals(value));
+            Assert.True(value.ThrowIfGreater(threshold, () => "some error message").Equals(value));
         }
 
         [Test]
