@@ -388,7 +388,8 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueLessThanThreshold"/></exception>
         public static int ThrowIfLess(this int value, int threshold, string errorMessage)
         {
-            return LessThanPredicate(value, threshold).ThrowIf(DdnDfErrorCode.ValueLessThanThreshold, errorMessage, value);
+            return LessThanPredicate(value, threshold)
+                .ThrowIf(DdnDfErrorCode.ValueLessThanThreshold, errorMessage, value);
         }
 
         /// <summary>
@@ -401,7 +402,8 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueLessThanThreshold"/></exception>
         public static int ThrowIfLess(this int value, int threshold, Func<string> errorMessageDelegate)
         {
-            return LessThanPredicate(value, threshold).ThrowIf(DdnDfErrorCode.ValueLessThanThreshold, errorMessageDelegate, value);
+            return LessThanPredicate(value, threshold)
+                .ThrowIf(DdnDfErrorCode.ValueLessThanThreshold, errorMessageDelegate, value);
         }
 
         /// <summary>
@@ -461,7 +463,8 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueGreaterThanThreshold"/></exception>
         public static int ThrowIfGreater(this int value, int threshold, string errorMessage)
         {
-            return LessThanPredicate(threshold, value).ThrowIf(DdnDfErrorCode.ValueGreaterThanThreshold, errorMessage, value);
+            return LessThanPredicate(threshold, value)
+                .ThrowIf(DdnDfErrorCode.ValueGreaterThanThreshold, errorMessage, value);
         }
 
         /// <summary>
@@ -474,95 +477,104 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueGreaterThanThreshold"/></exception>
         public static int ThrowIfGreater(this int value, int threshold, Func<string> errorMessageDelegate)
         {
-            return LessThanPredicate(threshold, value).ThrowIf(DdnDfErrorCode.ValueGreaterThanThreshold, errorMessageDelegate, value);
+            return LessThanPredicate(threshold, value)
+                .ThrowIf(DdnDfErrorCode.ValueGreaterThanThreshold, errorMessageDelegate, value);
         }
 
         /// <summary>
         /// Throws exception when given value is out of bound (both bound exclusive, i.e.,
-        /// throws when <paramref name="value"/> &lt; <paramref name="lowerBoundExcl"/> OR <paramref name="value"/> &gt; <paramref name="upperBoundExcl"/>).
+        /// throws when <paramref name="value"/> &lt; LowerOfTwoBound OR <paramref name="value"/> &gt; HigherOfTwoBound).
         /// Else value is returned to performed method chaining on the value.
         /// </summary>
         /// <param name="value">Value to check</param>
-        /// <param name="lowerBoundExcl">Lower bound of comparison</param>
-        /// <param name="upperBoundExcl">Upper bound of comparison</param>
+        /// <param name="firstBoundExcl">first bound of comparison</param>
+        /// <param name="secondBoundExcl">second bound of comparison</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueOutOfBound"/></exception>
-        public static int ThrowIfNotBounded(this int value, int lowerBoundExcl, int upperBoundExcl)
+        public static int ThrowIfNotBounded(this int value, int firstBoundExcl, int secondBoundExcl)
         {
-            return value.ThrowIfNotBounded(lowerBoundExcl, upperBoundExcl, $"Either {value} < {lowerBoundExcl} Or {value} > {upperBoundExcl}");
+            return value.ThrowIfNotBounded(firstBoundExcl, secondBoundExcl,
+                $"Either {value} < {firstBoundExcl} Or {value} > {secondBoundExcl}");
         }
 
         /// <summary>
         /// Throws exception when given value is out of bound (both bound exclusive, i.e.,
-        /// throws when <paramref name="value"/> &lt; <paramref name="lowerBoundExcl"/> OR <paramref name="value"/> &gt; <paramref name="upperBoundExcl"/>).
+        /// throws when <paramref name="value"/> &lt; LowerOfTwoBound OR <paramref name="value"/> &gt; HigherOfTwoBound).
         /// Else value is returned to performed method chaining on the value.
         /// </summary>
         /// <param name="value">Value to check</param>
-        /// <param name="lowerBoundExcl">Lower bound of comparison</param>
-        /// <param name="upperBoundExcl">Upper bound of comparison</param>
+        /// <param name="firstBoundExcl">first bound of comparison</param>
+        /// <param name="secondBoundExcl">second bound of comparison</param>
         /// <param name="errorMessage">error message</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueOutOfBound"/></exception>
-        public static int ThrowIfNotBounded(this int value, int lowerBoundExcl, int upperBoundExcl, string errorMessage)
+        public static int ThrowIfNotBounded(this int value, int firstBoundExcl, int secondBoundExcl, string errorMessage)
         {
-            return OutOfBoundPredicate(value, lowerBoundExcl, upperBoundExcl).ThrowIf(DdnDfErrorCode.ValueOutOfBound, errorMessage, value);
+            return OutOfBoundPredicate(value, firstBoundExcl, secondBoundExcl)
+                .ThrowIf(DdnDfErrorCode.ValueOutOfBound, errorMessage, value);
         }
 
         /// <summary>
         /// Throws exception when given value is out of bound (both bound exclusive, i.e.,
-        /// throws when <paramref name="value"/> &lt; <paramref name="lowerBoundExcl"/> OR <paramref name="value"/> &gt; <paramref name="upperBoundExcl"/>).
+        /// throws when <paramref name="value"/> &lt; LowerOfTwoBound OR <paramref name="value"/> &gt; HigherOfTwoBound).
         /// Else value is returned to performed method chaining on the value.
         /// </summary>
         /// <param name="value">Value to check</param>
-        /// <param name="lowerBoundExcl">Lower bound of comparison</param>
-        /// <param name="upperBoundExcl">Upper bound of comparison</param>
+        /// <param name="firstBoundExcl">first bound of comparison</param>
+        /// <param name="secondBoundExcl">second bound of comparison</param>
         /// <param name="errorMessageDelegate">error message generating delegate</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueOutOfBound"/></exception>
-        public static int ThrowIfNotBounded(this int value, int lowerBoundExcl, int upperBoundExcl, Func<string> errorMessageDelegate)
+        public static int ThrowIfNotBounded(this int value, int firstBoundExcl, int secondBoundExcl,
+            Func<string> errorMessageDelegate)
         {
-            return OutOfBoundPredicate(value, lowerBoundExcl, upperBoundExcl).ThrowIf(DdnDfErrorCode.ValueOutOfBound, errorMessageDelegate, value);
+            return OutOfBoundPredicate(value, firstBoundExcl, secondBoundExcl)
+                .ThrowIf(DdnDfErrorCode.ValueOutOfBound, errorMessageDelegate, value);
         }
 
         /// <summary>
         /// Throws exception when given value is within the bounds (both bound inclusive, i.e.,
-        /// throws when <paramref name="lowerBoundIncl"/> &lt;= <paramref name="value"/> &lt;= <paramref name="upperBoundIncl"/>).
+        /// throws when LowerOfTwoBound &lt;= <paramref name="value"/> &lt;= HigherOfTwoBound).
         /// Else value is returned to performed method chaining on the value.
         /// </summary>
         /// <param name="value">Value to check</param>
-        /// <param name="lowerBoundIncl">Lower bound of comparison</param>
-        /// <param name="upperBoundIncl">Upper bound of comparison</param>
+        /// <param name="firstBoundExcl">first bound of comparison</param>
+        /// <param name="secondBoundExcl">second bound of comparison</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueInBound"/></exception>
-        public static int ThrowIfBounded(this int value, int lowerBoundIncl, int upperBoundIncl)
+        public static int ThrowIfBounded(this int value, int firstBoundExcl, int secondBoundExcl)
         {
-            return value.ThrowIfBounded(lowerBoundIncl, upperBoundIncl, $"{lowerBoundIncl} <= {value} <= {upperBoundIncl}");
+            return value.ThrowIfBounded(firstBoundExcl, secondBoundExcl,
+                $"{firstBoundExcl} <= {value} <= {secondBoundExcl}");
         }
 
         /// <summary>
         /// Throws exception when given value is within the bounds (both bound inclusive, i.e.,
-        /// throws when <paramref name="lowerBoundIncl"/> &lt;= <paramref name="value"/> &lt;= <paramref name="upperBoundIncl"/>).
+        /// throws when LowerOfTwoBound &lt;= <paramref name="value"/> &lt;= HigherOfTwoBound).
         /// Else value is returned to performed method chaining on the value.
         /// </summary>
         /// <param name="value">Value to check</param>
-        /// <param name="lowerBoundIncl">Lower bound of comparison</param>
-        /// <param name="upperBoundIncl">Upper bound of comparison</param>
+        /// <param name="firstBoundExcl">first bound of comparison</param>
+        /// <param name="secondBoundExcl">second bound of comparison</param>
         /// <param name="errorMessage">error message</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueInBound"/></exception>
-        public static int ThrowIfBounded(this int value, int lowerBoundIncl, int upperBoundIncl, string errorMessage)
+        public static int ThrowIfBounded(this int value, int firstBoundExcl, int secondBoundExcl, string errorMessage)
         {
-            return OutOfBoundPredicate(value, lowerBoundIncl, upperBoundIncl).ThrowIfNot(DdnDfErrorCode.ValueInBound, errorMessage, value);
+            return OutOfBoundPredicate(value, firstBoundExcl, secondBoundExcl)
+                .ThrowIfNot(DdnDfErrorCode.ValueInBound, errorMessage, value);
         }
 
         /// <summary>
         /// Throws exception when given value is within the bounds (both bound inclusive, i.e.,
-        /// throws when <paramref name="lowerBoundIncl"/> &lt;= <paramref name="value"/> &lt;= <paramref name="upperBoundIncl"/>).
+        /// throws when LowerOfTwoBound &lt;= <paramref name="value"/> &lt;= HigherOfTwoBound).
         /// Else value is returned to performed method chaining on the value.
         /// </summary>
         /// <param name="value">Value to check</param>
-        /// <param name="lowerBoundIncl">Lower bound of comparison</param>
-        /// <param name="upperBoundIncl">Upper bound of comparison</param>
+        /// <param name="firstBoundExcl">first bound of comparison</param>
+        /// <param name="secondBoundExcl">second bound of comparison</param>
         /// <param name="errorMessageDelegate">error message generating delegate</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueInBound"/></exception>
-        public static int ThrowIfBounded(this int value, int lowerBoundIncl, int upperBoundIncl, Func<string> errorMessageDelegate)
+        public static int ThrowIfBounded(this int value, int firstBoundExcl, int secondBoundExcl,
+            Func<string> errorMessageDelegate)
         {
-            return OutOfBoundPredicate(value, lowerBoundIncl, upperBoundIncl).ThrowIfNot(DdnDfErrorCode.ValueInBound, errorMessageDelegate, value);
+            return OutOfBoundPredicate(value, firstBoundExcl, secondBoundExcl)
+                .ThrowIfNot(DdnDfErrorCode.ValueInBound, errorMessageDelegate, value);
         }
 
         private static bool LessThanPredicate(int value, int threshold)
@@ -572,6 +584,10 @@ namespace Dot.Net.DevFast.Extensions
 
         private static bool OutOfBoundPredicate(int value, int lowValue, int highValue)
         {
+            if (highValue < lowValue)
+            {
+                return LessThanPredicate(value, highValue) || LessThanPredicate(lowValue, value);
+            }
             return LessThanPredicate(value, lowValue) || LessThanPredicate(highValue, value);
         }
 
@@ -600,7 +616,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueLessThanThreshold"/></exception>
         public static long ThrowIfNegative(this long value, string errorMessage)
         {
-            return value.ThrowIfLess(0);
+            return value.ThrowIfLess(0, errorMessage);
         }
 
         /// <summary>
@@ -612,7 +628,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueLessThanThreshold"/></exception>
         public static long ThrowIfNegative(this long value, Func<string> errorMessageDelegate)
         {
-            return value.ThrowIfLess(0);
+            return value.ThrowIfLess(0, errorMessageDelegate);
         }
 
         /// <summary>
@@ -637,7 +653,8 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueLessThanThreshold"/></exception>
         public static long ThrowIfLess(this long value, long threshold, string errorMessage)
         {
-            return LessThanPredicate(value, threshold).ThrowIf(DdnDfErrorCode.ValueLessThanThreshold, errorMessage, value);
+            return LessThanPredicate(value, threshold)
+                .ThrowIf(DdnDfErrorCode.ValueLessThanThreshold, errorMessage, value);
         }
 
         /// <summary>
@@ -650,7 +667,8 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueLessThanThreshold"/></exception>
         public static long ThrowIfLess(this long value, long threshold, Func<string> errorMessageDelegate)
         {
-            return LessThanPredicate(value, threshold).ThrowIf(DdnDfErrorCode.ValueLessThanThreshold, errorMessageDelegate, value);
+            return LessThanPredicate(value, threshold)
+                .ThrowIf(DdnDfErrorCode.ValueLessThanThreshold, errorMessageDelegate, value);
         }
 
         /// <summary>
@@ -673,7 +691,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueGreaterThanThreshold"/></exception>
         public static long ThrowIfPositive(this long value, string errorMessage)
         {
-            return value.ThrowIfGreater(0);
+            return value.ThrowIfGreater(0, errorMessage);
         }
 
         /// <summary>
@@ -685,7 +703,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueGreaterThanThreshold"/></exception>
         public static long ThrowIfPositive(this long value, Func<string> errorMessageDelegate)
         {
-            return value.ThrowIfGreater(0);
+            return value.ThrowIfGreater(0, errorMessageDelegate);
         }
 
         /// <summary>
@@ -710,7 +728,8 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueGreaterThanThreshold"/></exception>
         public static long ThrowIfGreater(this long value, long threshold, string errorMessage)
         {
-            return LessThanPredicate(threshold, value).ThrowIf(DdnDfErrorCode.ValueGreaterThanThreshold, errorMessage, value);
+            return LessThanPredicate(threshold, value)
+                .ThrowIf(DdnDfErrorCode.ValueGreaterThanThreshold, errorMessage, value);
         }
 
         /// <summary>
@@ -723,95 +742,106 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueGreaterThanThreshold"/></exception>
         public static long ThrowIfGreater(this long value, long threshold, Func<string> errorMessageDelegate)
         {
-            return LessThanPredicate(threshold, value).ThrowIf(DdnDfErrorCode.ValueGreaterThanThreshold, errorMessageDelegate, value);
+            return LessThanPredicate(threshold, value)
+                .ThrowIf(DdnDfErrorCode.ValueGreaterThanThreshold, errorMessageDelegate, value);
         }
 
         /// <summary>
         /// Throws exception when given value is out of bound (both bound exclusive, i.e.,
-        /// throws when <paramref name="value"/> &lt; <paramref name="lowerBoundExcl"/> OR <paramref name="value"/> &gt; <paramref name="upperBoundExcl"/>).
+        /// throws when <paramref name="value"/> &lt; LowerOfTwoBound OR <paramref name="value"/> &gt; HigherOfTwoBound).
         /// Else value is returned to performed method chaining on the value.
         /// </summary>
         /// <param name="value">Value to check</param>
-        /// <param name="lowerBoundExcl">Lower bound of comparison</param>
-        /// <param name="upperBoundExcl">Upper bound of comparison</param>
+        /// <param name="firstBoundExcl">first bound of comparison</param>
+        /// <param name="secondBoundExcl">second bound of comparison</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueOutOfBound"/></exception>
-        public static long ThrowIfNotBounded(this long value, long lowerBoundExcl, long upperBoundExcl)
+        public static long ThrowIfNotBounded(this long value, long firstBoundExcl, long secondBoundExcl)
         {
-            return value.ThrowIfNotBounded(lowerBoundExcl, upperBoundExcl, $"Either {value} < {lowerBoundExcl} Or {value} > {upperBoundExcl}");
+            return value.ThrowIfNotBounded(firstBoundExcl, secondBoundExcl,
+                $"Either {value} < {firstBoundExcl} Or {value} > {secondBoundExcl}");
         }
 
         /// <summary>
         /// Throws exception when given value is out of bound (both bound exclusive, i.e.,
-        /// throws when <paramref name="value"/> &lt; <paramref name="lowerBoundExcl"/> OR <paramref name="value"/> &gt; <paramref name="upperBoundExcl"/>).
+        /// throws when <paramref name="value"/> &lt; LowerOfTwoBound OR <paramref name="value"/> &gt; HigherOfTwoBound).
         /// Else value is returned to performed method chaining on the value.
         /// </summary>
         /// <param name="value">Value to check</param>
-        /// <param name="lowerBoundExcl">Lower bound of comparison</param>
-        /// <param name="upperBoundExcl">Upper bound of comparison</param>
+        /// <param name="firstBoundExcl">first bound of comparison</param>
+        /// <param name="secondBoundExcl">second bound of comparison</param>
         /// <param name="errorMessage">error message</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueOutOfBound"/></exception>
-        public static long ThrowIfNotBounded(this long value, long lowerBoundExcl, long upperBoundExcl, string errorMessage)
+        public static long ThrowIfNotBounded(this long value, long firstBoundExcl, long secondBoundExcl,
+            string errorMessage)
         {
-            return OutOfBoundPredicate(value, lowerBoundExcl, upperBoundExcl).ThrowIf(DdnDfErrorCode.ValueOutOfBound, errorMessage, value);
+            return OutOfBoundPredicate(value, firstBoundExcl, secondBoundExcl)
+                .ThrowIf(DdnDfErrorCode.ValueOutOfBound, errorMessage, value);
         }
 
         /// <summary>
         /// Throws exception when given value is out of bound (both bound exclusive, i.e.,
-        /// throws when <paramref name="value"/> &lt; <paramref name="lowerBoundExcl"/> OR <paramref name="value"/> &gt; <paramref name="upperBoundExcl"/>).
+        /// throws when <paramref name="value"/> &lt; LowerOfTwoBound OR <paramref name="value"/> &gt; HigherOfTwoBound).
         /// Else value is returned to performed method chaining on the value.
         /// </summary>
         /// <param name="value">Value to check</param>
-        /// <param name="lowerBoundExcl">Lower bound of comparison</param>
-        /// <param name="upperBoundExcl">Upper bound of comparison</param>
+        /// <param name="firstBoundExcl">first bound of comparison</param>
+        /// <param name="secondBoundExcl">second bound of comparison</param>
         /// <param name="errorMessageDelegate">error message generating delegate</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueOutOfBound"/></exception>
-        public static long ThrowIfNotBounded(this long value, long lowerBoundExcl, long upperBoundExcl, Func<string> errorMessageDelegate)
+        public static long ThrowIfNotBounded(this long value, long firstBoundExcl, long secondBoundExcl,
+            Func<string> errorMessageDelegate)
         {
-            return OutOfBoundPredicate(value, lowerBoundExcl, upperBoundExcl).ThrowIf(DdnDfErrorCode.ValueOutOfBound, errorMessageDelegate, value);
+            return OutOfBoundPredicate(value, firstBoundExcl, secondBoundExcl)
+                .ThrowIf(DdnDfErrorCode.ValueOutOfBound, errorMessageDelegate, value);
         }
 
         /// <summary>
         /// Throws exception when given value is within the bounds (both bound inclusive, i.e.,
-        /// throws when <paramref name="lowerBoundIncl"/> &lt;= <paramref name="value"/> &lt;= <paramref name="upperBoundIncl"/>).
+        /// throws when LowerOfTwoBound &lt;= <paramref name="value"/> &lt;= HigherOfTwoBound).
         /// Else value is returned to performed method chaining on the value.
         /// </summary>
         /// <param name="value">Value to check</param>
-        /// <param name="lowerBoundIncl">Lower bound of comparison</param>
-        /// <param name="upperBoundIncl">Upper bound of comparison</param>
+        /// <param name="firstBoundExcl">first bound of comparison</param>
+        /// <param name="secondBoundExcl">second bound of comparison</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueInBound"/></exception>
-        public static long ThrowIfBounded(this long value, long lowerBoundIncl, long upperBoundIncl)
+        public static long ThrowIfBounded(this long value, long firstBoundExcl, long secondBoundExcl)
         {
-            return value.ThrowIfBounded(lowerBoundIncl, upperBoundIncl, $"{lowerBoundIncl} <= {value} <= {upperBoundIncl}");
+            return value.ThrowIfBounded(firstBoundExcl, secondBoundExcl,
+                $"{firstBoundExcl} <= {value} <= {secondBoundExcl}");
         }
 
         /// <summary>
         /// Throws exception when given value is within the bounds (both bound inclusive, i.e.,
-        /// throws when <paramref name="lowerBoundIncl"/> &lt;= <paramref name="value"/> &lt;= <paramref name="upperBoundIncl"/>).
+        /// throws when LowerOfTwoBound &lt;= <paramref name="value"/> &lt;= HigherOfTwoBound).
         /// Else value is returned to performed method chaining on the value.
         /// </summary>
         /// <param name="value">Value to check</param>
-        /// <param name="lowerBoundIncl">Lower bound of comparison</param>
-        /// <param name="upperBoundIncl">Upper bound of comparison</param>
+        /// <param name="firstBoundExcl">first bound of comparison</param>
+        /// <param name="secondBoundExcl">second bound of comparison</param>
         /// <param name="errorMessage">error message</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueInBound"/></exception>
-        public static long ThrowIfBounded(this long value, long lowerBoundIncl, long upperBoundIncl, string errorMessage)
+        public static long ThrowIfBounded(this long value, long firstBoundExcl, long secondBoundExcl,
+            string errorMessage)
         {
-            return OutOfBoundPredicate(value, lowerBoundIncl, upperBoundIncl).ThrowIfNot(DdnDfErrorCode.ValueInBound, errorMessage, value);
+            return OutOfBoundPredicate(value, firstBoundExcl, secondBoundExcl)
+                .ThrowIfNot(DdnDfErrorCode.ValueInBound, errorMessage, value);
         }
 
         /// <summary>
         /// Throws exception when given value is within the bounds (both bound inclusive, i.e.,
-        /// throws when <paramref name="lowerBoundIncl"/> &lt;= <paramref name="value"/> &lt;= <paramref name="upperBoundIncl"/>).
+        /// throws when LowerOfTwoBound &lt;= <paramref name="value"/> &lt;= HigherOfTwoBound).
         /// Else value is returned to performed method chaining on the value.
         /// </summary>
         /// <param name="value">Value to check</param>
-        /// <param name="lowerBoundIncl">Lower bound of comparison</param>
-        /// <param name="upperBoundIncl">Upper bound of comparison</param>
+        /// <param name="firstBoundExcl">first bound of comparison</param>
+        /// <param name="secondBoundExcl">second bound of comparison</param>
         /// <param name="errorMessageDelegate">error message generating delegate</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueInBound"/></exception>
-        public static long ThrowIfBounded(this long value, long lowerBoundIncl, long upperBoundIncl, Func<string> errorMessageDelegate)
+        public static long ThrowIfBounded(this long value, long firstBoundExcl, long secondBoundExcl,
+            Func<string> errorMessageDelegate)
         {
-            return OutOfBoundPredicate(value, lowerBoundIncl, upperBoundIncl).ThrowIfNot(DdnDfErrorCode.ValueInBound, errorMessageDelegate, value);
+            return OutOfBoundPredicate(value, firstBoundExcl, secondBoundExcl)
+                .ThrowIfNot(DdnDfErrorCode.ValueInBound, errorMessageDelegate, value);
         }
 
         private static bool LessThanPredicate(long value, long threshold)
@@ -821,6 +851,10 @@ namespace Dot.Net.DevFast.Extensions
 
         private static bool OutOfBoundPredicate(long value, long lowValue, long highValue)
         {
+            if (highValue < lowValue)
+            {
+                return LessThanPredicate(value, highValue) || LessThanPredicate(lowValue, value);
+            }
             return LessThanPredicate(value, lowValue) || LessThanPredicate(highValue, value);
         }
 
