@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions;
@@ -111,6 +112,98 @@ namespace Dot.Net.DevFast.Tests.Extensions
 
             val = new Dictionary<int, int> {{1, 1}};
             Assert.True(ReferenceEquals(val.ThrowIfNullOrEmpty(() => "some error message"), val));
+        }
+
+        [Test]
+        public void ThrowOnMiss_On_Collection_ThrowsError_When_Value_Is_Not_In_The_Collection()
+        {
+            ICollection<int> coll = new HashSet<int> {1, 2, 3, 4, 5, 6};
+            var ex = Assert.Throws<DdnDfException>(() => coll.ThrowOnMiss(0, "test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotInCollection);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => coll.ThrowOnMiss(0));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotInCollection);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => coll.ThrowOnMiss(0, () => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotInCollection);
+            Assert.True(ex.Message.Contains("some error message"));
+
+            coll = new List<int> {1, 2, 3, 4, 5, 6};
+            ex = Assert.Throws<DdnDfException>(() => coll.ThrowOnMiss(0, "test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotInCollection);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => coll.ThrowOnMiss(0));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotInCollection);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => coll.ThrowOnMiss(0, () => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueNotInCollection);
+            Assert.True(ex.Message.Contains("some error message"));
+        }
+
+        [Test]
+        public void ThrowOnMiss_On_Collection_Returns_The_Collection_For_Chaining_When_Value_Is_Found()
+        {
+            ICollection<int> coll = new HashSet<int> {1, 2, 3, 4, 5, 6};
+            Assert.True(ReferenceEquals(coll.ThrowOnMiss(1, "test message"), coll));
+
+            coll = new List<int> {1, 2, 3, 4, 5, 6};
+            Assert.True(ReferenceEquals(coll.ThrowOnMiss(1), coll));
+
+            coll = new[] {1, 2, 3, 4, 5, 6};
+            Assert.True(ReferenceEquals(coll.ThrowOnMiss(1, () => "test message"), coll));
+        }
+
+        [Test]
+        public void ThrowOnMiss_On_Dictionary_ThrowsError_When_Lookup_Fails()
+        {
+            IReadOnlyDictionary<int, int> coll = new Dictionary<int, int>
+            {
+                {1, 1},
+                {2, 2}
+            };
+            var ex = Assert.Throws<DdnDfException>(() => coll.ThrowOnMiss(0, "test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.KeyNotFound);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => coll.ThrowOnMiss(0));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.KeyNotFound);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => coll.ThrowOnMiss(0, () => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.KeyNotFound);
+            Assert.True(ex.Message.Contains("some error message"));
+
+            coll = new ConcurrentDictionary<int, int>(coll);
+            ex = Assert.Throws<DdnDfException>(() => coll.ThrowOnMiss(0, "test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.KeyNotFound);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => coll.ThrowOnMiss(0));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.KeyNotFound);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => coll.ThrowOnMiss(0, () => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.KeyNotFound);
+            Assert.True(ex.Message.Contains("some error message"));
+        }
+
+        [Test]
+        public void ThrowOnMiss_On_Dictionary_Returns_The_Value_For_Chaining_When_Lookup_Passes()
+        {
+            IReadOnlyDictionary<int, int> coll = new Dictionary<int, int>
+            {
+                {1, 1},
+                {2, 2}
+            };
+            Assert.True(Equals(coll.ThrowOnMiss(1, "test message"), 1));
+
+            coll = new ConcurrentDictionary<int, int>(coll);
+            Assert.True(Equals(coll.ThrowOnMiss(1), 1));
+            Assert.True(Equals(coll.ThrowOnMiss(1, () => "test message"), 1));
         }
     }
 }

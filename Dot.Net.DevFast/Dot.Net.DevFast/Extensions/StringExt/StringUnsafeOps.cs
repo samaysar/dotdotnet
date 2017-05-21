@@ -22,7 +22,6 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <returns>True if parsing is successful else false</returns>
         /// <typeparam name="T">Enum type</typeparam>
         /// <exception cref="ArgumentException"></exception>
-        [Pure]
         public static bool ToEnumUnsafe<T>(this string input, out T value, bool ignoreCase = true)
             where T : struct
         {
@@ -50,7 +49,6 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <returns>True if parsing is successful else false</returns>
         /// <typeparam name="T">Enum type</typeparam>
         /// <exception cref="ArgumentException"></exception>
-        [Pure]
         public static bool ToEnumUnsafe<T>(this string input, out T? value, bool ignoreCase = true)
             where T : struct
         {
@@ -72,7 +70,6 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// whitespaces will be removed</param>
         /// <exception cref="DdnDfException">When null string is passed as input
         /// (refer <seealso cref="DdnDfErrorCode.NullString"/>)</exception>
-        [Pure]
         public static string TrimUnsafe(this string input, params char[] trimChars)
         {
             return ReferenceEquals(null, input).ThrowIf(DdnDfErrorCode.NullString, "cannot trim", input).Trim(trimChars);
@@ -86,7 +83,6 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="folderPath">Folder path to the file</param>
         /// <param name="filename">filename without extension</param>
         /// <param name="extension">extension without period, e.g., "txt", "json" etc</param>
-        [Pure]
         public static FileInfo ToFileInfo(this string folderPath, string filename, string extension)
         {
             return folderPath.ToFileInfo(filename + StdLookUps.ExtSeparator + extension);
@@ -99,7 +95,6 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// </summary>
         /// <param name="folderPath">Folder path to the file</param>
         /// <param name="filenameWithExt">file name with extensions, e.g., "abc.txt", "mydata.json" etc</param>
-        [Pure]
         public static FileInfo ToFileInfo(this string folderPath, string filenameWithExt)
         {
             return Path.Combine(folderPath, filenameWithExt).ToFileInfo();
@@ -110,7 +105,6 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <para>Expect all <seealso cref="FileInfo"/> related errors.</para>
         /// </summary>
         /// <param name="fullFilePath">Complete path of the file</param>
-        [Pure]
         public static FileInfo ToFileInfo(this string fullFilePath)
         {
             return new FileInfo(fullFilePath);

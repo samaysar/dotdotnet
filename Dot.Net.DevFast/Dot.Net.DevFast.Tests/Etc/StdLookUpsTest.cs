@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Dot.Net.DevFast.Etc;
+using NUnit.Framework;
 
 namespace Dot.Net.DevFast.Tests.Etc
 {
@@ -8,6 +9,7 @@ namespace Dot.Net.DevFast.Tests.Etc
         [Test]
         public void Values_Are_Consistent()
         {
+            Assert.True(StdLookUps.ExtSeparator.Equals('.'));
         }
     }
 }

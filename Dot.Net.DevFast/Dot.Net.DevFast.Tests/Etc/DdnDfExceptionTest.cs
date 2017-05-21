@@ -34,7 +34,7 @@ namespace Dot.Net.DevFast.Tests.Etc
             });
             Assert.True(error.ErrorCode.Equals(errorCode));
             Assert.True(error.Reason.Equals(errorCode.ToString()));
-            Assert.True(error.Message.Equals($"{errorCode}. {message}"));
+            Assert.True(error.Message.Equals($"({errorCode}) {message}"));
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace Dot.Net.DevFast.Tests.Etc
             });
             Assert.True(error.ErrorCode.Equals(errorCode));
             Assert.True(error.Reason.Equals(errorCode.ToString()));
-            Assert.True(error.Message.Equals($"{errorCode}. {message}"));
+            Assert.True(error.Message.Equals($"({errorCode}) {message}"));
             Assert.True(ReferenceEquals(error.InnerException, inner));
         }
     }

@@ -7,7 +7,7 @@ namespace Dot.Net.DevFast.Etc
     /// <para>All libraries must throw this exception for known error cases.</para>
     /// <typeparam name="T">Normally should be ENUM type explaining the cause behind the exception</typeparam>
     /// </summary>
-    public abstract class DdnException<T> : DdnException where T: struct, IFormattable
+    public abstract class DdnException<T> : DdnException where T: struct
     {
         /// <summary>
         /// Gets the error code associated.
@@ -18,7 +18,7 @@ namespace Dot.Net.DevFast.Etc
         /// Ctor.
         /// </summary>
         /// <param name="errorCode">Associated Error code</param>
-        protected DdnException(T errorCode) : base($"{errorCode}")
+        protected DdnException(T errorCode) : base(errorCode.ToString())
         {
             ErrorCode = errorCode;
         }
@@ -28,7 +28,7 @@ namespace Dot.Net.DevFast.Etc
         /// </summary>
         /// <param name="errorCode">Associated Error code</param>
         /// <param name="message">message text</param>
-        protected DdnException(T errorCode, string message) : base($"{errorCode}", message)
+        protected DdnException(T errorCode, string message) : base(errorCode.ToString(), message)
         {
             ErrorCode = errorCode;
         }
@@ -40,7 +40,7 @@ namespace Dot.Net.DevFast.Etc
         /// <param name="message">message text</param>
         /// <param name="inner">Inner exception</param>
         protected DdnException(T errorCode, string message, Exception inner)
-            : base($"{errorCode}", message, inner)
+            : base(errorCode.ToString(), message, inner)
         {
             ErrorCode = errorCode;
         }
@@ -70,7 +70,7 @@ namespace Dot.Net.DevFast.Etc
         /// </summary>
         /// <param name="reason">Associated Error code</param>
         /// <param name="message">message text</param>
-        protected DdnException(string reason, string message) : base($"{reason}. {message}")
+        protected DdnException(string reason, string message) : base($"({reason}) {message}")
         {
             Reason = reason;
         }
@@ -82,7 +82,7 @@ namespace Dot.Net.DevFast.Etc
         /// <param name="message">message text</param>
         /// <param name="inner">Inner exception</param>
         protected DdnException(string reason, string message, Exception inner)
-            : base($"{reason}. {message}", inner)
+            : base($"({reason}) {message}", inner)
         {
             Reason = reason;
         }

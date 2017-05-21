@@ -21,7 +21,6 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <returns>True if parsing is successful else false</returns>
         /// <typeparam name="T">Enum type</typeparam>
         /// <exception cref="ArgumentException"></exception>
-        [Pure]
         public static bool ToEnumSafe<T>(this string input, out T value, bool ignoreCase = true)
             where T : struct
         {
@@ -51,7 +50,6 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <returns>True if parsing is successful else false</returns>
         /// <typeparam name="T">Enum type</typeparam>
         /// <exception cref="ArgumentException"></exception>
-        [Pure]
         public static bool ToEnumSafe<T>(this string input, out T? value, bool ignoreCase = true)
             where T : struct
         {
@@ -70,7 +68,6 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="input">Value to trim safe</param>
         /// <param name="trimChars">optional. when not given any char set,
         /// whitespaces will be removed</param>
-        [Pure]
         public static string TrimSafeOrEmpty(this string input, params char[] trimChars)
         {
             return input.TrimSafeOrDefault(string.Empty, trimChars);
@@ -84,7 +81,6 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="input">Value to trim safe</param>
         /// <param name="trimChars">optional. when not given any char set,
         /// whitespaces will be removed</param>
-        [Pure]
         public static string TrimSafeOrNull(this string input, params char[] trimChars)
         {
             return input.TrimSafeOrDefault(null, trimChars);
@@ -99,7 +95,6 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="defaultValue">default value to return when input is null.</param>
         /// <param name="trimChars">optional. when not given any char set,
         /// whitespaces will be removed</param>
-        [Pure]
         public static string TrimSafeOrDefault(this string input, string defaultValue, params char[] trimChars)
         {
             return ReferenceEquals(input, null) ? defaultValue : input.Trim(trimChars);

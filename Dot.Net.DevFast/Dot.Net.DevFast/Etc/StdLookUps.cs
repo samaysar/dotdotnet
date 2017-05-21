@@ -5,7 +5,7 @@ namespace Dot.Net.DevFast.Etc
     /// <summary>
     /// Provides fixed values.
     /// </summary>
-    [Pure]
+    
     public static class StdLookUps
     {
         /// <summary>
