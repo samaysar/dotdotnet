@@ -99,5 +99,8 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         {
             return ReferenceEquals(input, null) ? defaultValue : input.Trim(trimChars);
         }
+
+        //todo: String.ToOrDefault
+        //todo: String.ThrowNotParsed
     }
 }
