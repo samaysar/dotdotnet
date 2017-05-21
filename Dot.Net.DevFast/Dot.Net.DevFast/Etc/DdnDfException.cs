@@ -40,24 +40,29 @@ namespace Dot.Net.DevFast.Etc
         NullObject,
 
         /// <summary>
-        /// When given number is less than threshold.
+        /// When given comparable value is less than threshold.
         /// </summary>
         ValueLessThanThreshold,
 
         /// <summary>
-        /// When given number is greater than threshold.
+        /// When given comparable value is greater than threshold.
         /// </summary>
         ValueGreaterThanThreshold,
 
         /// <summary>
-        /// When given number is out of lower and upper bound.
+        /// When given comparable value is out of lower and upper bound.
         /// </summary>
         ValueOutOfBound,
 
         /// <summary>
-        /// When given number is within lower and upper bound.
+        /// When given comparable value is within lower and upper bound.
         /// </summary>
-        ValueInBound
+        ValueInBound,
+
+        /// <summary>
+        /// When given comparable value is equal to comperand.
+        /// </summary>
+        ValueEqual
     }
 
     /// <summary>

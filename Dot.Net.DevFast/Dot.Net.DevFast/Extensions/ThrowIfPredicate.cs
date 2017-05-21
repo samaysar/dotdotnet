@@ -159,6 +159,7 @@ namespace Dot.Net.DevFast.Extensions
             return ThrowIfNullPredicate(obj).ThrowIf(DdnDfErrorCode.NullObject, errorMessageDelegate, obj);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool ThrowIfNullPredicate<T>(T obj) where T : class
         {
             return ReferenceEquals(obj, null);
@@ -207,6 +208,7 @@ namespace Dot.Net.DevFast.Extensions
                 .ThrowIf(DdnDfErrorCode.NullOrEmptyCollection, errorMessageDelegate, obj);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool ThrowIfNullOrEmptyPredicate<T>(T obj) where T : ICollection
         {
             return (ReferenceEquals(obj, null) || obj.Count < 1);
@@ -265,6 +267,7 @@ namespace Dot.Net.DevFast.Extensions
                 .ThrowIfNot(DdnDfErrorCode.ValueNotInCollection, errorMessageDelegate, collection);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool ThrowOnMissPredicate<T, TV>(T collection, TV lookUpValue) where T : ICollection<TV>
         {
             return collection.Contains(lookUpValue);
@@ -321,6 +324,7 @@ namespace Dot.Net.DevFast.Extensions
                 .ThrowIfNot(DdnDfErrorCode.KeyNotFound, errorMessageDelegate, value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool ThrowOnMissPredicate<TK, TV>(IReadOnlyDictionary<TK, TV> dictionary, TK key, out TV value)
         {
             return dictionary.TryGetValue(key, out value);
@@ -331,8 +335,81 @@ namespace Dot.Net.DevFast.Extensions
         #region ThrowIf On Int
 
         /// <summary>
+        /// Throws exception when given value is 0.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
+        public static int ThrowIfZero(this int value)
+        {
+            return value.ThrowIfEqual(0);
+        }
+
+        /// <summary>
+        /// Throws exception when given value is 0.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="errorMessage">error message</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
+        public static int ThrowIfZero(this int value, string errorMessage)
+        {
+            return value.ThrowIfEqual(0, errorMessage);
+        }
+
+        /// <summary>
+        /// Throws exception when given value is 0.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="errorMessageDelegate">error message generating delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
+        public static int ThrowIfZero(this int value, Func<string> errorMessageDelegate)
+        {
+            return value.ThrowIfEqual(0, errorMessageDelegate);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/>==<paramref name="comperand"/>.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
+        public static int ThrowIfEqual(this int value, int comperand)
+        {
+            return value.ThrowIfEqual(comperand, $"{value} == {comperand}");
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/>==<paramref name="comperand"/>.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <param name="errorMessage">error message</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
+        public static int ThrowIfEqual(this int value, int comperand, string errorMessage)
+        {
+            return EqualPredicate(value, comperand).ThrowIf(DdnDfErrorCode.ValueEqual, errorMessage, value);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/>==<paramref name="comperand"/>.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <param name="errorMessageDelegate">error message generating delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
+        public static int ThrowIfEqual(this int value, int comperand, Func<string> errorMessageDelegate)
+        {
+            return EqualPredicate(value, comperand).ThrowIf(DdnDfErrorCode.ValueEqual, errorMessageDelegate, value);
+        }
+
+        /// <summary>
         /// Throws exception when given value is strictly less than 0 (-1 onwards).
-        /// Else value is returned to performed method chaining on the value.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueLessThanThreshold"/></exception>
@@ -343,7 +420,7 @@ namespace Dot.Net.DevFast.Extensions
 
         /// <summary>
         /// Throws exception when given value is strictly less than 0 (-1 onwards).
-        /// Else value is returned to performed method chaining on the value.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="errorMessage">error message</param>
@@ -355,7 +432,7 @@ namespace Dot.Net.DevFast.Extensions
 
         /// <summary>
         /// Throws exception when given value is strictly less than 0 (-1 onwards).
-        /// Else value is returned to performed method chaining on the value.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="errorMessageDelegate">error message generating delegate</param>
@@ -366,21 +443,20 @@ namespace Dot.Net.DevFast.Extensions
         }
 
         /// <summary>
-        /// Throws exception when given value is strictly less than given threshold.
-        /// Else value is returned to performed method chaining on the value.
+        /// Throws exception when given comparable value is strictly less than given threshold.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
-        /// <param name="value">Value to check</param>
+        /// <param name="value">Value instance to compare</param>
         /// <param name="threshold">Threshold value of comparison</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueLessThanThreshold"/></exception>
         public static int ThrowIfLess(this int value, int threshold)
         {
             return value.ThrowIfLess(threshold, $"{value} < {threshold}");
-
         }
 
         /// <summary>
-        /// Throws exception when given value is strictly less than given threshold.
-        /// Else value is returned to performed method chaining on the value.
+        /// Throws exception when given comparable value is strictly less than given threshold.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="threshold">Threshold value of comparison</param>
@@ -393,8 +469,8 @@ namespace Dot.Net.DevFast.Extensions
         }
 
         /// <summary>
-        /// Throws exception when given value is strictly less than given threshold.
-        /// Else value is returned to performed method chaining on the value.
+        /// Throws exception when given comparable value is strictly less than given threshold.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="threshold">Threshold value of comparison</param>
@@ -408,7 +484,7 @@ namespace Dot.Net.DevFast.Extensions
 
         /// <summary>
         /// Throws exception when given value is strictly greater than 0 (+1 onwards).
-        /// Else value is returned to performed method chaining on the value.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueGreaterThanThreshold"/></exception>
@@ -419,7 +495,7 @@ namespace Dot.Net.DevFast.Extensions
 
         /// <summary>
         /// Throws exception when given value is strictly greater than 0 (+1 onwards).
-        /// Else value is returned to performed method chaining on the value.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="errorMessage">error message</param>
@@ -431,7 +507,7 @@ namespace Dot.Net.DevFast.Extensions
 
         /// <summary>
         /// Throws exception when given value is strictly greater than 0 (+1 onwards).
-        /// Else value is returned to performed method chaining on the value.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="errorMessageDelegate">error message generating delegate</param>
@@ -442,8 +518,8 @@ namespace Dot.Net.DevFast.Extensions
         }
 
         /// <summary>
-        /// Throws exception when given value is strictly greater than given threshold.
-        /// Else value is returned to performed method chaining on the value.
+        /// Throws exception when given comparable value is strictly greater than given threshold.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="threshold">Threshold value of comparison</param>
@@ -454,8 +530,8 @@ namespace Dot.Net.DevFast.Extensions
         }
 
         /// <summary>
-        /// Throws exception when given value is strictly greater than given threshold.
-        /// Else value is returned to performed method chaining on the value.
+        /// Throws exception when given comparable value is strictly greater than given threshold.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="threshold">Threshold value of comparison</param>
@@ -468,8 +544,8 @@ namespace Dot.Net.DevFast.Extensions
         }
 
         /// <summary>
-        /// Throws exception when given value is strictly greater than given threshold.
-        /// Else value is returned to performed method chaining on the value.
+        /// Throws exception when given comparable value is strictly greater than given threshold.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="threshold">Threshold value of comparison</param>
@@ -481,124 +557,98 @@ namespace Dot.Net.DevFast.Extensions
                 .ThrowIf(DdnDfErrorCode.ValueGreaterThanThreshold, errorMessageDelegate, value);
         }
 
-        /// <summary>
-        /// Throws exception when given value is out of bound (both bound exclusive, i.e.,
-        /// throws when <paramref name="value"/> &lt; LowerOfTwoBound OR <paramref name="value"/> &gt; HigherOfTwoBound).
-        /// Else value is returned to performed method chaining on the value.
-        /// </summary>
-        /// <param name="value">Value to check</param>
-        /// <param name="firstBoundExcl">first bound of comparison</param>
-        /// <param name="secondBoundExcl">second bound of comparison</param>
-        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueOutOfBound"/></exception>
-        public static int ThrowIfNotBounded(this int value, int firstBoundExcl, int secondBoundExcl)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool EqualPredicate(int value, int comperand)
         {
-            return value.ThrowIfNotBounded(firstBoundExcl, secondBoundExcl,
-                $"Either {value} < {firstBoundExcl} Or {value} > {secondBoundExcl}");
+            return value == comperand;
         }
 
-        /// <summary>
-        /// Throws exception when given value is out of bound (both bound exclusive, i.e.,
-        /// throws when <paramref name="value"/> &lt; LowerOfTwoBound OR <paramref name="value"/> &gt; HigherOfTwoBound).
-        /// Else value is returned to performed method chaining on the value.
-        /// </summary>
-        /// <param name="value">Value to check</param>
-        /// <param name="firstBoundExcl">first bound of comparison</param>
-        /// <param name="secondBoundExcl">second bound of comparison</param>
-        /// <param name="errorMessage">error message</param>
-        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueOutOfBound"/></exception>
-        public static int ThrowIfNotBounded(this int value, int firstBoundExcl, int secondBoundExcl, string errorMessage)
-        {
-            return OutOfBoundPredicate(value, firstBoundExcl, secondBoundExcl)
-                .ThrowIf(DdnDfErrorCode.ValueOutOfBound, errorMessage, value);
-        }
-
-        /// <summary>
-        /// Throws exception when given value is out of bound (both bound exclusive, i.e.,
-        /// throws when <paramref name="value"/> &lt; LowerOfTwoBound OR <paramref name="value"/> &gt; HigherOfTwoBound).
-        /// Else value is returned to performed method chaining on the value.
-        /// </summary>
-        /// <param name="value">Value to check</param>
-        /// <param name="firstBoundExcl">first bound of comparison</param>
-        /// <param name="secondBoundExcl">second bound of comparison</param>
-        /// <param name="errorMessageDelegate">error message generating delegate</param>
-        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueOutOfBound"/></exception>
-        public static int ThrowIfNotBounded(this int value, int firstBoundExcl, int secondBoundExcl,
-            Func<string> errorMessageDelegate)
-        {
-            return OutOfBoundPredicate(value, firstBoundExcl, secondBoundExcl)
-                .ThrowIf(DdnDfErrorCode.ValueOutOfBound, errorMessageDelegate, value);
-        }
-
-        /// <summary>
-        /// Throws exception when given value is within the bounds (both bound inclusive, i.e.,
-        /// throws when LowerOfTwoBound &lt;= <paramref name="value"/> &lt;= HigherOfTwoBound).
-        /// Else value is returned to performed method chaining on the value.
-        /// </summary>
-        /// <param name="value">Value to check</param>
-        /// <param name="firstBoundExcl">first bound of comparison</param>
-        /// <param name="secondBoundExcl">second bound of comparison</param>
-        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueInBound"/></exception>
-        public static int ThrowIfBounded(this int value, int firstBoundExcl, int secondBoundExcl)
-        {
-            return value.ThrowIfBounded(firstBoundExcl, secondBoundExcl,
-                $"{firstBoundExcl} <= {value} <= {secondBoundExcl}");
-        }
-
-        /// <summary>
-        /// Throws exception when given value is within the bounds (both bound inclusive, i.e.,
-        /// throws when LowerOfTwoBound &lt;= <paramref name="value"/> &lt;= HigherOfTwoBound).
-        /// Else value is returned to performed method chaining on the value.
-        /// </summary>
-        /// <param name="value">Value to check</param>
-        /// <param name="firstBoundExcl">first bound of comparison</param>
-        /// <param name="secondBoundExcl">second bound of comparison</param>
-        /// <param name="errorMessage">error message</param>
-        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueInBound"/></exception>
-        public static int ThrowIfBounded(this int value, int firstBoundExcl, int secondBoundExcl, string errorMessage)
-        {
-            return OutOfBoundPredicate(value, firstBoundExcl, secondBoundExcl)
-                .ThrowIfNot(DdnDfErrorCode.ValueInBound, errorMessage, value);
-        }
-
-        /// <summary>
-        /// Throws exception when given value is within the bounds (both bound inclusive, i.e.,
-        /// throws when LowerOfTwoBound &lt;= <paramref name="value"/> &lt;= HigherOfTwoBound).
-        /// Else value is returned to performed method chaining on the value.
-        /// </summary>
-        /// <param name="value">Value to check</param>
-        /// <param name="firstBoundExcl">first bound of comparison</param>
-        /// <param name="secondBoundExcl">second bound of comparison</param>
-        /// <param name="errorMessageDelegate">error message generating delegate</param>
-        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueInBound"/></exception>
-        public static int ThrowIfBounded(this int value, int firstBoundExcl, int secondBoundExcl,
-            Func<string> errorMessageDelegate)
-        {
-            return OutOfBoundPredicate(value, firstBoundExcl, secondBoundExcl)
-                .ThrowIfNot(DdnDfErrorCode.ValueInBound, errorMessageDelegate, value);
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool LessThanPredicate(int value, int threshold)
         {
             return value < threshold;
         }
-
-        private static bool OutOfBoundPredicate(int value, int lowValue, int highValue)
-        {
-            if (highValue < lowValue)
-            {
-                return LessThanPredicate(value, highValue) || LessThanPredicate(lowValue, value);
-            }
-            return LessThanPredicate(value, lowValue) || LessThanPredicate(highValue, value);
-        }
-
 
         #endregion
 
         #region ThrowIf On Long
 
         /// <summary>
+        /// Throws exception when given value is 0.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
+        public static long ThrowIfZero(this long value)
+        {
+            return value.ThrowIfEqual(0);
+        }
+
+        /// <summary>
+        /// Throws exception when given value is 0.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="errorMessage">error message</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
+        public static long ThrowIfZero(this long value, string errorMessage)
+        {
+            return value.ThrowIfEqual(0, errorMessage);
+        }
+
+        /// <summary>
+        /// Throws exception when given value is 0.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="errorMessageDelegate">error message generating delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
+        public static long ThrowIfZero(this long value, Func<string> errorMessageDelegate)
+        {
+            return value.ThrowIfEqual(0, errorMessageDelegate);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/>==<paramref name="comperand"/>.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
+        public static long ThrowIfEqual(this long value, long comperand)
+        {
+            return value.ThrowIfEqual(comperand, $"{value} == {comperand}");
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/>==<paramref name="comperand"/>.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <param name="errorMessage">error message</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
+        public static long ThrowIfEqual(this long value, long comperand, string errorMessage)
+        {
+            return EqualPredicate(value, comperand).ThrowIf(DdnDfErrorCode.ValueEqual, errorMessage, value);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/>==<paramref name="comperand"/>.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <param name="errorMessageDelegate">error message generating delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
+        public static long ThrowIfEqual(this long value, long comperand, Func<string> errorMessageDelegate)
+        {
+            return EqualPredicate(value, comperand).ThrowIf(DdnDfErrorCode.ValueEqual, errorMessageDelegate, value);
+        }
+
+        /// <summary>
         /// Throws exception when given value is strictly less than 0 (-1 onwards).
-        /// Else value is returned to performed method chaining on the value.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueLessThanThreshold"/></exception>
@@ -609,7 +659,7 @@ namespace Dot.Net.DevFast.Extensions
 
         /// <summary>
         /// Throws exception when given value is strictly less than 0 (-1 onwards).
-        /// Else value is returned to performed method chaining on the value.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="errorMessage">error message</param>
@@ -621,7 +671,7 @@ namespace Dot.Net.DevFast.Extensions
 
         /// <summary>
         /// Throws exception when given value is strictly less than 0 (-1 onwards).
-        /// Else value is returned to performed method chaining on the value.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="errorMessageDelegate">error message generating delegate</param>
@@ -632,20 +682,20 @@ namespace Dot.Net.DevFast.Extensions
         }
 
         /// <summary>
-        /// Throws exception when given value is strictly less than given threshold.
-        /// Else value is returned to performed method chaining on the value.
+        /// Throws exception when given comparable value is strictly less than given threshold.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
-        /// <param name="value">Value to check</param>
+        /// <param name="value">Value instance to compare</param>
         /// <param name="threshold">Threshold value of comparison</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueLessThanThreshold"/></exception>
         public static long ThrowIfLess(this long value, long threshold)
         {
-            return LessThanPredicate(value, threshold).ThrowIf(DdnDfErrorCode.ValueLessThanThreshold, value);
+            return value.ThrowIfLess(threshold, $"{value} < {threshold}");
         }
 
         /// <summary>
-        /// Throws exception when given value is strictly less than given threshold.
-        /// Else value is returned to performed method chaining on the value.
+        /// Throws exception when given comparable value is strictly less than given threshold.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="threshold">Threshold value of comparison</param>
@@ -658,8 +708,8 @@ namespace Dot.Net.DevFast.Extensions
         }
 
         /// <summary>
-        /// Throws exception when given value is strictly less than given threshold.
-        /// Else value is returned to performed method chaining on the value.
+        /// Throws exception when given comparable value is strictly less than given threshold.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="threshold">Threshold value of comparison</param>
@@ -673,7 +723,7 @@ namespace Dot.Net.DevFast.Extensions
 
         /// <summary>
         /// Throws exception when given value is strictly greater than 0 (+1 onwards).
-        /// Else value is returned to performed method chaining on the value.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueGreaterThanThreshold"/></exception>
@@ -684,7 +734,7 @@ namespace Dot.Net.DevFast.Extensions
 
         /// <summary>
         /// Throws exception when given value is strictly greater than 0 (+1 onwards).
-        /// Else value is returned to performed method chaining on the value.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="errorMessage">error message</param>
@@ -696,7 +746,7 @@ namespace Dot.Net.DevFast.Extensions
 
         /// <summary>
         /// Throws exception when given value is strictly greater than 0 (+1 onwards).
-        /// Else value is returned to performed method chaining on the value.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="errorMessageDelegate">error message generating delegate</param>
@@ -707,20 +757,20 @@ namespace Dot.Net.DevFast.Extensions
         }
 
         /// <summary>
-        /// Throws exception when given value is strictly greater than given threshold.
-        /// Else value is returned to performed method chaining on the value.
+        /// Throws exception when given comparable value is strictly greater than given threshold.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="threshold">Threshold value of comparison</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueGreaterThanThreshold"/></exception>
         public static long ThrowIfGreater(this long value, long threshold)
         {
-            return LessThanPredicate(threshold, value).ThrowIf(DdnDfErrorCode.ValueGreaterThanThreshold, value);
+            return value.ThrowIfGreater(threshold, $"{value} > {threshold}");
         }
 
         /// <summary>
-        /// Throws exception when given value is strictly greater than given threshold.
-        /// Else value is returned to performed method chaining on the value.
+        /// Throws exception when given comparable value is strictly greater than given threshold.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="threshold">Threshold value of comparison</param>
@@ -733,8 +783,8 @@ namespace Dot.Net.DevFast.Extensions
         }
 
         /// <summary>
-        /// Throws exception when given value is strictly greater than given threshold.
-        /// Else value is returned to performed method chaining on the value.
+        /// Throws exception when given comparable value is strictly greater than given threshold.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="threshold">Threshold value of comparison</param>
@@ -746,112 +796,257 @@ namespace Dot.Net.DevFast.Extensions
                 .ThrowIf(DdnDfErrorCode.ValueGreaterThanThreshold, errorMessageDelegate, value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool EqualPredicate(long value, long comperand)
+        {
+            return value == comperand;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool LessThanPredicate(long value, long threshold)
+        {
+            return value < threshold;
+        }
+
+        #endregion
+
+        #region ThrowIf On Generic Comparer
+
         /// <summary>
-        /// Throws exception when given value is out of bound (both bound exclusive, i.e.,
+        /// Throws exception when <paramref name="value"/> and <paramref name="comperand"/> comparison results in 0.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
+        public static T ThrowIfEqual<T>(this T value, T comperand) where T : IComparable<T>
+        {
+            return EqualPredicate(value, comperand).ThrowIf(DdnDfErrorCode.ValueEqual, value);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/> and <paramref name="comperand"/> comparison results in 0.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <param name="errorMessage">error message</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
+        public static T ThrowIfEqual<T>(this T value, T comperand, string errorMessage) where T : IComparable<T>
+        {
+            return EqualPredicate(value, comperand).ThrowIf(DdnDfErrorCode.ValueEqual, errorMessage, value);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/> and <paramref name="comperand"/> comparison results in 0.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <param name="errorMessageDelegate">error message generating delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
+        public static T ThrowIfEqual<T>(this T value, T comperand, Func<string> errorMessageDelegate)
+            where T : IComparable<T>
+        {
+            return EqualPredicate(value, comperand).ThrowIf(DdnDfErrorCode.ValueEqual, errorMessageDelegate, value);
+        }
+
+        /// <summary>
+        /// Throws exception when given comparable value is strictly less than given threshold.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value instance to compare</param>
+        /// <param name="threshold">Threshold value of comparison</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueLessThanThreshold"/></exception>
+        public static T ThrowIfLess<T>(this T value, T threshold) where T : IComparable<T>
+        {
+            return LessThanPredicate(value, threshold).ThrowIf(DdnDfErrorCode.ValueLessThanThreshold, value);
+        }
+
+        /// <summary>
+        /// Throws exception when given comparable value is strictly less than given threshold.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="threshold">Threshold value of comparison</param>
+        /// <param name="errorMessage">error message</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueLessThanThreshold"/></exception>
+        public static T ThrowIfLess<T>(this T value, T threshold, string errorMessage) where T : IComparable<T>
+        {
+            return LessThanPredicate(value, threshold)
+                .ThrowIf(DdnDfErrorCode.ValueLessThanThreshold, errorMessage, value);
+        }
+
+        /// <summary>
+        /// Throws exception when given comparable value is strictly less than given threshold.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="threshold">Threshold value of comparison</param>
+        /// <param name="errorMessageDelegate">error message generating delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueLessThanThreshold"/></exception>
+        public static T ThrowIfLess<T>(this T value, T threshold, Func<string> errorMessageDelegate)
+            where T : IComparable<T>
+        {
+            return LessThanPredicate(value, threshold)
+                .ThrowIf(DdnDfErrorCode.ValueLessThanThreshold, errorMessageDelegate, value);
+        }
+
+        /// <summary>
+        /// Throws exception when given comparable value is strictly greater than given threshold.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="threshold">Threshold value of comparison</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueGreaterThanThreshold"/></exception>
+        public static T ThrowIfGreater<T>(this T value, T threshold) where T : IComparable<T>
+        {
+            return LessThanPredicate(threshold, value).ThrowIf(DdnDfErrorCode.ValueGreaterThanThreshold, value);
+        }
+
+        /// <summary>
+        /// Throws exception when given comparable value is strictly greater than given threshold.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="threshold">Threshold value of comparison</param>
+        /// <param name="errorMessage">error message</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueGreaterThanThreshold"/></exception>
+        public static T ThrowIfGreater<T>(this T value, T threshold, string errorMessage) where T : IComparable<T>
+        {
+            return LessThanPredicate(threshold, value)
+                .ThrowIf(DdnDfErrorCode.ValueGreaterThanThreshold, errorMessage, value);
+        }
+
+        /// <summary>
+        /// Throws exception when given comparable value is strictly greater than given threshold.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="threshold">Threshold value of comparison</param>
+        /// <param name="errorMessageDelegate">error message generating delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueGreaterThanThreshold"/></exception>
+        public static T ThrowIfGreater<T>(this T value, T threshold, Func<string> errorMessageDelegate)
+            where T : IComparable<T>
+        {
+            return LessThanPredicate(threshold, value)
+                .ThrowIf(DdnDfErrorCode.ValueGreaterThanThreshold, errorMessageDelegate, value);
+        }
+
+        /// <summary>
+        /// Throws exception when given comparable value is out of bound (both bound exclusive, i.e.,
         /// throws when <paramref name="value"/> &lt; LowerOfTwoBound OR <paramref name="value"/> &gt; HigherOfTwoBound).
-        /// Else value is returned to performed method chaining on the value.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="firstBoundExcl">first bound of comparison</param>
         /// <param name="secondBoundExcl">second bound of comparison</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueOutOfBound"/></exception>
-        public static long ThrowIfNotBounded(this long value, long firstBoundExcl, long secondBoundExcl)
+        public static T ThrowIfNotBounded<T>(this T value, T firstBoundExcl, T secondBoundExcl) where T : IComparable<T>
         {
             return value.ThrowIfNotBounded(firstBoundExcl, secondBoundExcl,
                 $"Either {value} < {firstBoundExcl} Or {value} > {secondBoundExcl}");
         }
 
         /// <summary>
-        /// Throws exception when given value is out of bound (both bound exclusive, i.e.,
+        /// Throws exception when given comparable value is out of bound (both bound exclusive, i.e.,
         /// throws when <paramref name="value"/> &lt; LowerOfTwoBound OR <paramref name="value"/> &gt; HigherOfTwoBound).
-        /// Else value is returned to performed method chaining on the value.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="firstBoundExcl">first bound of comparison</param>
         /// <param name="secondBoundExcl">second bound of comparison</param>
         /// <param name="errorMessage">error message</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueOutOfBound"/></exception>
-        public static long ThrowIfNotBounded(this long value, long firstBoundExcl, long secondBoundExcl,
-            string errorMessage)
+        public static T ThrowIfNotBounded<T>(this T value, T firstBoundExcl, T secondBoundExcl,
+            string errorMessage) where T : IComparable<T>
         {
             return OutOfBoundPredicate(value, firstBoundExcl, secondBoundExcl)
                 .ThrowIf(DdnDfErrorCode.ValueOutOfBound, errorMessage, value);
         }
 
         /// <summary>
-        /// Throws exception when given value is out of bound (both bound exclusive, i.e.,
+        /// Throws exception when given comparable value is out of bound (both bound exclusive, i.e.,
         /// throws when <paramref name="value"/> &lt; LowerOfTwoBound OR <paramref name="value"/> &gt; HigherOfTwoBound).
-        /// Else value is returned to performed method chaining on the value.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="firstBoundExcl">first bound of comparison</param>
         /// <param name="secondBoundExcl">second bound of comparison</param>
         /// <param name="errorMessageDelegate">error message generating delegate</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueOutOfBound"/></exception>
-        public static long ThrowIfNotBounded(this long value, long firstBoundExcl, long secondBoundExcl,
-            Func<string> errorMessageDelegate)
+        public static T ThrowIfNotBounded<T>(this T value, T firstBoundExcl, T secondBoundExcl,
+            Func<string> errorMessageDelegate) where T : IComparable<T>
         {
             return OutOfBoundPredicate(value, firstBoundExcl, secondBoundExcl)
                 .ThrowIf(DdnDfErrorCode.ValueOutOfBound, errorMessageDelegate, value);
         }
 
         /// <summary>
-        /// Throws exception when given value is within the bounds (both bound inclusive, i.e.,
+        /// Throws exception when given comparable value is within the bounds (both bound inclusive, i.e.,
         /// throws when LowerOfTwoBound &lt;= <paramref name="value"/> &lt;= HigherOfTwoBound).
-        /// Else value is returned to performed method chaining on the value.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="firstBoundExcl">first bound of comparison</param>
         /// <param name="secondBoundExcl">second bound of comparison</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueInBound"/></exception>
-        public static long ThrowIfBounded(this long value, long firstBoundExcl, long secondBoundExcl)
+        public static T ThrowIfBounded<T>(this T value, T firstBoundExcl, T secondBoundExcl) where T : IComparable<T>
         {
             return value.ThrowIfBounded(firstBoundExcl, secondBoundExcl,
                 $"{firstBoundExcl} <= {value} <= {secondBoundExcl}");
         }
 
         /// <summary>
-        /// Throws exception when given value is within the bounds (both bound inclusive, i.e.,
+        /// Throws exception when given comparable value is within the bounds (both bound inclusive, i.e.,
         /// throws when LowerOfTwoBound &lt;= <paramref name="value"/> &lt;= HigherOfTwoBound).
-        /// Else value is returned to performed method chaining on the value.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="firstBoundExcl">first bound of comparison</param>
         /// <param name="secondBoundExcl">second bound of comparison</param>
         /// <param name="errorMessage">error message</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueInBound"/></exception>
-        public static long ThrowIfBounded(this long value, long firstBoundExcl, long secondBoundExcl,
-            string errorMessage)
+        public static T ThrowIfBounded<T>(this T value, T firstBoundExcl, T secondBoundExcl,
+            string errorMessage) where T : IComparable<T>
         {
             return OutOfBoundPredicate(value, firstBoundExcl, secondBoundExcl)
                 .ThrowIfNot(DdnDfErrorCode.ValueInBound, errorMessage, value);
         }
 
         /// <summary>
-        /// Throws exception when given value is within the bounds (both bound inclusive, i.e.,
+        /// Throws exception when given comparable value is within the bounds (both bound inclusive, i.e.,
         /// throws when LowerOfTwoBound &lt;= <paramref name="value"/> &lt;= HigherOfTwoBound).
-        /// Else value is returned to performed method chaining on the value.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="firstBoundExcl">first bound of comparison</param>
         /// <param name="secondBoundExcl">second bound of comparison</param>
         /// <param name="errorMessageDelegate">error message generating delegate</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueInBound"/></exception>
-        public static long ThrowIfBounded(this long value, long firstBoundExcl, long secondBoundExcl,
-            Func<string> errorMessageDelegate)
+        public static T ThrowIfBounded<T>(this T value, T firstBoundExcl, T secondBoundExcl,
+            Func<string> errorMessageDelegate) where T : IComparable<T>
         {
             return OutOfBoundPredicate(value, firstBoundExcl, secondBoundExcl)
                 .ThrowIfNot(DdnDfErrorCode.ValueInBound, errorMessageDelegate, value);
         }
 
-        private static bool LessThanPredicate(long value, long threshold)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool EqualPredicate<T>(T value, T comperand) where T : IComparable<T>
         {
-            return value < threshold;
+            return value.CompareTo(comperand) == 0;
         }
 
-        private static bool OutOfBoundPredicate(long value, long lowValue, long highValue)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool LessThanPredicate<T>(T value, T threshold) where T : IComparable<T>
         {
-            if (highValue < lowValue)
+            return value.CompareTo(threshold) < 0;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool OutOfBoundPredicate<T>(T value, T lowValue, T highValue) where T : IComparable<T>
+        {
+            if (highValue.CompareTo(lowValue) < 0)
             {
                 return LessThanPredicate(value, highValue) || LessThanPredicate(lowValue, value);
             }
