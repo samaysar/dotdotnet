@@ -370,6 +370,41 @@ namespace Dot.Net.DevFast.Extensions
         }
 
         /// <summary>
+        /// Throws exception when given value is NOT 0.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
+        public static int ThrowIfNotZero(this int value)
+        {
+            return value.ThrowIfNotEqual(0);
+        }
+
+        /// <summary>
+        /// Throws exception when given value is NOT 0.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="errorMessage">error message</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
+        public static int ThrowIfNotZero(this int value, string errorMessage)
+        {
+            return value.ThrowIfNotEqual(0, errorMessage);
+        }
+
+        /// <summary>
+        /// Throws exception when given value is NOT 0.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="errorMessageDelegate">error message generating delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
+        public static int ThrowIfNotZero(this int value, Func<string> errorMessageDelegate)
+        {
+            return value.ThrowIfNotEqual(0, errorMessageDelegate);
+        }
+
+        /// <summary>
         /// Throws exception when <paramref name="value"/>==<paramref name="comperand"/>.
         /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
@@ -405,6 +440,44 @@ namespace Dot.Net.DevFast.Extensions
         public static int ThrowIfEqual(this int value, int comperand, Func<string> errorMessageDelegate)
         {
             return EqualPredicate(value, comperand).ThrowIf(DdnDfErrorCode.ValueEqual, errorMessageDelegate, value);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/> != <paramref name="comperand"/>.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
+        public static int ThrowIfNotEqual(this int value, int comperand)
+        {
+            return value.ThrowIfNotEqual(comperand, $"{value} != {comperand}");
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/> != <paramref name="comperand"/>.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <param name="errorMessage">error message</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
+        public static int ThrowIfNotEqual(this int value, int comperand, string errorMessage)
+        {
+            return EqualPredicate(value, comperand).ThrowIfNot(DdnDfErrorCode.ValueNotEqual, errorMessage, value);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/> != <paramref name="comperand"/>.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <param name="errorMessageDelegate">error message generating delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
+        public static int ThrowIfNotEqual(this int value, int comperand, Func<string> errorMessageDelegate)
+        {
+            return EqualPredicate(value, comperand).ThrowIfNot(DdnDfErrorCode.ValueNotEqual, errorMessageDelegate, value);
         }
 
         /// <summary>
@@ -560,7 +633,7 @@ namespace Dot.Net.DevFast.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool EqualPredicate(int value, int comperand)
         {
-            return value == comperand;
+            return value.Equals(comperand);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -644,6 +717,79 @@ namespace Dot.Net.DevFast.Extensions
         public static long ThrowIfEqual(this long value, long comperand, Func<string> errorMessageDelegate)
         {
             return EqualPredicate(value, comperand).ThrowIf(DdnDfErrorCode.ValueEqual, errorMessageDelegate, value);
+        }
+
+        /// <summary>
+        /// Throws exception when given value is NOT 0.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
+        public static long ThrowIfNotZero(this long value)
+        {
+            return value.ThrowIfNotEqual(0);
+        }
+
+        /// <summary>
+        /// Throws exception when given value is NOT 0.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="errorMessage">error message</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
+        public static long ThrowIfNotZero(this long value, string errorMessage)
+        {
+            return value.ThrowIfNotEqual(0, errorMessage);
+        }
+
+        /// <summary>
+        /// Throws exception when given value is NOT 0.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="errorMessageDelegate">error message generating delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
+        public static long ThrowIfNotZero(this long value, Func<string> errorMessageDelegate)
+        {
+            return value.ThrowIfNotEqual(0, errorMessageDelegate);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/> != <paramref name="comperand"/>.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
+        public static long ThrowIfNotEqual(this long value, long comperand)
+        {
+            return value.ThrowIfNotEqual(comperand, $"{value} != {comperand}");
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/> != <paramref name="comperand"/>.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <param name="errorMessage">error message</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
+        public static long ThrowIfNotEqual(this long value, long comperand, string errorMessage)
+        {
+            return EqualPredicate(value, comperand).ThrowIfNot(DdnDfErrorCode.ValueNotEqual, errorMessage, value);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/> != <paramref name="comperand"/>.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <param name="errorMessageDelegate">error message generating delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
+        public static long ThrowIfNotEqual(this long value, long comperand, Func<string> errorMessageDelegate)
+        {
+            return EqualPredicate(value, comperand).ThrowIfNot(DdnDfErrorCode.ValueNotEqual, errorMessageDelegate, value);
         }
 
         /// <summary>
@@ -799,7 +945,7 @@ namespace Dot.Net.DevFast.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool EqualPredicate(long value, long comperand)
         {
-            return value == comperand;
+            return value.Equals(comperand);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -813,32 +959,32 @@ namespace Dot.Net.DevFast.Extensions
         #region ThrowIf On Generic Comparer
 
         /// <summary>
-        /// Throws exception when <paramref name="value"/> and <paramref name="comperand"/> comparison results in 0.
+        /// Throws exception when <paramref name="value"/> and <paramref name="comperand"/> are equal.
         /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="comperand">value to compare to</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
-        public static T ThrowIfEqual<T>(this T value, T comperand) where T : IComparable<T>
+        public static T ThrowIfEqual<T>(this T value, T comperand) where T : IEquatable<T>
         {
             return EqualPredicate(value, comperand).ThrowIf(DdnDfErrorCode.ValueEqual, value);
         }
 
         /// <summary>
-        /// Throws exception when <paramref name="value"/> and <paramref name="comperand"/> comparison results in 0.
+        /// Throws exception when <paramref name="value"/> and <paramref name="comperand"/> are equal.
         /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
         /// <param name="comperand">value to compare to</param>
         /// <param name="errorMessage">error message</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
-        public static T ThrowIfEqual<T>(this T value, T comperand, string errorMessage) where T : IComparable<T>
+        public static T ThrowIfEqual<T>(this T value, T comperand, string errorMessage) where T : IEquatable<T>
         {
             return EqualPredicate(value, comperand).ThrowIf(DdnDfErrorCode.ValueEqual, errorMessage, value);
         }
 
         /// <summary>
-        /// Throws exception when <paramref name="value"/> and <paramref name="comperand"/> comparison results in 0.
+        /// Throws exception when <paramref name="value"/> and <paramref name="comperand"/> are equal.
         /// Else <paramref name="value"/> is returned to performed method chaining.
         /// </summary>
         /// <param name="value">Value to check</param>
@@ -846,9 +992,134 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="errorMessageDelegate">error message generating delegate</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
         public static T ThrowIfEqual<T>(this T value, T comperand, Func<string> errorMessageDelegate)
-            where T : IComparable<T>
+            where T : IEquatable<T>
         {
             return EqualPredicate(value, comperand).ThrowIf(DdnDfErrorCode.ValueEqual, errorMessageDelegate, value);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/> and <paramref name="comperand"/> are equal.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <param name="comparer">comparer instance</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
+        public static T ThrowIfEqual<T>(this T value, T comperand, IEqualityComparer<T> comparer)
+        {
+            return EqualPredicate(value, comperand, comparer).ThrowIf(DdnDfErrorCode.ValueEqual, value);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/> and <paramref name="comperand"/> are equal.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <param name="comparer">comparer instance</param>
+        /// <param name="errorMessage">error message</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
+        public static T ThrowIfEqual<T>(this T value, T comperand, IEqualityComparer<T> comparer, string errorMessage)
+        {
+            return EqualPredicate(value, comperand, comparer).ThrowIf(DdnDfErrorCode.ValueEqual, errorMessage, value);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/> and <paramref name="comperand"/> are equal.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <param name="comparer">comparer instance</param>
+        /// <param name="errorMessageDelegate">error message generating delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
+        public static T ThrowIfEqual<T>(this T value, T comperand, IEqualityComparer<T> comparer,
+            Func<string> errorMessageDelegate)
+        {
+            return EqualPredicate(value, comperand, comparer)
+                .ThrowIf(DdnDfErrorCode.ValueEqual, errorMessageDelegate, value);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/> and <paramref name="comperand"/> are NOT equal.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
+        public static T ThrowIfNotEqual<T>(this T value, T comperand) where T : IEquatable<T>
+        {
+            return EqualPredicate(value, comperand).ThrowIfNot(DdnDfErrorCode.ValueNotEqual, value);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/> and <paramref name="comperand"/> are NOT equal.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <param name="errorMessage">error message</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
+        public static T ThrowIfNotEqual<T>(this T value, T comperand, string errorMessage) where T : IEquatable<T>
+        {
+            return EqualPredicate(value, comperand).ThrowIfNot(DdnDfErrorCode.ValueNotEqual, errorMessage, value);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/> and <paramref name="comperand"/> are NOT equal.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <param name="errorMessageDelegate">error message generating delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
+        public static T ThrowIfNotEqual<T>(this T value, T comperand, Func<string> errorMessageDelegate)
+            where T : IEquatable<T>
+        {
+            return EqualPredicate(value, comperand).ThrowIfNot(DdnDfErrorCode.ValueNotEqual, errorMessageDelegate, value);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/> and <paramref name="comperand"/> are NOT equal.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <param name="comparer">comparer instance</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
+        public static T ThrowIfNotEqual<T>(this T value, T comperand, IEqualityComparer<T> comparer)
+        {
+            return EqualPredicate(value, comperand, comparer).ThrowIfNot(DdnDfErrorCode.ValueNotEqual, value);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/> and <paramref name="comperand"/> are NOT equal.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <param name="comparer">comparer instance</param>
+        /// <param name="errorMessage">error message</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
+        public static T ThrowIfNotEqual<T>(this T value, T comperand, IEqualityComparer<T> comparer, string errorMessage)
+        {
+            return EqualPredicate(value, comperand, comparer).ThrowIfNot(DdnDfErrorCode.ValueNotEqual, errorMessage, value);
+        }
+
+        /// <summary>
+        /// Throws exception when <paramref name="value"/> and <paramref name="comperand"/> are NOT equal.
+        /// Else <paramref name="value"/> is returned to performed method chaining.
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="comperand">value to compare to</param>
+        /// <param name="comparer">comparer instance</param>
+        /// <param name="errorMessageDelegate">error message generating delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
+        public static T ThrowIfNotEqual<T>(this T value, T comperand, IEqualityComparer<T> comparer,
+            Func<string> errorMessageDelegate)
+        {
+            return EqualPredicate(value, comperand, comparer)
+                .ThrowIfNot(DdnDfErrorCode.ValueNotEqual, errorMessageDelegate, value);
         }
 
         /// <summary>
@@ -1032,9 +1303,15 @@ namespace Dot.Net.DevFast.Extensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool EqualPredicate<T>(T value, T comperand) where T : IComparable<T>
+        private static bool EqualPredicate<T>(T value, T comperand) where T : IEquatable<T>
         {
-            return value.CompareTo(comperand) == 0;
+            return value.Equals(comperand);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool EqualPredicate<T>(T value, T comperand, IEqualityComparer<T> comparer)
+        {
+            return comparer.Equals(value, comperand);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -62,7 +62,12 @@ namespace Dot.Net.DevFast.Etc
         /// <summary>
         /// When given comparable value is equal to comperand.
         /// </summary>
-        ValueEqual
+        ValueEqual,
+
+        /// <summary>
+        /// When given comparable value is NOT equal to comperand.
+        /// </summary>
+        ValueNotEqual
     }
 
     /// <summary>

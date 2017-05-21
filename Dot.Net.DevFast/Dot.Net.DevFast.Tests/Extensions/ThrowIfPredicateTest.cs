@@ -245,6 +245,81 @@ namespace Dot.Net.DevFast.Tests.Extensions
             Assert.True(ex.Message.Contains("some error message"));
         }
 
+        public void ThrowIfZero_ThrowsError_If_Value_Is_Zero()
+        {
+            const int intVal = 0;
+            var ex = Assert.Throws<DdnDfException>(() => intVal.ThrowIfZero("test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => intVal.ThrowIfZero());
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => intVal.ThrowIfZero(() => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(ex.Message.Contains("some error message"));
+
+            const long longVal = 0;
+
+            ex = Assert.Throws<DdnDfException>(() => longVal.ThrowIfZero("test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => longVal.ThrowIfZero());
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => longVal.ThrowIfZero(() => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(ex.Message.Contains("some error message"));
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(-1)]
+        [TestCase(int.MaxValue)]
+        [TestCase(int.MinValue)]
+        public void ThrowIfEqual_ThrowsError_If_Values_Are_Equal(int val)
+        {
+            var ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, "test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, () => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(ex.Message.Contains("some error message"));
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(-1)]
+        [TestCase(int.MaxValue)]
+        [TestCase(int.MinValue)]
+        [TestCase(long.MaxValue)]
+        [TestCase(long.MinValue)]
+        public void ThrowIfEqual_ThrowsError_If_Values_Are_Equal(long val)
+        {
+            var ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, "test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, () => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(ex.Message.Contains("some error message"));
+        }
+
+
         [Test]
         [TestCase(0)]
         [TestCase(1)]
@@ -268,6 +343,58 @@ namespace Dot.Net.DevFast.Tests.Extensions
             Assert.True(value.ThrowIfNegative("test message").Equals(value));
             Assert.True(value.ThrowIfNegative().Equals(value));
             Assert.True(value.ThrowIfNegative(() => "some error message").Equals(value));
+        }
+
+        [Test]
+        [TestCase(1)]
+        [TestCase(-1)]
+        [TestCase(int.MinValue)]
+        [TestCase(int.MaxValue)]
+        public void ThrowIfZero_Returns_The_Value_When_It_Is_Not_Zero(int val)
+        {
+            Assert.True(val.ThrowIfZero("test message").Equals(val));
+            Assert.True(val.ThrowIfZero().Equals(val));
+            Assert.True(val.ThrowIfZero(() => "test message").Equals(val));
+        }
+
+        [Test]
+        [TestCase(1)]
+        [TestCase(-1)]
+        [TestCase(int.MinValue)]
+        [TestCase(int.MaxValue)]
+        [TestCase(long.MinValue)]
+        [TestCase(long.MaxValue)]
+        public void ThrowIfZero_Returns_The_Value_When_It_Is_Not_Zero(long val)
+        {
+            Assert.True(val.ThrowIfZero("test message").Equals(val));
+            Assert.True(val.ThrowIfZero().Equals(val));
+            Assert.True(val.ThrowIfZero(() => "test message").Equals(val));
+        }
+
+        [Test]
+        [TestCase(1, 0)]
+        [TestCase(-1, 0)]
+        [TestCase(int.MinValue, int.MaxValue)]
+        [TestCase(int.MaxValue, int.MinValue)]
+        public void ThrowIfEqual_Returns_The_Value_When_Values_Not_Equal(int val, int comperand)
+        {
+            Assert.True(val.ThrowIfEqual(comperand, "test message").Equals(val));
+            Assert.True(val.ThrowIfEqual(comperand).Equals(val));
+            Assert.True(val.ThrowIfEqual(comperand, () => "test message").Equals(val));
+        }
+
+        [Test]
+        [TestCase(1, 0)]
+        [TestCase(-1, 0)]
+        [TestCase(int.MinValue, int.MaxValue)]
+        [TestCase(int.MaxValue, int.MinValue)]
+        [TestCase(long.MinValue, long.MaxValue)]
+        [TestCase(long.MaxValue, long.MinValue)]
+        public void ThrowIfEqual_Returns_The_Value_When_Values_Not_Equal(long val, long comperand)
+        {
+            Assert.True(val.ThrowIfEqual(comperand, "test message").Equals(val));
+            Assert.True(val.ThrowIfEqual(comperand).Equals(val));
+            Assert.True(val.ThrowIfEqual(comperand, () => "test message").Equals(val));
         }
 
         [Test]
@@ -535,8 +662,8 @@ namespace Dot.Net.DevFast.Tests.Extensions
         [TestCase(10, -9, 10)]
         [TestCase(-10, 9, -19)]
         [TestCase(-10, -11, 12)]
-        [TestCase(int.MaxValue-1, 10, int.MaxValue)]
-        [TestCase(int.MinValue+1, int.MinValue, int.MaxValue)]
+        [TestCase(int.MaxValue - 1, 10, int.MaxValue)]
+        [TestCase(int.MinValue + 1, int.MinValue, int.MaxValue)]
         public void ThrowIfNotBounded_Returns_The_Value_If_It_Is_On_Or_Inside_The_Bounds(int value, int bound1,
             int bound2)
         {
@@ -550,8 +677,8 @@ namespace Dot.Net.DevFast.Tests.Extensions
         [TestCase(0, 1, -1)]
         [TestCase(1, 1, 1)]
         [TestCase(10, 20, -10)]
-        [TestCase(int.MaxValue-1, 10, int.MaxValue)]
-        [TestCase(int.MinValue+1, int.MinValue, int.MaxValue)]
+        [TestCase(int.MaxValue - 1, 10, int.MaxValue)]
+        [TestCase(int.MinValue + 1, int.MinValue, int.MaxValue)]
         [TestCase(int.MaxValue, long.MinValue, long.MaxValue)]
         [TestCase(int.MinValue, long.MaxValue, long.MinValue)]
         [TestCase(long.MaxValue, 10, long.MaxValue)]
