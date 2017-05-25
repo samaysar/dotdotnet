@@ -697,8 +697,6 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
             }
         }
 
-        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
         [Test]
         [TestCase("true", true, true)]
         [TestCase("false", false, true)]

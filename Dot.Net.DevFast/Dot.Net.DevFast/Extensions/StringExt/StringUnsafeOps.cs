@@ -113,7 +113,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             where T : struct
         {
             return input.TryToEnum(out T value, ignoreCase).ThrowIfNot(DdnDfErrorCode.StringParsingFailed,
-                () => $"Unable to parse {input} to enum ({nameof(T)}).", value);
+                () => $"Unable to parse {input} to {typeof(T)}.", value);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             where T : struct
         {
             return input.TryToEnumUnchecked(out T value, ignoreCase).ThrowIfNot(DdnDfErrorCode.StringParsingFailed,
-                () => $"Unable to parse {input} to enum ({nameof(T)}).", value);
+                () => $"Unable to parse {input} to {typeof(T)}.", value);
         }
 
         /// <summary>
