@@ -213,7 +213,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="formatProvider">format provider</param>
         /// <param name="style">datetime style</param>
         /// <returns>True if parsing is successful else false</returns>
-        public static bool TryTo(this string input, string[] formats, out DateTime value,
+        public static bool TryTo(this string input, out DateTime value, string[] formats,
             DateTimeStyles style = DateTimeStyles.AssumeLocal, IFormatProvider formatProvider = null)
         {
             return DateTime.TryParseExact(input, formats, formatProvider, style, out value);
@@ -601,12 +601,12 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="formatProvider">format provider</param>
         /// <param name="style">datetime style</param>
         /// <returns>True if parsing is successful else false</returns>
-        public static bool TryTo(this string input, string[] formats, out DateTime? value,
+        public static bool TryTo(this string input, out DateTime? value, string[] formats,
             DateTimeStyles style = DateTimeStyles.AssumeLocal, IFormatProvider formatProvider = null)
         {
             value = null;
             if (string.IsNullOrWhiteSpace(input)) return true;
-            if (!input.TryTo(formats, out DateTime parsedValue, style, formatProvider)) return false;
+            if (!input.TryTo(out DateTime parsedValue, formats, style, formatProvider)) return false;
             value = parsedValue;
             return true;
         }

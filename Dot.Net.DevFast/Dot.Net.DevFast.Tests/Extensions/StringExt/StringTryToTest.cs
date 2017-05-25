@@ -393,12 +393,12 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         {
             if (expectedReturn)
             {
-                Assert.True(input.TryTo(formatBarSeparated.Split('|'), out DateTime ts));
+                Assert.True(input.TryTo(out DateTime ts, formatBarSeparated.Split('|')));
                 Assert.True(new DateTime(2001, 01, 01, 0, 0, 0).Equals(ts));
             }
             else
             {
-                Assert.False(input.TryTo(formatBarSeparated.Split('|'), out DateTime ts));
+                Assert.False(input.TryTo(out DateTime ts, formatBarSeparated.Split('|')));
                 Assert.True(default(DateTime).Equals(ts));
             }
         }
@@ -788,7 +788,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         {
             if (expectedReturn)
             {
-                Assert.True(input.TryTo(formatBarSeparated.Split('|'), out DateTime? ts));
+                Assert.True(input.TryTo(out DateTime? ts, formatBarSeparated.Split('|')));
                 if (string.IsNullOrWhiteSpace(input))
                 {
                     Assert.True(ts == null);
@@ -800,7 +800,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
             }
             else
             {
-                Assert.False(input.TryTo(formatBarSeparated.Split('|'), out DateTime? ts));
+                Assert.False(input.TryTo(out DateTime? ts, formatBarSeparated.Split('|')));
                 Assert.True(ts == null);
             }
         }

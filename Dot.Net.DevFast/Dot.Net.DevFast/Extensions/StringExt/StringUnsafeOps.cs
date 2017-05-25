@@ -11,55 +11,6 @@ namespace Dot.Net.DevFast.Extensions.StringExt
     public static class StringUnsafeOps
     {
         /// <summary>
-        /// Tries parsing <seealso cref="string"/> to <seealso cref="Enum"/> value.
-        /// <para>Does not validate the existence of parsed value. Could be useful when
-        /// it is known for sure that the parsed value is among existing value.</para>
-        /// <para>Also check <seealso cref="StringSafeOps.ToEnumSafe{T}(string,out T,bool)"/> method</para>
-        /// </summary>
-        /// <param name="input">string to parse</param>
-        /// <param name="value">parsed value</param>
-        /// <param name="ignoreCase">true to ignore case, else false to consider string casing</param>
-        /// <returns>True if parsing is successful else false</returns>
-        /// <typeparam name="T">Enum type</typeparam>
-        /// <exception cref="ArgumentException"></exception>
-        public static bool ToEnumUnsafe<T>(this string input, out T value, bool ignoreCase = true)
-            where T : struct
-        {
-            return Enum.TryParse(input, ignoreCase, out value);
-        }
-
-        /// <summary>
-        /// Tries parsing <seealso cref="string"/> to <seealso cref="Enum"/> value.
-        /// <para>Does not validate the existence of parsed value. Could be useful when
-        /// it is known for sure that the parsed value is among existing value.</para>
-        /// <para>Also check <seealso cref="StringSafeOps.ToEnumSafe{T}(string,out T?,bool)"/> method</para>
-        /// <para>Returns true when:
-        /// <list type="bullet">
-        /// <item><description><paramref name="input"/> is <seealso cref="string.IsNullOrWhiteSpace"/>
-        /// and out <paramref name="value"/> as null.</description></item>
-        /// <item><description><paramref name="input"/> is parsable to <typeparamref name="T"/> with
-        /// <paramref name="value"/> as the parsed outcome without checking whether it is defined or not.</description></item>
-        /// </list></para>
-        /// <para>Returns false when <paramref name="input"/> is NOT parsable to <typeparamref name="T"/>
-        /// and <paramref name="value"/> as null.</para>
-        /// </summary>
-        /// <param name="input">string to parse</param>
-        /// <param name="value">parsed value</param>
-        /// <param name="ignoreCase">true to ignore case, else false to consider string casing</param>
-        /// <returns>True if parsing is successful else false</returns>
-        /// <typeparam name="T">Enum type</typeparam>
-        /// <exception cref="ArgumentException"></exception>
-        public static bool ToEnumUnsafe<T>(this string input, out T? value, bool ignoreCase = true)
-            where T : struct
-        {
-            value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
-            if (!input.ToEnumUnsafe(out T parsedValue, ignoreCase)) return false;
-            value = parsedValue;
-            return true;
-        }
-
-        /// <summary>
         /// Trims string when not null else throws error (another way to avoid <seealso cref="NullReferenceException"/>)
         /// <para>Also check <seealso cref="StringSafeOps.TrimSafeOrEmpty"/>, 
         /// <seealso cref="StringSafeOps.TrimSafeOrNull"/> and 
@@ -141,5 +92,6 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         {
             return create ? Directory.CreateDirectory(fullPath) : new DirectoryInfo(fullPath);
         }
+        //todo: String.ThrowNotParsed
     }
 }

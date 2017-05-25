@@ -238,13 +238,13 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         private static bool PerformToEnumSafe<T>(string input, out T value, bool ignoreCase = true)
             where T : struct
         {
-            return input.ToEnumSafe(out value, ignoreCase);
+            return input.ToEnumChecked(out value, ignoreCase);
         }
 
         private static bool PerformToEnumSafe<T>(string input, out T? value, bool ignoreCase = true)
             where T : struct
         {
-            return input.ToEnumSafe(out value, ignoreCase);
+            return input.ToEnumChecked(out value, ignoreCase);
         }
     }
 }
