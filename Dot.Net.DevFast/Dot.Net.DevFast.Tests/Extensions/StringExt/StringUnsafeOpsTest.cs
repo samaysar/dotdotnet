@@ -212,7 +212,6 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
                     Assert.Throws<DdnDfException>(() => PerformToEnumUnchecked(input, out DateTimeKind value, false));
                 Assert.True(ex.ErrorCode == DdnDfErrorCode.StringParsingFailed);
                 Assert.True(ex.Message.Contains($" {input} "));
-                Console.Out.WriteLine(ex.Message);
                 Assert.True(ex.Message.Contains($"{typeof(DateTimeKind)}"));
             }
         }
