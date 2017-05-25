@@ -337,6 +337,18 @@ namespace Dot.Net.DevFast.Tests.Extensions
             ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, () => "some error message"));
             Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
             Assert.True(ex.Message.Contains("some error message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, EqualityComparer<int>.Default, "test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, EqualityComparer<int>.Default));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, EqualityComparer<int>.Default, () => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(ex.Message.Contains("some error message"));
         }
 
         [Test]
@@ -360,6 +372,18 @@ namespace Dot.Net.DevFast.Tests.Extensions
             ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, () => "some error message"));
             Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
             Assert.True(ex.Message.Contains("some error message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, EqualityComparer<long>.Default, "test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, EqualityComparer<long>.Default));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, EqualityComparer<long>.Default, () => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(ex.Message.Contains("some error message"));
         }
 
         [Test]
@@ -377,6 +401,18 @@ namespace Dot.Net.DevFast.Tests.Extensions
             Assert.True(!ex.Message.Contains("test message"));
 
             ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, () => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(ex.Message.Contains("some error message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, EqualityComparer<string>.Default, "test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, EqualityComparer<string>.Default));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfEqual(val, EqualityComparer<string>.Default, () => "some error message"));
             Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueEqual);
             Assert.True(ex.Message.Contains("some error message"));
         }
@@ -408,6 +444,10 @@ namespace Dot.Net.DevFast.Tests.Extensions
         [TestCase("a", "       ")]
         public void ThrowIfEqual_Returns_Value_If_Values_Are_Not_Equal(string val, string comparend)
         {
+            Assert.True(val.ThrowIfEqual(comparend, EqualityComparer<string>.Default, "test message").Equals(val));
+            Assert.True(val.ThrowIfEqual(comparend, EqualityComparer<string>.Default).Equals(val));
+            Assert.True(val.ThrowIfEqual(comparend, EqualityComparer<string>.Default, () => "some error message").Equals(val));
+
             Assert.True(val.ThrowIfEqual(comparend, "test message").Equals(val));
             Assert.True(val.ThrowIfEqual(comparend).Equals(val));
             Assert.True(val.ThrowIfEqual(comparend, () => "some error message").Equals(val));
@@ -420,6 +460,10 @@ namespace Dot.Net.DevFast.Tests.Extensions
         [TestCase(double.MaxValue, double.MinValue)]
         public void ThrowIfEqual_Returns_Value_If_Values_Are_Not_Equal(double val, double comparend)
         {
+            Assert.True(val.ThrowIfEqual(comparend, EqualityComparer<double>.Default, "test message").Equals(val));
+            Assert.True(val.ThrowIfEqual(comparend, EqualityComparer<double>.Default).Equals(val));
+            Assert.True(val.ThrowIfEqual(comparend, EqualityComparer<double>.Default, () => "some error message").Equals(val));
+
             Assert.True(val.ThrowIfEqual(comparend, "test message").Equals(val));
             Assert.True(val.ThrowIfEqual(comparend).Equals(val));
             Assert.True(val.ThrowIfEqual(comparend, () => "some error message").Equals(val));

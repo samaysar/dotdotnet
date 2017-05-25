@@ -413,7 +413,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
         public static int ThrowIfEqual(this int value, int comperand)
         {
-            return value.ThrowIfEqual(comperand, $"{value} == {comperand}");
+            return value.ThrowIfEqual(comperand, () => $"{value} == {comperand}");
         }
 
         /// <summary>
@@ -451,7 +451,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
         public static int ThrowIfNotEqual(this int value, int comperand)
         {
-            return value.ThrowIfNotEqual(comperand, $"{value} != {comperand}");
+            return value.ThrowIfNotEqual(comperand, () => $"{value} != {comperand}");
         }
 
         /// <summary>
@@ -524,7 +524,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueLessThanThreshold"/></exception>
         public static int ThrowIfLess(this int value, int threshold)
         {
-            return value.ThrowIfLess(threshold, $"{value} < {threshold}");
+            return value.ThrowIfLess(threshold, () => $"{value} < {threshold}");
         }
 
         /// <summary>
@@ -599,7 +599,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueGreaterThanThreshold"/></exception>
         public static int ThrowIfGreater(this int value, int threshold)
         {
-            return value.ThrowIfGreater(threshold, $"{value} > {threshold}");
+            return value.ThrowIfGreater(threshold, () => $"{value} > {threshold}");
         }
 
         /// <summary>
@@ -690,7 +690,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueEqual"/></exception>
         public static long ThrowIfEqual(this long value, long comperand)
         {
-            return value.ThrowIfEqual(comperand, $"{value} == {comperand}");
+            return value.ThrowIfEqual(comperand, () => $"{value} == {comperand}");
         }
 
         /// <summary>
@@ -763,7 +763,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueNotEqual"/></exception>
         public static long ThrowIfNotEqual(this long value, long comperand)
         {
-            return value.ThrowIfNotEqual(comperand, $"{value} != {comperand}");
+            return value.ThrowIfNotEqual(comperand, () => $"{value} != {comperand}");
         }
 
         /// <summary>
@@ -836,7 +836,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueLessThanThreshold"/></exception>
         public static long ThrowIfLess(this long value, long threshold)
         {
-            return value.ThrowIfLess(threshold, $"{value} < {threshold}");
+            return value.ThrowIfLess(threshold, () => $"{value} < {threshold}");
         }
 
         /// <summary>
@@ -911,7 +911,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.ValueGreaterThanThreshold"/></exception>
         public static long ThrowIfGreater(this long value, long threshold)
         {
-            return value.ThrowIfGreater(threshold, $"{value} > {threshold}");
+            return value.ThrowIfGreater(threshold, () => $"{value} > {threshold}");
         }
 
         /// <summary>
@@ -1216,7 +1216,7 @@ namespace Dot.Net.DevFast.Extensions
         public static T ThrowIfNotBounded<T>(this T value, T firstBoundExcl, T secondBoundExcl) where T : IComparable<T>
         {
             return value.ThrowIfNotBounded(firstBoundExcl, secondBoundExcl,
-                $"Either {value} < {firstBoundExcl} Or {value} > {secondBoundExcl}");
+                () => $"Either {value} < {firstBoundExcl} Or {value} > {secondBoundExcl}");
         }
 
         /// <summary>
@@ -1265,7 +1265,7 @@ namespace Dot.Net.DevFast.Extensions
         public static T ThrowIfBounded<T>(this T value, T firstBoundExcl, T secondBoundExcl) where T : IComparable<T>
         {
             return value.ThrowIfBounded(firstBoundExcl, secondBoundExcl,
-                $"{firstBoundExcl} <= {value} <= {secondBoundExcl}");
+                () => $"{firstBoundExcl} <= {value} <= {secondBoundExcl}");
         }
 
         /// <summary>
