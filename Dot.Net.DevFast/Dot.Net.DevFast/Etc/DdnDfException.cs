@@ -67,7 +67,12 @@ namespace Dot.Net.DevFast.Etc
         /// <summary>
         /// When given comparable value is NOT equal to comperand.
         /// </summary>
-        ValueNotEqual
+        ValueNotEqual,
+
+        /// <summary>
+        /// When string parsing to a given type fails.
+        /// </summary>
+        StringParsingFailed
     }
 
     /// <summary>

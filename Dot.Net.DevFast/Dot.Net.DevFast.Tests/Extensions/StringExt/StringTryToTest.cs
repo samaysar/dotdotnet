@@ -9,6 +9,277 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
     public class StringTryToTest
     {
         [Test]
+        public void TryToEnumUnchecked_ThrowsError_For_Invalid_Cases()
+        {
+            Assert.Throws<ArgumentException>(() => PerformTryToEnumUnchecked("", out DateTime wrongType, false));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnumUnchecked("", out double wrongType));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnumUnchecked("", out int wrongType));
+        }
+
+        [Test]
+        [TestCase(int.MaxValue)]
+        [TestCase(int.MinValue)]
+        public void TryToEnumUnchecked_Returns_True_For_Invalid_Parsable_Strings(int invalidInput)
+        {
+            Assert.True(PerformTryToEnumUnchecked(invalidInput.ToString(), out DateTimeKind value) &&
+                        value.Equals((DateTimeKind)invalidInput));
+        }
+
+        [Test]
+        [TestCase("Unspecified", DateTimeKind.Unspecified, true)]
+        [TestCase("Local", DateTimeKind.Local, true)]
+        [TestCase("Utc", DateTimeKind.Utc, true)]
+        [TestCase("unspecified", DateTimeKind.Unspecified, true)]
+        [TestCase("local", DateTimeKind.Local, true)]
+        [TestCase("utc", DateTimeKind.Utc, true)]
+        [TestCase("  unspecified  ", DateTimeKind.Unspecified, true)]
+        [TestCase("   local   ", DateTimeKind.Local, true)]
+        [TestCase("   utc   ", DateTimeKind.Utc, true)]
+        [TestCase("anything", default(DateTimeKind), false)]
+        [TestCase("   invalidString   ", default(DateTimeKind), false)]
+        [TestCase("", default(DateTimeKind), false)]
+        [TestCase(null, default(DateTimeKind), false)]
+        public void TryToEnumUnchecked_Returns_Consistent_Results_When_IgnoreCase_Is_True(string input,
+            DateTimeKind expected, bool returnValue)
+        {
+            Assert.True(PerformTryToEnumUnchecked(input, out DateTimeKind value) == returnValue);
+            Assert.True(value.Equals(expected));
+        }
+
+        [Test]
+        [TestCase("Unspecified", DateTimeKind.Unspecified, true)]
+        [TestCase("Local", DateTimeKind.Local, true)]
+        [TestCase("Utc", DateTimeKind.Utc, true)]
+        [TestCase("    Unspecified     ", DateTimeKind.Unspecified, true)]
+        [TestCase("    Local  ", DateTimeKind.Local, true)]
+        [TestCase("  Utc   ", DateTimeKind.Utc, true)]
+        [TestCase("unspecified", default(DateTimeKind), false)]
+        [TestCase("local", default(DateTimeKind), false)]
+        [TestCase("utc", default(DateTimeKind), false)]
+        [TestCase("  unspecified  ", default(DateTimeKind), false)]
+        [TestCase("   local   ", default(DateTimeKind), false)]
+        [TestCase("   utc   ", default(DateTimeKind), false)]
+        [TestCase("anything", default(DateTimeKind), false)]
+        [TestCase("   invalidString   ", default(DateTimeKind), false)]
+        [TestCase("", default(DateTimeKind), false)]
+        [TestCase(null, default(DateTimeKind), false)]
+        public void TryToEnumUnchecked_Returns_Consistent_Results_When_IgnoreCase_Is_False(string input,
+            DateTimeKind expected, bool returnValue)
+        {
+            Assert.True(PerformTryToEnumUnchecked(input, out DateTimeKind value, false) == returnValue);
+            Assert.True(value.Equals(expected));
+        }
+
+        [Test]
+        public void TryToEnumUnchecked_For_NullableEnum_ThrowsError_For_Invalid_Cases()
+        {
+            Assert.Throws<ArgumentException>(() => PerformTryToEnumUnchecked("anything", out DateTime? wrongType, false));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnumUnchecked("anything", out double? wrongType));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnumUnchecked("anything", out int? wrongType));
+        }
+
+        [Test]
+        public void TryToEnumUnchecked_For_NullableEnum_Always_Returns_True_With_Null_OutValue_When_String_IsNoWS()
+        {
+            Assert.True(PerformTryToEnumUnchecked("", out DateTime? wrongDt, false) && wrongDt == null);
+            Assert.True(PerformTryToEnumUnchecked("", out double? wrongDob) && wrongDob == null);
+            Assert.True(PerformTryToEnumUnchecked("", out int? wrongInt) && wrongInt == null);
+            Assert.True(PerformTryToEnumUnchecked("", out DateTimeKind? goodEnumType) && goodEnumType == null);
+        }
+
+        [Test]
+        [TestCase(int.MaxValue)]
+        [TestCase(int.MinValue)]
+        public void TryToEnumUnchecked_For_NullableEnum_Returns_True_For_Invalid_Parsable_Strings(int invalidInput)
+        {
+            Assert.True(PerformTryToEnumUnchecked(invalidInput.ToString(), out DateTimeKind? value) &&
+                        value.Equals((DateTimeKind)invalidInput));
+            Assert.True(value.Equals((DateTimeKind?)invalidInput));
+        }
+
+        [Test]
+        [TestCase("Unspecified", DateTimeKind.Unspecified, true)]
+        [TestCase("Local", DateTimeKind.Local, true)]
+        [TestCase("Utc", DateTimeKind.Utc, true)]
+        [TestCase("unspecified", DateTimeKind.Unspecified, true)]
+        [TestCase("local", DateTimeKind.Local, true)]
+        [TestCase("utc", DateTimeKind.Utc, true)]
+        [TestCase("  unspecified  ", DateTimeKind.Unspecified, true)]
+        [TestCase("   local   ", DateTimeKind.Local, true)]
+        [TestCase("   utc   ", DateTimeKind.Utc, true)]
+        [TestCase("anything", null, false)]
+        [TestCase("   invalidString   ", null, false)]
+        [TestCase("          ", null, true)]
+        [TestCase("", null, true)]
+        [TestCase(null, null, true)]
+        public void TryToEnumUnchecked_For_NullableEnum_Returns_Consistent_Results_When_IgnoreCase_Is_True(string input,
+            DateTimeKind? expected, bool returnValue)
+        {
+            Assert.True(PerformTryToEnumUnchecked(input, out DateTimeKind? value) == returnValue);
+            Assert.True(value.Equals(expected));
+        }
+
+        [Test]
+        [TestCase("Unspecified", DateTimeKind.Unspecified, true)]
+        [TestCase("Local", DateTimeKind.Local, true)]
+        [TestCase("Utc", DateTimeKind.Utc, true)]
+        [TestCase("    Unspecified     ", DateTimeKind.Unspecified, true)]
+        [TestCase("    Local  ", DateTimeKind.Local, true)]
+        [TestCase("  Utc   ", DateTimeKind.Utc, true)]
+        [TestCase("unspecified", null, false)]
+        [TestCase("local", null, false)]
+        [TestCase("utc", null, false)]
+        [TestCase("  unspecified  ", null, false)]
+        [TestCase("   local   ", null, false)]
+        [TestCase("   utc   ", null, false)]
+        [TestCase("anything", null, false)]
+        [TestCase("   invalidString   ", null, false)]
+        [TestCase("          ", null, true)]
+        [TestCase("", null, true)]
+        [TestCase(null, null, true)]
+        public void TryToEnumUnchecked_For_NullableEnum_Returns_Consistent_Results_When_IgnoreCase_Is_False(string input,
+            DateTimeKind? expected, bool returnValue)
+        {
+            Assert.True(PerformTryToEnumUnchecked(input, out DateTimeKind? value, false) == returnValue);
+            Assert.True(value.Equals(expected));
+        }
+
+        [Test]
+        public void TryToEnum_ThrowsError_For_Invalid_Cases()
+        {
+            Assert.Throws<ArgumentException>(() => PerformTryToEnum("", out DateTime wrongType, false));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnum("", out double wrongType));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnum("", out int wrongType));
+        }
+
+        [Test]
+        [TestCase(int.MaxValue)]
+        [TestCase(int.MinValue)]
+        public void TryToEnum_Returns_False_For_Invalid_Parsable_Strings(int invalidInput)
+        {
+            Assert.False(PerformTryToEnum(invalidInput.ToString(), out DateTimeKind value));
+            Assert.True(value.Equals((DateTimeKind)invalidInput));
+        }
+
+        [Test]
+        [TestCase("Unspecified", DateTimeKind.Unspecified, true)]
+        [TestCase("Local", DateTimeKind.Local, true)]
+        [TestCase("Utc", DateTimeKind.Utc, true)]
+        [TestCase("unspecified", DateTimeKind.Unspecified, true)]
+        [TestCase("local", DateTimeKind.Local, true)]
+        [TestCase("utc", DateTimeKind.Utc, true)]
+        [TestCase("  unspecified  ", DateTimeKind.Unspecified, true)]
+        [TestCase("   local   ", DateTimeKind.Local, true)]
+        [TestCase("   utc   ", DateTimeKind.Utc, true)]
+        [TestCase("anything", default(DateTimeKind), false)]
+        [TestCase("   invalidString   ", default(DateTimeKind), false)]
+        [TestCase("", default(DateTimeKind), false)]
+        [TestCase(null, default(DateTimeKind), false)]
+        public void TryToEnum_Returns_Consistent_Results_When_IgnoreCase_Is_True(string input,
+            DateTimeKind expected, bool returnValue)
+        {
+            Assert.True(PerformTryToEnum(input, out DateTimeKind value) == returnValue);
+            Assert.True(value.Equals(expected));
+        }
+
+        [Test]
+        [TestCase("Unspecified", DateTimeKind.Unspecified, true)]
+        [TestCase("Local", DateTimeKind.Local, true)]
+        [TestCase("Utc", DateTimeKind.Utc, true)]
+        [TestCase("    Unspecified     ", DateTimeKind.Unspecified, true)]
+        [TestCase("    Local  ", DateTimeKind.Local, true)]
+        [TestCase("  Utc   ", DateTimeKind.Utc, true)]
+        [TestCase("unspecified", default(DateTimeKind), false)]
+        [TestCase("local", default(DateTimeKind), false)]
+        [TestCase("utc", default(DateTimeKind), false)]
+        [TestCase("  unspecified  ", default(DateTimeKind), false)]
+        [TestCase("   local   ", default(DateTimeKind), false)]
+        [TestCase("   utc   ", default(DateTimeKind), false)]
+        [TestCase("anything", default(DateTimeKind), false)]
+        [TestCase("   invalidString   ", default(DateTimeKind), false)]
+        [TestCase("", default(DateTimeKind), false)]
+        [TestCase(null, default(DateTimeKind), false)]
+        public void TryToEnum_Returns_Consistent_Results_When_IgnoreCase_Is_False(string input,
+            DateTimeKind expected, bool returnValue)
+        {
+            Assert.True(PerformTryToEnum(input, out DateTimeKind value, false) == returnValue);
+            Assert.True(value.Equals(expected));
+        }
+
+        [Test]
+        public void TryToEnum_For_NullableEnum_ThrowsError_For_Invalid_Cases()
+        {
+            Assert.Throws<ArgumentException>(() => PerformTryToEnum("anything", out DateTime? wrongType, false));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnum("anything", out double? wrongType));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnum("anything", out int? wrongType));
+        }
+
+        [Test]
+        public void TryToEnum_For_NullableEnum_Always_Returns_True_With_Null_OutValue_When_String_IsNoWS()
+        {
+            Assert.True(PerformTryToEnum("", out DateTime? wrongDt, false) && wrongDt == null);
+            Assert.True(PerformTryToEnum("", out double? wrongDob) && wrongDob == null);
+            Assert.True(PerformTryToEnum("", out int? wrongInt) && wrongInt == null);
+            Assert.True(PerformTryToEnum("", out DateTimeKind? goodEnumType) && goodEnumType == null);
+        }
+
+        [Test]
+        [TestCase(int.MaxValue)]
+        [TestCase(int.MinValue)]
+        public void TryToEnum_For_NullableEnum_Returns_False_For_Invalid_Parsable_Strings(int invalidInput)
+        {
+            Assert.False(PerformTryToEnum(invalidInput.ToString(), out DateTimeKind? value));
+            Assert.True(value == null);
+        }
+
+        [Test]
+        [TestCase("Unspecified", DateTimeKind.Unspecified, true)]
+        [TestCase("Local", DateTimeKind.Local, true)]
+        [TestCase("Utc", DateTimeKind.Utc, true)]
+        [TestCase("unspecified", DateTimeKind.Unspecified, true)]
+        [TestCase("local", DateTimeKind.Local, true)]
+        [TestCase("utc", DateTimeKind.Utc, true)]
+        [TestCase("  unspecified  ", DateTimeKind.Unspecified, true)]
+        [TestCase("   local   ", DateTimeKind.Local, true)]
+        [TestCase("   utc   ", DateTimeKind.Utc, true)]
+        [TestCase("anything", null, false)]
+        [TestCase("   invalidString   ", null, false)]
+        [TestCase("         ", null, true)]
+        [TestCase("", null, true)]
+        [TestCase(null, null, true)]
+        public void TryToEnum_For_NullableEnum_Returns_Consistent_Results_When_IgnoreCase_Is_True(string input,
+            DateTimeKind? expected, bool returnValue)
+        {
+            Assert.True(PerformTryToEnum(input, out DateTimeKind? value) == returnValue);
+            Assert.True(value.Equals(expected));
+        }
+
+        [Test]
+        [TestCase("Unspecified", DateTimeKind.Unspecified, true)]
+        [TestCase("Local", DateTimeKind.Local, true)]
+        [TestCase("Utc", DateTimeKind.Utc, true)]
+        [TestCase("    Unspecified     ", DateTimeKind.Unspecified, true)]
+        [TestCase("    Local  ", DateTimeKind.Local, true)]
+        [TestCase("  Utc   ", DateTimeKind.Utc, true)]
+        [TestCase("unspecified", null, false)]
+        [TestCase("local", null, false)]
+        [TestCase("utc", null, false)]
+        [TestCase("  unspecified  ", null, false)]
+        [TestCase("   local   ", null, false)]
+        [TestCase("   utc   ", null, false)]
+        [TestCase("anything", null, false)]
+        [TestCase("   invalidString   ", null, false)]
+        [TestCase("         ", null, true)]
+        [TestCase("", null, true)]
+        [TestCase(null, null, true)]
+        public void TryToEnum_For_NullableEnum_Returns_Consistent_Results_When_IgnoreCase_Is_False(string input,
+            DateTimeKind? expected, bool returnValue)
+        {
+            Assert.True(PerformTryToEnum(input, out DateTimeKind? value, false) == returnValue);
+            Assert.True(value.Equals(expected));
+        }
+
+        [Test]
         [TestCase("       ", default(Type), false)]
         [TestCase("", default(Type), false)]
         [TestCase(null, default(Type), false)]
@@ -836,6 +1107,30 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
                 Assert.False(input.TryTo(out DateTime? ts));
                 Assert.True(ts == null);
             }
+        }
+
+        private static bool PerformTryToEnum<T>(string input, out T value, bool ignoreCase = true)
+            where T : struct
+        {
+            return input.TryToEnum(out value, ignoreCase);
+        }
+
+        private static bool PerformTryToEnum<T>(string input, out T? value, bool ignoreCase = true)
+            where T : struct
+        {
+            return input.TryToEnum(out value, ignoreCase);
+        }
+
+        private static bool PerformTryToEnumUnchecked<T>(string input, out T value, bool ignoreCase = true)
+            where T : struct
+        {
+            return input.TryToEnumUnchecked(out value, ignoreCase);
+        }
+
+        private static bool PerformTryToEnumUnchecked<T>(string input, out T? value, bool ignoreCase = true)
+            where T : struct
+        {
+            return input.TryToEnumUnchecked(out value, ignoreCase);
         }
     }
 }

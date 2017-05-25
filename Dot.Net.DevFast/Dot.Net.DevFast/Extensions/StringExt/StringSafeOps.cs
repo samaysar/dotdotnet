@@ -10,115 +10,6 @@ namespace Dot.Net.DevFast.Extensions.StringExt
     public static class StringSafeOps
     {
         /// <summary>
-        /// Tries parsing <seealso cref="string"/> to <seealso cref="Enum"/> value.
-        /// <para>Does not validate the existence of parsed value. Could be useful when
-        /// it is known for sure that the parsed value is among existing value.</para>
-        /// <para>Also check <see cref="ToEnumChecked{T}(string,out T,bool)"/>
-        /// and <see cref="ToEnumCheckedOrDefault{T}"/> and 
-        /// <see cref="ToEnumUncheckedOrDefault{T}"/> methods</para>
-        /// </summary>
-        /// <param name="input">string to parse</param>
-        /// <param name="value">parsed value</param>
-        /// <param name="ignoreCase">true to ignore case, else false to consider string casing</param>
-        /// <returns>True if parsing is successful else false</returns>
-        /// <typeparam name="T">Enum type</typeparam>
-        /// <exception cref="ArgumentException"></exception>
-        public static bool ToEnumUnchecked<T>(this string input, out T value, bool ignoreCase = true)
-            where T : struct
-        {
-            return Enum.TryParse(input, ignoreCase, out value);
-        }
-
-        /// <summary>
-        /// Tries parsing <seealso cref="string"/> to <seealso cref="Enum"/> value.
-        /// <para>Does not validate the existence of parsed value. Could be useful when
-        /// it is known for sure that the parsed value is among existing value.</para>
-        /// <para>Also check <see cref="ToEnumChecked{T}(string,out T?,bool)"/>,
-        /// <see cref="ToEnumCheckedOrDefault{T}"/> and 
-        /// <see cref="ToEnumUncheckedOrDefault{T}"/> methods</para>
-        /// <para>Returns true when:
-        /// <list type="bullet">
-        /// <item><description><paramref name="input"/> is <seealso cref="string.IsNullOrWhiteSpace"/>
-        /// and out <paramref name="value"/> as null.</description></item>
-        /// <item><description><paramref name="input"/> is parsable to <typeparamref name="T"/> with
-        /// <paramref name="value"/> as the parsed outcome without checking whether it is defined or not.</description></item>
-        /// </list></para>
-        /// <para>Returns false when <paramref name="input"/> is NOT parsable to <typeparamref name="T"/>
-        /// and <paramref name="value"/> as null.</para>
-        /// </summary>
-        /// <param name="input">string to parse</param>
-        /// <param name="value">parsed value</param>
-        /// <param name="ignoreCase">true to ignore case, else false to consider string casing</param>
-        /// <returns>True if parsing is successful else false</returns>
-        /// <typeparam name="T">Enum type</typeparam>
-        /// <exception cref="ArgumentException"></exception>
-        public static bool ToEnumUnchecked<T>(this string input, out T? value, bool ignoreCase = true)
-            where T : struct
-        {
-            value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
-            if (!input.ToEnumUnchecked(out T parsedValue, ignoreCase)) return false;
-            value = parsedValue;
-            return true;
-        }
-
-        /// <summary>
-        /// Tries parsing <seealso cref="string"/> to <seealso cref="Enum"/> value.
-        /// <para>If parsing is successful then calls <seealso cref="Enum.IsDefined"/>. Useful when
-        /// it is not certain whether the parsed value will result in existing define enum value.
-        /// (example when parsing integers back to enum coming from outside)</para>
-        /// <para>Also check <see cref="ToEnumUnchecked{T}(string,out T,bool)"/>
-        /// and <see cref="ToEnumCheckedOrDefault{T}"/> and 
-        /// <see cref="ToEnumUncheckedOrDefault{T}"/> methods</para>
-        /// </summary>
-        /// <param name="input">string to parse</param>
-        /// <param name="value">parsed value</param>
-        /// <param name="ignoreCase">true to ignore case, else false to consider string casing</param>
-        /// <returns>True if parsing is successful else false</returns>
-        /// <typeparam name="T">Enum type</typeparam>
-        /// <exception cref="ArgumentException"></exception>
-        public static bool ToEnumChecked<T>(this string input, out T value, bool ignoreCase = true)
-            where T : struct
-        {
-            return input.ToEnumUnchecked(out value, ignoreCase) &&
-                   Enum.IsDefined(typeof(T), value);
-        }
-
-        /// <summary>
-        /// Tries parsing <seealso cref="string"/> to <seealso cref="Enum"/> value.
-        /// <para>If parsing is successful then calls <seealso cref="Enum.IsDefined"/>. Useful when
-        /// it is not certain whether the parsed value will result in existing define enum value.
-        /// (example when parsing integers back to enum coming from outside)</para>
-        /// <para>Also check <see cref="ToEnumUnchecked{T}(string,out T?,bool)"/>
-        /// and <see cref="ToEnumCheckedOrDefault{T}"/> and 
-        /// <see cref="ToEnumUncheckedOrDefault{T}"/> methods</para>
-        /// <para>Returns true when:
-        /// <list type="bullet">
-        /// <item><description><paramref name="input"/> is <seealso cref="string.IsNullOrWhiteSpace"/>
-        /// and out <paramref name="value"/> as null.</description></item>
-        /// <item><description><paramref name="input"/> is parsable to <typeparamref name="T"/> with
-        /// <paramref name="value"/> as the parsed outcome among defined values.</description></item>
-        /// </list></para>
-        /// <para>Returns false when <paramref name="input"/> is NOT parsable to <typeparamref name="T"/>
-        /// or the value does not exits among defined value, in this case <paramref name="value"/> as null.</para>
-        /// </summary>
-        /// <param name="input">string to parse</param>
-        /// <param name="value">parsed value</param>
-        /// <param name="ignoreCase">true to ignore case, else false to consider string casing</param>
-        /// <returns>True if parsing is successful else false</returns>
-        /// <typeparam name="T">Enum type</typeparam>
-        /// <exception cref="ArgumentException"></exception>
-        public static bool ToEnumChecked<T>(this string input, out T? value, bool ignoreCase = true)
-            where T : struct
-        {
-            value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
-            if (!input.ToEnumChecked(out T parsedValue, ignoreCase)) return false;
-            value = parsedValue;
-            return true;
-        }
-
-        /// <summary>
         /// If value is null <seealso cref="string.Empty"/> is returned else trimmed string.
         /// <para>Also check <seealso cref="StringUnsafeOps.TrimUnsafe"/>,
         /// <seealso cref="TrimSafeOrNull"/> and <seealso cref="TrimSafeOrDefault"/></para>
@@ -163,30 +54,30 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <seealso cref="Enum.IsDefined"/> check. Useful when it is not certain whether the parsed value 
         /// will result in existing define enum value (example when parsing integers back to enum coming from outside).
         /// If parsing is successful then returns the parsed value else returns the <paramref name="defaultVal"/>.
-        /// <para>Also check <see cref="ToEnumUnchecked{T}(string,out T,bool)"/>,
-        /// <see cref="ToEnumUnchecked{T}(string,out T?,bool)"/>,
-        /// <see cref="ToEnumChecked{T}(string,out T,bool)"/> and
-        /// <see cref="ToEnumChecked{T}(string,out T?,bool)"/> methods</para>
+        /// <para>Also check <seealso cref="StringTryTo.TryToEnumUnchecked{T}(string,out T,bool)"/>,
+        /// <seealso cref="StringTryTo.TryToEnumUnchecked{T}(string,out T?,bool)"/>,
+        /// <seealso cref="StringTryTo.TryToEnum{T}(string,out T,bool)"/> and
+        /// <seealso cref="StringTryTo.TryToEnum{T}(string,out T?,bool)"/> methods</para>
         /// </summary>
         /// <param name="input">string to parse</param>
         /// <param name="defaultVal">Default value to return when parsing fails</param>
         /// <param name="ignoreCase">true to ignore case, else false to consider string casing</param>
         /// <typeparam name="T">Enum type</typeparam>
         /// <exception cref="ArgumentException"></exception>
-        public static T ToEnumCheckedOrDefault<T>(this string input, T defaultVal, bool ignoreCase = true)
+        public static T ToEnumOrDefault<T>(this string input, T defaultVal, bool ignoreCase = true)
             where T : struct
         {
-            return input.ToEnumChecked(out T value, ignoreCase) ? value : defaultVal;
+            return input.TryToEnum(out T value, ignoreCase) ? value : defaultVal;
         }
 
         /// <summary>
         /// Tries parsing <seealso cref="string"/> to <seealso cref="Enum"/> value (NOTE: <seealso cref="Enum.IsDefined"/> check
         /// is NOT performed). Useful when it is known for sure that the parsed value is among existing value..
         /// If parsing is successful then returns the parsed value else returns the <paramref name="defaultVal"/>.
-        /// <para>Also check <see cref="ToEnumUnchecked{T}(string,out T,bool)"/>,
-        /// <see cref="ToEnumUnchecked{T}(string,out T?,bool)"/>,
-        /// <see cref="ToEnumChecked{T}(string,out T,bool)"/> and
-        /// <see cref="ToEnumChecked{T}(string,out T?,bool)"/> methods</para>
+        /// <para>Also check <seealso cref="StringTryTo.TryToEnumUnchecked{T}(string,out T,bool)"/>,
+        /// <seealso cref="StringTryTo.TryToEnumUnchecked{T}(string,out T?,bool)"/>,
+        /// <seealso cref="StringTryTo.TryToEnum{T}(string,out T,bool)"/> and
+        /// <seealso cref="StringTryTo.TryToEnum{T}(string,out T?,bool)"/> methods</para>
         /// </summary>
         /// <param name="input">string to parse</param>
         /// <param name="defaultVal">Default value to return when parsing fails</param>
@@ -196,7 +87,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static T ToEnumUncheckedOrDefault<T>(this string input, T defaultVal, bool ignoreCase = true)
             where T : struct
         {
-            return input.ToEnumUnchecked(out T value, ignoreCase) ? value : defaultVal;
+            return input.TryToEnumUnchecked(out T value, ignoreCase) ? value : defaultVal;
         }
 
         /// <summary>
