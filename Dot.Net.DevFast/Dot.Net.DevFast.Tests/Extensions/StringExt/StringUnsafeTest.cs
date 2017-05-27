@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace Dot.Net.DevFast.Tests.Extensions.StringExt
 {
     [TestFixture]
-    public class StringUnsafeOpsTest
+    public class StringUnsafeTest
     {
         [Test]
         [TestCase(null)]
@@ -60,7 +60,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [Test]
         public void ToFileInfo_Works_As_Expected()
         {
-            var filename = nameof(StringUnsafeOpsTest);
+            var filename = nameof(StringUnsafeTest);
             var folder = FileSys.TestFolderNonExisting().FullName;
             const string ext = "json";
 

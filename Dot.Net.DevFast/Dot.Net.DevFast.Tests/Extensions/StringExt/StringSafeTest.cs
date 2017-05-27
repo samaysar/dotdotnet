@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Globalization;
-using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.StringExt;
 using NUnit.Framework;
 
 namespace Dot.Net.DevFast.Tests.Extensions.StringExt
 {
     [TestFixture]
-    public class StringSafeOpsTest
+    public class StringSafeTest
     {
         [Test]
         [TestCase(null, "")]

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-
-namespace Dot.Net.DevFast.Etc
+﻿namespace Dot.Net.DevFast.Etc
 {
     /// <summary>
     /// Provides fixed values.

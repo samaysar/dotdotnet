@@ -50,9 +50,10 @@
     <Compile Include="Etc\DdnException.cs" />
     <Compile Include="Etc\StdLookUps.cs" />
     <Compile Include="Extensions\FileSysExts.cs" />
-    <Compile Include="Extensions\StringExt\StringSafeOps.cs" />
+    <Compile Include="Extensions\StreamExt\Base64Ext.cs" />
+    <Compile Include="Extensions\StringExt\StringSafe.cs" />
     <Compile Include="Extensions\StringExt\StringTryTo.cs" />
-    <Compile Include="Extensions\StringExt\StringUnsafeOps.cs" />
+    <Compile Include="Extensions\StringExt\StringUnsafe.cs" />
     <Compile Include="Extensions\ThrowIfPredicate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.IO;
 using Dot.Net.DevFast.Etc;
@@ -9,13 +8,13 @@ namespace Dot.Net.DevFast.Extensions.StringExt
     /// <summary>
     /// Extension method on UnSafe (possible exception or invalid results) string operations
     /// </summary>
-    public static class StringUnsafeOps
+    public static class StringUnsafe
     {
         /// <summary>
         /// Trims string when not null else throws error (another way to avoid <seealso cref="NullReferenceException"/>)
-        /// <para>Also check <seealso cref="StringSafeOps.TrimSafeOrEmpty"/>, 
-        /// <seealso cref="StringSafeOps.TrimSafeOrNull"/> and 
-        /// <seealso cref="StringSafeOps.TrimSafeOrDefault"/></para>
+        /// <para>Also check <seealso cref="StringSafe.TrimSafeOrEmpty"/>, 
+        /// <seealso cref="StringSafe.TrimSafeOrNull"/> and 
+        /// <seealso cref="StringSafe.TrimSafeOrDefault"/></para>
         /// </summary>
         /// <param name="input">Value to trim safe</param>
         /// <param name="trimChars">optional. when not given any char set,

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 
 namespace Dot.Net.DevFast.Extensions.StringExt
@@ -238,8 +237,8 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <para>Does not validate the existence of parsed value. Could be useful when
         /// it is known for sure that the parsed value is among existing value.</para>
         /// <para>Also check <see cref="TryToEnum{T}(string,out T,bool)"/>
-        /// and <seealso cref="StringSafeOps.ToEnumOrDefault{T}"/> and 
-        /// <seealso cref="StringSafeOps.ToEnumUncheckedOrDefault{T}"/> methods</para>
+        /// and <seealso cref="StringSafe.ToEnumOrDefault{T}"/> and 
+        /// <seealso cref="StringSafe.ToEnumUncheckedOrDefault{T}"/> methods</para>
         /// </summary>
         /// <param name="input">string to parse</param>
         /// <param name="value">parsed value</param>
@@ -259,8 +258,8 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// it is not certain whether the parsed value will result in existing define enum value.
         /// (example when parsing integers back to enum coming from outside)</para>
         /// <para>Also check <see cref="TryToEnumUnchecked{T}(string,out T,bool)"/>
-        /// and <seealso cref="StringSafeOps.ToEnumOrDefault{T}"/> and 
-        /// <seealso cref="StringSafeOps.ToEnumUncheckedOrDefault{T}"/> methods</para>
+        /// and <seealso cref="StringSafe.ToEnumOrDefault{T}"/> and 
+        /// <seealso cref="StringSafe.ToEnumUncheckedOrDefault{T}"/> methods</para>
         /// </summary>
         /// <param name="input">string to parse</param>
         /// <param name="value">parsed value</param>
@@ -685,8 +684,8 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <para>Does not validate the existence of parsed value. Could be useful when
         /// it is known for sure that the parsed value is among existing value.</para>
         /// <para>Also check <see cref="TryToEnum{T}(string,out T?,bool)"/>,
-        /// <seealso cref="StringSafeOps.ToEnumOrDefault{T}"/> and 
-        /// <seealso cref="StringSafeOps.ToEnumUncheckedOrDefault{T}"/> methods</para>
+        /// <seealso cref="StringSafe.ToEnumOrDefault{T}"/> and 
+        /// <seealso cref="StringSafe.ToEnumUncheckedOrDefault{T}"/> methods</para>
         /// <para>Returns true when:
         /// <list type="bullet">
         /// <item><description><paramref name="input"/> is <seealso cref="string.IsNullOrWhiteSpace"/>
@@ -719,8 +718,8 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// it is not certain whether the parsed value will result in existing define enum value.
         /// (example when parsing integers back to enum coming from outside)</para>
         /// <para>Also check <see cref="TryToEnumUnchecked{T}(string,out T?,bool)"/>
-        /// and <seealso cref="StringSafeOps.ToEnumOrDefault{T}"/> and 
-        /// <seealso cref="StringSafeOps.ToEnumUncheckedOrDefault{T}"/> methods</para>
+        /// and <seealso cref="StringSafe.ToEnumOrDefault{T}"/> and 
+        /// <seealso cref="StringSafe.ToEnumUncheckedOrDefault{T}"/> methods</para>
         /// <para>Returns true when:
         /// <list type="bullet">
         /// <item><description><paramref name="input"/> is <seealso cref="string.IsNullOrWhiteSpace"/>

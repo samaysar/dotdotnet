@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 
 namespace Dot.Net.DevFast.Extensions.StringExt
@@ -7,11 +6,11 @@ namespace Dot.Net.DevFast.Extensions.StringExt
     /// <summary>
     /// Extension method on Safe (non-error throwing, except GIGO) string operations
     /// </summary>
-    public static class StringSafeOps
+    public static class StringSafe
     {
         /// <summary>
         /// If value is null <seealso cref="string.Empty"/> is returned else trimmed string.
-        /// <para>Also check <seealso cref="StringUnsafeOps.TrimUnsafe"/>,
+        /// <para>Also check <seealso cref="StringUnsafe.TrimUnsafe"/>,
         /// <seealso cref="TrimSafeOrNull"/> and <seealso cref="TrimSafeOrDefault"/></para>
         /// </summary>
         /// <param name="input">Value to trim safe</param>
@@ -24,7 +23,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
 
         /// <summary>
         /// If value is null, null is returned else trimmed string.
-        /// <para>Also check <seealso cref="StringUnsafeOps.TrimUnsafe"/>,
+        /// <para>Also check <seealso cref="StringUnsafe.TrimUnsafe"/>,
         /// <seealso cref="TrimSafeOrEmpty"/> and <seealso cref="TrimSafeOrDefault"/></para>
         /// </summary>
         /// <param name="input">Value to trim safe</param>
@@ -37,7 +36,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
 
         /// <summary>
         /// If value is null <paramref name="defaultValue"/> is returned else trimmed string.
-        /// <para>Also check <seealso cref="StringUnsafeOps.TrimUnsafe"/>,
+        /// <para>Also check <seealso cref="StringUnsafe.TrimUnsafe"/>,
         /// <seealso cref="TrimSafeOrEmpty"/> and <seealso cref="TrimSafeOrNull"/></para>
         /// </summary>
         /// <param name="input">Value to trim safe</param>

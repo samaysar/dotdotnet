@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-using System.IO;
+﻿using System.IO;
 using Dot.Net.DevFast.Extensions.StringExt;
 
 namespace Dot.Net.DevFast.Extensions
