@@ -10,5 +10,10 @@
         /// Character used to join fileName and extension.
         /// </summary>
         public const char ExtSeparator = '.';
+
+        /// <summary>
+        /// Default Buffer size for stream related operations.
+        /// </summary>
+        public const int DefaultBufferSize = 1024;
     }
 }
