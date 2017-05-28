@@ -45,197 +45,133 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         }
 
         /// <summary>
-        /// Reads <paramref name="input"/> bytes and writes Base64 data on <paramref name="outputBase64Stream"/>.
-        /// <para>NOTE: <paramref name="outputBase64Stream"/> is NEITHER closed NOR disposed inside this operation.
+        /// Reads <paramref name="input"/> bytes and writes Base64 data on <paramref name="base64Stream"/>.
+        /// <para>NOTE: <paramref name="base64Stream"/> is NEITHER closed NOR disposed inside this operation.
         /// Only Flush is performed.</para>
         /// </summary>
         /// <param name="input">String to convert</param>
-        /// <param name="outputBase64Stream">Stream to write base64 data to.</param>
-        /// <param name="disposeOutput">If true, disposes <paramref name="outputBase64Stream"/> upon operation completion, else leaves it open</param>
-        /// <param name="copyBufferSize">Buffer size for stream copy operation</param>
-        public static Task ToBase64Async(this byte[] input, Stream outputBase64Stream, 
-            bool disposeOutput = true, int copyBufferSize = StdLookUps.DefaultBufferSize)
+        /// <param name="base64Stream">Stream to write base64 data to.</param>
+        /// <param name="disposeOutput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
+        public static Task ToBase64Async(this byte[] input, Stream base64Stream, 
+            bool disposeOutput = false)
         {
-            return input.ToBase64Async(outputBase64Stream, CancellationToken.None, disposeOutput, copyBufferSize);
+            return input.ToBase64Async(base64Stream, CancellationToken.None, disposeOutput);
         }
 
         /// <summary>
-        /// Reads <paramref name="input"/> bytes and writes Base64 data on <paramref name="outputBase64Stream"/>
+        /// Reads <paramref name="input"/> bytes and writes Base64 data on <paramref name="base64Stream"/>
         /// while observing <paramref name="token"/> for cancellation.
-        /// <para>NOTE: <paramref name="outputBase64Stream"/> is NEITHER closed NOR disposed inside this operation.
+        /// <para>NOTE: <paramref name="base64Stream"/> is NEITHER closed NOR disposed inside this operation.
         /// Only Flush is performed.</para>
         /// </summary>
         /// <param name="input">String to convert</param>
-        /// <param name="outputBase64Stream">Stream to write base64 data to.</param>
+        /// <param name="base64Stream">Stream to write base64 data to.</param>
         /// <param name="token">Cancellation token</param>
-        /// <param name="disposeOutput">If true, disposes <paramref name="outputBase64Stream"/> upon operation completion, else leaves it open</param>
-        /// <param name="copyBufferSize">Buffer size for stream copy operation</param>
-        public static Task ToBase64Async(this byte[] input, Stream outputBase64Stream,
-            CancellationToken token, bool disposeOutput = true, int copyBufferSize = StdLookUps.DefaultBufferSize)
+        /// <param name="disposeOutput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
+        public static Task ToBase64Async(this byte[] input, Stream base64Stream, CancellationToken token,
+            bool disposeOutput = false)
         {
-            return new MemoryStream(input, false).ToBase64Async(outputBase64Stream, token, true, disposeOutput,
-                copyBufferSize);
+            return input.TransformAsync(new ToBase64Transform(), base64Stream, token, disposeOutput);
         }
 
         /// <summary>
-        /// Reads characters from <paramref name="input"/> (<paramref name="charsToRead"/> on each read iteration, use multiple of 3 to keep
-        /// writer buffer in multiple of base64 buffer) and writes Base64 data on <paramref name="outputBase64Stream"/>, 
-        /// using <paramref name="encoding"/> as encoding (if given).
+        /// Reads characters from <paramref name="input"/> and writes Base64 data on <paramref name="base64Stream"/>, 
+        /// using <paramref name="encoding"/>.
         /// </summary>
         /// <param name="input">String to convert</param>
-        /// <param name="outputBase64Stream">Stream to write base64 data to.</param>
-        /// <param name="disposeOutput">If true, disposes <paramref name="outputBase64Stream"/> upon operation completion, else leaves it open</param>
-        /// <param name="charsToRead">Chars to read per string read. Use multiple of 3 to keep writer buffer in multiple of base64 buffer</param>
+        /// <param name="base64Stream">Stream to write base64 data to.</param>
+        /// <param name="disposeOutput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
+        /// <param name="bufferSize">Buffer size for character reading</param>
         /// <param name="encoding">Encoding to use to get string bytes, if not supplied UTF8 is used</param>
-        public static Task ToBase64Async(this string input, Stream outputBase64Stream, bool disposeOutput = true, 
-            int charsToRead = 3, Encoding encoding = null)
+        public static Task ToBase64Async(this string input, Stream base64Stream, bool disposeOutput = false, 
+            int bufferSize = StdLookUps.DefaultBufferSize, Encoding encoding = null)
         {
-            return input.ToBase64Async(outputBase64Stream, CancellationToken.None, disposeOutput, charsToRead, encoding);
+            return input.ToBase64Async(base64Stream, CancellationToken.None, disposeOutput, bufferSize,
+                encoding ?? Encoding.UTF8);
         }
 
         /// <summary>
-        /// Reads characters from <paramref name="input"/> (<paramref name="charsToRead"/> on each read iteration, use multiple of 3 to keep
-        /// writer buffer in multiple of base64 buffer) and writes Base64 data on <paramref name="outputBase64Stream"/>, 
-        /// using <paramref name="encoding"/> as encoding (if given) while observing <paramref name="token"/> for cancellation.
+        /// Reads characters from <paramref name="input"/> and writes Base64 data on <paramref name="base64Stream"/>, 
+        /// using <paramref name="encoding"/>, while observing <paramref name="token"/> for cancellation.
         /// </summary>
         /// <param name="input">String to convert</param>
-        /// <param name="outputBase64Stream">Stream to write base64 data to.</param>
+        /// <param name="base64Stream">Stream to write base64 data to.</param>
         /// <param name="token">Cancellation token</param>
-        /// <param name="disposeOutput">If true, disposes <paramref name="outputBase64Stream"/> upon operation completion, else leaves it open</param>
-        /// <param name="charsToRead">Chars to read per string read. Use multiple of 3 to keep writer buffer in multiple of base64 buffer</param>
+        /// <param name="disposeOutput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
+        /// <param name="bufferSize">Buffer size for character reading</param>
         /// <param name="encoding">Encoding to use to get string bytes, if not supplied UTF8 is used</param>
-        public static async Task ToBase64Async(this string input, Stream outputBase64Stream, CancellationToken token,
-            bool disposeOutput = true, int charsToRead = 3, Encoding encoding = null)
+        public static Task ToBase64Async(this string input, Stream base64Stream, CancellationToken token,
+            bool disposeOutput = false, int bufferSize = StdLookUps.DefaultBufferSize, Encoding encoding = null)
         {
-            using (var strReader = new StringReader(input))
-            {
-                using (var transform = new ToBase64Transform())
-                {
-                    using (var outputWrapper = new WrappedStream(outputBase64Stream, disposeOutput))
-                    {
-                        using (var base64Writer = new CryptoStream(outputWrapper, transform,
-                            CryptoStreamMode.Write))
-                        {
-                            var charArr = new char[charsToRead];
-                            var enc = encoding ?? Encoding.UTF8;
-                            var bytes = new byte[enc.GetMaxByteCount(charsToRead)];
-                            int charCnt;
-                            while ((charCnt = strReader.Read(charArr, 0, charsToRead)) != 0)
-                            {
-                                var byteSize = enc.GetBytes(charArr, 0, charCnt, bytes, 0);
-                                await base64Writer.WriteAsync(bytes, 0, byteSize, token).ConfigureAwait(false);
-                            }
-                        }
-                    }
-                }
-            }
+            return input.TransformAsync(new ToBase64Transform(), base64Stream, token, disposeOutput, bufferSize,
+                encoding ?? Encoding.UTF8);
         }
 
         /// <summary>
-        /// Reads characters from <paramref name="input"/> (<paramref name="charsToRead"/> on each read iteration, use multiple of 3 to keep
-        /// writer buffer in multiple of base64 buffer) and writes Base64 data on <paramref name="outputBase64Stream"/>, 
-        /// using <paramref name="encoding"/> as encoding (if given).
+        /// Reads characters from <paramref name="input"/> and writes Base64 data on <paramref name="base64Stream"/>, 
+        /// using <paramref name="encoding"/>.
         /// </summary>
         /// <param name="input">String to convert</param>
-        /// <param name="outputBase64Stream">Stream to write base64 data to.</param>
-        /// <param name="disposeOutput">If true, disposes <paramref name="outputBase64Stream"/> upon operation completion, else leaves it open</param>
-        /// <param name="charsToRead">Chars to read per string read. Use multiple of 3 to keep writer buffer in multiple of base64 buffer</param>
+        /// <param name="base64Stream">Stream to write base64 data to.</param>
+        /// <param name="disposeOutput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
+        /// <param name="bufferSize">Buffer size for character reading</param>
         /// <param name="encoding">Encoding to use to get string bytes, if not supplied UTF8 is used</param>
-        public static Task ToBase64Async(this StringBuilder input, Stream outputBase64Stream,
-            bool disposeOutput = true, int charsToRead = 3, Encoding encoding = null)
+        public static Task ToBase64Async(this StringBuilder input, Stream base64Stream,
+            bool disposeOutput = false, int bufferSize = StdLookUps.DefaultBufferSize, Encoding encoding = null)
         {
-            return input.ToBase64Async(outputBase64Stream, CancellationToken.None, disposeOutput, charsToRead, encoding);
+            return input.ToBase64Async(base64Stream, CancellationToken.None, disposeOutput, bufferSize,
+                encoding ?? Encoding.UTF8);
         }
 
         /// <summary>
-        /// Reads characters from <paramref name="input"/> (<paramref name="charsToRead"/> on each read iteration, use multiple of 3 to keep
-        /// writer buffer in multiple of base64 buffer) and writes Base64 data on <paramref name="outputBase64Stream"/>, 
-        /// using <paramref name="encoding"/> as encoding (if given) while observing <paramref name="token"/> for cancellation.
+        /// Reads characters from <paramref name="input"/> and writes Base64 data on <paramref name="base64Stream"/>, 
+        /// using <paramref name="encoding"/>, while observing <paramref name="token"/> for cancellation.
         /// </summary>
         /// <param name="input">String to convert</param>
-        /// <param name="outputBase64Stream">Stream to write base64 data to.</param>
+        /// <param name="base64Stream">Stream to write base64 data to.</param>
         /// <param name="token">Cancellation token</param>
-        /// <param name="disposeOutput">If true, disposes <paramref name="outputBase64Stream"/> upon operation completion, else leaves it open</param>
-        /// <param name="charsToRead">Chars to read per string read. Use multiple of 3 to keep writer buffer in multiple of base64 buffer</param>
+        /// <param name="disposeOutput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
+        /// <param name="bufferSize">Buffer size for character reading</param>
         /// <param name="encoding">Encoding to use to get string bytes, if not supplied UTF8 is used</param>
-        public static async Task ToBase64Async(this StringBuilder input, Stream outputBase64Stream,
-            CancellationToken token, bool disposeOutput = true, int charsToRead = 3, 
+        public static Task ToBase64Async(this StringBuilder input, Stream base64Stream,
+            CancellationToken token, bool disposeOutput = false, int bufferSize = StdLookUps.DefaultBufferSize, 
             Encoding encoding = null)
         {
-            using (var transform = new ToBase64Transform())
-            {
-                using (var outputWrapper = new WrappedStream(outputBase64Stream, disposeOutput))
-                {
-                    using (var base64Writer = new CryptoStream(outputWrapper, transform,
-                        CryptoStreamMode.Write))
-                    {
-                        var charArr = new char[charsToRead];
-                        var enc = encoding ?? Encoding.UTF8;
-                        var bytes = new byte[enc.GetMaxByteCount(charsToRead)];
-                        int pos = 0, posFrwd = charsToRead, len = input.Length;
-                        while (posFrwd <= len)
-                        {
-                            input.CopyTo(pos, charArr, 0, charsToRead);
-                            var byteSize = enc.GetBytes(charArr, 0, charsToRead, bytes, 0);
-                            await base64Writer.WriteAsync(bytes, 0, byteSize, token).ConfigureAwait(false);
-                            pos = posFrwd;
-                            posFrwd += charsToRead;
-                        }
-                        if (pos < len)
-                        {
-                            input.CopyTo(pos, charArr, 0, (len - pos));
-                            var byteSize = enc.GetBytes(charArr, 0, (len - pos), bytes, 0);
-                            await base64Writer.WriteAsync(bytes, 0, byteSize, token).ConfigureAwait(false);
-                        }
-                    }
-                }
-            }
+            return input.TransformAsync(new ToBase64Transform(), base64Stream, token, disposeOutput, bufferSize,
+                encoding ?? Encoding.UTF8);
         }
 
         /// <summary>
-        /// Reads from <paramref name="inputStream"/> and writes Base64 data on <paramref name="outputBase64Stream"/>.
+        /// Reads from <paramref name="inputStream"/> and writes Base64 data on <paramref name="base64Stream"/>.
         /// </summary>
         /// <param name="inputStream">Stream to read from</param>
-        /// <param name="outputBase64Stream">Stream to write base64 data to.</param>
+        /// <param name="base64Stream">Stream to write base64 data to.</param>
         /// <param name="disposeInput">If true, disposes <paramref name="inputStream"/> upon operation completion, else leaves it open</param>
-        /// <param name="disposeOutput">If true, disposes <paramref name="outputBase64Stream"/> upon operation completion, else leaves it open</param>
+        /// <param name="disposeOutput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
         /// <param name="copyBufferSize">Buffer size for stream copy operation</param>
-        public static Task ToBase64Async(this Stream inputStream, Stream outputBase64Stream,
-            bool disposeInput = true, bool disposeOutput = true, int copyBufferSize = StdLookUps.DefaultBufferSize)
+        public static Task ToBase64Async(this Stream inputStream, Stream base64Stream,
+            bool disposeInput = false, bool disposeOutput = false, int copyBufferSize = StdLookUps.DefaultBufferSize)
         {
-            return inputStream.ToBase64Async(outputBase64Stream, CancellationToken.None, disposeInput, disposeOutput,
+            return inputStream.ToBase64Async(base64Stream, CancellationToken.None, disposeInput, disposeOutput,
                 copyBufferSize);
         }
 
         /// <summary>
-        /// Reads from <paramref name="inputStream"/> and writes Base64 data on <paramref name="outputBase64Stream"/>,
+        /// Reads from <paramref name="inputStream"/> and writes Base64 data on <paramref name="base64Stream"/>,
         /// while observing <paramref name="token"/>.
         /// </summary>
         /// <param name="inputStream">Stream to read from</param>
-        /// <param name="outputBase64Stream">Stream to write base64 data to.</param>
+        /// <param name="base64Stream">Stream to write base64 data to.</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="disposeInput">If true, disposes <paramref name="inputStream"/> upon operation completion, else leaves it open</param>
-        /// <param name="disposeOutput">If true, disposes <paramref name="outputBase64Stream"/> upon operation completion, else leaves it open</param>
+        /// <param name="disposeOutput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
         /// <param name="copyBufferSize">Buffer size for stream copy operation</param>
-        public static async Task ToBase64Async(this Stream inputStream, Stream outputBase64Stream,
-            CancellationToken token, bool disposeInput = true, bool disposeOutput = true,
+        public static Task ToBase64Async(this Stream inputStream, Stream base64Stream,
+            CancellationToken token, bool disposeInput = false, bool disposeOutput = false,
             int copyBufferSize = StdLookUps.DefaultBufferSize)
         {
-            using (var transform = new ToBase64Transform())
-            {
-                using (var outputWrapper = new WrappedStream(outputBase64Stream, disposeOutput))
-                {
-                    using (var base64Writer = new CryptoStream(outputWrapper, transform, CryptoStreamMode.Write))
-                    {
-                        using (var inputWrapper = new WrappedStream(inputStream, disposeInput))
-                        {
-                            await inputWrapper.CopyToAsync(base64Writer, copyBufferSize, token).ConfigureAwait(false);
-                            await base64Writer.FlushAsync(token).ConfigureAwait(false);
-                            await outputWrapper.FlushAsync(token).ConfigureAwait(false);
-                        }
-                    }
-                }
-            }
+            return inputStream.TransformAsync(new ToBase64Transform(), base64Stream, token, disposeInput,
+                disposeOutput, copyBufferSize);
         }
 
         /// <summary>
