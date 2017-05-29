@@ -61,6 +61,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
                         await inputWrapper.CopyToAsync(transformer, copyBufferSize, token).ConfigureAwait(false);
                         await transformer.FlushAsync(token).ConfigureAwait(false);
                         await outputWrapper.FlushAsync(token).ConfigureAwait(false);
+                        await streamToWrite.FlushAsync(token).ConfigureAwait(false);
                     }
                 }
             }
