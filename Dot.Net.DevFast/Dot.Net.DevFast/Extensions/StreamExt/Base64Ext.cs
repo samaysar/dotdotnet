@@ -76,7 +76,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
             return Convert.FromBase64String(base64);
         }
 
-        //--------------------------------------------------------------------------------------------------To do above
+        //---------------------To do above
 
         /// <summary>
         /// Reads <paramref name="input"/> bytes and writes Base64 data on <paramref name="base64Stream"/>.
@@ -86,7 +86,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="input">String to convert</param>
         /// <param name="base64Stream">Stream to write base64 data to.</param>
         /// <param name="disposeOutput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
-        public static Task ToBase64Async(this byte[] input, Stream base64Stream, 
+        public static Task ToBase64Async(this byte[] input, Stream base64Stream,
             bool disposeOutput = false)
         {
             return input.ToBase64Async(base64Stream, CancellationToken.None, disposeOutput);
@@ -115,13 +115,13 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="input">String to convert</param>
         /// <param name="base64Stream">Stream to write base64 data to.</param>
         /// <param name="disposeOutput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
-        /// <param name="bufferSize">Buffer size for character reading</param>
         /// <param name="encoding">Encoding to use to get string bytes, if not supplied UTF8 is used</param>
-        public static Task ToBase64Async(this string input, Stream base64Stream, bool disposeOutput = false, 
-            int bufferSize = StdLookUps.DefaultBufferSize, Encoding encoding = null)
+        /// <param name="bufferSize">Buffer size</param>
+        public static Task ToBase64Async(this string input, Stream base64Stream, bool disposeOutput = false,
+            Encoding encoding = null, int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            return input.ToBase64Async(base64Stream, CancellationToken.None, disposeOutput, bufferSize,
-                encoding ?? Encoding.UTF8);
+            return input.ToBase64Async(base64Stream, CancellationToken.None, disposeOutput,
+                encoding ?? Encoding.UTF8, bufferSize);
         }
 
         /// <summary>
@@ -132,13 +132,14 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="base64Stream">Stream to write base64 data to.</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="disposeOutput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
-        /// <param name="bufferSize">Buffer size for character reading</param>
         /// <param name="encoding">Encoding to use to get string bytes, if not supplied UTF8 is used</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static Task ToBase64Async(this string input, Stream base64Stream, CancellationToken token,
-            bool disposeOutput = false, int bufferSize = StdLookUps.DefaultBufferSize, Encoding encoding = null)
+            bool disposeOutput = false, Encoding encoding = null, 
+            int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            return input.TransformAsync(new ToBase64Transform(), base64Stream, token, disposeOutput, bufferSize,
-                encoding ?? Encoding.UTF8);
+            return input.TransformAsync(new ToBase64Transform(), base64Stream, token, disposeOutput,
+                encoding ?? Encoding.UTF8, bufferSize);
         }
 
         /// <summary>
@@ -148,13 +149,14 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="input">String to convert</param>
         /// <param name="base64Stream">Stream to write base64 data to.</param>
         /// <param name="disposeOutput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
-        /// <param name="bufferSize">Buffer size for character reading</param>
         /// <param name="encoding">Encoding to use to get string bytes, if not supplied UTF8 is used</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static Task ToBase64Async(this StringBuilder input, Stream base64Stream,
-            bool disposeOutput = false, int bufferSize = StdLookUps.DefaultBufferSize, Encoding encoding = null)
+            bool disposeOutput = false, Encoding encoding = null,
+            int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            return input.ToBase64Async(base64Stream, CancellationToken.None, disposeOutput, bufferSize,
-                encoding ?? Encoding.UTF8);
+            return input.ToBase64Async(base64Stream, CancellationToken.None, disposeOutput,
+                encoding ?? Encoding.UTF8, bufferSize);
         }
 
         /// <summary>
@@ -165,14 +167,14 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="base64Stream">Stream to write base64 data to.</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="disposeOutput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
-        /// <param name="bufferSize">Buffer size for character reading</param>
         /// <param name="encoding">Encoding to use to get string bytes, if not supplied UTF8 is used</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static Task ToBase64Async(this StringBuilder input, Stream base64Stream,
-            CancellationToken token, bool disposeOutput = false, int bufferSize = StdLookUps.DefaultBufferSize, 
-            Encoding encoding = null)
+            CancellationToken token, bool disposeOutput = false, Encoding encoding = null,
+            int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            return input.TransformAsync(new ToBase64Transform(), base64Stream, token, disposeOutput, bufferSize,
-                encoding ?? Encoding.UTF8);
+            return input.TransformAsync(new ToBase64Transform(), base64Stream, token, disposeOutput,
+                encoding ?? Encoding.UTF8, bufferSize);
         }
 
         /// <summary>
@@ -182,7 +184,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="base64Stream">Stream to write base64 data to.</param>
         /// <param name="disposeInput">If true, disposes <paramref name="inputStream"/> upon operation completion, else leaves it open</param>
         /// <param name="disposeOutput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
-        /// <param name="bufferSize">Buffer size for stream copy operation</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static Task ToBase64Async(this Stream inputStream, Stream base64Stream,
             bool disposeInput = false, bool disposeOutput = false, int bufferSize = StdLookUps.DefaultBufferSize)
         {
@@ -199,7 +201,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="token">Cancellation token</param>
         /// <param name="disposeInput">If true, disposes <paramref name="inputStream"/> upon operation completion, else leaves it open</param>
         /// <param name="disposeOutput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
-        /// <param name="bufferSize">Buffer size for stream copy operation</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static Task ToBase64Async(this Stream inputStream, Stream base64Stream,
             CancellationToken token, bool disposeInput = false, bool disposeOutput = false,
             int bufferSize = StdLookUps.DefaultBufferSize)
@@ -217,7 +219,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="mode">transformation mode to use</param>
         /// <param name="disposeInput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
         /// <param name="disposeOutput">If true, disposes <paramref name="decodedStream"/> upon operation completion, else leaves it open</param>
-        /// <param name="bufferSize">Buffer size for stream copy operation</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static Task FromBase64Async(this Stream base64Stream, Stream decodedStream,
             FromBase64TransformMode mode = FromBase64TransformMode.IgnoreWhiteSpaces,
             bool disposeInput = false, bool disposeOutput = false, int bufferSize = StdLookUps.DefaultBufferSize)
@@ -236,7 +238,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="mode">transformation mode to use</param>
         /// <param name="disposeInput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
         /// <param name="disposeOutput">If true, disposes <paramref name="decodedStream"/> upon operation completion, else leaves it open</param>
-        /// <param name="bufferSize">Buffer size for stream copy operation</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static Task FromBase64Async(this Stream base64Stream, Stream decodedStream,
             CancellationToken token, FromBase64TransformMode mode = FromBase64TransformMode.IgnoreWhiteSpaces,
             bool disposeInput = false, bool disposeOutput = false, int bufferSize = StdLookUps.DefaultBufferSize)
@@ -244,5 +246,46 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
             return base64Stream.TransformAsync(new FromBase64Transform(mode), decodedStream, token, disposeInput,
                 disposeOutput, bufferSize);
         }
+
+        /// <summary>
+        /// Reads Base64 data from <paramref name="base64Stream"/> and appends decoded string to <paramref name="appendTo"/>,
+        /// with <paramref name="bufferSize"/>.
+        /// </summary>
+        /// <param name="base64Stream">Stream to read Base64 data from</param>
+        /// <param name="appendTo">Stream to write decoded data to</param>
+        /// <param name="mode">transformation mode to use</param>
+        /// <param name="disposeInput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
+        /// <param name="encoding">Encoding to use to get string bytes, if not supplied UTF8 is used</param>
+        /// <param name="bufferSize">Buffer size</param>
+        public static Task FromBase64Async(this Stream base64Stream, StringBuilder appendTo,
+            FromBase64TransformMode mode = FromBase64TransformMode.IgnoreWhiteSpaces,
+            bool disposeInput = false, Encoding encoding = null,
+            int bufferSize = StdLookUps.DefaultBufferSize)
+        {
+            return base64Stream.FromBase64Async(appendTo, CancellationToken.None, mode, disposeInput,
+                encoding ?? Encoding.UTF8, bufferSize);
+        }
+
+        /// <summary>
+        /// Reads Base64 data from <paramref name="base64Stream"/> and appends decoded string to <paramref name="appendTo"/>,
+        /// with <paramref name="bufferSize"/>, while observing <paramref name="token"/>.
+        /// </summary>
+        /// <param name="base64Stream">Stream to read Base64 data from</param>
+        /// <param name="appendTo">Stream to write decoded data to</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="mode">transformation mode to use</param>
+        /// <param name="disposeInput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
+        /// <param name="encoding">Encoding to use to get string bytes, if not supplied UTF8 is used</param>
+        /// <param name="bufferSize">Buffer size</param>
+        public static Task FromBase64Async(this Stream base64Stream, StringBuilder appendTo, CancellationToken token,
+            FromBase64TransformMode mode = FromBase64TransformMode.IgnoreWhiteSpaces,
+            bool disposeInput = false, Encoding encoding = null,
+            int bufferSize = StdLookUps.DefaultBufferSize)
+        {
+            return base64Stream.TransformAsync(new FromBase64Transform(mode), appendTo, token, disposeInput,
+                encoding ?? Encoding.UTF8, bufferSize);
+        }
+
+
     }
 }
