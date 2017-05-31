@@ -9,7 +9,8 @@ namespace Dot.Net.DevFast.Extensions
     public static class FileSysExts
     {
         /// <summary>
-        /// Returns a new <seealso cref="FileInfo"/> instance after combining <paramref name="filename"/>.<paramref name="extension"/>
+        /// Returns a new <seealso cref="FileInfo"/> instance (file is physically NOT created)
+        /// after combining <paramref name="filename"/>.<paramref name="extension"/>
         /// to <seealso cref="FileSystemInfo.FullName"/> of the <paramref name="folderInfo"/>.
         /// <para>Expect all <seealso cref="FileInfo"/> related errors.</para>
         /// </summary>
@@ -22,7 +23,8 @@ namespace Dot.Net.DevFast.Extensions
         }
 
         /// <summary>
-        /// Returns a new <seealso cref="FileInfo"/> instance after combining <paramref name="filenameWithExt"/>
+        /// Returns a new <seealso cref="FileInfo"/> instance (file is physically NOT created)
+        /// after combining <paramref name="filenameWithExt"/>
         /// to <seealso cref="FileSystemInfo.FullName"/> of the <paramref name="folderInfo"/>.
         /// <para>Expect all <seealso cref="FileInfo"/> related errors.</para>
         /// </summary>
