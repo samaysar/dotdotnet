@@ -43,7 +43,7 @@
   <ItemGroup>
     <Compile Include="Etc\DdnDfExceptionTest.cs" />
     <Compile Include="Etc\StdLookUpsTest.cs" />
-    <Compile Include="Extensions\FileSysExtsTest.cs" />
+    <Compile Include="Extensions\CreateExtsTest.cs" />
     <Compile Include="Extensions\StringExt\StringSafeTest.cs" />
     <Compile Include="Extensions\StringExt\StringTryToTest.cs" />
     <Compile Include="Extensions\StringExt\StringUnsafeTest.cs" />

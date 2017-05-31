@@ -49,8 +49,7 @@
     <Compile Include="Etc\DdnDfException.cs" />
     <Compile Include="Etc\DdnException.cs" />
     <Compile Include="Etc\StdLookUps.cs" />
-    <Compile Include="Extensions\ConversionExt.cs" />
-    <Compile Include="Extensions\FileSysExts.cs" />
+    <Compile Include="Extensions\CreateExts.cs" />
     <Compile Include="Extensions\StreamExt\Base64Ext.cs" />
     <Compile Include="Extensions\StreamExt\CryptoStreamExt.cs" />
     <Compile Include="Extensions\StreamExt\WrapperStream.cs" />

@@ -10,6 +10,7 @@ namespace Dot.Net.DevFast.Tests.Etc
         public void Values_Are_Consistent()
         {
             Assert.True(StdLookUps.ExtSeparator.Equals('.'));
+            Assert.True(StdLookUps.DefaultBufferSize.Equals(1024));
         }
     }
 }
