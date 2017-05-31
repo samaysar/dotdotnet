@@ -128,12 +128,12 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
                 using (var transformer = new CryptoStream(inputWrapper, transform,
                     CryptoStreamMode.Read))
                 {
-                    using (var memBuff = new MemoryStream())
+                    using (var localBuffer = new MemoryStream())
                     {
-                        await transformer.CopyToAsync(memBuff, bufferSize, token).ConfigureAwait(false);
-                        if (memBuff.TryGetBuffer(out ArraySegment<byte> buffer)) return buffer;
+                        await transformer.CopyToAsync(localBuffer, bufferSize, token).ConfigureAwait(false);
+                        if (localBuffer.TryGetBuffer(out ArraySegment<byte> buffer)) return buffer;
                         throw new UnauthorizedAccessException("Something horribly went wrong with" +
-                                                              $" {nameof(memBuff)}");
+                                                              $" {nameof(localBuffer)} implementation");
                     }
                 }
             }
