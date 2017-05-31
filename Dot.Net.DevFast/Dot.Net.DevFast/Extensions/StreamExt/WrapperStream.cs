@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dot.Net.DevFast.Extensions.StreamExt
 {
-    internal sealed class WrappedStream : Stream
+    internal class WrappedStream : Stream
     {
         private readonly Stream _stream;
         private readonly bool _dispose;
@@ -72,11 +72,6 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
         {
             return _stream.CopyToAsync(destination, bufferSize, cancellationToken);
-        }
-
-        public override void Close()
-        {
-            if(_dispose) _stream.Close();
         }
 
         public override Task FlushAsync(CancellationToken cancellationToken)
@@ -146,6 +141,11 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         {
             get { return _stream.WriteTimeout; }
             set { _stream.WriteTimeout = value; }
+        }
+
+        public override void Close()
+        {
+            if (_dispose) _stream.Close();
         }
 
         protected override void Dispose(bool disposing)
