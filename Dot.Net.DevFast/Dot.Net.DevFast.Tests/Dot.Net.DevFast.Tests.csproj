@@ -53,6 +53,7 @@
     <Compile Include="Etc\DdnDfExceptionTest.cs" />
     <Compile Include="Etc\StdLookUpsTest.cs" />
     <Compile Include="Extensions\CreateExtsTest.cs" />
+    <Compile Include="Extensions\StreamExt\Base64ExtTest.cs" />
     <Compile Include="Extensions\StreamExt\WrappedStreamTest.cs" />
     <Compile Include="Extensions\StringExt\StringSafeTest.cs" />
     <Compile Include="Extensions\StringExt\StringTryToTest.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Extensions\ThrowIfPredicateTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelpers\FileSys.cs" />
+    <Compile Include="TestHelpers\TestValues.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dot.Net.DevFast\Dot.Net.DevFast.csproj">
