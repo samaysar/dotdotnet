@@ -64,7 +64,8 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// </summary>
         /// <param name="base64">Base64 string</param>
         /// <param name="encoding">Encoding to use during byte to string transformations.
-        /// <para>If null is supplied then encoding is detected from byte order mark.</para></param>
+        /// <para>If null is supplied then encoding is detected from byte order mark, 
+        /// if at all it is present, else UTF-7 encoding is used.</para></param>
         public static string FromBase64(this string base64, Encoding encoding)
         {
             if (encoding != null)
@@ -73,7 +74,8 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
             }
             using (var memStrm = new MemoryStream(base64.FromBase64()))
             {
-                using (var reader = new StreamReader(memStrm, true))
+                //default we keep UTF-& as it has no preamble
+                using (var reader = new StreamReader(memStrm, Encoding.UTF7, true))
                 {
                     return reader.ReadToEnd();
                 }
