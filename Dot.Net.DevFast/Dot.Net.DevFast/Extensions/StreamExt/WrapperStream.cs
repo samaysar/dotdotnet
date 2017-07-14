@@ -17,6 +17,30 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
             _dispose = dispose;
         }
 
+        public override bool CanRead => _stream.CanRead;
+        public override bool CanSeek => _stream.CanSeek;
+        public override bool CanWrite => _stream.CanWrite;
+        public override bool CanTimeout => _stream.CanTimeout;
+        public override long Length => _stream.Length;
+
+        public override long Position
+        {
+            get { return _stream.Position; }
+            set { _stream.Position = value; }
+        }
+
+        public override int WriteTimeout
+        {
+            get { return _stream.WriteTimeout; }
+            set { _stream.WriteTimeout = value; }
+        }
+
+        public override int ReadTimeout
+        {
+            get { return _stream.ReadTimeout; }
+            set { _stream.ReadTimeout = value; }
+        }
+
         public override void Flush()
         {
             _stream.Flush();
@@ -40,17 +64,6 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         public override void Write(byte[] buffer, int offset, int count)
         {
             _stream.Write(buffer, offset, count);
-        }
-
-        public override bool CanRead => _stream.CanRead;
-        public override bool CanSeek => _stream.CanSeek;
-        public override bool CanWrite => _stream.CanWrite;
-        public override long Length => _stream.Length;
-
-        public override long Position
-        {
-            get { return _stream.Position; }
-            set { _stream.Position = value; }
         }
 
         public override bool Equals(object obj)
@@ -89,17 +102,17 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
             return _stream.ReadAsync(buffer, offset, count, cancellationToken);
         }
 
-        public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+        public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback,
+            object state)
         {
             return _stream.BeginRead(buffer, offset, count, callback, state);
         }
 
-        public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+        public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback,
+            object state)
         {
             return _stream.BeginWrite(buffer, offset, count, callback, state);
         }
-
-        public override bool CanTimeout => _stream.CanTimeout;
 
         public override ObjRef CreateObjRef(Type requestedType)
         {
@@ -126,31 +139,24 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
             return _stream.ReadByte();
         }
 
-        public override int ReadTimeout
-        {
-            get { return _stream.ReadTimeout; }
-            set { _stream.ReadTimeout = value; }
-        }
-
         public override void WriteByte(byte value)
         {
             _stream.WriteByte(value);
         }
 
-        public override int WriteTimeout
-        {
-            get { return _stream.WriteTimeout; }
-            set { _stream.WriteTimeout = value; }
-        }
-
         public override void Close()
         {
-            if (_dispose) _stream.Close();
+            Dispose(true);
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && _dispose) _stream.Dispose();
+            if (disposing && _dispose)
+            {
+                using (_stream)
+                {
+                }
+            }
         }
     }
 }

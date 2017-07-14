@@ -133,7 +133,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
                         await transformer.CopyToAsync(localBuffer, bufferSize, token).ConfigureAwait(false);
                         if (localBuffer.TryGetBuffer(out ArraySegment<byte> buffer)) return buffer;
                         throw new UnauthorizedAccessException("Something horribly went wrong with" +
-                                                              $" {nameof(localBuffer)} implementation");
+                                                              $" {nameof(MemoryStream)} implementation");
                     }
                 }
             }
