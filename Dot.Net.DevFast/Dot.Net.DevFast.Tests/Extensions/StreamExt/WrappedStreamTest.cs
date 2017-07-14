@@ -1,5 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.Remoting;
+using System.Threading;
+using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions.StreamExt;
 using NSubstitute;
 using NUnit.Framework;
@@ -85,6 +88,75 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
 
                 var str = wrprstrm.ToString();
                 str = strm.Received(1).ToString();
+            }
+        }
+
+        [Test]
+        public async Task Parameterized_Methods_Are_Properly_Wrapped()
+        {
+            var strm = Substitute.For<Stream>();
+            using (var wrprstrm = new WrappedStream(strm, false))
+            {
+                wrprstrm.Seek(0, SeekOrigin.Current);
+                strm.Received(1).Seek(0, SeekOrigin.Current);
+
+                wrprstrm.SetLength(10);
+                strm.Received(1).SetLength(10);
+
+                var arrByte = new byte[5];
+                wrprstrm.Read(arrByte, 0, arrByte.Length);
+                strm.Received(1).Read(arrByte, 0, arrByte.Length);
+
+                wrprstrm.Write(arrByte, 0, arrByte.Length);
+                strm.Received(1).Write(arrByte, 0, arrByte.Length);
+
+                var anotherStrm = new MemoryStream();
+                await wrprstrm.CopyToAsync(anotherStrm, 1, CancellationToken.None).ConfigureAwait(false);
+                await strm.Received(1).CopyToAsync(anotherStrm, 1, CancellationToken.None).ConfigureAwait(false);
+
+                await wrprstrm.FlushAsync(CancellationToken.None).ConfigureAwait(false);
+                await strm.Received(1).FlushAsync(CancellationToken.None).ConfigureAwait(false);
+
+                await wrprstrm.WriteAsync(arrByte, 1, arrByte.Length, CancellationToken.None).ConfigureAwait(false);
+                await strm.Received(1)
+                    .WriteAsync(arrByte, 1, arrByte.Length, CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                await wrprstrm.ReadAsync(arrByte, 1, arrByte.Length, CancellationToken.None).ConfigureAwait(false);
+                await strm.Received(1)
+                    .ReadAsync(arrByte, 1, arrByte.Length, CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                var cb = new AsyncCallback(ar => { });
+                var result = wrprstrm.BeginRead(arrByte, 0, arrByte.Length, cb, null);
+                strm.Received(1).BeginRead(arrByte, 0, arrByte.Length, cb, null);
+
+                wrprstrm.BeginWrite(arrByte, 0, arrByte.Length, cb, null);
+                strm.Received(1).BeginWrite(arrByte, 0, arrByte.Length, cb, null);
+
+#if FEATURE_REMOTING
+                wrprstrm.CreateObjRef(null);
+                strm.Received(1).CreateObjRef(null);
+
+                wrprstrm.InitializeLifetimeService();
+                strm.Received(1).InitializeLifetimeService();
+#else
+                Assert.True(Assert.Throws<RemotingException>(() => wrprstrm.CreateObjRef(null))
+                    .Message.Equals(WrappedStream.RemotingErrorTxt));
+                Assert.True(Assert.Throws<RemotingException>(() => wrprstrm.InitializeLifetimeService())
+                    .Message.Equals(WrappedStream.RemotingErrorTxt));
+#endif
+                wrprstrm.EndRead(result);
+                strm.Received(1).EndRead(result);
+
+                wrprstrm.EndWrite(result);
+                strm.Received(1).EndWrite(result);
+
+                wrprstrm.WriteByte(20);
+                strm.Received(1).WriteByte(20);
+
+                wrprstrm.Equals(null);
+                strm.Received(1).Equals(null);
             }
         }
     }

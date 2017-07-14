@@ -8,6 +8,8 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
 {
     internal class WrappedStream : Stream
     {
+        public const string RemotingErrorTxt = "Remoting feature is inactive";
+
         private readonly Stream _stream;
         private readonly bool _dispose;
 
@@ -119,10 +121,31 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
             return _stream.BeginWrite(buffer, offset, count, callback, state);
         }
 
+#if FEATURE_REMOTING
+
         public override ObjRef CreateObjRef(Type requestedType)
         {
             return _stream.CreateObjRef(requestedType);
         }
+
+        public override object InitializeLifetimeService()
+        {
+            return _stream.InitializeLifetimeService();
+        }
+
+#else
+
+        public override ObjRef CreateObjRef(Type requestedType)
+        {
+            throw new RemotingException(RemotingErrorTxt);
+        }
+
+        public override object InitializeLifetimeService()
+        {
+            throw new RemotingException(RemotingErrorTxt);
+        }
+
+#endif
 
         public override int EndRead(IAsyncResult asyncResult)
         {
@@ -132,11 +155,6 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         public override void EndWrite(IAsyncResult asyncResult)
         {
             _stream.EndWrite(asyncResult);
-        }
-
-        public override object InitializeLifetimeService()
-        {
-            return _stream.InitializeLifetimeService();
         }
 
         public override void WriteByte(byte value)
