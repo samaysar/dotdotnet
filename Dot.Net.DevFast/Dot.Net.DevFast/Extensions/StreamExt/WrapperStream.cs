@@ -46,6 +46,21 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
             _stream.Flush();
         }
 
+        public override int GetHashCode()
+        {
+            return _stream.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return _stream.ToString();
+        }
+
+        public override int ReadByte()
+        {
+            return _stream.ReadByte();
+        }
+
         public override long Seek(long offset, SeekOrigin origin)
         {
             return _stream.Seek(offset, origin);
@@ -70,16 +85,6 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         {
             var objAsWrapper = obj as WrappedStream;
             return _stream.Equals(objAsWrapper != null ? objAsWrapper._stream : obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return _stream.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return _stream.ToString();
         }
 
         public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
@@ -132,11 +137,6 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         public override object InitializeLifetimeService()
         {
             return _stream.InitializeLifetimeService();
-        }
-
-        public override int ReadByte()
-        {
-            return _stream.ReadByte();
         }
 
         public override void WriteByte(byte value)
