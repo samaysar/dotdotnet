@@ -17,6 +17,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
 
         /// <summary>
         /// Converts the input string to Base64 string.
+        /// <para>Ecoding's Preamable is NOT injected</para>
         /// </summary>
         /// <param name="input">UTF8 string</param>
         /// <param name="options">Options to use for the transformation</param>
@@ -29,6 +30,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
 
         /// <summary>
         /// Converts the whole <paramref name="input"/> array to Base64 string.
+        /// <para>Ecoding's Preamable is NOT injected</para>
         /// <para>Refer to <see cref="ToBase64(ArraySegment{byte},Base64FormattingOptions)"/> to perform
         /// conversion on a segment of the array</para>
         /// </summary>
@@ -41,6 +43,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
 
         /// <summary>
         /// Converts the segment of the <paramref name="input"/> to Base64 string.
+        /// <para>Ecoding's Preamable is NOT injected</para>
         /// <para>Refer to <see cref="ToBase64(byte[],Base64FormattingOptions)"/> to perform
         /// conversion on full array</para>
         /// </summary>
