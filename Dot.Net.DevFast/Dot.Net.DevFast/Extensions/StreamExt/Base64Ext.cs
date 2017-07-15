@@ -17,6 +17,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
 
         /// <summary>
         /// Converts the input string to Base64 string.
+        /// <para>Ecoding's Preamable is NOT injected</para>
         /// </summary>
         /// <param name="input">UTF8 string</param>
         /// <param name="options">Options to use for the transformation</param>
@@ -29,6 +30,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
 
         /// <summary>
         /// Converts the whole <paramref name="input"/> array to Base64 string.
+        /// <para>Ecoding's Preamable is NOT injected</para>
         /// <para>Refer to <see cref="ToBase64(ArraySegment{byte},Base64FormattingOptions)"/> to perform
         /// conversion on a segment of the array</para>
         /// </summary>
@@ -41,6 +43,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
 
         /// <summary>
         /// Converts the segment of the <paramref name="input"/> to Base64 string.
+        /// <para>Ecoding's Preamable is NOT injected</para>
         /// <para>Refer to <see cref="ToBase64(byte[],Base64FormattingOptions)"/> to perform
         /// conversion on full array</para>
         /// </summary>
@@ -64,7 +67,8 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// </summary>
         /// <param name="base64">Base64 string</param>
         /// <param name="encoding">Encoding to use during byte to string transformations.
-        /// <para>If null is supplied then encoding is detected from byte order mark.</para></param>
+        /// <para>If null is supplied then UTF-8 encoding is used as default with the possibility
+        /// to detect encoding from byte order mark.</para></param>
         public static string FromBase64(this string base64, Encoding encoding)
         {
             if (encoding != null)
@@ -73,7 +77,8 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
             }
             using (var memStrm = new MemoryStream(base64.FromBase64()))
             {
-                using (var reader = new StreamReader(memStrm, true))
+                //default we keep UTF-7 as it has no preamble
+                using (var reader = new StreamReader(memStrm, Encoding.UTF8, true))
                 {
                     return reader.ReadToEnd();
                 }
@@ -341,12 +346,12 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="disposeInput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
         /// <param name="encoding">Encoding to use to get string bytes, if not supplied UTF8 is used</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static Task<string> FromBase64Async(this Stream base64Stream,
+        public static Task<string> FromBase64AsStringAsync(this Stream base64Stream,
             FromBase64TransformMode mode = FromBase64TransformMode.IgnoreWhiteSpaces,
             bool disposeInput = false, Encoding encoding = null,
             int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            return base64Stream.FromBase64Async(CancellationToken.None, mode, disposeInput,
+            return base64Stream.FromBase64AsStringAsync(CancellationToken.None, mode, disposeInput,
                 encoding ?? Encoding.UTF8, bufferSize);
         }
 
@@ -360,7 +365,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="disposeInput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
         /// <param name="encoding">Encoding to use to get string bytes, if not supplied UTF8 is used</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static Task<string> FromBase64Async(this Stream base64Stream, CancellationToken token,
+        public static Task<string> FromBase64AsStringAsync(this Stream base64Stream, CancellationToken token,
             FromBase64TransformMode mode = FromBase64TransformMode.IgnoreWhiteSpaces,
             bool disposeInput = false, Encoding encoding = null,
             int bufferSize = StdLookUps.DefaultBufferSize)

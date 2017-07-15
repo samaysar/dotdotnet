@@ -3,9 +3,16 @@
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <id>Dot.Net.DevFast</id>
     <version>$version$</version>
-    <authors>Divya Sarthi MAHESHWARI</authors>
+	<authors>Divya Sarthi MAHESHWARI</authors>
+    <owners>samaysar</owners>
+    <licenseUrl>file://pkgdt/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/samaysar/dotdotnet</projectUrl>
+    <iconUrl>file://pkgdt/ddn.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Extension method package offering quotidian programming needs for faster development.</description>
+    <description>Develop your code with confidence with this powerful pack of extension methods. Increased productivity and code efficiency are out of the box features.</description>
+	<releaseNotes>This is the first release containing powerful extension methods on ValueTypes, String, Stream etc.</releaseNotes>
+    <copyright>Copyright ©2017 Divya Sarthi MAHESHWARI</copyright>
+    <tags>DevFast FastDev Extension Dot.Net .Net Dot String Stream TryTo Transform Compression</tags>
   </metadata>
   <files>
     <file src="..\Dot.Net.DevFast\Dot.Net.DevFast\bin\Release\Dot.Net.DevFast.*" target="lib\net461" />
