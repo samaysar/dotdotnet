@@ -77,7 +77,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
             }
             using (var memStrm = new MemoryStream(base64.FromBase64()))
             {
-                //default we keep UTF-& as it has no preamble
+                //default we keep UTF-7 as it has no preamble
                 using (var reader = new StreamReader(memStrm, Encoding.UTF7, true))
                 {
                     return reader.ReadToEnd();
@@ -346,12 +346,12 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="disposeInput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
         /// <param name="encoding">Encoding to use to get string bytes, if not supplied UTF8 is used</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static Task<string> FromBase64Async(this Stream base64Stream,
+        public static Task<string> FromBase64AsStringAsync(this Stream base64Stream,
             FromBase64TransformMode mode = FromBase64TransformMode.IgnoreWhiteSpaces,
             bool disposeInput = false, Encoding encoding = null,
             int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            return base64Stream.FromBase64Async(CancellationToken.None, mode, disposeInput,
+            return base64Stream.FromBase64AsStringAsync(CancellationToken.None, mode, disposeInput,
                 encoding ?? Encoding.UTF8, bufferSize);
         }
 
@@ -365,7 +365,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="disposeInput">If true, disposes <paramref name="base64Stream"/> upon operation completion, else leaves it open</param>
         /// <param name="encoding">Encoding to use to get string bytes, if not supplied UTF8 is used</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static Task<string> FromBase64Async(this Stream base64Stream, CancellationToken token,
+        public static Task<string> FromBase64AsStringAsync(this Stream base64Stream, CancellationToken token,
             FromBase64TransformMode mode = FromBase64TransformMode.IgnoreWhiteSpaces,
             bool disposeInput = false, Encoding encoding = null,
             int bufferSize = StdLookUps.DefaultBufferSize)
