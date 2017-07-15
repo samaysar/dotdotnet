@@ -98,7 +98,6 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
         [Test]
         [TestCase(null)]
         [TestCase("utf-8")]
-        [TestCase("utf-7")]
         [TestCase("utf-32BE")]
         [TestCase("utf-32LE")]
         [TestCase("utf-32")]
