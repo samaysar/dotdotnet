@@ -131,9 +131,10 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
                     using (var localBuffer = new MemoryStream())
                     {
                         await transformer.CopyToAsync(localBuffer, bufferSize, token).ConfigureAwait(false);
-                        if (localBuffer.TryGetBuffer(out ArraySegment<byte> buffer)) return buffer;
-                        throw new UnauthorizedAccessException("Something horribly went wrong with" +
-                                                              $" {nameof(MemoryStream)} implementation");
+                        return localBuffer.TryGetBuffer(out ArraySegment<byte> buffer)
+                            .ThrowIfNot(DdnDfErrorCode.NullObject,
+                                "Something horribly went wrong with" +
+                                $" {nameof(MemoryStream)} implementation", buffer);
                     }
                 }
             }
