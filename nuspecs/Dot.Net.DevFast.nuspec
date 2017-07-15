@@ -5,9 +5,9 @@
     <version>$version$</version>
 	<authors>Divya Sarthi MAHESHWARI</authors>
     <owners>samaysar</owners>
-    <licenseUrl>..\LICENSE</licenseUrl>
+    <licenseUrl>file://pkgdt/LICENSE</licenseUrl>
     <projectUrl>https://github.com/samaysar/dotdotnet</projectUrl>
-    <iconUrl>..\ddn.ico</iconUrl>
+    <iconUrl>file://pkgdt/ddn.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Develop your code with confidence with this powerful pack of extension methods. Increased productivity and code efficiency are out of the box features.</description>
 	<releaseNotes>This is the first release containing powerful extension methods on ValueTypes, String, Stream etc.</releaseNotes>
