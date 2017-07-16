@@ -12,7 +12,7 @@
     <description>Develop your code with confidence with this powerful pack of extension methods. Increased productivity and code efficiency are out of the box features.</description>
 	<releaseNotes>This is the first release containing powerful extension methods on ValueTypes, String, Stream etc.</releaseNotes>
     <copyright>Copyright ©2017 Divya Sarthi MAHESHWARI</copyright>
-    <tags>DevFast FastDev Extension Dot.Net .Net Dot String Stream TryTo Transform Compression</tags>
+    <tags>devfast fastdev extension dot.net .net dot string stream tryto transform compression stream-processing productivity-booster extension-methods fastdevelopement readable-code</tags>
   </metadata>
   <files>
     <file src="..\Dot.Net.DevFast\Dot.Net.DevFast\bin\Release\Dot.Net.DevFast.*" target="lib\net461" />
