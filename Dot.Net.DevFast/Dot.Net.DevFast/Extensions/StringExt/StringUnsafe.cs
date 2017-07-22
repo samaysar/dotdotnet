@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
+using Dot.Net.DevFast.Extensions.StreamExt;
 
 namespace Dot.Net.DevFast.Extensions.StringExt
 {
@@ -367,6 +371,107 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         {
             return input.TryTo(out DateTime value, style, formatProvider).ThrowIfNot(DdnDfErrorCode.StringParsingFailed,
                 () => $"Unable to parse {input} to {nameof(DateTime)}.", value);
+        }
+
+        /// <summary>
+        /// Converts the <paramref name="input"/> to byte array, based on <paramref name="enc"/>.
+        /// </summary>
+        /// <param name="input">Input string</param>
+        /// <param name="enc">Encoding to use, if not supplied then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <exception cref="DdnDfException">when <paramref name="input"/> is null</exception>
+        public static byte[] ToBytes(this string input, Encoding enc = null)
+        {
+            return input.ToByteSegment(enc).CreateBytes();
+        }
+
+        /// <summary>
+        /// Converts the <paramref name="input"/> to byte array segment, based on <paramref name="enc"/>.
+        /// </summary>
+        /// <param name="input">Input string</param>
+        /// <param name="enc">Encoding to use, if not supplied then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <exception cref="DdnDfException">when <paramref name="input"/> is null</exception>
+        public static ArraySegment<byte> ToByteSegment(this string input, Encoding enc = null)
+        {
+            using (var membuffer = new MemoryStream())
+            {
+                input.ThrowIfNull("input string is null").WriteToAsync(membuffer).Wait();
+                return membuffer.TryGetBuffer(out ArraySegment<byte> buffer)
+                    .ThrowIfNot(DdnDfErrorCode.NullObject,
+                        "Something horribly went wrong with" +
+                        $" {nameof(MemoryStream)} implementation", buffer);
+            }
+        }
+
+        /// <summary>
+        /// Converts the <paramref name="input"/> to byte array segment, based on <paramref name="enc"/>.
+        /// </summary>
+        /// <param name="input">Input string</param>
+        /// <param name="outputStream"></param>
+        /// <param name="enc">Encoding to use, if not supplied then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <exception cref="DdnDfException">when <paramref name="input"/> is null</exception>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="disposeOutput">True to dispose <paramref name="outputStream"/>, false
+        /// to leave it undisposed after the write.</param>
+        public static async Task WriteToAsync(this string input, Stream outputStream, Encoding enc = null,
+            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeOutput = false)
+        {
+            using (var writer = new StreamWriter(outputStream, enc ?? Encoding.UTF8, bufferSize, !disposeOutput)
+            {
+                AutoFlush = true
+            })
+            {
+                await writer.WriteAsync(input).ConfigureAwait(false);
+                await writer.FlushAsync().ConfigureAwait(false);
+                await outputStream.FlushAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Converts the <paramref name="input"/> to byte array segment, based on <paramref name="enc"/>.
+        /// </summary>
+        /// <param name="input">Input string</param>
+        /// <param name="outputStream"></param>
+        /// <param name="enc">Encoding to use, if not supplied then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <exception cref="DdnDfException">when <paramref name="input"/> is null</exception>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="disposeOutput">True to dispose <paramref name="outputStream"/>, false
+        /// to leave it undisposed after the write.</param>
+        public static Task WriteToAsync(this StringBuilder input, Stream outputStream,
+            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize,
+            bool disposeOutput = false)
+        {
+            return input.WriteToAsync(outputStream, CancellationToken.None, enc,
+                bufferSize, disposeOutput);
+        }
+
+        /// <summary>
+        /// Converts the <paramref name="input"/> to byte array segment, based on <paramref name="enc"/>.
+        /// </summary>
+        /// <param name="input">Input string</param>
+        /// <param name="outputStream"></param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="enc">Encoding to use, if not supplied then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <exception cref="DdnDfException">when <paramref name="input"/> is null</exception>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="disposeOutput">True to dispose <paramref name="outputStream"/>, false
+        /// to leave it undisposed after the write.</param>
+        public static async Task WriteToAsync(this StringBuilder input, Stream outputStream,
+            CancellationToken token, Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize,
+            bool disposeOutput = false)
+        {
+            if (disposeOutput)
+            {
+                using (outputStream)
+                {
+                    await CryptoStreamExt.EncodedCharacterCopyAsync(outputStream, input.Length, enc ?? Encoding.UTF8,
+                        token, bufferSize, input.CopyTo).ConfigureAwait(false);
+                }
+            }
+            else
+            {
+                await CryptoStreamExt.EncodedCharacterCopyAsync(outputStream, input.Length, enc ?? Encoding.UTF8,
+                    token, bufferSize, input.CopyTo).ConfigureAwait(false);
+            }
         }
     }
 }

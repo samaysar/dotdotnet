@@ -224,30 +224,38 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
                 using (var transformer = new CryptoStream(outputWrapper, transform,
                     CryptoStreamMode.Write))
                 {
-                    var bytes = enc.GetPreamble();
-                    if (bytes.Length > 0)
-                    {
-                        await transformer.WriteAsync(bytes, 0, bytes.Length, token)
-                            .ConfigureAwait(false);
-                    }
-                    var charArr = new char[chunkSize];
-                    bytes = new byte[enc.GetMaxByteCount(chunkSize)];
-                    var charCnt = length;
-                    var position = 0;
-                    while (charCnt > 0)
-                    {
-                        if (charCnt > chunkSize) charCnt = chunkSize;
-                        copyToAction(position, charArr, 0, charCnt);
-                        var byteCnt = enc.GetBytes(charArr, 0, charCnt, bytes, 0);
-                        await transformer.WriteAsync(bytes, 0, byteCnt, token).ConfigureAwait(false);
-                        position += charCnt;
-                        charCnt = length - position;
-                    }
-                    await transformer.FlushAsync(token).ConfigureAwait(false);
+                    await EncodedCharacterCopyAsync(transformer, length, enc,
+                        token, chunkSize, copyToAction).ConfigureAwait(false);
                     await outputWrapper.FlushAsync(token).ConfigureAwait(false);
                     await writable.FlushAsync(token).ConfigureAwait(false);
                 }
             }
+        }
+
+        internal static async Task EncodedCharacterCopyAsync(Stream writable,
+            int length, Encoding enc, CancellationToken token, int chunkSize,
+            Action<int, char[], int, int> copyToAction)
+        {
+            var bytes = enc.GetPreamble();
+            if (bytes.Length > 0)
+            {
+                await writable.WriteAsync(bytes, 0, bytes.Length, token)
+                    .ConfigureAwait(false);
+            }
+            var charArr = new char[chunkSize];
+            bytes = new byte[enc.GetMaxByteCount(chunkSize)];
+            var charCnt = length;
+            var position = 0;
+            while (charCnt > 0)
+            {
+                if (charCnt > chunkSize) charCnt = chunkSize;
+                copyToAction(position, charArr, 0, charCnt);
+                var byteCnt = enc.GetBytes(charArr, 0, charCnt, bytes, 0);
+                await writable.WriteAsync(bytes, 0, byteCnt, token).ConfigureAwait(false);
+                position += charCnt;
+                charCnt = length - position;
+            }
+            await writable.FlushAsync(token).ConfigureAwait(false);
         }
 
         private static async Task TransformAsync(this byte[] input, ICryptoTransform transform,
