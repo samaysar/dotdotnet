@@ -43,6 +43,9 @@
     <AssemblyOriginatorKeyFile>Dot.Net.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -56,6 +59,7 @@
     <Compile Include="Etc\DdnException.cs" />
     <Compile Include="Etc\StdLookUps.cs" />
     <Compile Include="Extensions\CreateExts.cs" />
+    <Compile Include="Extensions\JsonExt\JsonTxtExts.cs" />
     <Compile Include="Extensions\StreamExt\Base64Ext.cs" />
     <Compile Include="Extensions\StreamExt\CryptoStreamExt.cs" />
     <Compile Include="Extensions\StreamExt\WrapperStream.cs" />
@@ -67,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Dot.Net.snk" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
