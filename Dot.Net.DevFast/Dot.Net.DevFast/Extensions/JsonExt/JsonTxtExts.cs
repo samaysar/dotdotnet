@@ -274,7 +274,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         public static async Task ToJsonArrayAsync<T>(this IEnumerable<T> collection, JsonSerializer serializer,
             TextWriter textWriter, CancellationToken token, bool disposeWriter = true)
         {
-            var jsonWriter = serializer.DefaultJsonWriter(textWriter, disposeWriter);
+            var jsonWriter = serializer.CreateJsonWriter(textWriter, disposeWriter);
             using (jsonWriter)
             {
                 await collection.ToJsonArrayAsync(serializer, jsonWriter, token).ConfigureAwait(false);
@@ -631,7 +631,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         public static async Task ToJsonAsync<T>(this T obj, JsonSerializer serializer,
             TextWriter textWriter, CancellationToken token, bool disposeWriter = true)
         {
-            var jsonWriter = serializer.DefaultJsonWriter(textWriter, disposeWriter);
+            var jsonWriter = serializer.CreateJsonWriter(textWriter, disposeWriter);
             using (jsonWriter)
             {
                 await obj.ToJsonAsync(serializer, jsonWriter, token).ConfigureAwait(false);
@@ -715,21 +715,6 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         #endregion ToJson region
-
-        private static JsonWriter DefaultJsonWriter(this JsonSerializer serializer, TextWriter writer, bool disposeWriter)
-        {
-            return new JsonTextWriter(writer)
-            {
-                Culture = serializer.Culture,
-                DateFormatHandling = serializer.DateFormatHandling,
-                DateFormatString = serializer.DateFormatString,
-                DateTimeZoneHandling = serializer.DateTimeZoneHandling,
-                FloatFormatHandling = serializer.FloatFormatHandling,
-                Formatting = serializer.Formatting,
-                StringEscapeHandling = serializer.StringEscapeHandling,
-                CloseOutput = disposeWriter
-            };
-        }
 
         private static JsonSerializer DefaultJsonSerializer(this JsonWriter writer)
         {

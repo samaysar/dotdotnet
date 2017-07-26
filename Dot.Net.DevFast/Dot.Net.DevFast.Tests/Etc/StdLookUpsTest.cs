@@ -11,6 +11,7 @@ namespace Dot.Net.DevFast.Tests.Etc
         {
             Assert.True(StdLookUps.ExtSeparator.Equals('.'));
             Assert.True(StdLookUps.DefaultBufferSize.Equals(1024));
+            Assert.True(StdLookUps.DefaultFileBufferSize.Equals(4 * 1024));
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Security.AccessControl;
 using System.Text;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.StringExt;
+using Newtonsoft.Json;
 
 namespace Dot.Net.DevFast.Extensions
 {
@@ -76,6 +78,44 @@ namespace Dot.Net.DevFast.Extensions
             IFormatProvider formatProvider = null)
         {
             return new StringWriter(stringBuilder, formatProvider ?? CultureInfo.CurrentCulture);
+        }
+
+        /// <summary>
+        /// Create new file stream for <paramref name="targetFileInfo"/>.
+        /// </summary>
+        /// <param name="targetFileInfo">Target file info</param>
+        /// <param name="mode">mode of the stream</param>
+        /// <param name="access">Access permission</param>
+        /// <param name="share">File share type</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="options">File options</param>
+        public static FileStream CreateFileStream(this FileInfo targetFileInfo, FileMode mode,
+            FileAccess access = FileAccess.ReadWrite, FileShare share = FileShare.Read,
+            int bufferSize = StdLookUps.DefaultFileBufferSize, FileOptions options = FileOptions.Asynchronous)
+        {
+            return new FileStream(targetFileInfo.FullName, mode, access, share, bufferSize, options);
+        }
+
+        /// <summary>
+        /// Creates a <seealso cref="JsonWriter"/> for given <paramref name="serializer"/> and <paramref name="textWriter"/>.
+        /// </summary>
+        /// <param name="serializer">Serializer to use to populate <seealso cref="JsonWriter"/> properties</param>
+        /// <param name="textWriter">target text writer</param>
+        /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
+        public static JsonWriter CreateJsonWriter(this JsonSerializer serializer, TextWriter textWriter,
+            bool disposeWriter)
+        {
+            return new JsonTextWriter(textWriter)
+            {
+                Culture = serializer.Culture,
+                DateFormatHandling = serializer.DateFormatHandling,
+                DateFormatString = serializer.DateFormatString,
+                DateTimeZoneHandling = serializer.DateTimeZoneHandling,
+                FloatFormatHandling = serializer.FloatFormatHandling,
+                Formatting = serializer.Formatting,
+                StringEscapeHandling = serializer.StringEscapeHandling,
+                CloseOutput = disposeWriter
+            };
         }
     }
 }
