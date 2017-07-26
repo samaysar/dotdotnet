@@ -59,7 +59,7 @@
     <Compile Include="Etc\DdnException.cs" />
     <Compile Include="Etc\StdLookUps.cs" />
     <Compile Include="Extensions\CreateExts.cs" />
-    <Compile Include="Extensions\JsonExt\JsonTxtExts.cs" />
+    <Compile Include="Extensions\JsonExt\JsonTxtExt.cs" />
     <Compile Include="Extensions\StreamExt\Base64Ext.cs" />
     <Compile Include="Extensions\StreamExt\CryptoStreamExt.cs" />
     <Compile Include="Extensions\StreamExt\WrapperStream.cs" />
