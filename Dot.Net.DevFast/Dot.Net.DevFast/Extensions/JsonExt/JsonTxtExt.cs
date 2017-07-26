@@ -7,7 +7,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
+using Dot.Net.DevFast.Extensions.StringExt;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Dot.Net.DevFast.Extensions.JsonExt
 {
@@ -1129,12 +1131,25 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
 
         #region FromJson region
 
-        private static T FromJson<T>(JsonSerializer serializer, JsonReader reader)
+        /// <summary>
+        /// Deserializes the JSON data of <paramref name="jsonReader"/> using custon <seealso cref="JsonSerializer"/>.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonReader">JSON reader as data source</param>
+        public static T FromJson<T>(JsonReader jsonReader)
         {
-            using (reader)
-            {
-                return serializer.Deserialize<T>(reader);
-            }
+            return jsonReader.FromJson<T>(DefaultJsonSerializer());
+        }
+
+        /// <summary>
+        /// Deserializes the JSON data of <paramref name="jsonReader"/> using <paramref name="serializer"/>.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonReader">JSON reader as data source</param>
+        /// <param name="serializer">JSON serializer</param>
+        public static T FromJson<T>(this JsonReader jsonReader, JsonSerializer serializer)
+        {
+            return serializer.Deserialize<T>(jsonReader);
         }
 
         #endregion ToJson region
@@ -1176,5 +1191,27 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
                 TypeNameHandling = TypeNameHandling.Auto
             };
         }
+
+        //private class DecimalConverter : JsonConverter
+        //{
+        //    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        //    {
+        //        JToken.FromObject((value as decimal?)?.ToString(serializer.Culture) ?? string.Empty).WriteTo(writer);
+        //    }
+
+        //    public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
+        //        JsonSerializer serializer)
+        //    {
+        //        var token = JToken.Load(reader);
+        //        return (token.Type == JTokenType.Null && objectType == typeof(decimal?))
+        //            ? (object) null
+        //            : token.ToString().ToDecimal(formatProvider: serializer.Culture);
+        //    }
+
+        //    public override bool CanConvert(Type objectType)
+        //    {
+        //        return (objectType == typeof(decimal) || objectType == typeof(decimal?));
+        //    }
+        //}
     }
 }
