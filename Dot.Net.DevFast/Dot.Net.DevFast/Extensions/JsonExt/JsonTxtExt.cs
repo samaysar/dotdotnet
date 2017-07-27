@@ -32,11 +32,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// </summary>
         /// <typeparam name="T">Type of the blockingCollection data</typeparam>
         /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
         public static Task<string> ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            IFormatProvider formatProvider = null)
+            CancellationTokenSource producerTokenSource = null, IFormatProvider formatProvider = null)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(CancellationToken.None, formatProvider);
+            return blockingCollection.ToJsonArrayParallelyAsync(CancellationToken.None, producerTokenSource, formatProvider);
         }
 
         /// <summary>
@@ -52,11 +55,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <typeparam name="T">Type of the blockingCollection data</typeparam>
         /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
         /// <param name="token">cancellation token to observe</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
         public static Task<string> ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            CancellationToken token, IFormatProvider formatProvider = null)
+            CancellationToken token, CancellationTokenSource producerTokenSource = null, IFormatProvider formatProvider = null)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(DefaultJsonSerializer(), token, formatProvider);
+            return blockingCollection.ToJsonArrayParallelyAsync(DefaultJsonSerializer(), token, producerTokenSource, formatProvider);
         }
 
         /// <summary>
@@ -72,11 +78,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <typeparam name="T">Type of the blockingCollection data</typeparam>
         /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
         public static Task<string> ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            JsonSerializer serializer, IFormatProvider formatProvider = null)
+            JsonSerializer serializer, CancellationTokenSource producerTokenSource = null, IFormatProvider formatProvider = null)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(serializer, CancellationToken.None, formatProvider);
+            return blockingCollection.ToJsonArrayParallelyAsync(serializer, CancellationToken.None, producerTokenSource, formatProvider);
         }
 
         /// <summary>
@@ -93,12 +102,15 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="token">cancellation token to observe</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
         public static async Task<string> ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection, 
-            JsonSerializer serializer, CancellationToken token, IFormatProvider formatProvider = null)
+            JsonSerializer serializer, CancellationToken token, CancellationTokenSource producerTokenSource = null, IFormatProvider formatProvider = null)
         {
             var stringBuilder = new StringBuilder();
-            await blockingCollection.ToJsonArrayParallelyAsync(serializer, stringBuilder, token, formatProvider).ConfigureAwait(false);
+            await blockingCollection.ToJsonArrayParallelyAsync(serializer, stringBuilder, token, producerTokenSource, formatProvider).ConfigureAwait(false);
             return stringBuilder.ToString();
         }
 
@@ -115,11 +127,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <typeparam name="T">Type of the blockingCollection data</typeparam>
         /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
         /// <param name="output">target output string builder</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
         public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            StringBuilder output, IFormatProvider formatProvider = null)
+            StringBuilder output, CancellationTokenSource producerTokenSource = null, IFormatProvider formatProvider = null)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(output, CancellationToken.None, formatProvider);
+            return blockingCollection.ToJsonArrayParallelyAsync(output, CancellationToken.None, producerTokenSource, formatProvider);
         }
 
         /// <summary>
@@ -137,11 +152,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
         /// <param name="output">target output string builder</param>
         /// <param name="token">cancellation token to observe</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
         public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            StringBuilder output, CancellationToken token, IFormatProvider formatProvider = null)
+            StringBuilder output, CancellationToken token, CancellationTokenSource producerTokenSource = null, IFormatProvider formatProvider = null)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(DefaultJsonSerializer(), output, token, formatProvider);
+            return blockingCollection.ToJsonArrayParallelyAsync(DefaultJsonSerializer(), output, token, producerTokenSource, formatProvider);
         }
 
         /// <summary>
@@ -158,11 +176,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="output">target output string builder</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
         public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection, JsonSerializer serializer,
-            StringBuilder output, IFormatProvider formatProvider = null)
+            StringBuilder output, CancellationTokenSource producerTokenSource = null, IFormatProvider formatProvider = null)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(serializer, output, CancellationToken.None,
+            return blockingCollection.ToJsonArrayParallelyAsync(serializer, output, CancellationToken.None, producerTokenSource,
                 formatProvider);
         }
 
@@ -182,13 +203,16 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="output">target output string builder</param>
         /// <param name="token">cancellation token to observe</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
         public static async Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection, JsonSerializer serializer,
-            StringBuilder output, CancellationToken token, IFormatProvider formatProvider = null)
+            StringBuilder output, CancellationToken token, CancellationTokenSource producerTokenSource = null, IFormatProvider formatProvider = null)
         {
             using (var textWriter = output.CreateWriter(formatProvider))
             {
-                await blockingCollection.ToJsonArrayParallelyAsync(serializer, textWriter, token, false).ConfigureAwait(false);
+                await blockingCollection.ToJsonArrayParallelyAsync(serializer, textWriter, token, producerTokenSource, false).ConfigureAwait(false);
             }
         }
 
@@ -205,14 +229,17 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <typeparam name="T">Type of the blockingCollection data</typeparam>
         /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
         /// <param name="outputStream">target output stream</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeStream">If true, <paramref name="outputStream"/> is disposed after the serialization</param>
         public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            Stream outputStream, Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, 
+            Stream outputStream, CancellationTokenSource producerTokenSource = null, Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, 
             bool disposeStream = true)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(outputStream, CancellationToken.None, enc,
+            return blockingCollection.ToJsonArrayParallelyAsync(outputStream, CancellationToken.None, producerTokenSource, enc,
                 bufferSize, disposeStream);
         }
 
@@ -231,14 +258,17 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
         /// <param name="outputStream">target output stream</param>
         /// <param name="token">cancellation token to observe</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeStream">If true, <paramref name="outputStream"/> is disposed after the serialization</param>
         public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            Stream outputStream, CancellationToken token, Encoding enc = null,
+            Stream outputStream, CancellationToken token, CancellationTokenSource producerTokenSource = null, Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(DefaultJsonSerializer(), outputStream, token, enc,
+            return blockingCollection.ToJsonArrayParallelyAsync(DefaultJsonSerializer(), outputStream, token, producerTokenSource, enc,
                 bufferSize, disposeStream);
         }
 
@@ -256,14 +286,17 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="outputStream">target output stream</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeStream">If true, <paramref name="outputStream"/> is disposed after the serialization</param>
         public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            JsonSerializer serializer, Stream outputStream, Encoding enc = null,
+            JsonSerializer serializer, Stream outputStream, CancellationTokenSource producerTokenSource = null, Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(serializer, outputStream, CancellationToken.None, enc,
+            return blockingCollection.ToJsonArrayParallelyAsync(serializer, outputStream, CancellationToken.None, producerTokenSource, enc,
                 bufferSize, disposeStream);
         }
 
@@ -283,16 +316,19 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="outputStream">target output stream</param>
         /// <param name="token">cancellation token to observe</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeStream">If true, <paramref name="outputStream"/> is disposed after the serialization</param>
         public static async Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            JsonSerializer serializer, Stream outputStream, CancellationToken token, Encoding enc = null,
+            JsonSerializer serializer, Stream outputStream, CancellationToken token, CancellationTokenSource producerTokenSource = null, Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
         {
             using (var textWriter = outputStream.CreateWriter(enc, bufferSize, disposeStream))
             {
-                await blockingCollection.ToJsonArrayParallelyAsync(serializer, textWriter, token, false)
+                await blockingCollection.ToJsonArrayParallelyAsync(serializer, textWriter, token, producerTokenSource, false)
                     .ConfigureAwait(false);
                 await outputStream.FlushAsync(token).ConfigureAwait(false);
             }
@@ -311,11 +347,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <typeparam name="T">Type of the blockingCollection data</typeparam>
         /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
         /// <param name="textWriter">target text writer</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
         public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            TextWriter textWriter, bool disposeWriter = true)
+            TextWriter textWriter, CancellationTokenSource producerTokenSource = null, bool disposeWriter = true)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(textWriter, CancellationToken.None, disposeWriter);
+            return blockingCollection.ToJsonArrayParallelyAsync(textWriter, CancellationToken.None, producerTokenSource, disposeWriter);
         }
 
         /// <summary>
@@ -333,11 +372,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
         /// <param name="textWriter">target text writer</param>
         /// <param name="token">cancellation token to observe</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
         public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            TextWriter textWriter, CancellationToken token, bool disposeWriter = true)
+            TextWriter textWriter, CancellationToken token, CancellationTokenSource producerTokenSource = null, bool disposeWriter = true)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(DefaultJsonSerializer(), textWriter, token,
+            return blockingCollection.ToJsonArrayParallelyAsync(DefaultJsonSerializer(), textWriter, token, producerTokenSource,
                 disposeWriter);
         }
 
@@ -355,11 +397,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="textWriter">target text writer</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
         public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            JsonSerializer serializer, TextWriter textWriter, bool disposeWriter = true)
+            JsonSerializer serializer, TextWriter textWriter, CancellationTokenSource producerTokenSource = null, bool disposeWriter = true)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(serializer, textWriter, CancellationToken.None,
+            return blockingCollection.ToJsonArrayParallelyAsync(serializer, textWriter, CancellationToken.None, producerTokenSource,
                 disposeWriter);
         }
 
@@ -379,14 +424,17 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="textWriter">target text writer</param>
         /// <param name="token">cancellation token to observe</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
         public static async Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            JsonSerializer serializer, TextWriter textWriter, CancellationToken token, bool disposeWriter = true)
+            JsonSerializer serializer, TextWriter textWriter, CancellationToken token, CancellationTokenSource producerTokenSource = null, bool disposeWriter = true)
         {
             var jsonWriter = serializer.CreateJsonWriter(textWriter, disposeWriter);
             using (jsonWriter)
             {
-                await blockingCollection.ToJsonArrayParallelyAsync(serializer, jsonWriter, token).ConfigureAwait(false);
+                await blockingCollection.ToJsonArrayParallelyAsync(serializer, jsonWriter, token, producerTokenSource).ConfigureAwait(false);
                 await textWriter.FlushAsync().ConfigureAwait(false);
             }
         }
@@ -404,10 +452,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <typeparam name="T">Type of the blockingCollection data</typeparam>
         /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
         /// <param name="jsonWriter">target JSON writer (NOT disposed after the operation)</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            JsonWriter jsonWriter)
+            JsonWriter jsonWriter, CancellationTokenSource producerTokenSource = null)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(jsonWriter, CancellationToken.None);
+            return blockingCollection.ToJsonArrayParallelyAsync(jsonWriter, CancellationToken.None, producerTokenSource);
         }
 
         /// <summary>
@@ -425,10 +476,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
         /// <param name="jsonWriter">target JSON writer (NOT disposed after the operation)</param>
         /// <param name="token">cancellation token to observe</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            JsonWriter jsonWriter, CancellationToken token)
+            JsonWriter jsonWriter, CancellationToken token, CancellationTokenSource producerTokenSource = null)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(DefaultJsonSerializer(), jsonWriter, token);
+            return blockingCollection.ToJsonArrayParallelyAsync(DefaultJsonSerializer(), jsonWriter, token, producerTokenSource);
         }
 
         /// <summary>
@@ -445,10 +499,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="jsonWriter">target JSON writer (NOT disposed after the operation)</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            JsonSerializer serializer, JsonWriter jsonWriter)
+            JsonSerializer serializer, JsonWriter jsonWriter, CancellationTokenSource producerTokenSource = null)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(serializer, jsonWriter, CancellationToken.None);
+            return blockingCollection.ToJsonArrayParallelyAsync(serializer, jsonWriter, CancellationToken.None, producerTokenSource);
         }
 
         /// <summary>
@@ -467,16 +524,27 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="jsonWriter">target JSON writer (NOT disposed after the operation)</param>
         /// <param name="token">cancellation token to observe</param>
+        /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the producer side in case of error during json serialization (consumer side),
+        /// pass the source of cancellation token which producer is observing.</param>
         public static async Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            JsonSerializer serializer, JsonWriter jsonWriter, CancellationToken token)
+            JsonSerializer serializer, JsonWriter jsonWriter, CancellationToken token, CancellationTokenSource producerTokenSource = null)
         {
-            jsonWriter.WriteStartArray();
-            while (blockingCollection.TryTake(out T obj, Timeout.Infinite, token))
+            try
             {
-                await obj.ToJsonAsync(serializer, jsonWriter, token).ConfigureAwait(false);
+                jsonWriter.WriteStartArray();
+                while (blockingCollection.TryTake(out T obj, Timeout.Infinite, token))
+                {
+                    await obj.ToJsonAsync(serializer, jsonWriter, token).ConfigureAwait(false);
+                }
+                jsonWriter.WriteEndArray();
+                await jsonWriter.FlushAsync(token).ConfigureAwait(false);
             }
-            jsonWriter.WriteEndArray();
-            await jsonWriter.FlushAsync(token).ConfigureAwait(false);
+            catch
+            {
+                producerTokenSource?.Cancel();
+                throw;
+            }
         }
 
         #endregion ToJsonArrayParallelyAsync region
