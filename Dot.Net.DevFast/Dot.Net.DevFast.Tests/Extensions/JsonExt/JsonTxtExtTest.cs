@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using Dot.Net.DevFast.Extensions.JsonExt;
-using Newtonsoft.Json;
-using NSubstitute;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
 {

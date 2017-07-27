@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using System.Security.AccessControl;
 using System.Text;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.StringExt;
@@ -62,11 +61,25 @@ namespace Dot.Net.DevFast.Extensions
         public static StreamWriter CreateWriter(this Stream streamToWrite, Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
         {
-            return new StreamWriter(streamToWrite, enc ?? Encoding.UTF8,
-                bufferSize, !disposeStream)
+            return new StreamWriter(streamToWrite, enc ?? Encoding.UTF8, bufferSize, !disposeStream)
             {
                 AutoFlush = true
             };
+        }
+
+        /// <summary>
+        /// Create a stream reader for <paramref name="streamToRead"/>.
+        /// </summary>
+        /// <param name="streamToRead">source stream</param>
+        /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="disposeStream">If true, <paramref name="streamToRead"/> is disposed after the deserialization</param>
+        /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
+        public static StreamReader CreateReader(this Stream streamToRead, Encoding enc = null,
+            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true, bool detectEncodingFromBom = true)
+        {
+            return new StreamReader(streamToRead, enc ?? Encoding.UTF8, detectEncodingFromBom,
+                bufferSize, !disposeStream);
         }
 
         /// <summary>
@@ -115,6 +128,27 @@ namespace Dot.Net.DevFast.Extensions
                 Formatting = serializer.Formatting,
                 StringEscapeHandling = serializer.StringEscapeHandling,
                 CloseOutput = disposeWriter
+            };
+        }
+
+        /// <summary>
+        /// Creates a <seealso cref="JsonReader"/> for given <paramref name="serializer"/> and <paramref name="textReader"/>.
+        /// </summary>
+        /// <param name="serializer">Serializer to use to populate <seealso cref="JsonReader"/> properties</param>
+        /// <param name="textReader">target text reader</param>
+        /// <param name="disposeReader">If true, <paramref name="textReader"/> is disposed after the deserialization</param>
+        public static JsonReader CreateJsonReader(this JsonSerializer serializer, TextReader textReader,
+            bool disposeReader)
+        {
+            return new JsonTextReader(textReader)
+            {
+                Culture = serializer.Culture,
+                DateFormatString = serializer.DateFormatString,
+                DateTimeZoneHandling = serializer.DateTimeZoneHandling,
+                DateParseHandling = serializer.DateParseHandling,
+                FloatParseHandling = serializer.FloatParseHandling,
+                MaxDepth = serializer.MaxDepth,
+                CloseInput = disposeReader
             };
         }
     }
