@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -17,138 +16,138 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
     /// </summary>
     public static class JsonTxtExt
     {
-        #region ToJsonArrayParallelyAsync region
+        #region ToJsonArrayParallely region
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// prepares the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) asynchronously.
+        /// prepares the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>).
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
         /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
         /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the producer side in case of error during json serialization (consumer side),
         /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static Task<string> ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
+        public static string ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
             CancellationTokenSource producerTokenSource = null, IFormatProvider formatProvider = null)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(CancellationToken.None, producerTokenSource,
+            return sourceCollection.ToJsonArrayParallely(CancellationToken.None, producerTokenSource,
                 formatProvider);
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// prepares the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) asynchronously while observing <paramref name="token"/>.
+        /// prepares the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) while observing <paramref name="token"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
         /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the producer side in case of error during json serialization (consumer side),
         /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static Task<string> ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
+        public static string ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
             CancellationToken token, CancellationTokenSource producerTokenSource = null,
             IFormatProvider formatProvider = null)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(CustomJsonSerializer(), token, producerTokenSource,
+            return sourceCollection.ToJsonArrayParallely(CustomJsonSerializer(), token, producerTokenSource,
                 formatProvider);
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// prepares the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// <paramref name="serializer"/> asynchronously.
+        /// prepares the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// <paramref name="serializer"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
         /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the producer side in case of error during json serialization (consumer side),
         /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static Task<string> ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
+        public static string ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
             JsonSerializer serializer, CancellationTokenSource producerTokenSource = null,
             IFormatProvider formatProvider = null)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(serializer, CancellationToken.None, producerTokenSource,
+            return sourceCollection.ToJsonArrayParallely(serializer, CancellationToken.None, producerTokenSource,
                 formatProvider);
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// prepares the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// <paramref name="serializer"/> asynchronously while observing <paramref name="token"/>.
+        /// prepares the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// <paramref name="serializer"/> while observing <paramref name="token"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
         /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the producer side in case of error during json serialization (consumer side),
         /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static async Task<string> ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
+        public static string ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
             JsonSerializer serializer, CancellationToken token, CancellationTokenSource producerTokenSource = null,
             IFormatProvider formatProvider = null)
         {
             var stringBuilder = new StringBuilder();
-            await blockingCollection.ToJsonArrayParallelyAsync(serializer, stringBuilder, token, producerTokenSource,
-                formatProvider).ConfigureAwait(false);
+            sourceCollection.ToJsonArrayParallely(serializer, stringBuilder, token, producerTokenSource,
+                formatProvider);
             return stringBuilder.ToString();
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) to <paramref name="output"/> asynchronously.
+        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) to <paramref name="output"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
         /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
         /// <param name="output">target output string builder</param>
         /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the producer side in case of error during json serialization (consumer side),
         /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
+        public static void ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
             StringBuilder output, CancellationTokenSource producerTokenSource = null,
             IFormatProvider formatProvider = null)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(output, CancellationToken.None, producerTokenSource,
+            sourceCollection.ToJsonArrayParallely(output, CancellationToken.None, producerTokenSource,
                 formatProvider);
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) to <paramref name="output"/> asynchronously
+        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) to <paramref name="output"/>
         /// while observing <paramref name="token"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
@@ -156,54 +155,52 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
         /// <param name="output">target output string builder</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the producer side in case of error during json serialization (consumer side),
         /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
+        public static void ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
             StringBuilder output, CancellationToken token, CancellationTokenSource producerTokenSource = null,
             IFormatProvider formatProvider = null)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(CustomJsonSerializer(), output, token,
+            sourceCollection.ToJsonArrayParallely(CustomJsonSerializer(), output, token,
                 producerTokenSource, formatProvider);
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// <paramref name="serializer"/> to <paramref name="output"/> asynchronously.
+        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// <paramref name="serializer"/> to <paramref name="output"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
         /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="output">target output string builder</param>
         /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the producer side in case of error during json serialization (consumer side),
         /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            JsonSerializer serializer,
-            StringBuilder output, CancellationTokenSource producerTokenSource = null,
+        public static void ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
+            JsonSerializer serializer, StringBuilder output, CancellationTokenSource producerTokenSource = null,
             IFormatProvider formatProvider = null)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(serializer, output, CancellationToken.None,
-                producerTokenSource,
-                formatProvider);
+            sourceCollection.ToJsonArrayParallely(serializer, output, CancellationToken.None,
+                producerTokenSource, formatProvider);
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// <paramref name="serializer"/> to <paramref name="output"/> asynchronously
+        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// <paramref name="serializer"/> to <paramref name="output"/>
         /// while observing <paramref name="token"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
@@ -211,8 +208,8 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="output">target output string builder</param>
         /// <param name="token">cancellation token to observe</param>
@@ -220,30 +217,27 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// cancel the producer side in case of error during json serialization (consumer side),
         /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static async Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            JsonSerializer serializer,
-            StringBuilder output, CancellationToken token, CancellationTokenSource producerTokenSource = null,
+        public static void ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
+            JsonSerializer serializer, StringBuilder output, CancellationToken token,
+            CancellationTokenSource producerTokenSource = null,
             IFormatProvider formatProvider = null)
         {
-            using (var textWriter = output.CreateWriter(formatProvider))
-            {
-                await blockingCollection.ToJsonArrayParallelyAsync(serializer, textWriter, token, producerTokenSource,
-                    false).ConfigureAwait(false);
-            }
+            sourceCollection.ToJsonArrayParallely(serializer, output.CreateWriter(formatProvider), token,
+                producerTokenSource);
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) to <paramref name="outputStream"/> asynchronously.
+        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) to <paramref name="outputStream"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
         /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
         /// <param name="outputStream">target output stream</param>
         /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the producer side in case of error during json serialization (consumer side),
@@ -251,20 +245,19 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeStream">If true, <paramref name="outputStream"/> is disposed after the serialization</param>
-        public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
+        public static void ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
             Stream outputStream, CancellationTokenSource producerTokenSource = null, Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize,
             bool disposeStream = true)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(outputStream, CancellationToken.None,
-                producerTokenSource, enc,
-                bufferSize, disposeStream);
+            sourceCollection.ToJsonArrayParallely(outputStream, CancellationToken.None,
+                producerTokenSource, enc, bufferSize, disposeStream);
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) to <paramref name="outputStream"/> asynchronously
+        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) to <paramref name="outputStream"/>
         /// while observing <paramref name="token"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
@@ -272,8 +265,8 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
         /// <param name="outputStream">target output stream</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
@@ -282,28 +275,26 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeStream">If true, <paramref name="outputStream"/> is disposed after the serialization</param>
-        public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
+        public static void ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
             Stream outputStream, CancellationToken token, CancellationTokenSource producerTokenSource = null,
-            Encoding enc = null,
-            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
+            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(CustomJsonSerializer(), outputStream, token,
-                producerTokenSource, enc,
-                bufferSize, disposeStream);
+            sourceCollection.ToJsonArrayParallely(CustomJsonSerializer(), outputStream, token,
+                producerTokenSource, enc, bufferSize, disposeStream);
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// <paramref name="serializer"/> to <paramref name="outputStream"/> asynchronously.
+        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// <paramref name="serializer"/> to <paramref name="outputStream"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
         /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="outputStream">target output stream</param>
         /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
@@ -312,20 +303,18 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeStream">If true, <paramref name="outputStream"/> is disposed after the serialization</param>
-        public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
+        public static void ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
             JsonSerializer serializer, Stream outputStream, CancellationTokenSource producerTokenSource = null,
-            Encoding enc = null,
-            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
+            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(serializer, outputStream, CancellationToken.None,
-                producerTokenSource, enc,
-                bufferSize, disposeStream);
+            sourceCollection.ToJsonArrayParallely(serializer, outputStream, CancellationToken.None,
+                producerTokenSource, enc, bufferSize, disposeStream);
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// <paramref name="serializer"/> to <paramref name="outputStream"/> asynchronously
+        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// <paramref name="serializer"/> to <paramref name="outputStream"/>
         /// while observing <paramref name="token"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
@@ -333,8 +322,8 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="outputStream">target output stream</param>
         /// <param name="token">cancellation token to observe</param>
@@ -344,47 +333,46 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeStream">If true, <paramref name="outputStream"/> is disposed after the serialization</param>
-        public static async Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
+        public static void ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
             JsonSerializer serializer, Stream outputStream, CancellationToken token,
             CancellationTokenSource producerTokenSource = null, Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
         {
             using (var streamWriter = outputStream.CreateWriter(enc, bufferSize, disposeStream))
             {
-                await blockingCollection.ToJsonArrayParallelyAsync(serializer, streamWriter, token, producerTokenSource,
-                    false).ConfigureAwait(false);
-                await outputStream.FlushAsync(token).ConfigureAwait(false);
+                sourceCollection.ToJsonArrayParallely(serializer, streamWriter, token, producerTokenSource, false);
+                outputStream.Flush();
             }
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) to <paramref name="textWriter"/> asynchronously.
+        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) to <paramref name="textWriter"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
         /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
         /// <param name="textWriter">target text writer</param>
         /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the producer side in case of error during json serialization (consumer side),
         /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
-        public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
+        public static void ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
             TextWriter textWriter, CancellationTokenSource producerTokenSource = null, bool disposeWriter = true)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(textWriter, CancellationToken.None, producerTokenSource,
+            sourceCollection.ToJsonArrayParallely(textWriter, CancellationToken.None, producerTokenSource,
                 disposeWriter);
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) to <paramref name="textWriter"/> asynchronously
+        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) to <paramref name="textWriter"/>
         /// while observing <paramref name="token"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
@@ -392,54 +380,52 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
         /// <param name="textWriter">target text writer</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the producer side in case of error during json serialization (consumer side),
         /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
-        public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
+        public static void ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
             TextWriter textWriter, CancellationToken token, CancellationTokenSource producerTokenSource = null,
             bool disposeWriter = true)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(CustomJsonSerializer(), textWriter, token,
-                producerTokenSource,
-                disposeWriter);
+            sourceCollection.ToJsonArrayParallely(CustomJsonSerializer(), textWriter, token,
+                producerTokenSource, disposeWriter);
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// <paramref name="serializer"/> to <paramref name="textWriter"/> asynchronously.
+        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// <paramref name="serializer"/> to <paramref name="textWriter"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
         /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="textWriter">target text writer</param>
         /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the producer side in case of error during json serialization (consumer side),
         /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
-        public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
+        public static void ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
             JsonSerializer serializer, TextWriter textWriter, CancellationTokenSource producerTokenSource = null,
             bool disposeWriter = true)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(serializer, textWriter, CancellationToken.None,
-                producerTokenSource,
-                disposeWriter);
+            sourceCollection.ToJsonArrayParallely(serializer, textWriter, CancellationToken.None,
+                producerTokenSource, disposeWriter);
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// <paramref name="serializer"/> to <paramref name="textWriter"/> asynchronously
+        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// <paramref name="serializer"/> to <paramref name="textWriter"/>
         /// while observing <paramref name="token"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
@@ -447,8 +433,8 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="textWriter">target text writer</param>
         /// <param name="token">cancellation token to observe</param>
@@ -456,242 +442,246 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// cancel the producer side in case of error during json serialization (consumer side),
         /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
-        public static async Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
+        public static void ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
             JsonSerializer serializer, TextWriter textWriter, CancellationToken token,
             CancellationTokenSource producerTokenSource = null, bool disposeWriter = true)
         {
             using (var jsonWriter = serializer.CreateJsonWriter(textWriter, disposeWriter))
             {
-                await blockingCollection.ToJsonArrayParallelyAsync(serializer, jsonWriter, token, producerTokenSource)
-                    .ConfigureAwait(false);
-                await textWriter.FlushAsync().ConfigureAwait(false);
+                sourceCollection.ToJsonArrayParallely(serializer, jsonWriter, token, producerTokenSource, false);
+                textWriter.Flush();
             }
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) to <paramref name="jsonWriter"/> asynchronously.
+        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) to <paramref name="jsonWriter"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
         /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
-        /// <para>IMPORTANT: <paramref name="jsonWriter"/> is NOT disposed in this operation.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
-        /// <param name="jsonWriter">target JSON writer (NOT disposed after the operation)</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
+        /// <param name="jsonWriter">target JSON writer</param>
         /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the producer side in case of error during json serialization (consumer side),
         /// pass the source of cancellation token which producer is observing.</param>
-        public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            JsonWriter jsonWriter, CancellationTokenSource producerTokenSource = null)
+        /// <param name="disposeWriter">If true, <paramref name="jsonWriter"/> is disposed after the serialization</param>
+        public static void ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
+            JsonWriter jsonWriter, CancellationTokenSource producerTokenSource = null, bool disposeWriter = true)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(jsonWriter, CancellationToken.None, producerTokenSource);
+            sourceCollection.ToJsonArrayParallely(jsonWriter, CancellationToken.None, producerTokenSource,
+                disposeWriter);
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) to <paramref name="jsonWriter"/> asynchronously
+        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>) to <paramref name="jsonWriter"/>
         /// while observing <paramref name="token"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
         /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
-        /// <para>IMPORTANT: <paramref name="jsonWriter"/> is NOT disposed in this operation.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
-        /// <param name="jsonWriter">target JSON writer (NOT disposed after the operation)</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
+        /// <param name="jsonWriter">target JSON writer</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the producer side in case of error during json serialization (consumer side),
         /// pass the source of cancellation token which producer is observing.</param>
-        public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            JsonWriter jsonWriter, CancellationToken token, CancellationTokenSource producerTokenSource = null)
+        /// <param name="disposeWriter">If true, <paramref name="jsonWriter"/> is disposed after the serialization</param>
+        public static void ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
+            JsonWriter jsonWriter, CancellationToken token, CancellationTokenSource producerTokenSource = null,
+            bool disposeWriter = true)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(CustomJsonSerializer(), jsonWriter, token,
-                producerTokenSource);
+            sourceCollection.ToJsonArrayParallely(jsonWriter.AdaptJsonSerializer(), jsonWriter, token,
+                producerTokenSource, disposeWriter);
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// <paramref name="serializer"/> to <paramref name="jsonWriter"/> asynchronously.
+        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// <paramref name="serializer"/> to <paramref name="jsonWriter"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
         /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
-        /// <para>IMPORTANT: <paramref name="jsonWriter"/> is NOT disposed in this operation.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
-        /// <param name="jsonWriter">target JSON writer (NOT disposed after the operation)</param>
+        /// <param name="jsonWriter">target JSON writer</param>
         /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the producer side in case of error during json serialization (consumer side),
         /// pass the source of cancellation token which producer is observing.</param>
-        public static Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
-            JsonSerializer serializer, JsonWriter jsonWriter, CancellationTokenSource producerTokenSource = null)
+        /// <param name="disposeWriter">If true, <paramref name="jsonWriter"/> is disposed after the serialization</param>
+        public static void ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
+            JsonSerializer serializer, JsonWriter jsonWriter, CancellationTokenSource producerTokenSource = null,
+            bool disposeWriter = true)
         {
-            return blockingCollection.ToJsonArrayParallelyAsync(serializer, jsonWriter, CancellationToken.None,
-                producerTokenSource);
+            sourceCollection.ToJsonArrayParallely(serializer, jsonWriter, CancellationToken.None,
+                producerTokenSource, disposeWriter);
         }
 
         /// <summary>
         /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="blockingCollection"/> using 
-        /// <paramref name="serializer"/> to <paramref name="jsonWriter"/> asynchronously
+        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// <paramref name="serializer"/> to <paramref name="jsonWriter"/>
         /// while observing <paramref name="token"/>.
         /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
         /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
         /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
         /// finally block at producer side.</para>
-        /// <para>IMPORTANT: <paramref name="jsonWriter"/> is NOT disposed in this operation.</para>
         /// </summary>
-        /// <typeparam name="T">Type of the blockingCollection data</typeparam>
-        /// <param name="blockingCollection">input blocking collection to JSON serialize</param>
+        /// <typeparam name="T">Type of the sourceCollection data</typeparam>
+        /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
-        /// <param name="jsonWriter">target JSON writer (NOT disposed after the operation)</param>
+        /// <param name="jsonWriter">target JSON writer</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the producer side in case of error during json serialization (consumer side),
         /// pass the source of cancellation token which producer is observing.</param>
-        public static async Task ToJsonArrayParallelyAsync<T>(this BlockingCollection<T> blockingCollection,
+        /// <param name="disposeWriter">If true, <paramref name="jsonWriter"/> is disposed after the serialization</param>
+        public static void ToJsonArrayParallely<T>(this BlockingCollection<T> sourceCollection,
             JsonSerializer serializer, JsonWriter jsonWriter, CancellationToken token,
-            CancellationTokenSource producerTokenSource = null)
+            CancellationTokenSource producerTokenSource = null, bool disposeWriter = true)
         {
             try
             {
                 jsonWriter.WriteStartArray();
-                while (blockingCollection.TryTake(out T obj, Timeout.Infinite, token))
+                while (sourceCollection.TryTake(out T obj, Timeout.Infinite, token))
                 {
-                    await obj.ToJsonAsync(serializer, jsonWriter, token).ConfigureAwait(false);
+                    obj.ToJson(serializer, jsonWriter, false);
                 }
                 jsonWriter.WriteEndArray();
-                await jsonWriter.FlushAsync(token).ConfigureAwait(false);
+                jsonWriter.Flush();
             }
             catch
             {
                 producerTokenSource?.Cancel();
                 throw;
             }
+            finally
+            {
+                jsonWriter.DisposeIfRequired(disposeWriter);
+            }
         }
 
-        #endregion ToJsonArrayParallelyAsync region
+        #endregion ToJsonArrayParallely region
 
-        #region ToJsonArrayAsync region
+        #region ToJsonArray region
 
         /// <summary>
-        /// Returns the JSON serialized string of <paramref name="collection"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// asynchronously.
+        /// Returns the JSON serialized string of <paramref name="collection"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>).
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static Task<string> ToJsonArrayAsync<T>(this IEnumerable<T> collection,
+        public static string ToJsonArray<T>(this IEnumerable<T> collection,
             IFormatProvider formatProvider = null)
         {
-            return collection.ToJsonArrayAsync(CancellationToken.None, formatProvider);
+            return collection.ToJsonArray(CancellationToken.None, formatProvider);
         }
 
         /// <summary>
         /// Returns the JSON serialized string of <paramref name="collection"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// asynchronously while observing <paramref name="token"/>.
+        /// while observing <paramref name="token"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static Task<string> ToJsonArrayAsync<T>(this IEnumerable<T> collection, CancellationToken token,
+        public static string ToJsonArray<T>(this IEnumerable<T> collection, CancellationToken token,
             IFormatProvider formatProvider = null)
         {
-            return collection.ToJsonArrayAsync(CustomJsonSerializer(), token, formatProvider);
+            return collection.ToJsonArray(CustomJsonSerializer(), token, formatProvider);
         }
 
         /// <summary>
-        /// Returns the JSON serialized string of <paramref name="collection"/> using <paramref name="serializer"/>
-        /// asynchronously.
+        /// Returns the JSON serialized string of <paramref name="collection"/> using <paramref name="serializer"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static Task<string> ToJsonArrayAsync<T>(this IEnumerable<T> collection, JsonSerializer serializer,
+        public static string ToJsonArray<T>(this IEnumerable<T> collection, JsonSerializer serializer,
             IFormatProvider formatProvider = null)
         {
-            return collection.ToJsonArrayAsync(serializer, CancellationToken.None, formatProvider);
+            return collection.ToJsonArray(serializer, CancellationToken.None, formatProvider);
         }
 
         /// <summary>
         /// Returns the JSON serialized string of <paramref name="collection"/> using <paramref name="serializer"/>
-        /// asynchronously while observing <paramref name="token"/>.
+        /// while observing <paramref name="token"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static async Task<string> ToJsonArrayAsync<T>(this IEnumerable<T> collection, JsonSerializer serializer,
+        public static string ToJsonArray<T>(this IEnumerable<T> collection, JsonSerializer serializer,
             CancellationToken token, IFormatProvider formatProvider = null)
         {
             var stringBuilder = new StringBuilder();
-            await collection.ToJsonArrayAsync(serializer, stringBuilder, token, formatProvider).ConfigureAwait(false);
+            collection.ToJsonArray(serializer, stringBuilder, token, formatProvider);
             return stringBuilder.ToString();
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="collection"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// to <paramref name="output"/> asynchronously.
+        /// to <paramref name="output"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
         /// <param name="output">target output string builder</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static Task ToJsonArrayAsync<T>(this IEnumerable<T> collection, StringBuilder output,
+        public static void ToJsonArray<T>(this IEnumerable<T> collection, StringBuilder output,
             IFormatProvider formatProvider = null)
         {
-            return collection.ToJsonArrayAsync(output, CancellationToken.None, formatProvider);
+            collection.ToJsonArray(output, CancellationToken.None, formatProvider);
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="collection"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// to <paramref name="output"/> asynchronously while observing <paramref name="token"/>.
+        /// to <paramref name="output"/> while observing <paramref name="token"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
         /// <param name="output">target output string builder</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static Task ToJsonArrayAsync<T>(this IEnumerable<T> collection,
+        public static void ToJsonArray<T>(this IEnumerable<T> collection,
             StringBuilder output, CancellationToken token, IFormatProvider formatProvider = null)
         {
-            return collection.ToJsonArrayAsync(CustomJsonSerializer(), output, token, formatProvider);
+            collection.ToJsonArray(CustomJsonSerializer(), output, token, formatProvider);
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="collection"/> using <paramref name="serializer"/>
-        /// to <paramref name="output"/> asynchronously.
+        /// to <paramref name="output"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="output">target output string builder</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static Task ToJsonArrayAsync<T>(this IEnumerable<T> collection, JsonSerializer serializer,
+        public static void ToJsonArray<T>(this IEnumerable<T> collection, JsonSerializer serializer,
             StringBuilder output, IFormatProvider formatProvider = null)
         {
-            return collection.ToJsonArrayAsync(serializer, output, CancellationToken.None, formatProvider);
+            collection.ToJsonArray(serializer, output, CancellationToken.None, formatProvider);
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="collection"/> using <paramref name="serializer"/>
-        /// to <paramref name="output"/> asynchronously while observing <paramref name="token"/>.
+        /// to <paramref name="output"/> while observing <paramref name="token"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
@@ -699,18 +689,15 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="output">target output string builder</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static async Task ToJsonArrayAsync<T>(this IEnumerable<T> collection, JsonSerializer serializer,
+        public static void ToJsonArray<T>(this IEnumerable<T> collection, JsonSerializer serializer,
             StringBuilder output, CancellationToken token, IFormatProvider formatProvider = null)
         {
-            using (var textWriter = output.CreateWriter(formatProvider))
-            {
-                await collection.ToJsonArrayAsync(serializer, textWriter, token, false).ConfigureAwait(false);
-            }
+            collection.ToJsonArray(serializer, output.CreateWriter(formatProvider), token);
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="collection"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// to <paramref name="outputStream"/> asynchronously.
+        /// to <paramref name="outputStream"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
@@ -718,16 +705,16 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeStream">If true, <paramref name="outputStream"/> is disposed after the serialization</param>
-        public static Task ToJsonArrayAsync<T>(this IEnumerable<T> collection,
+        public static void ToJsonArray<T>(this IEnumerable<T> collection,
             Stream outputStream, Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
         {
-            return collection.ToJsonArrayAsync(outputStream, CancellationToken.None, enc, bufferSize, disposeStream);
+            collection.ToJsonArray(outputStream, CancellationToken.None, enc, bufferSize, disposeStream);
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="collection"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// to <paramref name="outputStream"/> asynchronously while observing <paramref name="token"/>.
+        /// to <paramref name="outputStream"/> while observing <paramref name="token"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
@@ -736,17 +723,17 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeStream">If true, <paramref name="outputStream"/> is disposed after the serialization</param>
-        public static Task ToJsonArrayAsync<T>(this IEnumerable<T> collection,
+        public static void ToJsonArray<T>(this IEnumerable<T> collection,
             Stream outputStream, CancellationToken token, Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
         {
-            return collection.ToJsonArrayAsync(CustomJsonSerializer(), outputStream, token, enc, bufferSize,
+            collection.ToJsonArray(CustomJsonSerializer(), outputStream, token, enc, bufferSize,
                 disposeStream);
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="collection"/> using <paramref name="serializer"/>
-        /// to <paramref name="outputStream"/> asynchronously.
+        /// to <paramref name="outputStream"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
@@ -755,17 +742,17 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeStream">If true, <paramref name="outputStream"/> is disposed after the serialization</param>
-        public static Task ToJsonArrayAsync<T>(this IEnumerable<T> collection, JsonSerializer serializer,
+        public static void ToJsonArray<T>(this IEnumerable<T> collection, JsonSerializer serializer,
             Stream outputStream, Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
         {
-            return collection.ToJsonArrayAsync(serializer, outputStream, CancellationToken.None, enc, bufferSize,
+            collection.ToJsonArray(serializer, outputStream, CancellationToken.None, enc, bufferSize,
                 disposeStream);
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="collection"/> using <paramref name="serializer"/>
-        /// to <paramref name="outputStream"/> asynchronously while observing <paramref name="token"/>.
+        /// to <paramref name="outputStream"/> while observing <paramref name="token"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
@@ -775,64 +762,64 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeStream">If true, <paramref name="outputStream"/> is disposed after the serialization</param>
-        public static async Task ToJsonArrayAsync<T>(this IEnumerable<T> collection, JsonSerializer serializer,
+        public static void ToJsonArray<T>(this IEnumerable<T> collection, JsonSerializer serializer,
             Stream outputStream, CancellationToken token, Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
         {
             using (var streamWriter = outputStream.CreateWriter(enc, bufferSize, disposeStream))
             {
-                await collection.ToJsonArrayAsync(serializer, streamWriter, token, false).ConfigureAwait(false);
-                await outputStream.FlushAsync(token).ConfigureAwait(false);
+                collection.ToJsonArray(serializer, streamWriter, token, false);
+                outputStream.Flush();
             }
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="collection"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// to <paramref name="textWriter"/> asynchronously.
+        /// to <paramref name="textWriter"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
         /// <param name="textWriter">target text writer</param>
         /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
-        public static Task ToJsonArrayAsync<T>(this IEnumerable<T> collection,
+        public static void ToJsonArray<T>(this IEnumerable<T> collection,
             TextWriter textWriter, bool disposeWriter = true)
         {
-            return collection.ToJsonArrayAsync(textWriter, CancellationToken.None, disposeWriter);
+            collection.ToJsonArray(textWriter, CancellationToken.None, disposeWriter);
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="collection"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// to <paramref name="textWriter"/> asynchronously while observing <paramref name="token"/>.
+        /// to <paramref name="textWriter"/> while observing <paramref name="token"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
         /// <param name="textWriter">target text writer</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
-        public static Task ToJsonArrayAsync<T>(this IEnumerable<T> collection,
+        public static void ToJsonArray<T>(this IEnumerable<T> collection,
             TextWriter textWriter, CancellationToken token, bool disposeWriter = true)
         {
-            return collection.ToJsonArrayAsync(CustomJsonSerializer(), textWriter, token, disposeWriter);
+            collection.ToJsonArray(CustomJsonSerializer(), textWriter, token, disposeWriter);
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="collection"/> using <paramref name="serializer"/>
-        /// to <paramref name="textWriter"/> asynchronously.
+        /// to <paramref name="textWriter"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="textWriter">target text writer</param>
         /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
-        public static Task ToJsonArrayAsync<T>(IEnumerable<T> collection, JsonSerializer serializer,
+        public static void ToJsonArray<T>(IEnumerable<T> collection, JsonSerializer serializer,
             TextWriter textWriter, bool disposeWriter = true)
         {
-            return collection.ToJsonArrayAsync(serializer, textWriter, CancellationToken.None, disposeWriter);
+            collection.ToJsonArray(serializer, textWriter, CancellationToken.None, disposeWriter);
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="collection"/> using <paramref name="serializer"/>
-        /// to <paramref name="textWriter"/> asynchronously while observing <paramref name="token"/>.
+        /// to <paramref name="textWriter"/> while observing <paramref name="token"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
@@ -840,209 +827,152 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="textWriter">target text writer</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
-        public static async Task ToJsonArrayAsync<T>(this IEnumerable<T> collection, JsonSerializer serializer,
+        public static void ToJsonArray<T>(this IEnumerable<T> collection, JsonSerializer serializer,
             TextWriter textWriter, CancellationToken token, bool disposeWriter = true)
         {
             using (var jsonWriter = serializer.CreateJsonWriter(textWriter, disposeWriter))
             {
-                await collection.ToJsonArrayAsync(serializer, jsonWriter, token).ConfigureAwait(false);
-                await textWriter.FlushAsync().ConfigureAwait(false);
+                collection.ToJsonArray(serializer, jsonWriter, token, false);
+                textWriter.Flush();
             }
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="collection"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// to <paramref name="jsonWriter"/> asynchronously.
-        /// <para>IMPORTANT: <paramref name="jsonWriter"/> is NOT disposed in this operation.</para>
+        /// to <paramref name="jsonWriter"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
-        /// <param name="jsonWriter">target JSON writer (NOT disposed after the operation)</param>
-        public static Task ToJsonArrayAsync<T>(this IEnumerable<T> collection,
-            JsonWriter jsonWriter)
+        /// <param name="jsonWriter">target JSON writer</param>
+        /// <param name="disposeWriter">If true, <paramref name="jsonWriter"/> is disposed after the serialization</param>
+        public static void ToJsonArray<T>(this IEnumerable<T> collection,
+            JsonWriter jsonWriter, bool disposeWriter = true)
         {
-            return collection.ToJsonArrayAsync(jsonWriter, CancellationToken.None);
+            collection.ToJsonArray(jsonWriter, CancellationToken.None, disposeWriter);
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="collection"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// to <paramref name="jsonWriter"/> asynchronously while observing <paramref name="token"/>.
-        /// <para>IMPORTANT: <paramref name="jsonWriter"/> is NOT disposed in this operation.</para>
+        /// to <paramref name="jsonWriter"/> while observing <paramref name="token"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
-        /// <param name="jsonWriter">target JSON writer (NOT disposed after the operation)</param>
+        /// <param name="jsonWriter">target JSON writer</param>
         /// <param name="token">cancellation token to observe</param>
-        public static Task ToJsonArrayAsync<T>(this IEnumerable<T> collection,
-            JsonWriter jsonWriter, CancellationToken token)
+        /// <param name="disposeWriter">If true, <paramref name="jsonWriter"/> is disposed after the serialization</param>
+        public static void ToJsonArray<T>(this IEnumerable<T> collection,
+            JsonWriter jsonWriter, CancellationToken token, bool disposeWriter = true)
         {
-            return collection.ToJsonArrayAsync(CustomJsonSerializer(), jsonWriter, token);
+            collection.ToJsonArray(jsonWriter.AdaptJsonSerializer(), jsonWriter, token, disposeWriter);
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="collection"/> using <paramref name="serializer"/>
-        /// to <paramref name="jsonWriter"/> asynchronously.
-        /// <para>IMPORTANT: <paramref name="jsonWriter"/> is NOT disposed in this operation.</para>
+        /// to <paramref name="jsonWriter"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
-        /// <param name="jsonWriter">target JSON writer (NOT disposed after the operation)</param>
-        public static Task ToJsonArrayAsync<T>(this IEnumerable<T> collection, JsonSerializer serializer,
-            JsonWriter jsonWriter)
+        /// <param name="jsonWriter">target JSON writer</param>
+        /// <param name="disposeWriter">If true, <paramref name="jsonWriter"/> is disposed after the serialization</param>
+        public static void ToJsonArray<T>(this IEnumerable<T> collection, JsonSerializer serializer,
+            JsonWriter jsonWriter, bool disposeWriter = true)
         {
-            return collection.ToJsonArrayAsync(serializer, jsonWriter, CancellationToken.None);
+            collection.ToJsonArray(serializer, jsonWriter, CancellationToken.None, disposeWriter);
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="collection"/> using <paramref name="serializer"/>
-        /// to <paramref name="jsonWriter"/> asynchronously while observing <paramref name="token"/>.
-        /// <para>IMPORTANT: <paramref name="jsonWriter"/> is NOT disposed in this operation.</para>
+        /// to <paramref name="jsonWriter"/> while observing <paramref name="token"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="collection">input object enumerable to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
-        /// <param name="jsonWriter">target JSON writer (NOT disposed after the operation)</param>
+        /// <param name="jsonWriter">target JSON writer</param>
         /// <param name="token">cancellation token to observe</param>
-        public static async Task ToJsonArrayAsync<T>(this IEnumerable<T> collection, JsonSerializer serializer,
-            JsonWriter jsonWriter, CancellationToken token)
+        /// <param name="disposeWriter">If true, <paramref name="jsonWriter"/> is disposed after the serialization</param>
+        public static void ToJsonArray<T>(this IEnumerable<T> collection, JsonSerializer serializer,
+            JsonWriter jsonWriter, CancellationToken token, bool disposeWriter = true)
         {
-            jsonWriter.WriteStartArray();
-            foreach (var obj in collection)
+            try
             {
-                await obj.ToJsonAsync(serializer, jsonWriter, token).ConfigureAwait(false);
+                jsonWriter.WriteStartArray();
+                foreach (var obj in collection)
+                {
+                    token.ThrowIfCancellationRequested();
+                    obj.ToJson(serializer, jsonWriter, false);
+                }
+                jsonWriter.WriteEndArray();
+                jsonWriter.Flush();
             }
-            jsonWriter.WriteEndArray();
-            await jsonWriter.FlushAsync(token).ConfigureAwait(false);
+            finally
+            {
+                jsonWriter.DisposeIfRequired(disposeWriter);
+            }
         }
 
-        #endregion ToJsonArrayAsync region
+        #endregion ToJsonArray region
 
-        #region ToJsonAsync region
+        #region ToJson region
 
         /// <summary>
-        /// Returns the JSON serialized string of <paramref name="obj"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// asynchronously.
+        /// Returns the JSON serialized string of <paramref name="obj"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>).
         /// </summary>
         /// <typeparam name="T">Type of the input object to serialize</typeparam>
         /// <param name="obj">input object to JSON serialize</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static Task<string> ToJsonAsync<T>(this T obj, IFormatProvider formatProvider = null)
+        public static string ToJson<T>(this T obj, IFormatProvider formatProvider = null)
         {
-            return obj.ToJsonAsync(CancellationToken.None, formatProvider);
+            return obj.ToJson(CustomJsonSerializer(), formatProvider);
         }
-
+        
         /// <summary>
-        /// Returns the JSON serialized string of <paramref name="obj"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// asynchronously while observing <paramref name="token"/>.
-        /// </summary>
-        /// <typeparam name="T">Type of the input object to serialize</typeparam>
-        /// <param name="obj">input object to JSON serialize</param>
-        /// <param name="token">cancellation token to observe</param>
-        /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static Task<string> ToJsonAsync<T>(this T obj, CancellationToken token,
-            IFormatProvider formatProvider = null)
-        {
-            return obj.ToJsonAsync(CustomJsonSerializer(), token, formatProvider);
-        }
-
-        /// <summary>
-        /// Returns the JSON serialized string of <paramref name="obj"/> using <paramref name="serializer"/>
-        /// asynchronously.
+        /// Returns the JSON serialized string of <paramref name="obj"/> using <paramref name="serializer"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object to serialize</typeparam>
         /// <param name="obj">input object to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static Task<string> ToJsonAsync<T>(this T obj, JsonSerializer serializer,
+        public static string ToJson<T>(this T obj, JsonSerializer serializer,
             IFormatProvider formatProvider = null)
-        {
-            return obj.ToJsonAsync(serializer, CancellationToken.None, formatProvider);
-        }
-
-        /// <summary>
-        /// Returns the JSON serialized string of <paramref name="obj"/> using <paramref name="serializer"/>
-        /// asynchronously while observing <paramref name="token"/>.
-        /// </summary>
-        /// <typeparam name="T">Type of the input object to serialize</typeparam>
-        /// <param name="obj">input object to JSON serialize</param>
-        /// <param name="serializer">JSON serializer to use</param>
-        /// <param name="token">cancellation token to observe</param>
-        /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static async Task<string> ToJsonAsync<T>(this T obj, JsonSerializer serializer,
-            CancellationToken token, IFormatProvider formatProvider = null)
         {
             var stringBuilder = new StringBuilder();
-            await obj.ToJsonAsync(serializer, stringBuilder, token, formatProvider).ConfigureAwait(false);
+            obj.ToJson(serializer, stringBuilder, formatProvider);
             return stringBuilder.ToString();
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="obj"/> custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// to <paramref name="output"/> asynchronously.
+        /// to <paramref name="output"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object to serialize</typeparam>
         /// <param name="obj">input object to JSON serialize</param>
         /// <param name="output">target output string builder</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static Task ToJsonAsync<T>(this T obj, StringBuilder output,
+        public static void ToJson<T>(this T obj, StringBuilder output,
             IFormatProvider formatProvider = null)
         {
-            return obj.ToJsonAsync(output, CancellationToken.None, formatProvider);
+            obj.ToJson(CustomJsonSerializer(), output, formatProvider);
         }
-
-        /// <summary>
-        /// Writes the JSON serialized string of <paramref name="obj"/> custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// to <paramref name="output"/> asynchronously while observing <paramref name="token"/>.
-        /// </summary>
-        /// <typeparam name="T">Type of the input object to serialize</typeparam>
-        /// <param name="obj">input object to JSON serialize</param>
-        /// <param name="output">target output string builder</param>
-        /// <param name="token">cancellation token to observe</param>
-        /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static Task ToJsonAsync<T>(this T obj, StringBuilder output,
-            CancellationToken token, IFormatProvider formatProvider = null)
-        {
-            return obj.ToJsonAsync(CustomJsonSerializer(), output, token, formatProvider);
-        }
-
+        
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="obj"/> using <paramref name="serializer"/>
-        /// to <paramref name="output"/> asynchronously.
+        /// to <paramref name="output"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object to serialize</typeparam>
         /// <param name="obj">input object to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="output">target output string builder</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static Task ToJsonAsync<T>(this T obj, JsonSerializer serializer,
+        public static void ToJson<T>(this T obj, JsonSerializer serializer,
             StringBuilder output, IFormatProvider formatProvider = null)
         {
-            return obj.ToJsonAsync(serializer, output, CancellationToken.None, formatProvider);
-        }
-
-        /// <summary>
-        /// Writes the JSON serialized string of <paramref name="obj"/> using <paramref name="serializer"/>
-        /// to <paramref name="output"/> asynchronously while observing <paramref name="token"/>.
-        /// </summary>
-        /// <typeparam name="T">Type of the input object to serialize</typeparam>
-        /// <param name="obj">input object to JSON serialize</param>
-        /// <param name="serializer">JSON serializer to use</param>
-        /// <param name="output">target output string builder</param>
-        /// <param name="token">cancellation token to observe</param>
-        /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static async Task ToJsonAsync<T>(this T obj, JsonSerializer serializer,
-            StringBuilder output, CancellationToken token, IFormatProvider formatProvider = null)
-        {
-            using (var textWriter = output.CreateWriter(formatProvider))
-            {
-                await obj.ToJsonAsync(serializer, textWriter, token, false).ConfigureAwait(false);
-            }
+            obj.ToJson(serializer, output.CreateWriter(formatProvider));
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="obj"/> custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// to <paramref name="outputStream"/> asynchronously.
+        /// to <paramref name="outputStream"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object to serialize</typeparam>
         /// <param name="obj">input object to JSON serialize</param>
@@ -1050,33 +980,15 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeStream">If true, <paramref name="outputStream"/> is disposed after the serialization</param>
-        public static Task ToJsonAsync<T>(this T obj, Stream outputStream, Encoding enc = null,
+        public static void ToJson<T>(this T obj, Stream outputStream, Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
         {
-            return obj.ToJsonAsync(outputStream, CancellationToken.None, enc, bufferSize,
-                disposeStream);
-        }
-
-        /// <summary>
-        /// Writes the JSON serialized string of <paramref name="obj"/> custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// to <paramref name="outputStream"/> asynchronously while observing <paramref name="token"/>.
-        /// </summary>
-        /// <typeparam name="T">Type of the input object to serialize</typeparam>
-        /// <param name="obj">input object to JSON serialize</param>
-        /// <param name="outputStream">target output stream</param>
-        /// <param name="token">cancellation token to observe</param>
-        /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
-        /// <param name="bufferSize">Buffer size</param>
-        /// <param name="disposeStream">If true, <paramref name="outputStream"/> is disposed after the serialization</param>
-        public static Task ToJsonAsync<T>(this T obj, Stream outputStream, CancellationToken token,
-            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
-        {
-            return obj.ToJsonAsync(CustomJsonSerializer(), outputStream, token, enc, bufferSize, disposeStream);
+            obj.ToJson(CustomJsonSerializer(), outputStream, enc, bufferSize, disposeStream);
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="obj"/> using <paramref name="serializer"/>
-        /// to <paramref name="outputStream"/> asynchronously.
+        /// to <paramref name="outputStream"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object to serialize</typeparam>
         /// <param name="obj">input object to JSON serialize</param>
@@ -1085,156 +997,82 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeStream">If true, <paramref name="outputStream"/> is disposed after the serialization</param>
-        public static Task ToJsonAsync<T>(this T obj, JsonSerializer serializer,
+        public static void ToJson<T>(this T obj, JsonSerializer serializer,
             Stream outputStream, Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize,
             bool disposeStream = true)
         {
-            return obj.ToJsonAsync(serializer, outputStream, CancellationToken.None, enc, bufferSize, disposeStream);
-        }
-
-        /// <summary>
-        /// Writes the JSON serialized string of <paramref name="obj"/> using <paramref name="serializer"/>
-        /// to <paramref name="outputStream"/> asynchronously while observing <paramref name="token"/>.
-        /// </summary>
-        /// <typeparam name="T">Type of the input object to serialize</typeparam>
-        /// <param name="obj">input object to JSON serialize</param>
-        /// <param name="serializer">JSON serializer to use</param>
-        /// <param name="outputStream">target output stream</param>
-        /// <param name="token">cancellation token to observe</param>
-        /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
-        /// <param name="bufferSize">Buffer size</param>
-        /// <param name="disposeStream">If true, <paramref name="outputStream"/> is disposed after the serialization</param>
-        public static async Task ToJsonAsync<T>(this T obj, JsonSerializer serializer,
-            Stream outputStream, CancellationToken token, Encoding enc = null,
-            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
-        {
             using (var textWriter = outputStream.CreateWriter(enc, bufferSize, disposeStream))
             {
-                await obj.ToJsonAsync(serializer, textWriter, token, false).ConfigureAwait(false);
-                await outputStream.FlushAsync(token).ConfigureAwait(false);
+                obj.ToJson(serializer, textWriter, false);
+                outputStream.Flush();
             }
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="obj"/> custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// to <paramref name="textWriter"/> asynchronously.
+        /// to <paramref name="textWriter"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object to serialize</typeparam>
         /// <param name="obj">input object to JSON serialize</param>
         /// <param name="textWriter">target text writer</param>
         /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
-        public static Task ToJsonAsync<T>(this T obj, TextWriter textWriter, bool disposeWriter = true)
+        public static void ToJson<T>(this T obj, TextWriter textWriter, bool disposeWriter = true)
         {
-            return obj.ToJsonAsync(textWriter, CancellationToken.None, disposeWriter);
+            obj.ToJson(CustomJsonSerializer(), textWriter, disposeWriter);
         }
-
-        /// <summary>
-        /// Writes the JSON serialized string of <paramref name="obj"/> custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// to <paramref name="textWriter"/> asynchronously while observing <paramref name="token"/>.
-        /// </summary>
-        /// <typeparam name="T">Type of the input object to serialize</typeparam>
-        /// <param name="obj">input object to JSON serialize</param>
-        /// <param name="textWriter">target text writer</param>
-        /// <param name="token">cancellation token to observe</param>
-        /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
-        public static Task ToJsonAsync<T>(this T obj, TextWriter textWriter,
-            CancellationToken token, bool disposeWriter = true)
-        {
-            return obj.ToJsonAsync(CustomJsonSerializer(), textWriter, token, disposeWriter);
-        }
-
+        
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="obj"/> using <paramref name="serializer"/>
-        /// to <paramref name="textWriter"/> asynchronously.
+        /// to <paramref name="textWriter"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object to serialize</typeparam>
         /// <param name="obj">input object to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="textWriter">target text writer</param>
         /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
-        public static Task ToJsonAsync<T>(this T obj, JsonSerializer serializer,
+        public static void ToJson<T>(this T obj, JsonSerializer serializer,
             TextWriter textWriter, bool disposeWriter = true)
-        {
-            return obj.ToJsonAsync(serializer, textWriter, CancellationToken.None, disposeWriter);
-        }
-
-        /// <summary>
-        /// Writes the JSON serialized string of <paramref name="obj"/> using <paramref name="serializer"/>
-        /// to <paramref name="textWriter"/> asynchronously while observing <paramref name="token"/>.
-        /// </summary>
-        /// <typeparam name="T">Type of the input object to serialize</typeparam>
-        /// <param name="obj">input object to JSON serialize</param>
-        /// <param name="serializer">JSON serializer to use</param>
-        /// <param name="textWriter">target text writer</param>
-        /// <param name="token">cancellation token to observe</param>
-        /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
-        public static async Task ToJsonAsync<T>(this T obj, JsonSerializer serializer,
-            TextWriter textWriter, CancellationToken token, bool disposeWriter = true)
         {
             using (var jsonWriter = serializer.CreateJsonWriter(textWriter, disposeWriter))
             {
-                await obj.ToJsonAsync(serializer, jsonWriter, token).ConfigureAwait(false);
-                await textWriter.FlushAsync().ConfigureAwait(false);
+                obj.ToJson(serializer, jsonWriter, false);
+                textWriter.Flush();
             }
         }
 
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="obj"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// to <paramref name="jsonWriter"/> asynchronously.
-        /// <para>IMPORTANT: <paramref name="jsonWriter"/> is NOT disposed in this operation.</para>
+        /// to <paramref name="jsonWriter"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object to serialize</typeparam>
         /// <param name="obj">input object to JSON serialize</param>
-        /// <param name="jsonWriter">target JSON writer (NOT disposed after the operation)</param>
-        public static Task ToJsonAsync<T>(this T obj, JsonWriter jsonWriter)
+        /// <param name="jsonWriter">target JSON writer</param>
+        /// <param name="disposeWriter">If true, <paramref name="jsonWriter"/> is disposed after the serialization</param>
+        public static void ToJson<T>(this T obj, JsonWriter jsonWriter, bool disposeWriter = true)
         {
-            return obj.ToJsonAsync(jsonWriter, CancellationToken.None);
+            obj.ToJson(jsonWriter.AdaptJsonSerializer(), jsonWriter, disposeWriter);
         }
-
-        /// <summary>
-        /// Writes the JSON serialized string of <paramref name="obj"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>)
-        /// to <paramref name="jsonWriter"/> asynchronously while observing <paramref name="token"/>.
-        /// <para>IMPORTANT: <paramref name="jsonWriter"/> is NOT disposed in this operation.</para>
-        /// </summary>
-        /// <typeparam name="T">Type of the input object to serialize</typeparam>
-        /// <param name="obj">input object to JSON serialize</param>
-        /// <param name="jsonWriter">target JSON writer (NOT disposed after the operation)</param>
-        /// <param name="token">cancellation token to observe</param>
-        public static Task ToJsonAsync<T>(this T obj, JsonWriter jsonWriter, CancellationToken token)
-        {
-            return obj.ToJsonAsync(jsonWriter.AdaptJsonSerializer(), jsonWriter, token);
-        }
-
+        
         /// <summary>
         /// Writes the JSON serialized string of <paramref name="obj"/> using <paramref name="serializer"/>
-        /// to <paramref name="jsonWriter"/> asynchronously.
-        /// <para>IMPORTANT: <paramref name="jsonWriter"/> is NOT disposed in this operation.</para>
+        /// to <paramref name="jsonWriter"/>.
         /// </summary>
         /// <typeparam name="T">Type of the input object to serialize</typeparam>
         /// <param name="obj">input object to JSON serialize</param>
         /// <param name="serializer">JSON serializer to use</param>
-        /// <param name="jsonWriter">target JSON writer (NOT disposed after the operation)</param>
-        public static Task ToJsonAsync<T>(this T obj, JsonSerializer serializer,
-            JsonWriter jsonWriter)
+        /// <param name="jsonWriter">target JSON writer</param>
+        /// <param name="disposeWriter">If true, <paramref name="jsonWriter"/> is disposed after the serialization</param>
+        public static void ToJson<T>(this T obj, JsonSerializer serializer, JsonWriter jsonWriter, bool disposeWriter = true)
         {
-            return obj.ToJsonAsync(serializer, jsonWriter, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Writes the JSON serialized string of <paramref name="obj"/> using <paramref name="serializer"/>
-        /// to <paramref name="jsonWriter"/> asynchronously while observing <paramref name="token"/>.
-        /// <para>IMPORTANT: <paramref name="jsonWriter"/> is NOT disposed in this operation.</para>
-        /// </summary>
-        /// <typeparam name="T">Type of the input object to serialize</typeparam>
-        /// <param name="obj">input object to JSON serialize</param>
-        /// <param name="serializer">JSON serializer to use</param>
-        /// <param name="jsonWriter">target JSON writer (NOT disposed after the operation)</param>
-        /// <param name="token">cancellation token to observe</param>
-        public static async Task ToJsonAsync<T>(this T obj, JsonSerializer serializer,
-            JsonWriter jsonWriter, CancellationToken token)
-        {
-            serializer.Serialize(jsonWriter, obj);
-            await jsonWriter.FlushAsync(token).ConfigureAwait(false);
+            try
+            {
+                serializer.Serialize(jsonWriter, obj);
+                jsonWriter.Flush();
+            }
+            finally
+            {
+                jsonWriter.DisposeIfRequired(disposeWriter);
+            }
         }
 
         #endregion ToJson region
@@ -1242,24 +1080,24 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         #region FromJson region
 
         /// <summary>
-        /// Deserializes the JSON string of <paramref name="jsonStringBuilder"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>).
+        /// Deserializes the JSON string of <paramref name="jsonSource"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>).
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonStringBuilder">source JSON String Builder</param>
-        public static T FromJson<T>(this StringBuilder jsonStringBuilder)
+        /// <param name="jsonSource">source JSON String Builder</param>
+        public static T FromJson<T>(this StringBuilder jsonSource)
         {
-            return jsonStringBuilder.FromJson<T>(CustomJsonSerializer());
+            return jsonSource.FromJson<T>(CustomJsonSerializer());
         }
 
         /// <summary>
-        /// Deserializes the JSON string of <paramref name="jsonStringBuilder"/> using <paramref name="serializer"/>.
+        /// Deserializes the JSON string of <paramref name="jsonSource"/> using <paramref name="serializer"/>.
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonStringBuilder">source JSON String Builder</param>
+        /// <param name="jsonSource">source JSON String Builder</param>
         /// <param name="serializer">JSON serializer</param>
-        public static T FromJson<T>(this StringBuilder jsonStringBuilder, JsonSerializer serializer)
+        public static T FromJson<T>(this StringBuilder jsonSource, JsonSerializer serializer)
         {
-            return jsonStringBuilder.ToString().FromJson<T>(serializer);
+            return jsonSource.ToString().FromJson<T>(serializer);
         }
 
         /// <summary>
@@ -1313,52 +1151,56 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// Deserializes the JSON data of <paramref name="jsonTextReader"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>).
+        /// Deserializes the JSON data of <paramref name="textReader"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>).
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonTextReader">Text reader as data source</param>
-        /// <param name="disposeReader">If true, <paramref name="jsonTextReader"/> is disposed after the deserialization</param>
-        public static T FromJson<T>(this TextReader jsonTextReader, bool disposeReader = true)
+        /// <param name="textReader">Text reader as data source</param>
+        /// <param name="disposeReader">If true, <paramref name="textReader"/> is disposed after the deserialization</param>
+        public static T FromJson<T>(this TextReader textReader, bool disposeReader = true)
         {
-            return jsonTextReader.FromJson<T>(CustomJsonSerializer(), disposeReader);
+            return textReader.FromJson<T>(CustomJsonSerializer(), disposeReader);
         }
 
         /// <summary>
-        /// Deserializes the JSON data of <paramref name="jsonTextReader"/> using <paramref name="serializer"/>.
+        /// Deserializes the JSON data of <paramref name="textReader"/> using <paramref name="serializer"/>.
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonTextReader">Text reader as data source</param>
+        /// <param name="textReader">Text reader as data source</param>
         /// <param name="serializer">JSON serializer</param>
-        /// <param name="disposeReader">If true, <paramref name="jsonTextReader"/> is disposed after the deserialization</param>
-        public static T FromJson<T>(this TextReader jsonTextReader, JsonSerializer serializer, bool disposeReader = true)
+        /// <param name="disposeReader">If true, <paramref name="textReader"/> is disposed after the deserialization</param>
+        public static T FromJson<T>(this TextReader textReader, JsonSerializer serializer, bool disposeReader = true)
         {
-            using (var jsonReader = serializer.CreateJsonReader(jsonTextReader, disposeReader))
-            {
-                return jsonReader.FromJson<T>(serializer);
-            }
+            return serializer.CreateJsonReader(textReader, disposeReader).FromJson<T>(serializer);
         }
 
         /// <summary>
         /// Deserializes the JSON data of <paramref name="jsonReader"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>).
-        /// <para>IMPORTANT: <paramref name="jsonReader"/> is NOT disposed in this operation.</para>
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonReader">JSON reader as data source (NOT disposed after deserialization)</param>
-        public static T FromJson<T>(JsonReader jsonReader)
+        /// <param name="jsonReader">JSON reader as data source</param>
+        /// <param name="disposeReader">If true, <paramref name="jsonReader"/> is disposed after the deserialization</param>
+        public static T FromJson<T>(JsonReader jsonReader, bool disposeReader = true)
         {
-            return jsonReader.FromJson<T>(CustomJsonSerializer());
+            return jsonReader.FromJson<T>(jsonReader.AdaptJsonSerializer(), disposeReader);
         }
 
         /// <summary>
         /// Deserializes the JSON data of <paramref name="jsonReader"/> using <paramref name="serializer"/>.
-        /// <para>IMPORTANT: <paramref name="jsonReader"/> is NOT disposed in this operation.</para>
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonReader">JSON reader as data source (NOT disposed after deserialization)</param>
+        /// <param name="jsonReader">JSON reader as data source</param>
         /// <param name="serializer">JSON serializer</param>
-        public static T FromJson<T>(this JsonReader jsonReader, JsonSerializer serializer)
+        /// <param name="disposeReader">If true, <paramref name="jsonReader"/> is disposed after the deserialization</param>
+        public static T FromJson<T>(this JsonReader jsonReader, JsonSerializer serializer, bool disposeReader = true)
         {
-            return serializer.Deserialize<T>(jsonReader);
+            try
+            {
+                return serializer.Deserialize<T>(jsonReader);
+            }
+            finally
+            {
+                jsonReader.DisposeIfRequired(disposeReader);
+            }
         }
 
         #endregion FromJson region
@@ -1366,55 +1208,58 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         #region FromJsonAsEnumerable region
 
         /// <summary>
-        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonStringBuilder"/> will
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonSource"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
         /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered.
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonStringBuilder">source JSON String builder</param>
-        public static IEnumerable<T> FromJsonAsEnumerable<T>(this StringBuilder jsonStringBuilder)
+        /// <param name="jsonSource">source JSON String builder</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this StringBuilder jsonSource)
         {
-            return jsonStringBuilder.FromJsonAsEnumerable<T>(CancellationToken.None);
+            return jsonSource.FromJsonAsEnumerable<T>(CancellationToken.None);
         }
 
         /// <summary>
-        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonStringBuilder"/> will
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonSource"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
         /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered OR <paramref name="token"/> is cancelled.
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonStringBuilder">source JSON String builder</param>
+        /// <param name="jsonSource">source JSON String builder</param>
         /// <param name="token">Cancellation token to observe</param>
-        public static IEnumerable<T> FromJsonAsEnumerable<T>(this StringBuilder jsonStringBuilder, CancellationToken token)
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this StringBuilder jsonSource,
+            CancellationToken token)
         {
-            return jsonStringBuilder.FromJsonAsEnumerable<T>(CustomJsonSerializer(), token);
+            return jsonSource.FromJsonAsEnumerable<T>(CustomJsonSerializer(), token);
         }
 
         /// <summary>
-        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonStringBuilder"/> will
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonSource"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
         /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered.
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonStringBuilder">source JSON String builder</param>
+        /// <param name="jsonSource">source JSON String builder</param>
         /// <param name="serializer">JSON serializer</param>
-        public static IEnumerable<T> FromJsonAsEnumerable<T>(this StringBuilder jsonStringBuilder, JsonSerializer serializer)
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this StringBuilder jsonSource,
+            JsonSerializer serializer)
         {
-            return jsonStringBuilder.FromJsonAsEnumerable<T>(serializer, CancellationToken.None);
+            return jsonSource.FromJsonAsEnumerable<T>(serializer, CancellationToken.None);
         }
 
         /// <summary>
-        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonStringBuilder"/> will
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonSource"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
         /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered OR <paramref name="token"/> is cancelled.
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonStringBuilder">source JSON String builder</param>
+        /// <param name="jsonSource">source JSON String builder</param>
         /// <param name="serializer">JSON serializer</param>
         /// <param name="token">Cancellation token to observe</param>
-        public static IEnumerable<T> FromJsonAsEnumerable<T>(this StringBuilder jsonStringBuilder, JsonSerializer serializer, CancellationToken token)
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this StringBuilder jsonSource,
+            JsonSerializer serializer, CancellationToken token)
         {
-            return jsonStringBuilder.ToString().FromJsonAsEnumerable<T>(serializer, token);
+            return jsonSource.ToString().FromJsonAsEnumerable<T>(serializer, token);
         }
 
         /// <summary>
@@ -1464,7 +1309,8 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="jsonString">source JSON String</param>
         /// <param name="serializer">JSON serializer</param>
         /// <param name="token">Cancellation token to observe</param>
-        public static IEnumerable<T> FromJsonAsEnumerable<T>(this string jsonString, JsonSerializer serializer, CancellationToken token)
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this string jsonString, JsonSerializer serializer,
+            CancellationToken token)
         {
             return new StringReader(jsonString).FromJsonAsEnumerable<T>(serializer, token);
         }
@@ -1531,113 +1377,112 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeStream">If true, <paramref name="jsonStream"/> is disposed after the deserialization</param>
-        public static IEnumerable<T> FromJsonAsEnumerable<T>(this Stream jsonStream, JsonSerializer serializer, CancellationToken token,
-            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this Stream jsonStream, JsonSerializer serializer,
+            CancellationToken token, Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
         {
             return jsonStream.CreateReader(enc, bufferSize, disposeStream).FromJsonAsEnumerable<T>(serializer, token);
         }
 
         /// <summary>
-        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonTextReader"/> will
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="textReader"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
         /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered.
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonTextReader">JSON text reader as data source</param>
-        /// <param name="disposeReader">If true, <paramref name="jsonTextReader"/> is disposed after the deserialization</param>
-        public static IEnumerable<T> FromJsonAsEnumerable<T>(this TextReader jsonTextReader, bool disposeReader = true)
+        /// <param name="textReader">JSON text reader as data source</param>
+        /// <param name="disposeReader">If true, <paramref name="textReader"/> is disposed after the deserialization</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this TextReader textReader, bool disposeReader = true)
         {
-            return jsonTextReader.FromJsonAsEnumerable<T>(CancellationToken.None, disposeReader);
+            return textReader.FromJsonAsEnumerable<T>(CancellationToken.None, disposeReader);
         }
 
         /// <summary>
-        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonTextReader"/> will
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="textReader"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
         /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered OR <paramref name="token"/> is cancelled.
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonTextReader">JSON text reader as data source</param>
+        /// <param name="textReader">JSON text reader as data source</param>
         /// <param name="token">Cancellation token to observe</param>
-        /// <param name="disposeReader">If true, <paramref name="jsonTextReader"/> is disposed after the deserialization</param>
-        public static IEnumerable<T> FromJsonAsEnumerable<T>(this TextReader jsonTextReader, CancellationToken token, 
+        /// <param name="disposeReader">If true, <paramref name="textReader"/> is disposed after the deserialization</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this TextReader textReader, CancellationToken token,
             bool disposeReader = true)
         {
-            return jsonTextReader.FromJsonAsEnumerable<T>(CustomJsonSerializer(), token, disposeReader);
+            return textReader.FromJsonAsEnumerable<T>(CustomJsonSerializer(), token, disposeReader);
         }
 
         /// <summary>
-        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonTextReader"/> will
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="textReader"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
         /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered.
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonTextReader">JSON text reader as data source</param>
+        /// <param name="textReader">JSON text reader as data source</param>
         /// <param name="serializer">JSON serializer</param>
-        /// <param name="disposeReader">If true, <paramref name="jsonTextReader"/> is disposed after the deserialization</param>
-        public static IEnumerable<T> FromJsonAsEnumerable<T>(this TextReader jsonTextReader, JsonSerializer serializer,
+        /// <param name="disposeReader">If true, <paramref name="textReader"/> is disposed after the deserialization</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this TextReader textReader, JsonSerializer serializer,
             bool disposeReader = true)
         {
-            return jsonTextReader.FromJsonAsEnumerable<T>(serializer, CancellationToken.None, disposeReader);
+            return textReader.FromJsonAsEnumerable<T>(serializer, CancellationToken.None, disposeReader);
         }
 
         /// <summary>
-        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonTextReader"/> will
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="textReader"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
         /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered OR <paramref name="token"/> is cancelled.
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonTextReader">JSON text reader as data source</param>
+        /// <param name="textReader">JSON text reader as data source</param>
         /// <param name="serializer">JSON serializer</param>
         /// <param name="token">Cancellation token to observe</param>
-        /// <param name="disposeReader">If true, <paramref name="jsonTextReader"/> is disposed after the deserialization</param>
-        public static IEnumerable<T> FromJsonAsEnumerable<T>(this TextReader jsonTextReader, JsonSerializer serializer,
+        /// <param name="disposeReader">If true, <paramref name="textReader"/> is disposed after the deserialization</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this TextReader textReader, JsonSerializer serializer,
             CancellationToken token, bool disposeReader = true)
         {
-            return serializer.CreateJsonReader(jsonTextReader, disposeReader).FromJsonAsEnumerable<T>(serializer, token);
+            return serializer.CreateJsonReader(textReader, disposeReader).FromJsonAsEnumerable<T>(serializer, token);
         }
 
         /// <summary>
         /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonReader"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
         /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered.
-        /// <para>IMPORTANT: <paramref name="jsonReader"/> is NOT disposed in this operation.</para>
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonReader">JSON reader as data source (NOT disposed after deserialization)</param>
+        /// <param name="jsonReader">JSON reader as data source</param>
         /// <param name="disposeReader">If true, <paramref name="jsonReader"/> is disposed after the deserialization</param>
         public static IEnumerable<T> FromJsonAsEnumerable<T>(this JsonReader jsonReader, bool disposeReader = false)
         {
-            return jsonReader.FromJsonAsEnumerable<T>(CancellationToken.None);
+            return jsonReader.FromJsonAsEnumerable<T>(CancellationToken.None, disposeReader);
         }
 
         /// <summary>
         /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonReader"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
         /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered OR <paramref name="token"/> is cancelled.
-        /// <para>IMPORTANT: <paramref name="jsonReader"/> is NOT disposed in this operation.</para>
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonReader">JSON reader as data source (NOT disposed after deserialization)</param>
+        /// <param name="jsonReader">JSON reader as data source</param>
         /// <param name="token">Cancellation token to observe</param>
         /// <param name="disposeReader">If true, <paramref name="jsonReader"/> is disposed after the deserialization</param>
-        public static IEnumerable<T> FromJsonAsEnumerable<T>(this JsonReader jsonReader, CancellationToken token, bool disposeReader = false)
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this JsonReader jsonReader, CancellationToken token,
+            bool disposeReader = false)
         {
-            return jsonReader.FromJsonAsEnumerable<T>(CustomJsonSerializer(), token);
+            return jsonReader.FromJsonAsEnumerable<T>(jsonReader.AdaptJsonSerializer(), token, disposeReader);
         }
 
         /// <summary>
         /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonReader"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
         /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered.
-        /// <para>IMPORTANT: <paramref name="jsonReader"/> is NOT disposed in this operation.</para>
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonReader">JSON reader as data source (NOT disposed after deserialization)</param>
+        /// <param name="jsonReader">JSON reader as data source</param>
         /// <param name="serializer">JSON serializer</param>
         /// <param name="disposeReader">If true, <paramref name="jsonReader"/> is disposed after the deserialization</param>
-        public static IEnumerable<T> FromJsonAsEnumerable<T>(this JsonReader jsonReader, JsonSerializer serializer, bool disposeReader = false)
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this JsonReader jsonReader, JsonSerializer serializer,
+            bool disposeReader = false)
         {
-            return jsonReader.FromJsonAsEnumerable<T>(serializer, CancellationToken.None);
+            return jsonReader.FromJsonAsEnumerable<T>(serializer, CancellationToken.None, disposeReader);
         }
 
         /// <summary>
@@ -1655,43 +1500,603 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         {
             try
             {
-                if (!jsonReader.Read()) yield break;
-                jsonReader.ThrowIfTokenNotStartArray();
-                while (jsonReader.Read() && jsonReader.TokenType != JsonToken.EndArray)
+                if (jsonReader.ThrowIfTokenNotStartArray()) yield break;
+                while (jsonReader.NotAnEndArrayToken())
                 {
-                    yield return jsonReader.FromJsonGetNext<T>(serializer);
                     token.ThrowIfCancellationRequested();
+                    yield return jsonReader.FromJsonGetNext<T>(serializer);
                 }
             }
             finally
             {
-                if (disposeReader)
-                {
-                    using (jsonReader)
-                    {
-                        //to dispose
-                    }
-                }
+                jsonReader.DisposeIfRequired(disposeReader);
             }
         }
 
         #endregion FromJsonAsEnumerable region
+
+        #region FromJsonArrayParallely region
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="jsonSource"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonSource">source JSON String builder</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        public static void FromJsonArrayParallely<T>(this StringBuilder jsonSource, BlockingCollection<T> targetCollection,
+            CancellationTokenSource consumerTokenSource = null)
+        {
+            jsonSource.FromJsonArrayParallely(targetCollection, CancellationToken.None, consumerTokenSource);
+        }
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="jsonSource"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
+        /// OR <paramref name="token"/> is cancelled.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonSource">source JSON String builder</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        public static void FromJsonArrayParallely<T>(this StringBuilder jsonSource, BlockingCollection<T> targetCollection,
+            CancellationToken token, CancellationTokenSource consumerTokenSource = null)
+        {
+            jsonSource.FromJsonArrayParallely(targetCollection, CustomJsonSerializer(), token, consumerTokenSource);
+        }
+        
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="jsonSource"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonSource">source JSON String builder</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="serializer">JSON serializer</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        public static void FromJsonArrayParallely<T>(this StringBuilder jsonSource, BlockingCollection<T> targetCollection,
+            JsonSerializer serializer, CancellationTokenSource consumerTokenSource = null)
+        {
+            jsonSource.FromJsonArrayParallely(targetCollection, serializer, CancellationToken.None, consumerTokenSource);
+        }
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="jsonSource"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
+        /// OR <paramref name="token"/> is cancelled.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonSource">source JSON String builder</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="serializer">JSON serializer</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        public static void FromJsonArrayParallely<T>(this StringBuilder jsonSource, BlockingCollection<T> targetCollection,
+            JsonSerializer serializer, CancellationToken token, CancellationTokenSource consumerTokenSource = null)
+        {
+            jsonSource.ToString().FromJsonArrayParallely(targetCollection, serializer, token, consumerTokenSource);
+        }
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="jsonString"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonString">source JSON String</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        public static void FromJsonArrayParallely<T>(this string jsonString, BlockingCollection<T> targetCollection,
+            CancellationTokenSource consumerTokenSource = null)
+        {
+            jsonString.FromJsonArrayParallely(targetCollection, CancellationToken.None, consumerTokenSource);
+        }
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="jsonString"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
+        /// OR <paramref name="token"/> is cancelled.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonString">source JSON String</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        public static void FromJsonArrayParallely<T>(this string jsonString, BlockingCollection<T> targetCollection,
+            CancellationToken token, CancellationTokenSource consumerTokenSource = null)
+        {
+            jsonString.FromJsonArrayParallely(targetCollection, CustomJsonSerializer(), token, consumerTokenSource);
+        }
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="jsonString"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonString">source JSON String</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="serializer">JSON serializer</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        public static void FromJsonArrayParallely<T>(this string jsonString, BlockingCollection<T> targetCollection,
+            JsonSerializer serializer, CancellationTokenSource consumerTokenSource = null)
+        {
+            jsonString.FromJsonArrayParallely(targetCollection, serializer, CancellationToken.None,consumerTokenSource);
+        }
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="jsonString"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
+        /// OR <paramref name="token"/> is cancelled.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonString">source JSON String</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="serializer">JSON serializer</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        public static void FromJsonArrayParallely<T>(this string jsonString, BlockingCollection<T> targetCollection,
+            JsonSerializer serializer, CancellationToken token, CancellationTokenSource consumerTokenSource = null)
+        {
+            new StringReader(jsonString).FromJsonArrayParallely(targetCollection, serializer, token,
+                consumerTokenSource);
+        }
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="jsonStream"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonStream">source JSON stream</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="disposeStream">If true, <paramref name="jsonStream"/> is disposed after the deserialization</param>
+        public static void FromJsonArrayParallely<T>(this Stream jsonStream, BlockingCollection<T> targetCollection,
+            CancellationTokenSource consumerTokenSource = null,
+            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
+        {
+            jsonStream.FromJsonArrayParallely(targetCollection, CancellationToken.None, consumerTokenSource, enc,
+                bufferSize, disposeStream);
+        }
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="jsonStream"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
+        /// OR <paramref name="token"/> is cancelled.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonStream">source JSON stream</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="disposeStream">If true, <paramref name="jsonStream"/> is disposed after the deserialization</param>
+        public static void FromJsonArrayParallely<T>(this Stream jsonStream, BlockingCollection<T> targetCollection,
+            CancellationToken token, CancellationTokenSource consumerTokenSource = null,
+            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
+        {
+            jsonStream.FromJsonArrayParallely(targetCollection, CustomJsonSerializer(), token, consumerTokenSource,
+                enc, bufferSize, disposeStream);
+        }
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="jsonStream"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonStream">source JSON stream</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="serializer">JSON serializer</param>
+        /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="disposeStream">If true, <paramref name="jsonStream"/> is disposed after the deserialization</param>
+        public static void FromJsonArrayParallely<T>(this Stream jsonStream, BlockingCollection<T> targetCollection,
+            JsonSerializer serializer, CancellationTokenSource consumerTokenSource = null,
+            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
+        {
+            jsonStream.FromJsonArrayParallely(targetCollection, serializer, CancellationToken.None, consumerTokenSource,
+                enc, bufferSize, disposeStream);
+        }
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="jsonStream"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
+        /// OR <paramref name="token"/> is cancelled.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonStream">source JSON stream</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="serializer">JSON serializer</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="disposeStream">If true, <paramref name="jsonStream"/> is disposed after the deserialization</param>
+        public static void FromJsonArrayParallely<T>(this Stream jsonStream, BlockingCollection<T> targetCollection, 
+            JsonSerializer serializer, CancellationToken token, CancellationTokenSource consumerTokenSource = null, 
+            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
+        {
+            jsonStream.CreateReader(enc, bufferSize, disposeStream)
+                .FromJsonArrayParallely(targetCollection, serializer, token, consumerTokenSource);
+        }
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="textReader"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="textReader">JSON text reader as data source</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="disposeReader">If true, <paramref name="textReader"/> is disposed after the deserialization</param>
+        public static void FromJsonArrayParallely<T>(this TextReader textReader, BlockingCollection<T> targetCollection,
+            CancellationTokenSource consumerTokenSource = null, bool disposeReader = true)
+        {
+            textReader.FromJsonArrayParallely(targetCollection, CancellationToken.None, consumerTokenSource, disposeReader);
+        }
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="textReader"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
+        /// OR <paramref name="token"/> is cancelled.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="textReader">JSON text reader as data source</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="disposeReader">If true, <paramref name="textReader"/> is disposed after the deserialization</param>
+        public static void FromJsonArrayParallely<T>(this TextReader textReader, BlockingCollection<T> targetCollection,
+            CancellationToken token, CancellationTokenSource consumerTokenSource = null, bool disposeReader = true)
+        {
+            textReader.FromJsonArrayParallely(targetCollection, CustomJsonSerializer(), token, consumerTokenSource,
+                disposeReader);
+        }
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="textReader"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="textReader">JSON text reader as data source</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="serializer">JSON serializer</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="disposeReader">If true, <paramref name="textReader"/> is disposed after the deserialization</param>
+        public static void FromJsonArrayParallely<T>(this TextReader textReader, BlockingCollection<T> targetCollection,
+            JsonSerializer serializer, CancellationTokenSource consumerTokenSource = null,
+            bool disposeReader = true)
+        {
+            textReader.FromJsonArrayParallely(targetCollection, serializer, CancellationToken.None,
+                consumerTokenSource, disposeReader);
+        }
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="textReader"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
+        /// OR <paramref name="token"/> is cancelled.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="textReader">JSON text reader as data source</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="serializer">JSON serializer</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="disposeReader">If true, <paramref name="textReader"/> is disposed after the deserialization</param>
+        public static void FromJsonArrayParallely<T>(this TextReader textReader, BlockingCollection<T> targetCollection,
+            JsonSerializer serializer, CancellationToken token, CancellationTokenSource consumerTokenSource = null,
+            bool disposeReader = true)
+        {
+            serializer.CreateJsonReader(textReader, disposeReader)
+                .FromJsonArrayParallely(targetCollection, serializer, token, consumerTokenSource);
+        }
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="jsonReader"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonReader">JSON reader as data source</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="disposeReader">If true, <paramref name="jsonReader"/> is disposed after the deserialization</param>
+        public static void FromJsonArrayParallely<T>(this JsonReader jsonReader, BlockingCollection<T> targetCollection,
+            CancellationTokenSource consumerTokenSource = null, bool disposeReader = true)
+        {
+            jsonReader.FromJsonArrayParallely(targetCollection, CancellationToken.None, consumerTokenSource,
+                disposeReader);
+        }
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="jsonReader"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
+        /// OR <paramref name="token"/> is cancelled.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonReader">JSON reader as data source</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="disposeReader">If true, <paramref name="jsonReader"/> is disposed after the deserialization</param>
+        public static void FromJsonArrayParallely<T>(this JsonReader jsonReader, BlockingCollection<T> targetCollection,
+            CancellationToken token, CancellationTokenSource consumerTokenSource = null,
+            bool disposeReader = true)
+        {
+            jsonReader.FromJsonArrayParallely(targetCollection, jsonReader.AdaptJsonSerializer(), token,
+                consumerTokenSource, disposeReader);
+        }
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="jsonReader"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonReader">JSON reader as data source</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="serializer">JSON serializer</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="disposeReader">If true, <paramref name="jsonReader"/> is disposed after the deserialization</param>
+        public static void FromJsonArrayParallely<T>(this JsonReader jsonReader, BlockingCollection<T> targetCollection,
+            JsonSerializer serializer, CancellationTokenSource consumerTokenSource = null,
+            bool disposeReader = true)
+        {
+            jsonReader.FromJsonArrayParallely(targetCollection, serializer, CancellationToken.None,
+                consumerTokenSource, disposeReader);
+        }
+
+        /// <summary>
+        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// performs JSON data deserialization with an expectation that <paramref name="jsonReader"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
+        /// OR <paramref name="token"/> is cancelled.
+        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
+        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
+        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
+        /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonReader">JSON reader as data source</param>
+        /// <param name="targetCollection">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="serializer">JSON serializer</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer side in case of error during json deserialization (producer side),
+        /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="disposeReader">If true, <paramref name="jsonReader"/> is disposed after the deserialization</param>
+        public static void FromJsonArrayParallely<T>(this JsonReader jsonReader, BlockingCollection<T> targetCollection,
+            JsonSerializer serializer, CancellationToken token, CancellationTokenSource consumerTokenSource = null,
+            bool disposeReader = true)
+        {
+            try
+            {
+                if (jsonReader.ThrowIfTokenNotStartArray()) return;
+                while (jsonReader.NotAnEndArrayToken())
+                {
+                    targetCollection.Add(jsonReader.FromJsonGetNext<T>(serializer), token);
+                }
+            }
+            catch
+            {
+                consumerTokenSource?.Cancel();
+                throw;
+            }
+            finally
+            {
+                //obligation to close the collection.
+                targetCollection.CompleteAdding();
+                jsonReader.DisposeIfRequired(disposeReader);
+            }
+        }
+
+        #endregion FromJsonArrayParallely region
 
         #region Private Methods
 
         private static T FromJsonGetNext<T>(this JsonReader jsonReader, JsonSerializer serializer)
         {
             return ((jsonReader.TokenType == JsonToken.StartObject)
-                    ? JObject.Load(jsonReader)
-                    : JToken.Load(jsonReader)).ToObject<T>(serializer);
+                ? JObject.Load(jsonReader)
+                : JToken.Load(jsonReader)).ToObject<T>(serializer);
         }
 
-        private static void ThrowIfTokenNotStartArray(this JsonReader jsonReader)
+        private static void DisposeIfRequired(this IDisposable disposable, bool dispose)
         {
-            (jsonReader.TokenType == JsonToken.StartArray).ThrowIfNot(DdnDfErrorCode.JsonIsNotAnArray,
-                    () =>
-                        $"JSON string does not start with start array token. Found token type is {jsonReader.TokenType:G}",
-                    (object)null);
+            if (!dispose) return;
+            using (disposable)
+            {
+                //to dispose
+            }
+        }
+
+        private static bool NotAnEndArrayToken(this JsonReader jsonReader)
+        {
+            return (jsonReader.Read() && jsonReader.TokenType != JsonToken.EndArray);
+        }
+
+        private static bool ThrowIfTokenNotStartArray(this JsonReader jsonReader)
+        {
+            if (!jsonReader.Read()) return true;
+            return (jsonReader.TokenType == JsonToken.StartArray).ThrowIfNot(DdnDfErrorCode.JsonIsNotAnArray,
+                () =>
+                    $"JSON string does not start with start array token. Found token type is {jsonReader.TokenType:G}",
+                false);
         }
 
         private static JsonSerializer AdaptJsonSerializer(this JsonWriter writer)
@@ -1704,6 +2109,18 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             serializer.FloatFormatHandling = writer.FloatFormatHandling;
             serializer.Formatting = writer.Formatting;
             serializer.StringEscapeHandling = writer.StringEscapeHandling;
+            return serializer;
+        }
+
+        private static JsonSerializer AdaptJsonSerializer(this JsonReader reader)
+        {
+            var serializer = CustomJsonSerializer();
+            serializer.Culture = reader.Culture;
+            serializer.DateFormatString = reader.DateFormatString;
+            serializer.DateTimeZoneHandling = reader.DateTimeZoneHandling;
+            serializer.FloatParseHandling = reader.FloatParseHandling;
+            serializer.DateParseHandling = reader.DateParseHandling;
+            serializer.MaxDepth = reader.MaxDepth;
             return serializer;
         }
 
@@ -1736,27 +2153,5 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
                 TypeNameHandling = TypeNameHandling.Auto
             };
         }
-
-        //private class DecimalConverter : JsonConverter
-        //{
-        //    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        //    {
-        //        JToken.FromObject((value as decimal?)?.ToString(serializer.Culture) ?? string.Empty).WriteTo(writer);
-        //    }
-
-        //    public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
-        //        JsonSerializer serializer)
-        //    {
-        //        var token = JToken.Load(reader);
-        //        return (token.Type == JTokenType.Null && objectType == typeof(decimal?))
-        //            ? (object) null
-        //            : token.ToString().ToDecimal(formatProvider: serializer.Culture);
-        //    }
-
-        //    public override bool CanConvert(Type objectType)
-        //    {
-        //        return (objectType == typeof(decimal) || objectType == typeof(decimal?));
-        //    }
-        //}
     }
 }

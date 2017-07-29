@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using Dot.Net.DevFast.Extensions.JsonExt;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -35,13 +34,13 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
                 }
             };
             var dtArr = new object[] {dt, dt, "sar", 1.24m};
-            var st = dtArr.ToJsonAsync().Result;
+            var st = dtArr.ToJson();
             Console.Out.WriteLine(st);
             var jr = new JsonTextReader(new StringReader(st));
             foreach (var val in st.FromJsonAsEnumerable<object>())
             {
                 Console.Out.WriteLine();
-                Console.Out.WriteLine(val.ToJsonAsync().Result);
+                Console.Out.WriteLine(val.ToJson());
             }
         }
     }

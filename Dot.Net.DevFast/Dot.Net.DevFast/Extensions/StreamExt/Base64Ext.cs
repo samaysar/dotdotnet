@@ -75,13 +75,10 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
             {
                 return encoding.GetString(base64.FromBase64());
             }
-            using (var memStrm = new MemoryStream(base64.FromBase64()))
+            var memStrm = new MemoryStream(base64.FromBase64());
+            using (var reader = new StreamReader(memStrm, Encoding.UTF8, true, StdLookUps.DefaultBufferSize, false))
             {
-                //default we keep UTF-7 as it has no preamble
-                using (var reader = new StreamReader(memStrm, Encoding.UTF8, true))
-                {
-                    return reader.ReadToEnd();
-                }
+                return reader.ReadToEnd();
             }
         }
 

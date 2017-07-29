@@ -83,6 +83,7 @@ namespace Dot.Net.DevFast.Etc
     /// <summary>
     /// Exceptions used inside DevFast library.
     /// </summary>
+    [Serializable]
     public sealed class DdnDfException : DdnException<DdnDfErrorCode>
     {
         /// <summary>
