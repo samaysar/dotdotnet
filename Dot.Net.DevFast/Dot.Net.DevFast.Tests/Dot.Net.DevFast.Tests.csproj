@@ -56,6 +56,8 @@
     <Compile Include="Etc\DdnDfExceptionTest.cs" />
     <Compile Include="Etc\StdLookUpsTest.cs" />
     <Compile Include="Extensions\CreateExtsTest.cs" />
+    <Compile Include="Extensions\JsonExt\CustomJsonTest.cs" />
+    <Compile Include="Extensions\JsonExt\JsonInternsTest.cs" />
     <Compile Include="Extensions\JsonExt\JsonTxtExtTest.cs" />
     <Compile Include="Extensions\StreamExt\Base64ExtTest.cs" />
     <Compile Include="Extensions\StreamExt\CryptoStreamExtTest.cs" />
