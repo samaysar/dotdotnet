@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using Dot.Net.DevFast.Extensions;
+using Dot.Net.DevFast.Extensions.JsonExt;
 using Dot.Net.DevFast.Extensions.StringExt;
 using Dot.Net.DevFast.Tests.TestHelpers;
 using NUnit.Framework;
@@ -50,7 +52,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
             Assert.NotNull(createdArr);
             Assert.True(createdArr.Length == 0);
 
-            segmentArr = new byte[] { 0, 255 };
+            segmentArr = new byte[] {0, 255};
             segment = new ArraySegment<byte>(segmentArr, 0, 0);
             createdArr = segment.CreateBytes();
             Assert.NotNull(createdArr);
@@ -79,6 +81,92 @@ namespace Dot.Net.DevFast.Tests.Extensions
             createdArr = segment.CreateBytes();
             Assert.NotNull(createdArr);
             Assert.True(createdArr.Length == 0);
+        }
+
+        [Test]
+        public void Stream_Based_CreateWriter_Works_As_Expected()
+        {
+            using (var memStream = new MemoryStream())
+            {
+                using (var writer = memStream.CreateWriter(Encoding.UTF32))
+                {
+                    Assert.True(writer.Encoding.WebName.Equals(Encoding.UTF32.WebName));
+                    Assert.True(ReferenceEquals(writer.BaseStream, memStream));
+                    Assert.True(writer.AutoFlush);
+                }
+            }
+        }
+
+        [Test]
+        public void CreateReader_Works_As_Expected()
+        {
+            using (var memStream = new MemoryStream())
+            {
+                using (var reader = memStream.CreateReader(Encoding.UTF32))
+                {
+                    Assert.True(ReferenceEquals(reader.BaseStream, memStream));
+                    Assert.True(reader.CurrentEncoding.WebName.Equals(Encoding.UTF32.WebName));
+                }
+            }
+        }
+
+        [Test]
+        public void StringBuilder_Based_CreateWriter_Works_As_Expected()
+        {
+            var val = "Ticks:" + DateTime.Now.Ticks;
+            var sb = new StringBuilder();
+            using (var writer = sb.CreateWriter())
+            {
+                writer.Write(val);
+            }
+            Assert.True(sb.ToString().Equals(val));
+        }
+
+        [Test]
+        public void FileInfo_Based_CreateStream_Works_As_expected()
+        {
+            var fileInfo = Directory.GetCurrentDirectory().ToDirectoryInfo().CreateFileInfo("abc", "txt");
+            using (var fileStream = fileInfo.CreateStream(FileMode.Create,
+                options: FileOptions.DeleteOnClose))
+            {
+                Assert.True(fileStream.CanRead);
+                Assert.True(fileStream.CanWrite);
+                Assert.False(fileStream.IsAsync);
+                Assert.True(fileStream.Name.Equals(fileInfo.FullName));
+            }
+        }
+
+        [Test]
+        public void CreateJsonWriter_Holds_Serializer_Properties()
+        {
+            var serializer = CustomJson.Serializer();
+            using (var jsonWriter = serializer.CreateJsonWriter(TextWriter.Null))
+            {
+                Assert.True(ReferenceEquals(jsonWriter.Culture, serializer.Culture));
+                Assert.True(jsonWriter.DateFormatHandling.Equals(serializer.DateFormatHandling));
+                Assert.True(jsonWriter.DateFormatString.Equals(serializer.DateFormatString));
+                Assert.True(jsonWriter.DateTimeZoneHandling.Equals(serializer.DateTimeZoneHandling));
+                Assert.True(jsonWriter.FloatFormatHandling.Equals(serializer.FloatFormatHandling));
+                Assert.True(jsonWriter.Formatting.Equals(serializer.Formatting));
+                Assert.True(jsonWriter.StringEscapeHandling.Equals(serializer.StringEscapeHandling));
+                Assert.True(jsonWriter.CloseOutput);
+            }
+        }
+
+        [Test]
+        public void CreateJsonReader_Holds_Serializer_Properties()
+        {
+            var serializer = CustomJson.Serializer();
+            using (var jsonWriter = serializer.CreateJsonReader(TextReader.Null))
+            {
+                Assert.True(ReferenceEquals(jsonWriter.Culture, serializer.Culture));
+                Assert.True(jsonWriter.DateParseHandling.Equals(serializer.DateParseHandling));
+                Assert.True(jsonWriter.DateFormatString.Equals(serializer.DateFormatString));
+                Assert.True(jsonWriter.DateTimeZoneHandling.Equals(serializer.DateTimeZoneHandling));
+                Assert.True(jsonWriter.FloatParseHandling.Equals(serializer.FloatParseHandling));
+                Assert.True(jsonWriter.MaxDepth.Equals(serializer.MaxDepth));
+                Assert.True(jsonWriter.CloseInput);
+            }
         }
     }
 }

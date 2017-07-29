@@ -102,7 +102,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="share">File share type</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="options">File options</param>
-        public static FileStream CreateFileStream(this FileInfo targetFileInfo, FileMode mode,
+        public static FileStream CreateStream(this FileInfo targetFileInfo, FileMode mode,
             FileAccess access = FileAccess.ReadWrite, FileShare share = FileShare.Read,
             int bufferSize = StdLookUps.DefaultFileBufferSize, FileOptions options = FileOptions.Asynchronous)
         {
@@ -116,7 +116,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="textWriter">target text writer</param>
         /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
         public static JsonWriter CreateJsonWriter(this JsonSerializer serializer, TextWriter textWriter,
-            bool disposeWriter)
+            bool disposeWriter = true)
         {
             return new JsonTextWriter(textWriter)
             {
@@ -138,7 +138,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="textReader">target text reader</param>
         /// <param name="disposeReader">If true, <paramref name="textReader"/> is disposed after the deserialization</param>
         public static JsonReader CreateJsonReader(this JsonSerializer serializer, TextReader textReader,
-            bool disposeReader)
+            bool disposeReader = true)
         {
             return new JsonTextReader(textReader)
             {

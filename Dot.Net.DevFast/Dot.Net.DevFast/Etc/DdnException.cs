@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
+using Dot.Net.DevFast.Extensions;
 
 namespace Dot.Net.DevFast.Etc
 {
@@ -110,10 +111,7 @@ namespace Dot.Net.DevFast.Etc
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            if (info == null)
-                throw new ArgumentNullException(nameof(info));
-
-            info.AddValue("ErrorReason", Reason);
+            info.ThrowIfNull($"{nameof(SerializationInfo)} object is null").AddValue("ErrorReason", Reason);
             base.GetObjectData(info, context);
         }
     }
