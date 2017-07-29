@@ -1117,7 +1117,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="serializer">JSON serializer</param>
         public static T FromJson<T>(this string jsonString, JsonSerializer serializer)
         {
-            return new StringReader(jsonString).FromJson<T>(serializer);
+            return jsonString.CreateReader().FromJson<T>(serializer);
         }
 
         /// <summary>
@@ -1311,7 +1311,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         public static IEnumerable<T> FromJsonAsEnumerable<T>(this string jsonString, JsonSerializer serializer,
             CancellationToken token)
         {
-            return new StringReader(jsonString).FromJsonAsEnumerable<T>(serializer, token);
+            return jsonString.CreateReader().FromJsonAsEnumerable<T>(serializer, token);
         }
 
         /// <summary>
@@ -1709,7 +1709,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         public static void FromJsonArrayParallely<T>(this string jsonString, BlockingCollection<T> targetCollection,
             JsonSerializer serializer, CancellationToken token, CancellationTokenSource consumerTokenSource = null)
         {
-            new StringReader(jsonString).FromJsonArrayParallely(targetCollection, serializer, token,
+            jsonString.CreateReader().FromJsonArrayParallely(targetCollection, serializer, token,
                 consumerTokenSource);
         }
 
