@@ -52,6 +52,22 @@ namespace Dot.Net.DevFast.Extensions
         }
 
         /// <summary>
+        /// Create new file stream for <paramref name="targetFileInfo"/>.
+        /// </summary>
+        /// <param name="targetFileInfo">Target file info</param>
+        /// <param name="mode">mode of the stream</param>
+        /// <param name="access">Access permission</param>
+        /// <param name="share">File share type</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="options">File options</param>
+        public static FileStream CreateStream(this FileInfo targetFileInfo, FileMode mode,
+            FileAccess access = FileAccess.ReadWrite, FileShare share = FileShare.Read,
+            int bufferSize = StdLookUps.DefaultFileBufferSize, FileOptions options = FileOptions.Asynchronous)
+        {
+            return new FileStream(targetFileInfo.FullName, mode, access, share, bufferSize, options);
+        }
+
+        /// <summary>
         /// Create new JSON reader for <paramref name="targetFileInfo"/> with custom properties.
         /// </summary>
         /// <param name="targetFileInfo">Target file info</param>
@@ -81,7 +97,7 @@ namespace Dot.Net.DevFast.Extensions
             FileShare share = FileShare.Read, int bufferSize = StdLookUps.DefaultFileBufferSize, 
             FileOptions options = FileOptions.Asynchronous, bool detectEncodingFromBom = true)
         {
-            return targetFileInfo.CreateStream(FileMode.Open, FileAccess.Read, share, bufferSize, options)
+            return targetFileInfo.CreateStream(FileMode.OpenOrCreate, FileAccess.Read, share, bufferSize, options)
                 .CreateReader(enc, bufferSize, true, detectEncodingFromBom);
         }
 
@@ -120,45 +136,7 @@ namespace Dot.Net.DevFast.Extensions
                 FileAccess.ReadWrite, share, bufferSize, options).CreateWriter(enc, bufferSize);
         }
 
-        /// <summary>
-        /// Create new file stream for <paramref name="targetFileInfo"/>.
-        /// </summary>
-        /// <param name="targetFileInfo">Target file info</param>
-        /// <param name="mode">mode of the stream</param>
-        /// <param name="access">Access permission</param>
-        /// <param name="share">File share type</param>
-        /// <param name="bufferSize">Buffer size</param>
-        /// <param name="options">File options</param>
-        public static FileStream CreateStream(this FileInfo targetFileInfo, FileMode mode,
-            FileAccess access = FileAccess.ReadWrite, FileShare share = FileShare.Read,
-            int bufferSize = StdLookUps.DefaultFileBufferSize, FileOptions options = FileOptions.Asynchronous)
-        {
-            return new FileStream(targetFileInfo.FullName, mode, access, share, bufferSize, options);
-        }
-
-        #region String/StringBuilder based Text/Json Writer
-
-        /// <summary>
-        /// Create a JSON writer for <paramref name="textVal"/> with custom properties.
-        /// </summary>
-        /// <param name="textVal">Target string</param>
-        /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static JsonTextWriter CreateJsonWriter(this string textVal,
-            IFormatProvider formatProvider = null)
-        {
-            return textVal.CreateWriter(formatProvider).CreateJsonWriter();
-        }
-
-        /// <summary>
-        /// Create a string writer for <paramref name="textVal"/>.
-        /// </summary>
-        /// <param name="textVal">Target string</param>
-        /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static StringWriter CreateWriter(this string textVal,
-            IFormatProvider formatProvider = null)
-        {
-            return new StringBuilder(textVal).CreateWriter(formatProvider);
-        }
+        #region StringBuilder based Text/Json Writer
 
         /// <summary>
         /// Create a JSON writer for <paramref name="stringBuilder"/> with custom properties.
