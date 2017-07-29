@@ -459,18 +459,20 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             CancellationToken token, Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize,
             bool disposeOutput = false)
         {
-            if (disposeOutput)
-            {
-                using (outputStream)
-                {
-                    await CryptoStreamExt.EncodedCharacterCopyAsync(outputStream, input.Length, enc ?? Encoding.UTF8,
-                        token, bufferSize, input.CopyTo).ConfigureAwait(false);
-                }
-            }
-            else
+            try
             {
                 await CryptoStreamExt.EncodedCharacterCopyAsync(outputStream, input.Length, enc ?? Encoding.UTF8,
                     token, bufferSize, input.CopyTo).ConfigureAwait(false);
+            }
+            finally
+            {
+                if (disposeOutput)
+                {
+                    using (outputStream)
+                    {
+                        //to dispose
+                    }
+                }
             }
         }
     }

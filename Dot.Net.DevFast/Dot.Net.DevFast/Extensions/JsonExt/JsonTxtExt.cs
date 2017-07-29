@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Dot.Net.DevFast.Extensions.JsonExt
 {
@@ -459,8 +460,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             JsonSerializer serializer, TextWriter textWriter, CancellationToken token,
             CancellationTokenSource producerTokenSource = null, bool disposeWriter = true)
         {
-            var jsonWriter = serializer.CreateJsonWriter(textWriter, disposeWriter);
-            using (jsonWriter)
+            using (var jsonWriter = serializer.CreateJsonWriter(textWriter, disposeWriter))
             {
                 await blockingCollection.ToJsonArrayParallelyAsync(serializer, jsonWriter, token, producerTokenSource)
                     .ConfigureAwait(false);
@@ -1171,8 +1171,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         public static async Task ToJsonAsync<T>(this T obj, JsonSerializer serializer,
             TextWriter textWriter, CancellationToken token, bool disposeWriter = true)
         {
-            var jsonWriter = serializer.CreateJsonWriter(textWriter, disposeWriter);
-            using (jsonWriter)
+            using (var jsonWriter = serializer.CreateJsonWriter(textWriter, disposeWriter))
             {
                 await obj.ToJsonAsync(serializer, jsonWriter, token).ConfigureAwait(false);
                 await textWriter.FlushAsync().ConfigureAwait(false);
@@ -1203,7 +1202,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="token">cancellation token to observe</param>
         public static Task ToJsonAsync<T>(this T obj, JsonWriter jsonWriter, CancellationToken token)
         {
-            return obj.ToJsonAsync(jsonWriter.DefaultJsonSerializer(), jsonWriter, token);
+            return obj.ToJsonAsync(jsonWriter.AdaptJsonSerializer(), jsonWriter, token);
         }
 
         /// <summary>
@@ -1315,7 +1314,6 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
 
         /// <summary>
         /// Deserializes the JSON data of <paramref name="jsonTextReader"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>).
-        /// <para>IMPORTANT: <paramref name="jsonTextReader"/> is NOT disposed in this operation.</para>
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
         /// <param name="jsonTextReader">Text reader as data source</param>
@@ -1327,7 +1325,6 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
 
         /// <summary>
         /// Deserializes the JSON data of <paramref name="jsonTextReader"/> using <paramref name="serializer"/>.
-        /// <para>IMPORTANT: <paramref name="jsonTextReader"/> is NOT disposed in this operation.</para>
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
         /// <param name="jsonTextReader">Text reader as data source</param>
@@ -1343,9 +1340,10 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
 
         /// <summary>
         /// Deserializes the JSON data of <paramref name="jsonReader"/> using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>).
+        /// <para>IMPORTANT: <paramref name="jsonReader"/> is NOT disposed in this operation.</para>
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonReader">JSON reader as data source</param>
+        /// <param name="jsonReader">JSON reader as data source (NOT disposed after deserialization)</param>
         public static T FromJson<T>(JsonReader jsonReader)
         {
             return jsonReader.FromJson<T>(CustomJsonSerializer());
@@ -1353,18 +1351,350 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
 
         /// <summary>
         /// Deserializes the JSON data of <paramref name="jsonReader"/> using <paramref name="serializer"/>.
+        /// <para>IMPORTANT: <paramref name="jsonReader"/> is NOT disposed in this operation.</para>
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
-        /// <param name="jsonReader">JSON reader as data source</param>
+        /// <param name="jsonReader">JSON reader as data source (NOT disposed after deserialization)</param>
         /// <param name="serializer">JSON serializer</param>
         public static T FromJson<T>(this JsonReader jsonReader, JsonSerializer serializer)
         {
             return serializer.Deserialize<T>(jsonReader);
         }
 
-        #endregion ToJson region
+        #endregion FromJson region
 
-        private static JsonSerializer DefaultJsonSerializer(this JsonWriter writer)
+        #region FromJsonAsEnumerable region
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonStringBuilder"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonStringBuilder">source JSON String builder</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this StringBuilder jsonStringBuilder)
+        {
+            return jsonStringBuilder.FromJsonAsEnumerable<T>(CancellationToken.None);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonStringBuilder"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered OR <paramref name="token"/> is cancelled.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonStringBuilder">source JSON String builder</param>
+        /// <param name="token">Cancellation token to observe</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this StringBuilder jsonStringBuilder, CancellationToken token)
+        {
+            return jsonStringBuilder.FromJsonAsEnumerable<T>(CustomJsonSerializer(), token);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonStringBuilder"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonStringBuilder">source JSON String builder</param>
+        /// <param name="serializer">JSON serializer</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this StringBuilder jsonStringBuilder, JsonSerializer serializer)
+        {
+            return jsonStringBuilder.FromJsonAsEnumerable<T>(serializer, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonStringBuilder"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered OR <paramref name="token"/> is cancelled.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonStringBuilder">source JSON String builder</param>
+        /// <param name="serializer">JSON serializer</param>
+        /// <param name="token">Cancellation token to observe</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this StringBuilder jsonStringBuilder, JsonSerializer serializer, CancellationToken token)
+        {
+            return jsonStringBuilder.ToString().FromJsonAsEnumerable<T>(serializer, token);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonString"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonString">source JSON String</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this string jsonString)
+        {
+            return jsonString.FromJsonAsEnumerable<T>(CancellationToken.None);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonString"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered OR <paramref name="token"/> is cancelled.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonString">source JSON String</param>
+        /// <param name="token">Cancellation token to observe</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this string jsonString, CancellationToken token)
+        {
+            return jsonString.FromJsonAsEnumerable<T>(CustomJsonSerializer(), token);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonString"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonString">source JSON String</param>
+        /// <param name="serializer">JSON serializer</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this string jsonString, JsonSerializer serializer)
+        {
+            return jsonString.FromJsonAsEnumerable<T>(CustomJsonSerializer(), CancellationToken.None);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonString"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered OR <paramref name="token"/> is cancelled.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonString">source JSON String</param>
+        /// <param name="serializer">JSON serializer</param>
+        /// <param name="token">Cancellation token to observe</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this string jsonString, JsonSerializer serializer, CancellationToken token)
+        {
+            return new StringReader(jsonString).FromJsonAsEnumerable<T>(serializer, token);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonStream"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonStream">source JSON stream</param>
+        /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="disposeStream">If true, <paramref name="jsonStream"/> is disposed after the deserialization</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this Stream jsonStream,
+            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
+        {
+            return jsonStream.FromJsonAsEnumerable<T>(CancellationToken.None, enc, bufferSize, disposeStream);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonStream"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered OR <paramref name="token"/> is cancelled.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonStream">source JSON stream</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="disposeStream">If true, <paramref name="jsonStream"/> is disposed after the deserialization</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this Stream jsonStream, CancellationToken token,
+            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
+        {
+            return jsonStream.FromJsonAsEnumerable<T>(CustomJsonSerializer(), token, enc, bufferSize, disposeStream);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonStream"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonStream">source JSON stream</param>
+        /// <param name="serializer">JSON serializer</param>
+        /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="disposeStream">If true, <paramref name="jsonStream"/> is disposed after the deserialization</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this Stream jsonStream, JsonSerializer serializer,
+            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
+        {
+            return jsonStream.FromJsonAsEnumerable<T>(serializer, CancellationToken.None, enc, bufferSize, disposeStream);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonStream"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered OR <paramref name="token"/> is cancelled.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonStream">source JSON stream</param>
+        /// <param name="serializer">JSON serializer</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="disposeStream">If true, <paramref name="jsonStream"/> is disposed after the deserialization</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this Stream jsonStream, JsonSerializer serializer, CancellationToken token,
+            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
+        {
+            return jsonStream.CreateReader(enc, bufferSize, disposeStream).FromJsonAsEnumerable<T>(serializer, token);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonTextReader"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonTextReader">JSON text reader as data source</param>
+        /// <param name="disposeReader">If true, <paramref name="jsonTextReader"/> is disposed after the deserialization</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this TextReader jsonTextReader, bool disposeReader = true)
+        {
+            return jsonTextReader.FromJsonAsEnumerable<T>(CancellationToken.None, disposeReader);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonTextReader"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered OR <paramref name="token"/> is cancelled.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonTextReader">JSON text reader as data source</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="disposeReader">If true, <paramref name="jsonTextReader"/> is disposed after the deserialization</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this TextReader jsonTextReader, CancellationToken token, 
+            bool disposeReader = true)
+        {
+            return jsonTextReader.FromJsonAsEnumerable<T>(CustomJsonSerializer(), token, disposeReader);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonTextReader"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonTextReader">JSON text reader as data source</param>
+        /// <param name="serializer">JSON serializer</param>
+        /// <param name="disposeReader">If true, <paramref name="jsonTextReader"/> is disposed after the deserialization</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this TextReader jsonTextReader, JsonSerializer serializer,
+            bool disposeReader = true)
+        {
+            return jsonTextReader.FromJsonAsEnumerable<T>(serializer, CancellationToken.None, disposeReader);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonTextReader"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered OR <paramref name="token"/> is cancelled.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonTextReader">JSON text reader as data source</param>
+        /// <param name="serializer">JSON serializer</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="disposeReader">If true, <paramref name="jsonTextReader"/> is disposed after the deserialization</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this TextReader jsonTextReader, JsonSerializer serializer,
+            CancellationToken token, bool disposeReader = true)
+        {
+            return serializer.CreateJsonReader(jsonTextReader, disposeReader).FromJsonAsEnumerable<T>(serializer, token);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonReader"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// <para>IMPORTANT: <paramref name="jsonReader"/> is NOT disposed in this operation.</para>
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonReader">JSON reader as data source (NOT disposed after deserialization)</param>
+        /// <param name="disposeReader">If true, <paramref name="jsonReader"/> is disposed after the deserialization</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this JsonReader jsonReader, bool disposeReader = false)
+        {
+            return jsonReader.FromJsonAsEnumerable<T>(CancellationToken.None);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonReader"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJsonSerializer"/>),
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered OR <paramref name="token"/> is cancelled.
+        /// <para>IMPORTANT: <paramref name="jsonReader"/> is NOT disposed in this operation.</para>
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonReader">JSON reader as data source (NOT disposed after deserialization)</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="disposeReader">If true, <paramref name="jsonReader"/> is disposed after the deserialization</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this JsonReader jsonReader, CancellationToken token, bool disposeReader = false)
+        {
+            return jsonReader.FromJsonAsEnumerable<T>(CustomJsonSerializer(), token);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonReader"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered.
+        /// <para>IMPORTANT: <paramref name="jsonReader"/> is NOT disposed in this operation.</para>
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonReader">JSON reader as data source (NOT disposed after deserialization)</param>
+        /// <param name="serializer">JSON serializer</param>
+        /// <param name="disposeReader">If true, <paramref name="jsonReader"/> is disposed after the deserialization</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this JsonReader jsonReader, JsonSerializer serializer, bool disposeReader = false)
+        {
+            return jsonReader.FromJsonAsEnumerable<T>(serializer, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// A simple enumerator on JSON data deserialization with an expectation that <paramref name="jsonReader"/> will
+        /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
+        /// one at a time for enumeration until <seealso cref="JsonToken.EndArray"/> is encountered OR <paramref name="token"/> is cancelled.
+        /// </summary>
+        /// <typeparam name="T">Type of deserialized object</typeparam>
+        /// <param name="jsonReader">JSON reader as data source</param>
+        /// <param name="serializer">JSON serializer</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="disposeReader">If true, <paramref name="jsonReader"/> is disposed after the deserialization</param>
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this JsonReader jsonReader, JsonSerializer serializer,
+            CancellationToken token, bool disposeReader = true)
+        {
+            try
+            {
+                if (!jsonReader.Read()) yield break;
+                jsonReader.ThrowIfTokenNotStartArray();
+                while (jsonReader.Read() && jsonReader.TokenType != JsonToken.EndArray)
+                {
+                    yield return jsonReader.FromJsonGetNext<T>(serializer);
+                    token.ThrowIfCancellationRequested();
+                }
+            }
+            finally
+            {
+                if (disposeReader)
+                {
+                    using (jsonReader)
+                    {
+                        //to dispose
+                    }
+                }
+            }
+        }
+
+        #endregion FromJsonAsEnumerable region
+
+        #region Private Methods
+
+        private static T FromJsonGetNext<T>(this JsonReader jsonReader, JsonSerializer serializer)
+        {
+            return ((jsonReader.TokenType == JsonToken.StartObject)
+                    ? JObject.Load(jsonReader)
+                    : JToken.Load(jsonReader)).ToObject<T>(serializer);
+        }
+
+        private static void ThrowIfTokenNotStartArray(this JsonReader jsonReader)
+        {
+            (jsonReader.TokenType == JsonToken.StartArray).ThrowIfNot(DdnDfErrorCode.JsonIsNotAnArray,
+                    () =>
+                        $"JSON string does not start with start array token. Found token type is {jsonReader.TokenType:G}",
+                    (object)null);
+        }
+
+        private static JsonSerializer AdaptJsonSerializer(this JsonWriter writer)
         {
             var serializer = CustomJsonSerializer();
             serializer.Culture = writer.Culture;
@@ -1376,6 +1706,8 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             serializer.StringEscapeHandling = writer.StringEscapeHandling;
             return serializer;
         }
+
+        #endregion Private Methods
 
         /// <summary>
         /// Returns a new instance of custom <seealso cref="JsonSerializer"/>.

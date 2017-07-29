@@ -72,7 +72,12 @@ namespace Dot.Net.DevFast.Etc
         /// <summary>
         /// When string parsing to a given type fails.
         /// </summary>
-        StringParsingFailed
+        StringParsingFailed,
+
+        /// <summary>
+        /// When json does NOT start with start-array token
+        /// </summary>
+        JsonIsNotAnArray
     }
 
     /// <summary>
