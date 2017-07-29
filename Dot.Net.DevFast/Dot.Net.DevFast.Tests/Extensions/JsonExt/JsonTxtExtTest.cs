@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Text;
+using Dot.Net.DevFast.Extensions;
 using Dot.Net.DevFast.Extensions.JsonExt;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -10,38 +12,12 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
     public class JsonTxtExtTest
     {
         [Test]
-        public void Tt()
+        public void ToJson_FromJson_Harmonize()
         {
-
-            var dt = new Data
-            {
-                Kind = DateTimeKind.Utc,
-                By = 14,
-                Bytes = new byte[] {15, 55, 44},
-                Conv = 1024,
-                Dec = 10.25684m,
-                Name = "sar",
-                Ts = DateTime.Now,
-                More = new Data
-                {
-                    Kind = DateTimeKind.Utc,
-                    By = 14,
-                    Bytes = new byte[] {15, 55, 44},
-                    Conv = 1024,
-                    Dec = 10.25684m,
-                    Name = "sar",
-                    Ts = DateTime.Now
-                }
-            };
-            var dtArr = new object[] {dt, dt, "sar", 1.24m};
-            var st = dtArr.ToJson();
-            Console.Out.WriteLine(st);
-            var jr = new JsonTextReader(new StringReader(st));
-            foreach (var val in st.FromJsonAsEnumerable<object>())
-            {
-                Console.Out.WriteLine();
-                Console.Out.WriteLine(val.ToJson());
-            }
+            const long data = 1254578;
+            var sb = new StringBuilder();
+            data.ToJson(CustomJson.Serializer().CreateJsonWriter(sb.CreateWriter()));
+            //CustomJson.Serializer().CreateJsonReader(sb.cre)
         }
     }
 

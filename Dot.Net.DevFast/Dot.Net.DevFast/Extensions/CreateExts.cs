@@ -14,6 +14,17 @@ namespace Dot.Net.DevFast.Extensions
     public static class CreateExts
     {
         /// <summary>
+        /// Creates the byte array of the segment.
+        /// </summary>
+        /// <param name="input">Input segment</param>
+        public static byte[] CreateBytes(this ArraySegment<byte> input)
+        {
+            var retValue = new byte[input.Count];
+            Buffer.BlockCopy(input.Array, input.Offset, retValue, 0, input.Count);
+            return retValue;
+        }
+
+        /// <summary>
         /// Returns a new <seealso cref="FileInfo"/> instance (file is physically NOT created)
         /// after combining <paramref name="filename"/>.<paramref name="extension"/>
         /// to <seealso cref="FileSystemInfo.FullName"/> of the <paramref name="folderInfo"/>.
@@ -41,14 +52,233 @@ namespace Dot.Net.DevFast.Extensions
         }
 
         /// <summary>
-        /// Creates the byte array of the segment.
+        /// Create new JSON reader for <paramref name="targetFileInfo"/> with custom properties.
         /// </summary>
-        /// <param name="input">Input segment</param>
-        public static byte[] CreateBytes(this ArraySegment<byte> input)
+        /// <param name="targetFileInfo">Target file info</param>
+        /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <param name="share">File share type</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="options">File options</param>
+        /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
+        public static JsonTextReader CreateJsonReader(this FileInfo targetFileInfo, Encoding enc = null,
+            FileShare share = FileShare.Read, int bufferSize = StdLookUps.DefaultFileBufferSize,
+            FileOptions options = FileOptions.Asynchronous, bool detectEncodingFromBom = true)
         {
-            var retValue = new byte[input.Count];
-            Buffer.BlockCopy(input.Array, input.Offset, retValue, 0, input.Count);
-            return retValue;
+            return targetFileInfo.CreateStreamReader(enc, share, bufferSize, options, detectEncodingFromBom)
+                .CreateJsonReader();
+        }
+
+        /// <summary>
+        /// Create new stream reader for <paramref name="targetFileInfo"/>.
+        /// </summary>
+        /// <param name="targetFileInfo">Target file info</param>
+        /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <param name="share">File share type</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="options">File options</param>
+        /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
+        public static StreamReader CreateStreamReader(this FileInfo targetFileInfo, Encoding enc = null,
+            FileShare share = FileShare.Read, int bufferSize = StdLookUps.DefaultFileBufferSize, 
+            FileOptions options = FileOptions.Asynchronous, bool detectEncodingFromBom = true)
+        {
+            return targetFileInfo.CreateStream(FileMode.Open, FileAccess.Read, share, bufferSize, options)
+                .CreateReader(enc, bufferSize, true, detectEncodingFromBom);
+        }
+
+        /// <summary>
+        /// Create new JSON writer for <paramref name="targetFileInfo"/> with custom properties.
+        /// </summary>
+        /// <param name="targetFileInfo">Target file info</param>
+        /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <param name="appendToFile">If true, existing file is appended or new file is created. If false, existing file is
+        /// truncated or new file is created.</param>
+        /// <param name="share">File share type</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="options">File options</param>
+        public static JsonTextWriter CreateJsonWriter(this FileInfo targetFileInfo, Encoding enc = null,
+            bool appendToFile = false, FileShare share = FileShare.Read, 
+            int bufferSize = StdLookUps.DefaultFileBufferSize, FileOptions options = FileOptions.Asynchronous)
+        {
+            return targetFileInfo.CreateStreamWriter(enc, appendToFile, share, bufferSize, options).CreateJsonWriter();
+        }
+
+        /// <summary>
+        /// Create new stream writer for <paramref name="targetFileInfo"/>.
+        /// </summary>
+        /// <param name="targetFileInfo">Target file info</param>
+        /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <param name="appendToFile">If true, existing file is appended or new file is created. If false, existing file is
+        /// truncated or new file is created.</param>
+        /// <param name="share">File share type</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="options">File options</param>
+        public static StreamWriter CreateStreamWriter(this FileInfo targetFileInfo, Encoding enc = null,
+            bool appendToFile = false, FileShare share = FileShare.Read, 
+            int bufferSize = StdLookUps.DefaultFileBufferSize, FileOptions options = FileOptions.Asynchronous)
+        {
+            return targetFileInfo.CreateStream(appendToFile ? FileMode.Append : FileMode.Create,
+                FileAccess.ReadWrite, share, bufferSize, options).CreateWriter(enc, bufferSize);
+        }
+
+        /// <summary>
+        /// Create new file stream for <paramref name="targetFileInfo"/>.
+        /// </summary>
+        /// <param name="targetFileInfo">Target file info</param>
+        /// <param name="mode">mode of the stream</param>
+        /// <param name="access">Access permission</param>
+        /// <param name="share">File share type</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="options">File options</param>
+        public static FileStream CreateStream(this FileInfo targetFileInfo, FileMode mode,
+            FileAccess access = FileAccess.ReadWrite, FileShare share = FileShare.Read,
+            int bufferSize = StdLookUps.DefaultFileBufferSize, FileOptions options = FileOptions.Asynchronous)
+        {
+            return new FileStream(targetFileInfo.FullName, mode, access, share, bufferSize, options);
+        }
+
+        #region String/StringBuilder based Text/Json Writer
+
+        /// <summary>
+        /// Create a JSON writer for <paramref name="textVal"/> with custom properties.
+        /// </summary>
+        /// <param name="textVal">Target string</param>
+        /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
+        public static JsonTextWriter CreateJsonWriter(this string textVal,
+            IFormatProvider formatProvider = null)
+        {
+            return textVal.CreateWriter(formatProvider).CreateJsonWriter();
+        }
+
+        /// <summary>
+        /// Create a string writer for <paramref name="textVal"/>.
+        /// </summary>
+        /// <param name="textVal">Target string</param>
+        /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
+        public static StringWriter CreateWriter(this string textVal,
+            IFormatProvider formatProvider = null)
+        {
+            return new StringBuilder(textVal).CreateWriter(formatProvider);
+        }
+
+        /// <summary>
+        /// Create a JSON writer for <paramref name="stringBuilder"/> with custom properties.
+        /// </summary>
+        /// <param name="stringBuilder">Target string builder</param>
+        /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
+        public static JsonTextWriter CreateJsonWriter(this StringBuilder stringBuilder,
+            IFormatProvider formatProvider = null)
+        {
+            return stringBuilder.CreateWriter(formatProvider).CreateJsonWriter();
+        }
+
+        /// <summary>
+        /// Create a string writer for <paramref name="stringBuilder"/>.
+        /// </summary>
+        /// <param name="stringBuilder">Target string builder</param>
+        /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
+        public static StringWriter CreateWriter(this StringBuilder stringBuilder,
+            IFormatProvider formatProvider = null)
+        {
+            return new StringWriter(stringBuilder, formatProvider ?? CultureInfo.CurrentCulture);
+        }
+
+        #endregion String/StringBuilder based Text/Json Writer
+
+        #region String/StringBuilder based Text/Json Reader
+
+        /// <summary>
+        /// Creates a JSON reader for <paramref name="stringBuilder"/> with custom properties.
+        /// </summary>
+        /// <param name="stringBuilder">Target string builder</param>
+        public static JsonTextReader CreateJsonReader(this StringBuilder stringBuilder)
+        {
+            return stringBuilder.CreateReader().CreateJsonReader();
+        }
+
+        /// <summary>
+        /// Creates a string reader for <paramref name="stringBuilder"/>
+        /// </summary>
+        /// <param name="stringBuilder">Target string builder</param>
+        public static StringReader CreateReader(this StringBuilder stringBuilder)
+        {
+            return stringBuilder.ToString().CreateReader();
+        }
+
+        /// <summary>
+        /// Creates a JSON reader for <paramref name="textVal"/> with custom properties.
+        /// </summary>
+        /// <param name="textVal">Target string</param>
+        public static JsonTextReader CreateJsonReader(this string textVal)
+        {
+            return textVal.CreateReader().CreateJsonReader();
+        }
+
+        /// <summary>
+        /// Creates a string reader for <paramref name="textVal"/>
+        /// </summary>
+        /// <param name="textVal">Target string</param>
+        public static StringReader CreateReader(this string textVal)
+        {
+            return new StringReader(textVal);
+        }
+
+        #endregion String/StringBuilder based Text/Json Reader
+
+        #region JSON Reader/Writer
+
+        /// <summary>
+        /// Creates a JSON reader for <paramref name="textReader"/> with custom properties.
+        /// </summary>
+        /// <param name="textReader">Target text reader</param>
+        /// <param name="disposeReader">If true, <paramref name="textReader"/> is disposed after the deserialization</param>
+        public static JsonTextReader CreateJsonReader(this TextReader textReader, bool disposeReader = true)
+        {
+            return new JsonTextReader(textReader)
+            {
+                Culture = CultureInfo.CurrentCulture,
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                DateParseHandling = DateParseHandling.DateTime,
+                FloatParseHandling = FloatParseHandling.Double,
+                DateFormatString = "yyyy-MM-dd HH:mm:ss",
+                CloseInput = true
+            };
+        }
+
+        /// <summary>
+        /// Creates a JSON writer for <paramref name="textWriter"/> with custom properties.
+        /// </summary>
+        /// <param name="textWriter">Target text writer</param>
+        /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
+        public static JsonTextWriter CreateJsonWriter(this TextWriter textWriter, bool disposeWriter = true)
+        {
+            return new JsonTextWriter(textWriter)
+            {
+                Culture = CultureInfo.CurrentCulture,
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                DateFormatHandling = DateFormatHandling.IsoDateFormat,
+                DateFormatString = "yyyy-MM-dd HH:mm:ss",
+                FloatFormatHandling = FloatFormatHandling.DefaultValue,
+                Formatting = Formatting.None,
+                StringEscapeHandling = StringEscapeHandling.Default,
+                CloseOutput = disposeWriter
+            };
+        }
+
+        #endregion JSON Reader/Writer
+
+        #region Stream based Stream/Json Reader/Writer
+
+        /// <summary>
+        /// Create a JSON writer for <paramref name="streamToWrite"/> with custom properties.
+        /// </summary>
+        /// <param name="streamToWrite">target stream</param>
+        /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="disposeStream">If true, <paramref name="streamToWrite"/> is disposed after the serialization</param>
+        public static JsonTextWriter CreateJsonWriter(this Stream streamToWrite, Encoding enc = null,
+            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
+        {
+            return streamToWrite.CreateWriter(enc, bufferSize, disposeStream).CreateJsonWriter();
         }
 
         /// <summary>
@@ -68,6 +298,20 @@ namespace Dot.Net.DevFast.Extensions
         }
 
         /// <summary>
+        /// Create a JSON reader for <paramref name="streamToRead"/> with custom properties.
+        /// </summary>
+        /// <param name="streamToRead">source stream</param>
+        /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="disposeStream">If true, <paramref name="streamToRead"/> is disposed after the deserialization</param>
+        /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
+        public static JsonTextReader CreateJsonReader(this Stream streamToRead, Encoding enc = null,
+            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true, bool detectEncodingFromBom = true)
+        {
+            return streamToRead.CreateReader(enc, bufferSize, disposeStream, detectEncodingFromBom).CreateJsonReader();
+        }
+
+        /// <summary>
         /// Create a stream reader for <paramref name="streamToRead"/>.
         /// </summary>
         /// <param name="streamToRead">source stream</param>
@@ -82,32 +326,7 @@ namespace Dot.Net.DevFast.Extensions
                 bufferSize, !disposeStream);
         }
 
-        /// <summary>
-        /// Create a string writer for <paramref name="stringBuilder"/>
-        /// </summary>
-        /// <param name="stringBuilder">Target string builder</param>
-        /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
-        public static StringWriter CreateWriter(this StringBuilder stringBuilder,
-            IFormatProvider formatProvider = null)
-        {
-            return new StringWriter(stringBuilder, formatProvider ?? CultureInfo.CurrentCulture);
-        }
-
-        /// <summary>
-        /// Create new file stream for <paramref name="targetFileInfo"/>.
-        /// </summary>
-        /// <param name="targetFileInfo">Target file info</param>
-        /// <param name="mode">mode of the stream</param>
-        /// <param name="access">Access permission</param>
-        /// <param name="share">File share type</param>
-        /// <param name="bufferSize">Buffer size</param>
-        /// <param name="options">File options</param>
-        public static FileStream CreateStream(this FileInfo targetFileInfo, FileMode mode,
-            FileAccess access = FileAccess.ReadWrite, FileShare share = FileShare.Read,
-            int bufferSize = StdLookUps.DefaultFileBufferSize, FileOptions options = FileOptions.Asynchronous)
-        {
-            return new FileStream(targetFileInfo.FullName, mode, access, share, bufferSize, options);
-        }
+        #endregion Stream based Stream/Json Reader/Writer
 
         /// <summary>
         /// Creates a <seealso cref="JsonWriter"/> for given <paramref name="serializer"/> and <paramref name="textWriter"/>.
