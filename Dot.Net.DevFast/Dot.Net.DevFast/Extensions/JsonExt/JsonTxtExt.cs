@@ -810,7 +810,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="serializer">JSON serializer to use</param>
         /// <param name="textWriter">target text writer</param>
         /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
-        public static void ToJsonArray<T>(IEnumerable<T> collection, JsonSerializer serializer,
+        public static void ToJsonArray<T>(this IEnumerable<T> collection, JsonSerializer serializer,
             TextWriter textWriter, bool disposeWriter = true)
         {
             collection.ToJsonArray(serializer, textWriter, CancellationToken.None, disposeWriter);
@@ -1178,7 +1178,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <typeparam name="T">Type of deserialized object</typeparam>
         /// <param name="jsonReader">JSON reader as data source</param>
         /// <param name="disposeReader">If true, <paramref name="jsonReader"/> is disposed after the deserialization</param>
-        public static T FromJson<T>(JsonReader jsonReader, bool disposeReader = true)
+        public static T FromJson<T>(this JsonReader jsonReader, bool disposeReader = true)
         {
             return jsonReader.FromJson<T>(jsonReader.AdaptJsonSerializer(), disposeReader);
         }
