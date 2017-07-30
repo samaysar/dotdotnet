@@ -7,12 +7,12 @@
     <authors>Divya Sarthi MAHESHWARI</authors>
     <owners>samaysar</owners>
     <licenseUrl>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/nuspecs/pkgdt/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/samaysar/dotdotnet</projectUrl>
+    <projectUrl>https://github.com/samaysar/dotdotnet/wiki</projectUrl>
     <repository type="git" url="https://github.com/samaysar/dotdotnet"/>
 	<iconUrl>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/nuspecs/pkgdt/ddn.ico</iconUrl>
 	<requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>DevFast is a powerful pack of extension methods. Increased productivity and code efficiency are out of the box features.</description>
-	<releaseNotes>This is the first release containing powerful extension methods on ValueTypes, String, Stream etc.</releaseNotes>
+	<releaseNotes>Contains new methods to deal with JSON data and Parallel Producer-Consumer pattern (see also https://www.codeproject.com/Articles/samaysar#Tip for DevFast related Articles and Tips).</releaseNotes>
     <copyright>Copyright © Divya Sarthi MAHESHWARI 2017</copyright>
     <tags>devfast fastdev extension dot.net .net dot string stream tryto transform compression stream-processing productivity-booster extension-methods fastdevelopement readable-code</tags>
 	  <dependencies>
