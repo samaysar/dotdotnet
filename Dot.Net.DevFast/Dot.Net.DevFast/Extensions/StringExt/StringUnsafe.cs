@@ -403,72 +403,73 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         }
 
         /// <summary>
-        /// Converts the <paramref name="input"/> to byte array segment, based on <paramref name="enc"/>.
+        /// Writes the <paramref name="input"/> to <paramref name="targetStream"/> using <paramref name="enc"/>.
         /// </summary>
         /// <param name="input">Input string</param>
-        /// <param name="outputStream"></param>
+        /// <param name="targetStream">target stream for data writing</param>
         /// <param name="enc">Encoding to use, if not supplied then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <exception cref="DdnDfException">when <paramref name="input"/> is null</exception>
         /// <param name="bufferSize">Buffer size</param>
-        /// <param name="disposeOutput">True to dispose <paramref name="outputStream"/>, false
+        /// <param name="disposeOutput">True to dispose <paramref name="targetStream"/>, false
         /// to leave it undisposed after the write.</param>
-        public static async Task WriteToAsync(this string input, Stream outputStream, Encoding enc = null,
+        public static async Task WriteToAsync(this string input, Stream targetStream, Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeOutput = false)
         {
-            using (var writer = new StreamWriter(outputStream, enc ?? Encoding.UTF8, bufferSize, !disposeOutput)
+            using (var writer = new StreamWriter(targetStream, enc ?? Encoding.UTF8, bufferSize, !disposeOutput)
             {
                 AutoFlush = true
             })
             {
                 await writer.WriteAsync(input).ConfigureAwait(false);
                 await writer.FlushAsync().ConfigureAwait(false);
-                await outputStream.FlushAsync().ConfigureAwait(false);
+                await targetStream.FlushAsync().ConfigureAwait(false);
             }
         }
 
         /// <summary>
-        /// Converts the <paramref name="input"/> to byte array segment, based on <paramref name="enc"/>.
+        /// Writes the string value of <paramref name="input"/> to <paramref name="targetStream"/> using <paramref name="enc"/>.
         /// </summary>
         /// <param name="input">Input string</param>
-        /// <param name="outputStream"></param>
+        /// <param name="targetStream">target stream for data writing</param>
         /// <param name="enc">Encoding to use, if not supplied then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <exception cref="DdnDfException">when <paramref name="input"/> is null</exception>
         /// <param name="bufferSize">Buffer size</param>
-        /// <param name="disposeOutput">True to dispose <paramref name="outputStream"/>, false
+        /// <param name="disposeOutput">True to dispose <paramref name="targetStream"/>, false
         /// to leave it undisposed after the write.</param>
-        public static Task WriteToAsync(this StringBuilder input, Stream outputStream,
+        public static Task WriteToAsync(this StringBuilder input, Stream targetStream,
             Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize,
             bool disposeOutput = false)
         {
-            return input.WriteToAsync(outputStream, CancellationToken.None, enc,
+            return input.WriteToAsync(targetStream, CancellationToken.None, enc,
                 bufferSize, disposeOutput);
         }
 
         /// <summary>
-        /// Converts the <paramref name="input"/> to byte array segment, based on <paramref name="enc"/>.
+        /// Writes the string value of <paramref name="input"/> to <paramref name="targetStream"/> using <paramref name="enc"/>
+        /// while watching the <paramref name="token"/>.
         /// </summary>
         /// <param name="input">Input string</param>
-        /// <param name="outputStream"></param>
+        /// <param name="targetStream">target stream for data writing</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="enc">Encoding to use, if not supplied then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <exception cref="DdnDfException">when <paramref name="input"/> is null</exception>
         /// <param name="bufferSize">Buffer size</param>
-        /// <param name="disposeOutput">True to dispose <paramref name="outputStream"/>, false
+        /// <param name="disposeOutput">True to dispose <paramref name="targetStream"/>, false
         /// to leave it undisposed after the write.</param>
-        public static async Task WriteToAsync(this StringBuilder input, Stream outputStream,
+        public static async Task WriteToAsync(this StringBuilder input, Stream targetStream,
             CancellationToken token, Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize,
             bool disposeOutput = false)
         {
             try
             {
-                await CryptoStreamExt.EncodedCharacterCopyAsync(outputStream, input.Length, enc ?? Encoding.UTF8,
+                await CryptoStreamExt.EncodedCharacterCopyAsync(targetStream, input.Length, enc ?? Encoding.UTF8,
                     token, bufferSize, input.CopyTo).ConfigureAwait(false);
             }
             finally
             {
                 if (disposeOutput)
                 {
-                    using (outputStream)
+                    using (targetStream)
                     {
                         //to dispose
                     }

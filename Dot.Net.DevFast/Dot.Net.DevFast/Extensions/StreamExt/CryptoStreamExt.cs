@@ -14,116 +14,116 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
     public static class CryptoStreamExt
     {
         /// <summary>
-        /// Reads byte segment from <paramref name="input"/> and writes transformed data on <paramref name="streamToWrite"/>,
+        /// Reads byte segment from <paramref name="input"/> and writes transformed data on <paramref name="targetStream"/>,
         /// using <paramref name="transform"/>, while observing <paramref name="token"/>.
         /// </summary>
         /// <param name="input">Bytes to transform</param>
         /// <param name="transform">transform to use</param>
-        /// <param name="streamToWrite">Stream to write transformed data to.</param>
+        /// <param name="targetStream">Stream to write transformed data to.</param>
         /// <param name="token">Cancellation token</param>
-        /// <param name="disposeOutput">If true, disposes <paramref name="streamToWrite"/> upon operation completion, else leaves it open</param>
+        /// <param name="disposeOutput">If true, disposes <paramref name="targetStream"/> upon operation completion, else leaves it open</param>
         public static Task TransformAsync(this ArraySegment<byte> input, ICryptoTransform transform,
-            Stream streamToWrite, CancellationToken token, bool disposeOutput = false)
+            Stream targetStream, CancellationToken token, bool disposeOutput = false)
         {
-            return input.Array.TransformAsync(transform, streamToWrite, token, disposeOutput, input.Offset, input.Count);
+            return input.Array.TransformAsync(transform, targetStream, token, disposeOutput, input.Offset, input.Count);
         }
 
         /// <summary>
-        /// Reads full <paramref name="input"/> array and writes transformed data on <paramref name="streamToWrite"/>,
+        /// Reads full <paramref name="input"/> array and writes transformed data on <paramref name="targetStream"/>,
         /// using <paramref name="transform"/>, while observing <paramref name="token"/>.
         /// </summary>
         /// <param name="input">Bytes to transform</param>
         /// <param name="transform">transform to use</param>
-        /// <param name="streamToWrite">Stream to write transformed data to.</param>
+        /// <param name="targetStream">Stream to write transformed data to.</param>
         /// <param name="token">Cancellation token</param>
-        /// <param name="disposeOutput">If true, disposes <paramref name="streamToWrite"/> upon operation completion, else leaves it open</param>
+        /// <param name="disposeOutput">If true, disposes <paramref name="targetStream"/> upon operation completion, else leaves it open</param>
         public static Task TransformAsync(this byte[] input, ICryptoTransform transform,
-            Stream streamToWrite, CancellationToken token, bool disposeOutput = false)
+            Stream targetStream, CancellationToken token, bool disposeOutput = false)
         {
-            return input.TransformAsync(transform, streamToWrite, token, disposeOutput, 0, input.Length);
+            return input.TransformAsync(transform, targetStream, token, disposeOutput, 0, input.Length);
         }
 
         /// <summary>
-        /// Reads from <paramref name="streamToRead"/> and writes transformed data on <paramref name="streamToWrite"/>,
+        /// Reads from <paramref name="sourceStream"/> and writes transformed data on <paramref name="targetStream"/>,
         /// using <paramref name="transform"/>, while observing <paramref name="token"/>.
         /// </summary>
-        /// <param name="streamToRead">Stream to read from</param>
+        /// <param name="sourceStream">Stream to read from</param>
         /// <param name="transform">transform to use</param>
-        /// <param name="streamToWrite">Stream to write transformed data to.</param>
+        /// <param name="targetStream">Stream to write transformed data to.</param>
         /// <param name="token">Cancellation token</param>
-        /// <param name="disposeInput">If true, disposes <paramref name="streamToRead"/> upon operation completion, else leaves it open</param>
-        /// <param name="disposeOutput">If true, disposes <paramref name="streamToWrite"/> upon operation completion, else leaves it open</param>
+        /// <param name="disposeInput">If true, disposes <paramref name="sourceStream"/> upon operation completion, else leaves it open</param>
+        /// <param name="disposeOutput">If true, disposes <paramref name="targetStream"/> upon operation completion, else leaves it open</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static async Task TransformAsync(this Stream streamToRead, ICryptoTransform transform,
-            Stream streamToWrite, CancellationToken token, bool disposeInput = false,
+        public static async Task TransformAsync(this Stream sourceStream, ICryptoTransform transform,
+            Stream targetStream, CancellationToken token, bool disposeInput = false,
             bool disposeOutput = false, int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            using (var outputWrapper = new WrappedStream(streamToWrite, disposeOutput))
+            using (var outputWrapper = new WrappedStream(targetStream, disposeOutput))
             {
                 using (var transformer = new CryptoStream(outputWrapper, transform, CryptoStreamMode.Write))
                 {
-                    using (var inputWrapper = new WrappedStream(streamToRead, disposeInput))
+                    using (var inputWrapper = new WrappedStream(sourceStream, disposeInput))
                     {
                         await inputWrapper.CopyToAsync(transformer, bufferSize, token).ConfigureAwait(false);
                         await transformer.FlushAsync(token).ConfigureAwait(false);
                         await outputWrapper.FlushAsync(token).ConfigureAwait(false);
-                        await streamToWrite.FlushAsync(token).ConfigureAwait(false);
+                        await targetStream.FlushAsync(token).ConfigureAwait(false);
                     }
                 }
             }
         }
 
         /// <summary>
-        /// Reads from <paramref name="streamToRead"/> and prepares transformed string (return value),
+        /// Reads from <paramref name="sourceStream"/> and prepares transformed string (return value),
         /// using <paramref name="transform"/> and <paramref name="encoding"/>, while observing <paramref name="token"/>.
         /// </summary>
-        /// <param name="streamToRead">Stream to read from</param>
+        /// <param name="sourceStream">Stream to read from</param>
         /// <param name="transform">transform to use</param>
         /// <param name="token">Cancellation token</param>
-        /// <param name="disposeInput">If true, disposes <paramref name="streamToRead"/> upon operation completion, else leaves it open</param>
+        /// <param name="disposeInput">If true, disposes <paramref name="sourceStream"/> upon operation completion, else leaves it open</param>
         /// <param name="encoding">Encoding to use to compose string characters, if not supplied UTF8 is used</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static async Task<string> TransformAsync(this Stream streamToRead,
+        public static async Task<string> TransformAsync(this Stream sourceStream,
             ICryptoTransform transform, CancellationToken token, bool disposeInput = false,
             Encoding encoding = null, int bufferSize = StdLookUps.DefaultBufferSize)
         {
             var strBuilder = new StringBuilder();
-            await streamToRead.TransformAsync(transform, strBuilder, token, disposeInput,
+            await sourceStream.TransformAsync(transform, strBuilder, token, disposeInput,
                 encoding ?? Encoding.UTF8, bufferSize).ConfigureAwait(false);
             return strBuilder.ToString();
         }
 
         /// <summary>
-        /// Reads from <paramref name="streamToRead"/> and prepares decoded byte array (return value),
+        /// Reads from <paramref name="sourceStream"/> and prepares decoded byte array (return value),
         /// using <paramref name="transform"/>, while observing <paramref name="token"/>.
         /// </summary>
-        /// <param name="streamToRead">Stream to read from</param>
+        /// <param name="sourceStream">Stream to read from</param>
         /// <param name="transform">transform to use</param>
         /// <param name="token">Cancellation token</param>
-        /// <param name="disposeInput">If true, disposes <paramref name="streamToRead"/> upon operation completion, else leaves it open</param>
+        /// <param name="disposeInput">If true, disposes <paramref name="sourceStream"/> upon operation completion, else leaves it open</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static async Task<byte[]> TransformAsync(this Stream streamToRead, ICryptoTransform transform,
+        public static async Task<byte[]> TransformAsync(this Stream sourceStream, ICryptoTransform transform,
             CancellationToken token, bool disposeInput = false, int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            return (await streamToRead.TransformAsSegmentAsync(transform, token,
+            return (await sourceStream.TransformAsSegmentAsync(transform, token,
                 disposeInput, bufferSize).ConfigureAwait(false)).CreateBytes();
         }
 
         /// <summary>
-        /// Reads from <paramref name="streamToRead"/> and prepares decoded byte array, (return as segment, 
+        /// Reads from <paramref name="sourceStream"/> and prepares decoded byte array, (return as segment, 
         /// idea is to save on array copy to remain low on latency n memory as perhaps segment can serve the purpose),
         /// using <paramref name="transform"/>, while observing <paramref name="token"/>.
         /// </summary>
-        /// <param name="streamToRead">Stream to read from</param>
+        /// <param name="sourceStream">Stream to read from</param>
         /// <param name="transform">transform to use</param>
         /// <param name="token">Cancellation token</param>
-        /// <param name="disposeInput">If true, disposes <paramref name="streamToRead"/> upon operation completion, else leaves it open</param>
+        /// <param name="disposeInput">If true, disposes <paramref name="sourceStream"/> upon operation completion, else leaves it open</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static async Task<ArraySegment<byte>> TransformAsSegmentAsync(this Stream streamToRead,
+        public static async Task<ArraySegment<byte>> TransformAsSegmentAsync(this Stream sourceStream,
             ICryptoTransform transform, CancellationToken token, bool disposeInput = false, 
             int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            using (var inputWrapper = new WrappedStream(streamToRead, disposeInput))
+            using (var inputWrapper = new WrappedStream(sourceStream, disposeInput))
             {
                 using (var transformer = new CryptoStream(inputWrapper, transform,
                     CryptoStreamMode.Read))
@@ -141,21 +141,21 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         }
 
         /// <summary>
-        /// Reads from <paramref name="streamToRead"/> and appends transformed string to <paramref name="appendTo"/>,
+        /// Reads from <paramref name="sourceStream"/> and appends transformed string to <paramref name="appendTo"/>,
         /// using <paramref name="transform"/> and <paramref name="encoding"/>, while observing <paramref name="token"/>.
         /// </summary>
-        /// <param name="streamToRead">Stream to read from</param>
+        /// <param name="sourceStream">Stream to read from</param>
         /// <param name="transform">transform to use</param>
         /// <param name="appendTo">StringBuilder to write transformed data to.</param>
         /// <param name="token">Cancellation token</param>
-        /// <param name="disposeInput">If true, disposes <paramref name="streamToRead"/> upon operation completion, else leaves it open</param>
+        /// <param name="disposeInput">If true, disposes <paramref name="sourceStream"/> upon operation completion, else leaves it open</param>
         /// <param name="encoding">Encoding to use to compose string characters, if not supplied UTF8 is used</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static async Task TransformAsync(this Stream streamToRead, ICryptoTransform transform,
+        public static async Task TransformAsync(this Stream sourceStream, ICryptoTransform transform,
             StringBuilder appendTo, CancellationToken token, bool disposeInput = false,
             Encoding encoding = null, int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            using (var inputWrapper = new WrappedStream(streamToRead, disposeInput))
+            using (var inputWrapper = new WrappedStream(sourceStream, disposeInput))
             {
                 using (var transformer = new CryptoStream(inputWrapper, transform,
                     CryptoStreamMode.Read))
@@ -177,41 +177,41 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         }
 
         /// <summary>
-        /// Reads characters from <paramref name="input"/> and writes transformed data on <paramref name="streamToWrite"/>,
+        /// Reads characters from <paramref name="input"/> and writes transformed data on <paramref name="targetStream"/>,
         /// using <paramref name="transform"/> and <paramref name="encoding"/> while observing 
         /// <paramref name="token"/> for cancellation.
         /// </summary>
         /// <param name="input">String to convert</param>
         /// <param name="transform">transform to use</param>
-        /// <param name="streamToWrite">Stream to write transformed data to.</param>
+        /// <param name="targetStream">Stream to write transformed data to.</param>
         /// <param name="token">Cancellation token</param>
-        /// <param name="disposeOutput">If true, disposes <paramref name="streamToWrite"/> upon operation completion, else leaves it open</param>
+        /// <param name="disposeOutput">If true, disposes <paramref name="targetStream"/> upon operation completion, else leaves it open</param>
         /// <param name="encoding">Encoding to use to get string bytes, if not supplied UTF8 is used</param>
         /// <param name="bufferSize">Buffer size</param>
         public static Task TransformAsync(this StringBuilder input, ICryptoTransform transform,
-            Stream streamToWrite, CancellationToken token, bool disposeOutput = false,
+            Stream targetStream, CancellationToken token, bool disposeOutput = false,
             Encoding encoding = null, int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            return TransformChunksAsync(streamToWrite, transform, input.Length, encoding ?? Encoding.UTF8,
+            return TransformChunksAsync(targetStream, transform, input.Length, encoding ?? Encoding.UTF8,
                 token, disposeOutput, bufferSize, input.CopyTo);
         }
 
         /// <summary>
-        /// Reads characters from <paramref name="input"/> and writes transformed data on <paramref name="streamToWrite"/>, 
+        /// Reads characters from <paramref name="input"/> and writes transformed data on <paramref name="targetStream"/>, 
         /// using <paramref name="transform"/> and <paramref name="encoding"/> while observing <paramref name="token"/> for cancellation.
         /// </summary>
         /// <param name="input">String to convert</param>
         /// <param name="transform">transform to use</param>
-        /// <param name="streamToWrite">Stream to write transformed data to.</param>
+        /// <param name="targetStream">Stream to write transformed data to.</param>
         /// <param name="token">Cancellation token</param>
-        /// <param name="disposeOutput">If true, disposes <paramref name="streamToWrite"/> upon operation completion, else leaves it open</param>
+        /// <param name="disposeOutput">If true, disposes <paramref name="targetStream"/> upon operation completion, else leaves it open</param>
         /// <param name="encoding">Encoding to use to get string bytes, if not supplied UTF8 is used</param>
         /// <param name="bufferSize">Buffer size</param>
         public static Task TransformAsync(this string input, ICryptoTransform transform,
-            Stream streamToWrite, CancellationToken token, bool disposeOutput = false,
+            Stream targetStream, CancellationToken token, bool disposeOutput = false,
             Encoding encoding = null, int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            return TransformChunksAsync(streamToWrite, transform, input.Length, encoding ?? Encoding.UTF8,
+            return TransformChunksAsync(targetStream, transform, input.Length, encoding ?? Encoding.UTF8,
                 token, disposeOutput, bufferSize, input.CopyTo);
         }
 
@@ -259,17 +259,17 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         }
 
         private static async Task TransformAsync(this byte[] input, ICryptoTransform transform,
-            Stream streamToWrite, CancellationToken token, bool disposeOutput,
+            Stream targetStream, CancellationToken token, bool disposeOutput,
             int byteOffset, int byteCount)
         {
-            using (var outputWrapper = new WrappedStream(streamToWrite, disposeOutput))
+            using (var outputWrapper = new WrappedStream(targetStream, disposeOutput))
             {
                 using (var transformer = new CryptoStream(outputWrapper, transform, CryptoStreamMode.Write))
                 {
                     await transformer.WriteAsync(input, byteOffset, byteCount, token).ConfigureAwait(false);
                     await transformer.FlushAsync(token).ConfigureAwait(false);
                     await outputWrapper.FlushAsync(token).ConfigureAwait(false);
-                    await streamToWrite.FlushAsync(token).ConfigureAwait(false);
+                    await targetStream.FlushAsync(token).ConfigureAwait(false);
                 }
             }
         }

@@ -247,60 +247,60 @@ namespace Dot.Net.DevFast.Extensions
         #region Stream based Stream/Json Reader/Writer
 
         /// <summary>
-        /// Create a JSON writer for <paramref name="streamToWrite"/> with custom properties.
+        /// Create a JSON writer for <paramref name="targetStream"/> with custom properties.
         /// </summary>
-        /// <param name="streamToWrite">target stream</param>
+        /// <param name="targetStream">target stream to write to</param>
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
-        /// <param name="disposeStream">If true, <paramref name="streamToWrite"/> is disposed after the serialization</param>
-        public static JsonTextWriter CreateJsonWriter(this Stream streamToWrite, Encoding enc = null,
+        /// <param name="disposeStream">If true, <paramref name="targetStream"/> is disposed after the serialization</param>
+        public static JsonTextWriter CreateJsonWriter(this Stream targetStream, Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
         {
-            return streamToWrite.CreateWriter(enc, bufferSize, disposeStream).CreateJsonWriter();
+            return targetStream.CreateWriter(enc, bufferSize, disposeStream).CreateJsonWriter();
         }
 
         /// <summary>
-        /// Create a stream writer for <paramref name="streamToWrite"/>.
+        /// Create a stream writer for <paramref name="targetStream"/>.
         /// </summary>
-        /// <param name="streamToWrite">target stream</param>
+        /// <param name="targetStream">target stream to write to</param>
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
-        /// <param name="disposeStream">If true, <paramref name="streamToWrite"/> is disposed after the serialization</param>
-        public static StreamWriter CreateWriter(this Stream streamToWrite, Encoding enc = null,
+        /// <param name="disposeStream">If true, <paramref name="targetStream"/> is disposed after the serialization</param>
+        public static StreamWriter CreateWriter(this Stream targetStream, Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
         {
-            return new StreamWriter(streamToWrite, enc ?? Encoding.UTF8, bufferSize, !disposeStream)
+            return new StreamWriter(targetStream, enc ?? Encoding.UTF8, bufferSize, !disposeStream)
             {
                 AutoFlush = true
             };
         }
 
         /// <summary>
-        /// Create a JSON reader for <paramref name="streamToRead"/> with custom properties.
+        /// Create a JSON reader for <paramref name="sourceStream"/> with custom properties.
         /// </summary>
-        /// <param name="streamToRead">source stream</param>
+        /// <param name="sourceStream">source stream to read from</param>
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
-        /// <param name="disposeStream">If true, <paramref name="streamToRead"/> is disposed after the deserialization</param>
+        /// <param name="disposeStream">If true, <paramref name="sourceStream"/> is disposed after the deserialization</param>
         /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
-        public static JsonTextReader CreateJsonReader(this Stream streamToRead, Encoding enc = null,
+        public static JsonTextReader CreateJsonReader(this Stream sourceStream, Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true, bool detectEncodingFromBom = true)
         {
-            return streamToRead.CreateReader(enc, bufferSize, disposeStream, detectEncodingFromBom).CreateJsonReader();
+            return sourceStream.CreateReader(enc, bufferSize, disposeStream, detectEncodingFromBom).CreateJsonReader();
         }
 
         /// <summary>
-        /// Create a stream reader for <paramref name="streamToRead"/>.
+        /// Create a stream reader for <paramref name="sourceStream"/>.
         /// </summary>
-        /// <param name="streamToRead">source stream</param>
+        /// <param name="sourceStream">source stream to read from</param>
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
-        /// <param name="disposeStream">If true, <paramref name="streamToRead"/> is disposed after the deserialization</param>
+        /// <param name="disposeStream">If true, <paramref name="sourceStream"/> is disposed after the deserialization</param>
         /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
-        public static StreamReader CreateReader(this Stream streamToRead, Encoding enc = null,
+        public static StreamReader CreateReader(this Stream sourceStream, Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true, bool detectEncodingFromBom = true)
         {
-            return new StreamReader(streamToRead, enc ?? Encoding.UTF8, detectEncodingFromBom,
+            return new StreamReader(sourceStream, enc ?? Encoding.UTF8, detectEncodingFromBom,
                 bufferSize, !disposeStream);
         }
 
