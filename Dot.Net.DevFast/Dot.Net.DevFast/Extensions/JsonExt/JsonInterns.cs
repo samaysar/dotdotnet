@@ -18,9 +18,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
 
         internal static T FromJsonGetNext<T>(this JsonReader jsonReader, JsonSerializer serializer)
         {
-            return ((jsonReader.TokenType == JsonToken.StartObject)
-                ? JObject.Load(jsonReader)
-                : JToken.Load(jsonReader)).ToObject<T>(serializer);
+            return JToken.Load(jsonReader).ToObject<T>(serializer);
         }
 
         internal static bool NotAnEndArrayToken(this JsonReader jsonReader)

@@ -37,7 +37,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// Sets <seealso cref="JsonSerializer"/> serialization related properties based on
+        /// Creates <seealso cref="JsonSerializer"/> using <see cref="Serializer"/> and sets serialization related properties based on
         /// the properties of the <paramref name="writer"/>.
         /// </summary>
         /// <param name="writer">writer to reference</param>
@@ -56,7 +56,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// Sets <seealso cref="JsonSerializer"/> deserialization related properties based on
+        /// Creates <seealso cref="JsonSerializer"/> using <see cref="Serializer"/> and sets deserialization related properties based on
         /// the properties of the <paramref name="reader"/>.
         /// </summary>
         /// <param name="reader">reader to reference</param>

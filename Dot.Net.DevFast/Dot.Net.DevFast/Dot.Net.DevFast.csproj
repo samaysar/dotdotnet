@@ -60,6 +60,7 @@
     <Compile Include="Etc\DdnDfException.cs" />
     <Compile Include="Etc\DdnException.cs" />
     <Compile Include="Etc\StdLookUps.cs" />
+    <Compile Include="Extensions\CompressionExts.cs" />
     <Compile Include="Extensions\CreateExts.cs" />
     <Compile Include="Extensions\JsonExt\CustomJson.cs" />
     <Compile Include="Extensions\JsonExt\JsonInterns.cs" />
