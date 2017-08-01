@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions;
 using Dot.Net.DevFast.Extensions.JsonExt;
+using Dot.Net.DevFast.Extensions.StringExt;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
@@ -128,6 +132,79 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
         }
 
         [Test]
+        public async Task JsonReader_Based_ToJsonArrayParallely_FromJsonArrayParallely_Harmonize()
+        {
+            var bc = new BlockingCollection<Data>(1);
+            var sb = new StringBuilder();
+            var jsontask = Task.Run(() => bc.ToJsonArrayParallely(sb.CreateJsonWriter()));
+            foreach (var data in DataObjArr)
+            {
+                bc.Add(data);
+            }
+            bc.CompleteAdding();
+            await jsontask.ConfigureAwait(false);
+            bc = new BlockingCollection<Data>(1);
+            jsontask = Task.Run(() => sb.CreateJsonReader().FromJsonArrayParallely(bc));
+            var count = 0;
+            while (bc.TryTake(out Data outData, Timeout.Infinite))
+            {
+                AssertOnObjData(outData);
+                count++;
+            }
+            Assert.True(count == DataObjArr.Length);
+            await jsontask.ConfigureAwait(false);
+
+            sb.Clear();
+            var strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => strbc.ToJsonArrayParallely(sb.CreateJsonWriter()));
+            foreach (var data in StrArr)
+            {
+                strbc.Add(data);
+            }
+            strbc.CompleteAdding();
+            await jsontask.ConfigureAwait(false);
+            strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => sb.CreateJsonReader().FromJsonArrayParallely(strbc));
+            count = 0;
+            while (strbc.TryTake(out string outDataStr, Timeout.Infinite))
+            {
+                Assert.True(outDataStr.Equals(StrArr[count++]));
+            }
+            Assert.True(count == StrArr.Length);
+            await jsontask.ConfigureAwait(false);
+
+            sb.Clear();
+            strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => strbc.ToJsonArrayParallely(CustomJson.Serializer(), sb.CreateJsonWriter()));
+            //we do NOT add anything... so json array must be empty
+            strbc.CompleteAdding();
+            await jsontask.ConfigureAwait(false);
+            //checking empty
+            Assert.True(sb.ToString().Equals("[]"));
+
+            strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => sb.CreateJsonReader().FromJsonArrayParallely(strbc, CustomJson.Serializer()));
+            count = 0;
+            while (strbc.TryTake(out string outDataStrEmpty, Timeout.Infinite))
+            {
+                count++;
+            }
+            Assert.True(count == 0);
+            await jsontask.ConfigureAwait(false);
+
+            sb.Clear();
+            strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => sb.CreateJsonReader().FromJsonArrayParallely(strbc, CustomJson.Serializer()));
+            count = 0;
+            while (strbc.TryTake(out string outDataStrNothing, Timeout.Infinite))
+            {
+                count++;
+            }
+            Assert.True(count == 0);
+            await jsontask.ConfigureAwait(false);            
+        }
+
+        [Test]
         public void TextReader_Based_ToJson_FromJson_Harmonize()
         {
             var sb = new StringBuilder();
@@ -173,6 +250,79 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             sb.Clear();
             Assert.False(sb.CreateReader()
                 .FromJsonAsEnumerable<string>(CustomJson.Serializer()).GetEnumerator().MoveNext());
+        }
+
+        [Test]
+        public async Task TextReader_Based_ToJsonArrayParallely_FromJsonArrayParallely_Harmonize()
+        {
+            var bc = new BlockingCollection<Data>(1);
+            var sb = new StringBuilder();
+            var jsontask = Task.Run(() => bc.ToJsonArrayParallely(sb.CreateWriter()));
+            foreach (var data in DataObjArr)
+            {
+                bc.Add(data);
+            }
+            bc.CompleteAdding();
+            await jsontask.ConfigureAwait(false);
+            bc = new BlockingCollection<Data>(1);
+            jsontask = Task.Run(() => sb.CreateReader().FromJsonArrayParallely(bc));
+            var count = 0;
+            while (bc.TryTake(out Data outData, Timeout.Infinite))
+            {
+                AssertOnObjData(outData);
+                count++;
+            }
+            Assert.True(count == DataObjArr.Length);
+            await jsontask.ConfigureAwait(false);
+
+            sb.Clear();
+            var strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => strbc.ToJsonArrayParallely(sb.CreateWriter()));
+            foreach (var data in StrArr)
+            {
+                strbc.Add(data);
+            }
+            strbc.CompleteAdding();
+            await jsontask.ConfigureAwait(false);
+            strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => sb.CreateReader().FromJsonArrayParallely(strbc));
+            count = 0;
+            while (strbc.TryTake(out string outDataStr, Timeout.Infinite))
+            {
+                Assert.True(outDataStr.Equals(StrArr[count++]));
+            }
+            Assert.True(count == StrArr.Length);
+            await jsontask.ConfigureAwait(false);
+
+            sb.Clear();
+            strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => strbc.ToJsonArrayParallely(CustomJson.Serializer(), sb.CreateWriter()));
+            //we do NOT add anything... so json array must be empty
+            strbc.CompleteAdding();
+            await jsontask.ConfigureAwait(false);
+            //checking empty
+            Assert.True(sb.ToString().Equals("[]"));
+
+            strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => sb.CreateReader().FromJsonArrayParallely(strbc, CustomJson.Serializer()));
+            count = 0;
+            while (strbc.TryTake(out string outDataStrEmpty, Timeout.Infinite))
+            {
+                count++;
+            }
+            Assert.True(count == 0);
+            await jsontask.ConfigureAwait(false);
+
+            sb.Clear();
+            strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => sb.CreateReader().FromJsonArrayParallely(strbc, CustomJson.Serializer()));
+            count = 0;
+            while (strbc.TryTake(out string outDataStrNothing, Timeout.Infinite))
+            {
+                count++;
+            }
+            Assert.True(count == 0);
+            await jsontask.ConfigureAwait(false);
         }
 
         [Test]
@@ -226,6 +376,82 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
         }
 
         [Test]
+        public async Task Stream_Based_ToJsonArrayParallely_FromJsonArrayParallely_Harmonize()
+        {
+            var bc = new BlockingCollection<Data>(1);
+            var sb = new MemoryStream();
+            var jsontask = Task.Run(() => bc.ToJsonArrayParallely(sb, disposeStream: false));
+            foreach (var data in DataObjArr)
+            {
+                bc.Add(data);
+            }
+            bc.CompleteAdding();
+            await jsontask.ConfigureAwait(false);
+
+            sb.Seek(0, SeekOrigin.Begin);
+            bc = new BlockingCollection<Data>(1);
+            jsontask = Task.Run(() => sb.FromJsonArrayParallely(bc));
+            var count = 0;
+            while (bc.TryTake(out Data outData, Timeout.Infinite))
+            {
+                AssertOnObjData(outData);
+                count++;
+            }
+            Assert.True(count == DataObjArr.Length);
+            await jsontask.ConfigureAwait(false);
+
+            sb = new MemoryStream();
+            var strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => strbc.ToJsonArrayParallely(sb, disposeStream: false));
+            foreach (var data in StrArr)
+            {
+                strbc.Add(data);
+            }
+            strbc.CompleteAdding();
+            await jsontask.ConfigureAwait(false);
+
+            sb.Seek(0, SeekOrigin.Begin);
+            strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => sb.FromJsonArrayParallely(strbc));
+            count = 0;
+            while (strbc.TryTake(out string outDataStr, Timeout.Infinite))
+            {
+                Assert.True(outDataStr.Equals(StrArr[count++]));
+            }
+            Assert.True(count == StrArr.Length);
+            await jsontask.ConfigureAwait(false);
+
+            sb= new MemoryStream();
+            strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => strbc.ToJsonArrayParallely(CustomJson.Serializer(), sb, disposeStream: false));
+            //we do NOT add anything... so json array must be empty
+            strbc.CompleteAdding();
+            await jsontask.ConfigureAwait(false);
+
+            sb.Seek(0, SeekOrigin.Begin);
+            strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => sb.FromJsonArrayParallely(strbc, CustomJson.Serializer()));
+            count = 0;
+            while (strbc.TryTake(out string outDataStrEmpty, Timeout.Infinite))
+            {
+                count++;
+            }
+            Assert.True(count == 0);
+            await jsontask.ConfigureAwait(false);
+
+            sb= new MemoryStream();
+            strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => sb.FromJsonArrayParallely(strbc, CustomJson.Serializer()));
+            count = 0;
+            while (strbc.TryTake(out string outDataStrNothing, Timeout.Infinite))
+            {
+                count++;
+            }
+            Assert.True(count == 0);
+            await jsontask.ConfigureAwait(false);
+        }
+
+        [Test]
         public void String_Based_ToJson_FromJson_Harmonize()
         {
             Assert.True(Number == Number.ToJson().FromJson<long>());
@@ -249,6 +475,74 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             Assert.False(Array.Empty<string>().ToJsonArray(CustomJson.Serializer())
                 .FromJsonAsEnumerable<string>(CustomJson.Serializer()).GetEnumerator().MoveNext());
             Assert.False("".FromJsonAsEnumerable<string>(CustomJson.Serializer()).GetEnumerator().MoveNext());
+        }
+
+        [Test]
+        public async Task String_Based_ToJsonArrayParallely_FromJsonArrayParallely_Harmonize()
+        {
+            var bc = new BlockingCollection<Data>(1);
+            var jsontask = Task.Run(() => bc.ToJsonArrayParallely());
+            foreach (var data in DataObjArr)
+            {
+                bc.Add(data);
+            }
+            bc.CompleteAdding();
+            var json =  await jsontask.ConfigureAwait(false);
+            bc = new BlockingCollection<Data>(1);
+            var deserialjsontask = Task.Run(() => json.FromJsonArrayParallely(bc));
+            var count = 0;
+            while (bc.TryTake(out Data outData, Timeout.Infinite))
+            {
+                AssertOnObjData(outData);
+                count++;
+            }
+            Assert.True(count == DataObjArr.Length);
+            await deserialjsontask.ConfigureAwait(false);
+
+            var strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => strbc.ToJsonArrayParallely());
+            foreach (var data in StrArr)
+            {
+                strbc.Add(data);
+            }
+            strbc.CompleteAdding();
+            json = await jsontask.ConfigureAwait(false);
+            strbc = new BlockingCollection<string>(1);
+            deserialjsontask = Task.Run(() => json.FromJsonArrayParallely(strbc));
+            count = 0;
+            while (strbc.TryTake(out string outDataStr, Timeout.Infinite))
+            {
+                Assert.True(outDataStr.Equals(StrArr[count++]));
+            }
+            Assert.True(count == StrArr.Length);
+            await deserialjsontask.ConfigureAwait(false);
+
+            strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => strbc.ToJsonArrayParallely(CustomJson.Serializer()));
+            //we do NOT add anything... so json array must be empty
+            strbc.CompleteAdding();
+            json = await jsontask.ConfigureAwait(false);
+            Assert.True(json.Equals("[]"));
+
+            strbc = new BlockingCollection<string>(1);
+            deserialjsontask = Task.Run(() => json.FromJsonArrayParallely(strbc, CustomJson.Serializer()));
+            count = 0;
+            while (strbc.TryTake(out string outDataStrEmpty, Timeout.Infinite))
+            {
+                count++;
+            }
+            Assert.True(count == 0);
+            await deserialjsontask.ConfigureAwait(false);
+
+            strbc = new BlockingCollection<string>(1);
+            deserialjsontask = Task.Run(() => "".FromJsonArrayParallely(strbc, CustomJson.Serializer()));
+            count = 0;
+            while (strbc.TryTake(out string outDataStrNothing, Timeout.Infinite))
+            {
+                count++;
+            }
+            Assert.True(count == 0);
+            await deserialjsontask.ConfigureAwait(false);
         }
 
         [Test]
@@ -295,6 +589,105 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             Assert.False(sb.FromJsonAsEnumerable<string>(CustomJson.Serializer()).GetEnumerator().MoveNext());
             sb.Clear();
             Assert.False(sb.FromJsonAsEnumerable<string>(CustomJson.Serializer()).GetEnumerator().MoveNext());
+        }
+
+        [Test]
+        public async Task StringBuilder_Based_ToJsonArrayParallely_FromJsonArrayParallely_Harmonize()
+        {
+            var bc = new BlockingCollection<Data>(1);
+            var sb = new StringBuilder();
+            var jsontask = Task.Run(() => bc.ToJsonArrayParallely(sb));
+            foreach (var data in DataObjArr)
+            {
+                bc.Add(data);
+            }
+            bc.CompleteAdding();
+            await jsontask.ConfigureAwait(false);
+            bc = new BlockingCollection<Data>(1);
+            jsontask = Task.Run(() => sb.FromJsonArrayParallely(bc));
+            var count = 0;
+            while (bc.TryTake(out Data outData, Timeout.Infinite))
+            {
+                AssertOnObjData(outData);
+                count++;
+            }
+            Assert.True(count == DataObjArr.Length);
+            await jsontask.ConfigureAwait(false);
+
+            sb.Clear();
+            var strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => strbc.ToJsonArrayParallely(sb));
+            foreach (var data in StrArr)
+            {
+                strbc.Add(data);
+            }
+            strbc.CompleteAdding();
+            await jsontask.ConfigureAwait(false);
+            strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => sb.FromJsonArrayParallely(strbc));
+            count = 0;
+            while (strbc.TryTake(out string outDataStr, Timeout.Infinite))
+            {
+                Assert.True(outDataStr.Equals(StrArr[count++]));
+            }
+            Assert.True(count == StrArr.Length);
+            await jsontask.ConfigureAwait(false);
+
+            sb.Clear();
+            strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => strbc.ToJsonArrayParallely(CustomJson.Serializer(), sb));
+            //we do NOT add anything... so json array must be empty
+            strbc.CompleteAdding();
+            await jsontask.ConfigureAwait(false);
+            //checking empty
+            Assert.True(sb.ToString().Equals("[]"));
+
+            strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => sb.FromJsonArrayParallely(strbc, CustomJson.Serializer()));
+            count = 0;
+            while (strbc.TryTake(out string outDataStrEmpty, Timeout.Infinite))
+            {
+                count++;
+            }
+            Assert.True(count == 0);
+            await jsontask.ConfigureAwait(false);
+
+            sb.Clear();
+            strbc = new BlockingCollection<string>(1);
+            jsontask = Task.Run(() => sb.FromJsonArrayParallely(strbc, CustomJson.Serializer()));
+            count = 0;
+            while (strbc.TryTake(out string outDataStrNothing, Timeout.Infinite))
+            {
+                count++;
+            }
+            Assert.True(count == 0);
+            await jsontask.ConfigureAwait(false);
+        }
+
+        [Test]
+        [TestCase(null)]
+        public void FromJsonArrayParallely_Cancels_Consumer_Cts_If_Provided_When_Error_Occurs(JsonReader nullreader)
+        {
+            //dirty way of doing it is to pass null jsonReader
+            var bc = new BlockingCollection<string>();
+            var cts = new CancellationTokenSource();
+            Assert.Throws<NullReferenceException>(
+                () => nullreader.FromJsonArrayParallely(bc, consumerTokenSource: cts, disposeReader: false));
+            Assert.True(cts.IsCancellationRequested);
+            Assert.True(bc.IsAddingCompleted);
+        }
+
+        [Test]
+        [TestCase(null)]
+        public void ToJsonArrayParallely_Cancels_Producer_Cts_If_Provided_When_Error_Occurs(JsonWriter nullwriter)
+        {
+            //dirty way of doing it is to pass null jsonReader
+            var bc = new BlockingCollection<string>();
+            var cts = new CancellationTokenSource();
+            Assert.Throws<NullReferenceException>(
+                () => bc.ToJsonArrayParallely(nullwriter, producerTokenSource: cts, disposeWriter: false));
+            Assert.True(cts.IsCancellationRequested);
+            Assert.False(bc.IsAddingCompleted);
         }
     }
 

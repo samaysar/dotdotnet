@@ -44,6 +44,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         public static JsonSerializer AdaptJsonSerializer(this JsonWriter writer)
         {
             var serializer = Serializer();
+            if (writer == null) return serializer;
             serializer.Culture = writer.Culture;
             serializer.DateFormatHandling = writer.DateFormatHandling;
             serializer.DateFormatString = writer.DateFormatString;
@@ -62,6 +63,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         public static JsonSerializer AdaptJsonSerializer(this JsonReader reader)
         {
             var serializer = Serializer();
+            if (reader == null) return serializer;
             serializer.Culture = reader.Culture;
             serializer.DateFormatString = reader.DateFormatString;
             serializer.DateTimeZoneHandling = reader.DateTimeZoneHandling;

@@ -18,14 +18,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         #region ToJsonArrayParallely region
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// prepares the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>).
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -41,14 +40,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// prepares the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>) while observing <paramref name="token"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -66,14 +64,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// prepares the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// <paramref name="serializer"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -91,14 +88,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// prepares the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// <paramref name="serializer"/> while observing <paramref name="token"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -119,14 +115,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>) to <paramref name="output"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -144,15 +139,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>) to <paramref name="output"/>
         /// while observing <paramref name="token"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -171,14 +165,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// <paramref name="serializer"/> to <paramref name="output"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -197,15 +190,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// <paramref name="serializer"/> to <paramref name="output"/>
         /// while observing <paramref name="token"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -226,14 +218,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>) to <paramref name="outputStream"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -254,15 +245,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>) to <paramref name="outputStream"/>
         /// while observing <paramref name="token"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -283,14 +273,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// <paramref name="serializer"/> to <paramref name="outputStream"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -311,15 +300,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// <paramref name="serializer"/> to <paramref name="outputStream"/>
         /// while observing <paramref name="token"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -345,14 +333,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>) to <paramref name="textWriter"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -369,15 +356,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>) to <paramref name="textWriter"/>
         /// while observing <paramref name="token"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -396,14 +382,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// <paramref name="serializer"/> to <paramref name="textWriter"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -422,15 +407,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// <paramref name="serializer"/> to <paramref name="textWriter"/>
         /// while observing <paramref name="token"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -453,14 +437,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>) to <paramref name="jsonWriter"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -477,15 +460,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>) to <paramref name="jsonWriter"/>
         /// while observing <paramref name="token"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -504,14 +486,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// <paramref name="serializer"/> to <paramref name="jsonWriter"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -530,15 +511,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as consumer of objects)
-        /// writes the JSON serialized string of objects of <paramref name="sourceCollection"/> using 
+        /// When employed into Parallel Producer-Consumer pattern, as a consumer of objects (alone or among many others),
+        /// writes the JSON array representation of objects of <paramref name="sourceCollection"/> using 
         /// <paramref name="serializer"/> to <paramref name="jsonWriter"/>
         /// while observing <paramref name="token"/>.
-        /// <para>IMPORTANT: When blocking collection is populated in parallel (producer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY before
-        /// awaiting on this method otherwise the await will NEVER terminate (i.e. Deadlock).
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is MANDATORY,
+        /// somewhere outside the call of this method, otherwise this method will NEVER terminate (i.e. Deadlock).</para>
         /// Best would be to wrap the <seealso cref="BlockingCollection{T}.CompleteAdding"/> call inside 
-        /// finally block at producer side.</para>
+        /// finally block at producer side.
         /// </summary>
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="sourceCollection">input blocking collection to JSON serialize</param>
@@ -1517,13 +1497,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         #region FromJsonArrayParallely region
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="jsonSource"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>),
-        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -1533,21 +1513,31 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this StringBuilder jsonSource, BlockingCollection<T> targetCollection,
-            CancellationTokenSource consumerTokenSource = null)
+            CancellationTokenSource consumerTokenSource = null, bool closeCollection = true, bool forceCloseWhenError = true)
         {
-            jsonSource.FromJsonArrayParallely(targetCollection, CancellationToken.None, consumerTokenSource);
+            jsonSource.FromJsonArrayParallely(targetCollection, CancellationToken.None, consumerTokenSource, closeCollection, forceCloseWhenError);
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="jsonSource"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>),
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
         /// OR <paramref name="token"/> is cancelled.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -1558,20 +1548,30 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this StringBuilder jsonSource, BlockingCollection<T> targetCollection,
-            CancellationToken token, CancellationTokenSource consumerTokenSource = null)
+            CancellationToken token, CancellationTokenSource consumerTokenSource = null, bool closeCollection = true, bool forceCloseWhenError = true)
         {
-            jsonSource.FromJsonArrayParallely(targetCollection, CustomJson.Serializer(), token, consumerTokenSource);
+            jsonSource.FromJsonArrayParallely(targetCollection, CustomJson.Serializer(), token, consumerTokenSource, closeCollection, forceCloseWhenError);
         }
-        
+
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="jsonSource"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -1582,21 +1582,31 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this StringBuilder jsonSource, BlockingCollection<T> targetCollection,
-            JsonSerializer serializer, CancellationTokenSource consumerTokenSource = null)
+            JsonSerializer serializer, CancellationTokenSource consumerTokenSource = null, bool closeCollection = true, bool forceCloseWhenError = true)
         {
-            jsonSource.FromJsonArrayParallely(targetCollection, serializer, CancellationToken.None, consumerTokenSource);
+            jsonSource.FromJsonArrayParallely(targetCollection, serializer, CancellationToken.None, consumerTokenSource, closeCollection, forceCloseWhenError);
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="jsonSource"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
         /// OR <paramref name="token"/> is cancelled.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -1608,20 +1618,30 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this StringBuilder jsonSource, BlockingCollection<T> targetCollection,
-            JsonSerializer serializer, CancellationToken token, CancellationTokenSource consumerTokenSource = null)
+            JsonSerializer serializer, CancellationToken token, CancellationTokenSource consumerTokenSource = null, bool closeCollection = true, bool forceCloseWhenError = true)
         {
-            jsonSource.ToString().FromJsonArrayParallely(targetCollection, serializer, token, consumerTokenSource);
+            jsonSource.ToString().FromJsonArrayParallely(targetCollection, serializer, token, consumerTokenSource, closeCollection, forceCloseWhenError);
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="jsonString"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>),
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -1631,21 +1651,31 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this string jsonString, BlockingCollection<T> targetCollection,
-            CancellationTokenSource consumerTokenSource = null)
+            CancellationTokenSource consumerTokenSource = null, bool closeCollection = true, bool forceCloseWhenError = true)
         {
-            jsonString.FromJsonArrayParallely(targetCollection, CancellationToken.None, consumerTokenSource);
+            jsonString.FromJsonArrayParallely(targetCollection, CancellationToken.None, consumerTokenSource, closeCollection, forceCloseWhenError);
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="jsonString"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>),
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
         /// OR <paramref name="token"/> is cancelled.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -1656,20 +1686,30 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this string jsonString, BlockingCollection<T> targetCollection,
-            CancellationToken token, CancellationTokenSource consumerTokenSource = null)
+            CancellationToken token, CancellationTokenSource consumerTokenSource = null, bool closeCollection = true, bool forceCloseWhenError = true)
         {
-            jsonString.FromJsonArrayParallely(targetCollection, CustomJson.Serializer(), token, consumerTokenSource);
+            jsonString.FromJsonArrayParallely(targetCollection, CustomJson.Serializer(), token, consumerTokenSource, closeCollection, forceCloseWhenError);
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="jsonString"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -1680,21 +1720,31 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this string jsonString, BlockingCollection<T> targetCollection,
-            JsonSerializer serializer, CancellationTokenSource consumerTokenSource = null)
+            JsonSerializer serializer, CancellationTokenSource consumerTokenSource = null, bool closeCollection = true, bool forceCloseWhenError = true)
         {
-            jsonString.FromJsonArrayParallely(targetCollection, serializer, CancellationToken.None,consumerTokenSource);
+            jsonString.FromJsonArrayParallely(targetCollection, serializer, CancellationToken.None,consumerTokenSource, closeCollection, forceCloseWhenError);
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="jsonString"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
         /// OR <paramref name="token"/> is cancelled.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -1706,21 +1756,31 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this string jsonString, BlockingCollection<T> targetCollection,
-            JsonSerializer serializer, CancellationToken token, CancellationTokenSource consumerTokenSource = null)
+            JsonSerializer serializer, CancellationToken token, CancellationTokenSource consumerTokenSource = null, bool closeCollection = true, bool forceCloseWhenError = true)
         {
             jsonString.CreateReader().FromJsonArrayParallely(targetCollection, serializer, token,
-                consumerTokenSource);
+                consumerTokenSource, closeCollection, forceCloseWhenError);
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="jsonStream"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>),
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -1733,23 +1793,33 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
         /// <param name="disposeStream">If true, <paramref name="jsonStream"/> is disposed after the deserialization</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this Stream jsonStream, BlockingCollection<T> targetCollection,
             CancellationTokenSource consumerTokenSource = null,
-            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
+            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true, bool closeCollection = true, bool forceCloseWhenError = true)
         {
             jsonStream.FromJsonArrayParallely(targetCollection, CancellationToken.None, consumerTokenSource, enc,
-                bufferSize, disposeStream);
+                bufferSize, disposeStream, closeCollection, forceCloseWhenError);
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="jsonStream"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>),
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
         /// OR <paramref name="token"/> is cancelled.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -1763,22 +1833,32 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
         /// <param name="disposeStream">If true, <paramref name="jsonStream"/> is disposed after the deserialization</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this Stream jsonStream, BlockingCollection<T> targetCollection,
             CancellationToken token, CancellationTokenSource consumerTokenSource = null,
-            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
+            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true, bool closeCollection = true, bool forceCloseWhenError = true)
         {
             jsonStream.FromJsonArrayParallely(targetCollection, CustomJson.Serializer(), token, consumerTokenSource,
-                enc, bufferSize, disposeStream);
+                enc, bufferSize, disposeStream, closeCollection, forceCloseWhenError);
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="jsonStream"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -1792,23 +1872,33 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
         /// <param name="disposeStream">If true, <paramref name="jsonStream"/> is disposed after the deserialization</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this Stream jsonStream, BlockingCollection<T> targetCollection,
             JsonSerializer serializer, CancellationTokenSource consumerTokenSource = null,
-            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
+            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true, bool closeCollection = true, bool forceCloseWhenError = true)
         {
             jsonStream.FromJsonArrayParallely(targetCollection, serializer, CancellationToken.None, consumerTokenSource,
-                enc, bufferSize, disposeStream);
+                enc, bufferSize, disposeStream, closeCollection, forceCloseWhenError);
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="jsonStream"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
         /// OR <paramref name="token"/> is cancelled.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -1823,22 +1913,32 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
         /// <param name="disposeStream">If true, <paramref name="jsonStream"/> is disposed after the deserialization</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this Stream jsonStream, BlockingCollection<T> targetCollection, 
             JsonSerializer serializer, CancellationToken token, CancellationTokenSource consumerTokenSource = null, 
-            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
+            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true, bool closeCollection = true, bool forceCloseWhenError = true)
         {
             jsonStream.CreateReader(enc, bufferSize, disposeStream)
-                .FromJsonArrayParallely(targetCollection, serializer, token, consumerTokenSource);
+                .FromJsonArrayParallely(targetCollection, serializer, token, consumerTokenSource, closeCollection, forceCloseWhenError);
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="textReader"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>),
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -1849,21 +1949,31 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
         /// <param name="disposeReader">If true, <paramref name="textReader"/> is disposed after the deserialization</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this TextReader textReader, BlockingCollection<T> targetCollection,
-            CancellationTokenSource consumerTokenSource = null, bool disposeReader = true)
+            CancellationTokenSource consumerTokenSource = null, bool disposeReader = true, bool closeCollection = true, bool forceCloseWhenError = true)
         {
-            textReader.FromJsonArrayParallely(targetCollection, CancellationToken.None, consumerTokenSource, disposeReader);
+            textReader.FromJsonArrayParallely(targetCollection, CancellationToken.None, consumerTokenSource, disposeReader, closeCollection, forceCloseWhenError);
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="textReader"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>),
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
         /// OR <paramref name="token"/> is cancelled.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -1875,21 +1985,31 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
         /// <param name="disposeReader">If true, <paramref name="textReader"/> is disposed after the deserialization</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this TextReader textReader, BlockingCollection<T> targetCollection,
-            CancellationToken token, CancellationTokenSource consumerTokenSource = null, bool disposeReader = true)
+            CancellationToken token, CancellationTokenSource consumerTokenSource = null, bool disposeReader = true, bool closeCollection = true, bool forceCloseWhenError = true)
         {
             textReader.FromJsonArrayParallely(targetCollection, CustomJson.Serializer(), token, consumerTokenSource,
-                disposeReader);
+                disposeReader, closeCollection, forceCloseWhenError);
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="textReader"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -1901,23 +2021,33 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
         /// <param name="disposeReader">If true, <paramref name="textReader"/> is disposed after the deserialization</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this TextReader textReader, BlockingCollection<T> targetCollection,
             JsonSerializer serializer, CancellationTokenSource consumerTokenSource = null,
-            bool disposeReader = true)
+            bool disposeReader = true, bool closeCollection = true, bool forceCloseWhenError = true)
         {
             textReader.FromJsonArrayParallely(targetCollection, serializer, CancellationToken.None,
-                consumerTokenSource, disposeReader);
+                consumerTokenSource, disposeReader, closeCollection, forceCloseWhenError);
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="textReader"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
         /// OR <paramref name="token"/> is cancelled.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -1930,22 +2060,32 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
         /// <param name="disposeReader">If true, <paramref name="textReader"/> is disposed after the deserialization</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this TextReader textReader, BlockingCollection<T> targetCollection,
             JsonSerializer serializer, CancellationToken token, CancellationTokenSource consumerTokenSource = null,
-            bool disposeReader = true)
+            bool disposeReader = true, bool closeCollection = true, bool forceCloseWhenError = true)
         {
             serializer.CreateJsonReader(textReader, disposeReader)
-                .FromJsonArrayParallely(targetCollection, serializer, token, consumerTokenSource);
+                .FromJsonArrayParallely(targetCollection, serializer, token, consumerTokenSource, closeCollection, forceCloseWhenError);
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="jsonReader"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>),
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -1956,22 +2096,32 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
         /// <param name="disposeReader">If true, <paramref name="jsonReader"/> is disposed after the deserialization</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this JsonReader jsonReader, BlockingCollection<T> targetCollection,
-            CancellationTokenSource consumerTokenSource = null, bool disposeReader = true)
+            CancellationTokenSource consumerTokenSource = null, bool disposeReader = true, bool closeCollection = true, bool forceCloseWhenError = true)
         {
             jsonReader.FromJsonArrayParallely(targetCollection, CancellationToken.None, consumerTokenSource,
-                disposeReader);
+                disposeReader, closeCollection, forceCloseWhenError);
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="jsonReader"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using custom <seealso cref="JsonSerializer"/> (use <see cref="CustomJson.Serializer"/>),
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
         /// OR <paramref name="token"/> is cancelled.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -1983,22 +2133,32 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
         /// <param name="disposeReader">If true, <paramref name="jsonReader"/> is disposed after the deserialization</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this JsonReader jsonReader, BlockingCollection<T> targetCollection,
             CancellationToken token, CancellationTokenSource consumerTokenSource = null,
-            bool disposeReader = true)
+            bool disposeReader = true, bool closeCollection = true, bool forceCloseWhenError = true)
         {
             jsonReader.FromJsonArrayParallely(targetCollection, jsonReader.AdaptJsonSerializer(), token,
-                consumerTokenSource, disposeReader);
+                consumerTokenSource, disposeReader, closeCollection, forceCloseWhenError);
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="jsonReader"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -2010,23 +2170,33 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
         /// <param name="disposeReader">If true, <paramref name="jsonReader"/> is disposed after the deserialization</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this JsonReader jsonReader, BlockingCollection<T> targetCollection,
             JsonSerializer serializer, CancellationTokenSource consumerTokenSource = null,
-            bool disposeReader = true)
+            bool disposeReader = true, bool closeCollection = true, bool forceCloseWhenError = true)
         {
             jsonReader.FromJsonArrayParallely(targetCollection, serializer, CancellationToken.None,
-                consumerTokenSource, disposeReader);
+                consumerTokenSource, disposeReader, closeCollection, forceCloseWhenError);
         }
 
         /// <summary>
-        /// When employed into Parallel Producer-Consumer pattern, parallely (as producer of objects),
+        /// When employed into Parallel Producer-Consumer pattern, as a producer of objects (alone or among many others),
         /// performs JSON data deserialization with an expectation that <paramref name="jsonReader"/> will
         /// start reading from <seealso cref="JsonToken.StartArray"/>. Parses array objects, using <paramref name="serializer"/>,
         /// one at a time to populate <paramref name="targetCollection"/> until <seealso cref="JsonToken.EndArray"/> is encountered
         /// OR <paramref name="token"/> is cancelled.
-        /// <para>IMPORTANT: When blocking collection is consumed in parallel (consumer side of objects),
-        /// call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is FORBIDDEN anywhere outside of this method.
-        /// Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> is properly handled inside this method.</para>
+        /// <para>IMPORTANT: Call to <seealso cref="BlockingCollection{T}.CompleteAdding"/> anywhere outside of this method 
+        /// must be done with the proper setup of <paramref name="closeCollection"/> and <paramref name="forceCloseWhenError"/>
+        /// (please look at the comments of those parameters for details).</para>
         /// You may think of passing <seealso cref="BlockingCollection{T}"/> with some pre-instrumented
         /// <seealso cref="BlockingCollection{T}.BoundedCapacity"/> (in most of the cases, 1 is sufficient) to minimize memory consumption.
         /// </summary>
@@ -2039,10 +2209,21 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// cancel the consumer side in case of error during json deserialization (producer side),
         /// pass the source of cancellation token which consumer is observing.</param>
         /// <param name="disposeReader">If true, <paramref name="jsonReader"/> is disposed after the deserialization</param>
+        /// <param name="closeCollection"><para>When this is the ONLY call that populates the <paramref name="targetCollection"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="targetCollection"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeCollection"/> setting. When false, <paramref name="closeCollection"/>
+        /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this JsonReader jsonReader, BlockingCollection<T> targetCollection,
             JsonSerializer serializer, CancellationToken token, CancellationTokenSource consumerTokenSource = null,
-            bool disposeReader = true)
+            bool disposeReader = true, bool closeCollection = true, bool forceCloseWhenError = true)
         {
+            var inerror = false;
             try
             {
                 if (jsonReader.ThrowIfTokenNotStartArray()) return;
@@ -2053,13 +2234,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             }
             catch
             {
+                inerror = true;
                 consumerTokenSource?.Cancel();
                 throw;
             }
             finally
             {
                 //obligation to close the collection.
-                targetCollection.CompleteAdding();
+                if (closeCollection || (forceCloseWhenError && inerror)) targetCollection.CompleteAdding();
                 jsonReader.DisposeIfRequired(disposeReader);
             }
         }
