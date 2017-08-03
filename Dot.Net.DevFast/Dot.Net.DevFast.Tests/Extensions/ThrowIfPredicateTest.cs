@@ -16,10 +16,9 @@ namespace Dot.Net.DevFast.Tests.Extensions
         public void ThrowIf_And_ThrowIfNot_Works_As_Expected(DdnDfErrorCode errorCode)
         {
             var obj = new object();
-            var ex = Assert.Throws<DdnDfException>(
-                () => true.ThrowIf(errorCode, "test message", obj));
+            var ex = Assert.Throws<DdnDfException>(() => true.ThrowIf(errorCode, obj));
             Assert.True(ex.ErrorCode == errorCode);
-            Assert.True(ex.Message.Contains("test message"));
+            Assert.True(ex.Message.Contains(errorCode.ToString("G")));
             Assert.True(ReferenceEquals(obj, false.ThrowIf(errorCode, "test message", obj)));
 
             ex = Assert.Throws<DdnDfException>(

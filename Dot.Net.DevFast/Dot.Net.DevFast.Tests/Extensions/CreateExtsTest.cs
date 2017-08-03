@@ -275,6 +275,32 @@ namespace Dot.Net.DevFast.Tests.Extensions
         }
 
         [Test]
+        public void TextReader_Based_CreateJsonReader_Is_Consistent()
+        {
+            var jr = new StringBuilder().CreateReader().CreateJsonReader();
+            Assert.True(jr.Culture.Equals(CultureInfo.CurrentCulture));
+            Assert.True(jr.DateTimeZoneHandling.Equals(DateTimeZoneHandling.Utc));
+            Assert.True(jr.DateParseHandling.Equals(DateParseHandling.DateTime));
+            Assert.True(jr.FloatParseHandling.Equals(FloatParseHandling.Double));
+            Assert.True(jr.DateFormatString.Equals("yyyy-MM-dd HH:mm:ss"));
+            Assert.True(jr.CloseInput);
+        }
+
+        [Test]
+        public void TextWriter_Based_CreateJsonWriter_Is_Consistent()
+        {
+            var jw = new StringBuilder().CreateWriter().CreateJsonWriter();
+            Assert.True(jw.Culture.Equals(CultureInfo.CurrentCulture));
+            Assert.True(jw.DateTimeZoneHandling.Equals(DateTimeZoneHandling.Utc));
+            Assert.True(jw.DateFormatHandling.Equals(DateFormatHandling.IsoDateFormat));
+            Assert.True(jw.DateFormatString.Equals("yyyy-MM-dd HH:mm:ss"));
+            Assert.True(jw.FloatFormatHandling.Equals(FloatFormatHandling.DefaultValue));
+            Assert.True(jw.Formatting.Equals(Formatting.None));
+            Assert.True(jw.StringEscapeHandling.Equals(StringEscapeHandling.Default));
+            Assert.True(jw.CloseOutput);
+        }
+
+        [Test]
         [TestCase(true)]
         [TestCase(false)]
         public void CreateCompressionStream_Works_As_Expected(bool isgzip)
