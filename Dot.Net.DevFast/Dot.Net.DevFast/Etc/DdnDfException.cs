@@ -77,7 +77,12 @@ namespace Dot.Net.DevFast.Etc
         /// <summary>
         /// When json does NOT start with start-array token
         /// </summary>
-        JsonIsNotAnArray
+        JsonIsNotAnArray,
+
+        /// <summary>
+        /// When unable to retrieve buffer of memory stream
+        /// </summary>
+        UnableToGetMemoryStreamBuffer
     }
 
     /// <summary>

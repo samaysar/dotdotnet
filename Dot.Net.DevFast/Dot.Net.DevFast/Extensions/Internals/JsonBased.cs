@@ -1,21 +1,11 @@
-﻿using System;
-using Dot.Net.DevFast.Etc;
+﻿using Dot.Net.DevFast.Etc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Dot.Net.DevFast.Extensions.JsonExt
+namespace Dot.Net.DevFast.Extensions.Internals
 {
-    internal static class JsonInterns
+    internal static class JsonBased
     {
-        internal static void DisposeIfRequired(this IDisposable disposable, bool dispose)
-        {
-            if (!dispose) return;
-            using (disposable)
-            {
-                //to dispose
-            }
-        }
-
         internal static T FromJsonGetNext<T>(this JsonReader jsonReader, JsonSerializer serializer)
         {
             return JToken.Load(jsonReader).ToObject<T>(serializer);

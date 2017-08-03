@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using Dot.Net.DevFast.Etc;
+using Dot.Net.DevFast.Extensions.Internals;
 using Newtonsoft.Json;
 
 namespace Dot.Net.DevFast.Extensions.JsonExt

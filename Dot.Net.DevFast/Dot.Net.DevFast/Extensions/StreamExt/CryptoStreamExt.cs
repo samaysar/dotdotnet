@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
+using Dot.Net.DevFast.Extensions.Internals;
 
 namespace Dot.Net.DevFast.Extensions.StreamExt
 {
@@ -54,24 +55,14 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="disposeInput">If true, disposes <paramref name="input"/> upon operation completion, else leaves it open</param>
         /// <param name="disposeOutput">If true, disposes <paramref name="output"/> upon operation completion, else leaves it open</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static async Task TransformAsync(this Stream input, ICryptoTransform transform,
+        public static Task TransformAsync(this Stream input, ICryptoTransform transform,
             Stream output, CancellationToken token = default(CancellationToken), bool disposeInput = false,
             bool disposeOutput = false, int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            using (var outputWrapper = new WrappedStream(output, disposeOutput))
-            {
-                using (var transformer = new CryptoStream(outputWrapper, transform, CryptoStreamMode.Write))
-                {
-                    using (var inputWrapper = new WrappedStream(input, disposeInput))
-                    {
-                        await inputWrapper.CopyToAsync(transformer, bufferSize, token).ConfigureAwait(false);
-                        await transformer.FlushAsync(token).ConfigureAwait(false);
-                        await output.FlushAsync(token).ConfigureAwait(false);
-                    }
-                }
-            }
+            return output.CreateCryptoStream(transform, CryptoStreamMode.Write, disposeOutput)
+                .CopyFromWithDisposeAsync(input, bufferSize, token, output, disposeInput);
         }
-        
+
         /// <summary>
         /// Reads from <paramref name="input"/> and prepares decoded byte array (return value),
         /// using <paramref name="transform"/>, while observing <paramref name="token"/>.
@@ -99,25 +90,12 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="token">Cancellation token</param>
         /// <param name="disposeInput">If true, disposes <paramref name="input"/> upon operation completion, else leaves it open</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static async Task<ArraySegment<byte>> TransformAsSegmentAsync(this Stream input,
+        public static Task<ArraySegment<byte>> TransformAsSegmentAsync(this Stream input,
             ICryptoTransform transform, CancellationToken token = default(CancellationToken),
             bool disposeInput = false, int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            using (var inputWrapper = new WrappedStream(input, disposeInput))
-            {
-                using (var transformer = new CryptoStream(inputWrapper, transform,
-                    CryptoStreamMode.Read))
-                {
-                    using (var localBuffer = new MemoryStream())
-                    {
-                        await transformer.CopyToAsync(localBuffer, bufferSize, token).ConfigureAwait(false);
-                        return localBuffer.TryGetBuffer(out ArraySegment<byte> buffer)
-                            .ThrowIfNot(DdnDfErrorCode.NullObject,
-                                "Something horribly went wrong with" +
-                                $" {nameof(MemoryStream)} implementation", buffer);
-                    }
-                }
-            }
+            return input.CreateCryptoStream(transform, CryptoStreamMode.Read, disposeInput)
+                .CopyToSegmentWithDisposeAsync(bufferSize, token);
         }
 
         /// <summary>
@@ -151,39 +129,12 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="disposeInput">If true, disposes <paramref name="input"/> upon operation completion, else leaves it open</param>
         /// <param name="encoding">Encoding to use to compose string characters, if not supplied <seealso cref="Encoding.UTF8"/> is used</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static async Task TransformAsync(this Stream input, ICryptoTransform transform,
+        public static Task TransformAsync(this Stream input, ICryptoTransform transform,
             StringBuilder target, CancellationToken token = default(CancellationToken), bool disposeInput = false,
             Encoding encoding = null, int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            using (var inputWrapper = new WrappedStream(input, disposeInput))
-            {
-                using (var transformer = new CryptoStream(inputWrapper, transform,
-                    CryptoStreamMode.Read))
-                {
-                    using (var streamReader = transformer.CreateReader(encoding, bufferSize))
-                    {
-                        var charBuffer = new char[bufferSize];
-                        int charCnt;
-                        if (token.CanBeCanceled)
-                        {
-                            while ((charCnt = await streamReader.ReadBlockAsync(charBuffer, 0, bufferSize)
-                                       .ConfigureAwait(false)) != 0)
-                            {
-                                target.Append(charBuffer, 0, charCnt);
-                                token.ThrowIfCancellationRequested();
-                            }
-                        }
-                        else
-                        {
-                            while ((charCnt = await streamReader.ReadBlockAsync(charBuffer, 0, bufferSize)
-                                       .ConfigureAwait(false)) != 0)
-                            {
-                                target.Append(charBuffer, 0, charCnt);
-                            }
-                        }
-                    }
-                }
-            }
+            return input.CreateCryptoStream(transform, CryptoStreamMode.Read, disposeInput)
+                .CopyToBuilderAsync(target, token, encoding ?? Encoding.UTF8, bufferSize, true);
         }
 
         /// <summary>
@@ -202,7 +153,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
             Stream output, CancellationToken token = default(CancellationToken), bool disposeOutput = false,
             Encoding encoding = null, int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            return TransformChunksAsync(output, transform, source.Length, encoding, token, disposeOutput, bufferSize,
+            return output.TransformChunksAsync(transform, source.Length, encoding, token, disposeOutput, bufferSize,
                 source.CopyTo);
         }
 
@@ -221,65 +172,24 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
             Stream output, CancellationToken token = default(CancellationToken), bool disposeOutput = false,
             Encoding encoding = null, int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            return TransformChunksAsync(output, transform, source.Length, encoding, token, disposeOutput, bufferSize,
+            return output.TransformChunksAsync(transform, source.Length, encoding, token, disposeOutput, bufferSize,
                 source.CopyTo);
         }
 
-        internal static async Task EncodedCharacterCopyAsync(Stream writable,
-            int length, Encoding enc, CancellationToken token, int chunkSize,
-            Action<int, char[], int, int> copyToAction)
-        {
-            var bytes = enc.GetPreamble();
-            if (bytes.Length > 0)
-            {
-                await writable.WriteAsync(bytes, 0, bytes.Length, token)
-                    .ConfigureAwait(false);
-            }
-            var charArr = new char[chunkSize];
-            bytes = new byte[enc.GetMaxByteCount(chunkSize)];
-            var charCnt = length;
-            var position = 0;
-            while (charCnt > 0)
-            {
-                if (charCnt > chunkSize) charCnt = chunkSize;
-                copyToAction(position, charArr, 0, charCnt);
-                var byteCnt = enc.GetBytes(charArr, 0, charCnt, bytes, 0);
-                await writable.WriteAsync(bytes, 0, byteCnt, token).ConfigureAwait(false);
-                position += charCnt;
-                charCnt = length - position;
-            }
-            await writable.FlushAsync(token).ConfigureAwait(false);
-        }
-
-        private static async Task TransformChunksAsync(Stream writable, ICryptoTransform transform,
+        private static Task TransformChunksAsync(this Stream writable, ICryptoTransform transform,
             int length, Encoding enc, CancellationToken token, bool disposeOutput, int chunkSize,
             Action<int, char[], int, int> copyToAction)
         {
-            using (var outputWrapper = new WrappedStream(writable, disposeOutput))
-            {
-                using (var transformer = new CryptoStream(outputWrapper, transform,
-                    CryptoStreamMode.Write))
-                {
-                    await EncodedCharacterCopyAsync(transformer, length, enc ?? Encoding.UTF8,
-                        token, chunkSize, copyToAction).ConfigureAwait(false);
-                    await writable.FlushAsync(token).ConfigureAwait(false);
-                }
-            }
+            return writable.CreateCryptoStream(transform, CryptoStreamMode.Write, disposeOutput)
+                .CopyFromWithDisposeAsync(length, enc ?? Encoding.UTF8, token, chunkSize, copyToAction, writable);
         }
 
-        private static async Task TransformAsync(this byte[] input, ICryptoTransform transform,
+        private static Task TransformAsync(this byte[] input, ICryptoTransform transform,
             Stream targetStream, CancellationToken token, bool disposeOutput,
             int byteOffset, int byteCount)
         {
-            using (var outputWrapper = new WrappedStream(targetStream, disposeOutput))
-            {
-                using (var transformer = new CryptoStream(outputWrapper, transform, CryptoStreamMode.Write))
-                {
-                    await transformer.WriteAsync(input, byteOffset, byteCount, token).ConfigureAwait(false);
-                    await transformer.FlushAsync(token).ConfigureAwait(false);
-                    await targetStream.FlushAsync(token).ConfigureAwait(false);
-                }
-            }
+            return targetStream.CreateCryptoStream(transform, CryptoStreamMode.Write, disposeOutput)
+                .CopyFromWithDisposeAsync(input, byteOffset, byteCount, token, targetStream);
         }
     }
 }

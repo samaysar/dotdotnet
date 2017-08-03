@@ -1,30 +1,17 @@
 ﻿using System;
-using System.IO;
-using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions;
+using Dot.Net.DevFast.Extensions.Internals;
 using Dot.Net.DevFast.Extensions.JsonExt;
-using Dot.Net.DevFast.Extensions.StringExt;
 using Newtonsoft.Json;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
+namespace Dot.Net.DevFast.Tests.Extensions.Internals
 {
     [TestFixture]
-    public class JsonInternsTest
+    public class JsonBasedTest
     {
-        [Test]
-        public void DisposeIfRequired_Works_As_Expected()
-        {
-            var disposable = Substitute.For<IDisposable>();
-            disposable.DisposeIfRequired(false);
-            disposable.Received(0).Dispose();
-
-            disposable.DisposeIfRequired(true);
-            disposable.Received(1).Dispose();
-        }
-
         [Test]
         public void FromJsonGetNext_Works_As_Expected()
         {

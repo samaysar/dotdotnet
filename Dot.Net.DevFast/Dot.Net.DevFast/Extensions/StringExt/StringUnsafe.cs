@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
-using Dot.Net.DevFast.Extensions.JsonExt;
-using Dot.Net.DevFast.Extensions.StreamExt;
+using Dot.Net.DevFast.Extensions.Internals;
 
 namespace Dot.Net.DevFast.Extensions.StringExt
 {
@@ -396,32 +395,29 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             using (var membuffer = new MemoryStream())
             {
                 input.ThrowIfNull("input string is null").ToStreamAsync(membuffer, enc).Wait();
-                return membuffer.TryGetBuffer(out ArraySegment<byte> buffer)
-                    .ThrowIfNot(DdnDfErrorCode.NullObject,
-                        "Something horribly went wrong with" +
-                        $" {nameof(MemoryStream)} implementation", buffer);
+                return membuffer.ThrowIfNoBuffer();
             }
         }
 
         /// <summary>
-        /// Writes the <paramref name="input"/> to <paramref name="targetStream"/> using <paramref name="enc"/>.
+        /// Writes the <paramref name="input"/> to <paramref name="targetStream"/> using <paramref name="enc"/>
+        /// while watching the <paramref name="token"/>.
         /// </summary>
         /// <param name="input">Input string</param>
         /// <param name="targetStream">target stream for data writing</param>
         /// <param name="enc">Encoding to use, if not supplied then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <exception cref="DdnDfException">when <paramref name="input"/> is null</exception>
+        /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeTarget">True to dispose <paramref name="targetStream"/>, false
         /// to leave it undisposed after the write.</param>
         public static async Task ToStreamAsync(this string input, Stream targetStream, Encoding enc = null,
+            CancellationToken token = default(CancellationToken),
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeTarget = false)
         {
-            using (var writer = targetStream.CreateWriter(enc, bufferSize, disposeTarget))
-            {
-                await writer.WriteAsync(input).ConfigureAwait(false);
-                await writer.FlushAsync().ConfigureAwait(false);
-                await targetStream.FlushAsync().ConfigureAwait(false);
-            }
+            await targetStream.CopyFromAsync(input.Length, enc ?? Encoding.UTF8,
+                token, bufferSize, input.CopyTo).ConfigureAwait(false);
+            targetStream.DisposeIfRequired(disposeTarget);
         }
 
         /// <summary>
@@ -437,18 +433,12 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="disposeTarget">True to dispose <paramref name="targetStream"/>, false
         /// to leave it undisposed after the write.</param>
         public static async Task ToStreamAsync(this StringBuilder input, Stream targetStream,
-            Encoding enc = null, CancellationToken token = default(CancellationToken), 
+            Encoding enc = null, CancellationToken token = default(CancellationToken),
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeTarget = false)
         {
-            try
-            {
-                await CryptoStreamExt.EncodedCharacterCopyAsync(targetStream, input.Length, enc ?? Encoding.UTF8,
-                    token, bufferSize, input.CopyTo).ConfigureAwait(false);
-            }
-            finally
-            {
-                targetStream.DisposeIfRequired(disposeTarget);
-            }
+            await targetStream.CopyFromAsync(input.Length, enc ?? Encoding.UTF8,
+                token, bufferSize, input.CopyTo).ConfigureAwait(false);
+            targetStream.DisposeIfRequired(disposeTarget);
         }
     }
 }

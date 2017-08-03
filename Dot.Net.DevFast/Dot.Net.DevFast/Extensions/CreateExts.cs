@@ -2,8 +2,10 @@
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Security.Cryptography;
 using System.Text;
 using Dot.Net.DevFast.Etc;
+using Dot.Net.DevFast.Extensions.StreamExt;
 using Dot.Net.DevFast.Extensions.StringExt;
 using Newtonsoft.Json;
 
@@ -315,38 +317,68 @@ namespace Dot.Net.DevFast.Extensions
 
         /// <summary>
         /// Creates compression stream (GZip or Deflate) that would write compressed data on
-        /// <paramref name="targetStream"/> using <paramref name="level"/> with an option to
+        /// <paramref name="target"/> using <paramref name="level"/> with an option to
         /// dispose the target after the operation.
         /// </summary>
-        /// <param name="targetStream">stream on which compressed data will be written</param>
+        /// <param name="target">stream on which compressed data will be written</param>
         /// <param name="gzip">if true, <seealso cref="GZipStream"/> is created else <seealso cref="DeflateStream"/>
         /// is created.</param>
         /// <param name="level">Compression level</param>
-        /// <param name="disposeTarget">If true, <paramref name="targetStream"/> is disposed after the operation.</param>
-        public static Stream CreateCompressionStream(this Stream targetStream, bool gzip = true,
+        /// <param name="disposeTarget">If true, <paramref name="target"/> is disposed after the operation.</param>
+        public static Stream CreateCompressionStream(this Stream target, bool gzip = true,
             CompressionLevel level = CompressionLevel.Optimal, bool disposeTarget = true)
         {
             return gzip
-                ? new GZipStream(targetStream, level, !disposeTarget)
-                : (Stream)new DeflateStream(targetStream, level, !disposeTarget);
+                ? new GZipStream(target, level, !disposeTarget)
+                : (Stream)new DeflateStream(target, level, !disposeTarget);
         }
 
         /// <summary>
         /// Creates decompression stream (GZip or Deflate) that would write decompressed data on
-        /// <paramref name="targetStream"/> with an option to dispose the target after the operation.
+        /// <paramref name="target"/> with an option to dispose the target after the operation.
         /// </summary>
-        /// <param name="targetStream">stream on which compressed data will be written</param>
+        /// <param name="target">stream on which compressed data will be written</param>
         /// <param name="gzip">if true, <seealso cref="GZipStream"/> is created else <seealso cref="DeflateStream"/>
         /// is created.</param>
-        /// <param name="disposeTarget">If true, <paramref name="targetStream"/> is disposed after the operation.</param>
-        public static Stream CreateDecompressionStream(this Stream targetStream, bool gzip = true,
+        /// <param name="disposeTarget">If true, <paramref name="target"/> is disposed after the operation.</param>
+        public static Stream CreateDecompressionStream(this Stream target, bool gzip = true,
             bool disposeTarget = true)
         {
             return gzip
-                ? new GZipStream(targetStream, CompressionMode.Decompress, !disposeTarget)
-                : (Stream)new DeflateStream(targetStream, CompressionMode.Decompress, !disposeTarget);
+                ? new GZipStream(target, CompressionMode.Decompress, !disposeTarget)
+                : (Stream)new DeflateStream(target, CompressionMode.Decompress, !disposeTarget);
         }
 
         #endregion Compression Stream Related
+
+        #region CryptoStream related
+
+        /// <summary>
+        /// Create <seealso cref="CryptoStream"/> to perform operations on <paramref name="target"/>
+        /// using supplied <paramref name="mode"/>.
+        /// </summary>
+        /// <param name="target">Target stream on which transformed data will be written
+        /// or from which input data for transformation will be read (depends on <paramref name="mode"/>)</param>
+        /// <param name="transform">Transform to perform</param>
+        /// <param name="mode">Mode on the <paramref name="target"/></param>
+        /// <param name="disposeTarget">If true, <paramref name="target"/> is disposed after the operation.</param>
+        public static CryptoStream CreateCryptoStream(this Stream target, ICryptoTransform transform,
+            CryptoStreamMode mode = CryptoStreamMode.Write, bool disposeTarget = false)
+        {
+            return new CryptoStream(target.CreateWrappedStream(disposeTarget), transform, mode);
+        }
+
+        /// <summary>
+        /// Creates an artificial wrapper around <paramref name="target"/> to control disposal
+        /// (when it is not possible otherwise, e.g. <seealso cref="CryptoStream"/>).
+        /// </summary>
+        /// <param name="target">Target stream to wrap</param>
+        /// <param name="disposeTarget">True to dispose, else false. Disposal takes effect when wrapper is disposed.</param>
+        public static Stream CreateWrappedStream(this Stream target, bool disposeTarget = false)
+        {
+            return new WrappedStream(target, disposeTarget);
+        }
+
+        #endregion CryptoStream related
     }
 }

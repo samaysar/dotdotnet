@@ -2,13 +2,15 @@
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using Dot.Net.DevFast.Extensions;
-using Dot.Net.DevFast.Extensions.JsonExt;
+using Dot.Net.DevFast.Extensions.StreamExt;
 using Dot.Net.DevFast.Extensions.StringExt;
 using Dot.Net.DevFast.Tests.TestHelpers;
 using Newtonsoft.Json;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace Dot.Net.DevFast.Tests.Extensions
@@ -298,6 +300,37 @@ namespace Dot.Net.DevFast.Tests.Extensions
             Assert.True(jw.Formatting.Equals(Formatting.None));
             Assert.True(jw.StringEscapeHandling.Equals(StringEscapeHandling.Default));
             Assert.True(jw.CloseOutput);
+        }
+
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        public void CreateWrappedStream_Works_As_Expected(bool dispose)
+        {
+            var strm = Substitute.For<Stream>();
+            using (var wrapped = strm.CreateWrappedStream(dispose))
+            {
+                Assert.True(wrapped is WrappedStream);
+            }
+            strm.Received(dispose ? 1 : 0).Dispose();
+        }
+
+        [Test]
+        [TestCase(true, CryptoStreamMode.Read)]
+        [TestCase(true, CryptoStreamMode.Write)]
+        [TestCase(false, CryptoStreamMode.Read)]
+        [TestCase(false, CryptoStreamMode.Write)]
+        public void CreateCryptoStream_Works_As_Expected(bool dispose, CryptoStreamMode mode)
+        {
+            var strm = Substitute.For<Stream>();
+            strm.CanRead.Returns(true);
+            strm.CanWrite.Returns(true);
+            using (var wrapped = strm.CreateCryptoStream(new FromBase64Transform(), mode, dispose))
+            {
+                Assert.True(wrapped.CanWrite == (mode == CryptoStreamMode.Write));
+                Assert.True(wrapped.CanRead == (mode == CryptoStreamMode.Read));
+            }
+            strm.Received(dispose ? 1 : 0).Dispose();
         }
 
         [Test]
