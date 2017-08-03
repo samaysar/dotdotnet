@@ -223,7 +223,7 @@ namespace Dot.Net.DevFast.Extensions
                 DateParseHandling = DateParseHandling.DateTime,
                 FloatParseHandling = FloatParseHandling.Double,
                 DateFormatString = "yyyy-MM-dd HH:mm:ss",
-                CloseInput = true
+                CloseInput = disposeReader
             };
         }
 
