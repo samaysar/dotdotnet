@@ -395,7 +395,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         {
             using (var membuffer = new MemoryStream())
             {
-                input.ThrowIfNull("input string is null").WriteToAsync(membuffer).Wait();
+                input.ThrowIfNull("input string is null").ToStreamAsync(membuffer, enc).Wait();
                 return membuffer.TryGetBuffer(out ArraySegment<byte> buffer)
                     .ThrowIfNot(DdnDfErrorCode.NullObject,
                         "Something horribly went wrong with" +
@@ -413,20 +413,17 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeTarget">True to dispose <paramref name="targetStream"/>, false
         /// to leave it undisposed after the write.</param>
-        public static async Task WriteToAsync(this string input, Stream targetStream, Encoding enc = null,
+        public static async Task ToStreamAsync(this string input, Stream targetStream, Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeTarget = false)
         {
-            using (var writer = new StreamWriter(targetStream, enc ?? Encoding.UTF8, bufferSize, !disposeTarget)
-            {
-                AutoFlush = true
-            })
+            using (var writer = targetStream.CreateWriter(enc, bufferSize, disposeTarget))
             {
                 await writer.WriteAsync(input).ConfigureAwait(false);
                 await writer.FlushAsync().ConfigureAwait(false);
                 await targetStream.FlushAsync().ConfigureAwait(false);
             }
         }
-        
+
         /// <summary>
         /// Writes the string value of <paramref name="input"/> to <paramref name="targetStream"/> using <paramref name="enc"/>
         /// while watching the <paramref name="token"/>.
@@ -439,7 +436,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeTarget">True to dispose <paramref name="targetStream"/>, false
         /// to leave it undisposed after the write.</param>
-        public static async Task WriteToAsync(this StringBuilder input, Stream targetStream,
+        public static async Task ToStreamAsync(this StringBuilder input, Stream targetStream,
             Encoding enc = null, CancellationToken token = default(CancellationToken), 
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeTarget = false)
         {

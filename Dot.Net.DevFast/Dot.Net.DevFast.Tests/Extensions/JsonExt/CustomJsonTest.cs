@@ -83,5 +83,38 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
                 Assert.True(serializer.DateFormatString.Equals("yyyy/MM/dd HH.mm.ss"));
             }
         }
+
+        [Test]
+        public void CreateJsonWriter_Holds_Serializer_Properties()
+        {
+            var serializer = CustomJson.Serializer();
+            using (var jsonWriter = serializer.AdaptedJsonWriter(TextWriter.Null))
+            {
+                Assert.True(ReferenceEquals(jsonWriter.Culture, serializer.Culture));
+                Assert.True(jsonWriter.DateFormatHandling.Equals(serializer.DateFormatHandling));
+                Assert.True(jsonWriter.DateFormatString.Equals(serializer.DateFormatString));
+                Assert.True(jsonWriter.DateTimeZoneHandling.Equals(serializer.DateTimeZoneHandling));
+                Assert.True(jsonWriter.FloatFormatHandling.Equals(serializer.FloatFormatHandling));
+                Assert.True(jsonWriter.Formatting.Equals(serializer.Formatting));
+                Assert.True(jsonWriter.StringEscapeHandling.Equals(serializer.StringEscapeHandling));
+                Assert.True(jsonWriter.CloseOutput);
+            }
+        }
+
+        [Test]
+        public void CreateJsonReader_Holds_Serializer_Properties()
+        {
+            var serializer = CustomJson.Serializer();
+            using (var jsonReader = serializer.AdaptedJsonReader(TextReader.Null))
+            {
+                Assert.True(ReferenceEquals(jsonReader.Culture, serializer.Culture));
+                Assert.True(jsonReader.DateParseHandling.Equals(serializer.DateParseHandling));
+                Assert.True(jsonReader.DateFormatString.Equals(serializer.DateFormatString));
+                Assert.True(jsonReader.DateTimeZoneHandling.Equals(serializer.DateTimeZoneHandling));
+                Assert.True(jsonReader.FloatParseHandling.Equals(serializer.FloatParseHandling));
+                Assert.True(jsonReader.MaxDepth.Equals(serializer.MaxDepth));
+                Assert.True(jsonReader.CloseInput);
+            }
+        }
     }
 }

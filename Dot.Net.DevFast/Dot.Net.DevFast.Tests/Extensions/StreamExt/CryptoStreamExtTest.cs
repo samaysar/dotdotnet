@@ -74,7 +74,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
             const string original = "Here is some d@t@ to encrypt!";
             using (var inputBuff = new MemoryStream())
             {
-                await original.WriteToAsync(inputBuff).ConfigureAwait(false);
+                await original.ToStreamAsync(inputBuff).ConfigureAwait(false);
                 inputBuff.Seek(0, SeekOrigin.Begin);
                 using (var rijndael = new RijndaelManaged())
                 {

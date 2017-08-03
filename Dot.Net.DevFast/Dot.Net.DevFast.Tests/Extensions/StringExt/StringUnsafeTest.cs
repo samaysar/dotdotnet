@@ -831,12 +831,12 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [TestCase("")]
         [TestCase("        ")]
         [TestCase("any valid string")]
-        public async Task WriteToAsync_Works_As_Expected(string input)
+        public async Task ToStreamAsync_Works_As_Expected(string input)
         {
             var arr = input.ToBytes();
             var memStrm = new MemoryStream();
 
-            await input.WriteToAsync(memStrm).ConfigureAwait(false);
+            await input.ToStreamAsync(memStrm).ConfigureAwait(false);
             var segmentArr = memStrm.ToArray();
             for (var i = 0; i < arr.Length; i++)
             {
@@ -848,13 +848,13 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [TestCase("", true)]
         [TestCase("        ", false)]
         [TestCase("any valid string", true)]
-        public async Task StringBuilder_WriteToAsync_Works_As_Expected(string input,
+        public async Task StringBuilder_ToStreamAsync_Works_As_Expected(string input,
             bool dispose)
         {
             var arr = input.ToBytes();
             var memStrm = new MemoryStream();
 
-            await (new StringBuilder(input)).WriteToAsync(memStrm, disposeTarget: dispose)
+            await (new StringBuilder(input)).ToStreamAsync(memStrm, disposeTarget: dispose)
                 .ConfigureAwait(false);
             var segmentArr = memStrm.ToArray();
             for (var i = 0; i < arr.Length; i++)
