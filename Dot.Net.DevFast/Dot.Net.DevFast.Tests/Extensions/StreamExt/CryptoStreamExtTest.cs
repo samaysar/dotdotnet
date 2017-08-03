@@ -33,7 +33,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
                     var sb = new StringBuilder();
 
                     await msEncrypt.TransformAsync(rijndael.CreateDecryptor(),
-                        sb, CancellationToken.None).ConfigureAwait(false);
+                        sb, new CancellationTokenSource().Token).ConfigureAwait(false);
 
                     Assert.True(sb.ToString().Equals(original));
                 }

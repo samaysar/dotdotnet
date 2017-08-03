@@ -360,15 +360,15 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="token">Cancellation token</param>
         /// <param name="mode">transformation mode to use</param>
         /// <param name="disposeInput">If true, disposes <paramref name="sourceStream"/> upon operation completion, else leaves it open</param>
-        /// <param name="encoding">Encoding to use to get string bytes, if not supplied UTF8 is used</param>
+        /// <param name="encoding">Encoding to use to get string bytes, if not supplied <seealso cref="Encoding.UTF8"/> is used</param>
         /// <param name="bufferSize">Buffer size</param>
         public static Task<string> FromBase64AsStringAsync(this Stream sourceStream, CancellationToken token,
             FromBase64TransformMode mode = FromBase64TransformMode.IgnoreWhiteSpaces,
             bool disposeInput = false, Encoding encoding = null,
             int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            return sourceStream.TransformAsync(new FromBase64Transform(mode), token, disposeInput,
-                encoding ?? Encoding.UTF8, bufferSize);
+            return sourceStream.TransformAsStringAsync(new FromBase64Transform(mode), encoding, token, disposeInput,
+                bufferSize);
         }
 
         /// <summary>

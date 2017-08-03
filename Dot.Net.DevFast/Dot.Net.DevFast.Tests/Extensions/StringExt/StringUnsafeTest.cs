@@ -854,7 +854,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
             var arr = input.ToBytes();
             var memStrm = new MemoryStream();
 
-            await (new StringBuilder(input)).WriteToAsync(memStrm, disposeOutput: dispose)
+            await (new StringBuilder(input)).WriteToAsync(memStrm, disposeTarget: dispose)
                 .ConfigureAwait(false);
             var segmentArr = memStrm.ToArray();
             for (var i = 0; i < arr.Length; i++)

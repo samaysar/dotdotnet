@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.StringExt;
@@ -23,6 +24,8 @@ namespace Dot.Net.DevFast.Extensions
             Buffer.BlockCopy(input.Array, input.Offset, retValue, 0, input.Count);
             return retValue;
         }
+
+        #region Fileinfo/stream related
 
         /// <summary>
         /// Returns a new <seealso cref="FileInfo"/> instance (file is physically NOT created)
@@ -94,7 +97,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="options">File options</param>
         /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
         public static StreamReader CreateStreamReader(this FileInfo targetFileInfo, Encoding enc = null,
-            FileShare share = FileShare.Read, int bufferSize = StdLookUps.DefaultFileBufferSize, 
+            FileShare share = FileShare.Read, int bufferSize = StdLookUps.DefaultFileBufferSize,
             FileOptions options = FileOptions.Asynchronous, bool detectEncodingFromBom = true)
         {
             return targetFileInfo.CreateStream(FileMode.OpenOrCreate, FileAccess.Read, share, bufferSize, options)
@@ -112,7 +115,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="options">File options</param>
         public static JsonTextWriter CreateJsonWriter(this FileInfo targetFileInfo, Encoding enc = null,
-            bool appendToFile = false, FileShare share = FileShare.Read, 
+            bool appendToFile = false, FileShare share = FileShare.Read,
             int bufferSize = StdLookUps.DefaultFileBufferSize, FileOptions options = FileOptions.Asynchronous)
         {
             return targetFileInfo.CreateStreamWriter(enc, appendToFile, share, bufferSize, options).CreateJsonWriter();
@@ -129,12 +132,14 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="options">File options</param>
         public static StreamWriter CreateStreamWriter(this FileInfo targetFileInfo, Encoding enc = null,
-            bool appendToFile = false, FileShare share = FileShare.Read, 
+            bool appendToFile = false, FileShare share = FileShare.Read,
             int bufferSize = StdLookUps.DefaultFileBufferSize, FileOptions options = FileOptions.Asynchronous)
         {
             return targetFileInfo.CreateStream(appendToFile ? FileMode.Append : FileMode.Create,
                 FileAccess.ReadWrite, share, bufferSize, options).CreateWriter(enc, bufferSize);
         }
+
+        #endregion Fileinfo/stream related
 
         #region StringBuilder based Text/Json Writer
 
@@ -306,47 +311,42 @@ namespace Dot.Net.DevFast.Extensions
 
         #endregion Stream based Stream/Json Reader/Writer
 
+        #region Compression Stream Related
+
         /// <summary>
-        /// Creates a <seealso cref="JsonWriter"/> for given <paramref name="serializer"/> and <paramref name="textWriter"/>.
+        /// Creates compression stream (GZip or Deflate) that would write compressed data on
+        /// <paramref name="targetStream"/> using <paramref name="level"/> with an option to
+        /// dispose the target after the operation.
         /// </summary>
-        /// <param name="serializer">Serializer to use to populate <seealso cref="JsonWriter"/> properties</param>
-        /// <param name="textWriter">target text writer</param>
-        /// <param name="disposeWriter">If true, <paramref name="textWriter"/> is disposed after the serialization</param>
-        public static JsonWriter CreateJsonWriter(this JsonSerializer serializer, TextWriter textWriter,
-            bool disposeWriter = true)
+        /// <param name="targetStream">stream on which compressed data will be written</param>
+        /// <param name="gzip">if true, <seealso cref="GZipStream"/> is created else <seealso cref="DeflateStream"/>
+        /// is created.</param>
+        /// <param name="level">Compression level</param>
+        /// <param name="disposeTarget">If true, <paramref name="targetStream"/> is disposed after the operation.</param>
+        public static Stream CreateCompressionStream(this Stream targetStream, bool gzip = true,
+            CompressionLevel level = CompressionLevel.Optimal, bool disposeTarget = true)
         {
-            return new JsonTextWriter(textWriter)
-            {
-                Culture = serializer.Culture,
-                DateFormatHandling = serializer.DateFormatHandling,
-                DateFormatString = serializer.DateFormatString,
-                DateTimeZoneHandling = serializer.DateTimeZoneHandling,
-                FloatFormatHandling = serializer.FloatFormatHandling,
-                Formatting = serializer.Formatting,
-                StringEscapeHandling = serializer.StringEscapeHandling,
-                CloseOutput = disposeWriter
-            };
+            return gzip
+                ? new GZipStream(targetStream, level, !disposeTarget)
+                : (Stream)new DeflateStream(targetStream, level, !disposeTarget);
         }
 
         /// <summary>
-        /// Creates a <seealso cref="JsonReader"/> for given <paramref name="serializer"/> and <paramref name="textReader"/>.
+        /// Creates decompression stream (GZip or Deflate) that would write decompressed data on
+        /// <paramref name="targetStream"/> with an option to dispose the target after the operation.
         /// </summary>
-        /// <param name="serializer">Serializer to use to populate <seealso cref="JsonReader"/> properties</param>
-        /// <param name="textReader">target text reader</param>
-        /// <param name="disposeReader">If true, <paramref name="textReader"/> is disposed after the deserialization</param>
-        public static JsonReader CreateJsonReader(this JsonSerializer serializer, TextReader textReader,
-            bool disposeReader = true)
+        /// <param name="targetStream">stream on which compressed data will be written</param>
+        /// <param name="gzip">if true, <seealso cref="GZipStream"/> is created else <seealso cref="DeflateStream"/>
+        /// is created.</param>
+        /// <param name="disposeTarget">If true, <paramref name="targetStream"/> is disposed after the operation.</param>
+        public static Stream CreateDecompressionStream(this Stream targetStream, bool gzip = true,
+            bool disposeTarget = true)
         {
-            return new JsonTextReader(textReader)
-            {
-                Culture = serializer.Culture,
-                DateFormatString = serializer.DateFormatString,
-                DateTimeZoneHandling = serializer.DateTimeZoneHandling,
-                DateParseHandling = serializer.DateParseHandling,
-                FloatParseHandling = serializer.FloatParseHandling,
-                MaxDepth = serializer.MaxDepth,
-                CloseInput = disposeReader
-            };
+            return gzip
+                ? new GZipStream(targetStream, CompressionMode.Decompress, !disposeTarget)
+                : (Stream)new DeflateStream(targetStream, CompressionMode.Decompress, !disposeTarget);
         }
+
+        #endregion Compression Stream Related
     }
 }

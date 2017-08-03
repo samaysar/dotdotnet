@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using System.Threading;
 using Dot.Net.DevFast.Extensions;
@@ -277,7 +278,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
         public void CreateJsonWriter_Holds_Serializer_Properties()
         {
             var serializer = CustomJson.Serializer();
-            using (var jsonWriter = serializer.CreateJsonWriter(TextWriter.Null))
+            using (var jsonWriter = serializer.AdaptedJsonWriter(TextWriter.Null))
             {
                 Assert.True(ReferenceEquals(jsonWriter.Culture, serializer.Culture));
                 Assert.True(jsonWriter.DateFormatHandling.Equals(serializer.DateFormatHandling));
@@ -294,7 +295,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
         public void CreateJsonReader_Holds_Serializer_Properties()
         {
             var serializer = CustomJson.Serializer();
-            using (var jsonReader = serializer.CreateJsonReader(TextReader.Null))
+            using (var jsonReader = serializer.AdaptedJsonReader(TextReader.Null))
             {
                 Assert.True(ReferenceEquals(jsonReader.Culture, serializer.Culture));
                 Assert.True(jsonReader.DateParseHandling.Equals(serializer.DateParseHandling));
@@ -303,6 +304,36 @@ namespace Dot.Net.DevFast.Tests.Extensions
                 Assert.True(jsonReader.FloatParseHandling.Equals(serializer.FloatParseHandling));
                 Assert.True(jsonReader.MaxDepth.Equals(serializer.MaxDepth));
                 Assert.True(jsonReader.CloseInput);
+            }
+        }
+
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        public void CreateCompressionStream_Works_As_Expected(bool isgzip)
+        {
+            using (var stream = Stream.Null.CreateCompressionStream(isgzip))
+            {
+                Assert.True(stream.CanWrite);
+                Assert.False(stream.CanRead);
+                Assert.False(stream.CanSeek);
+
+                Assert.True(stream.GetType() == (isgzip ? typeof(GZipStream) : typeof(DeflateStream)));
+            }
+        }
+
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        public void CreateDecompressionStream_Works_As_Expected(bool isgzip)
+        {
+            using (var stream = Stream.Null.CreateDecompressionStream(isgzip))
+            {
+                Assert.True(stream.CanRead);
+                Assert.False(stream.CanWrite);
+                Assert.False(stream.CanSeek);
+
+                Assert.True(stream.GetType() == (isgzip ? typeof(GZipStream) : typeof(DeflateStream)));
             }
         }
     }
