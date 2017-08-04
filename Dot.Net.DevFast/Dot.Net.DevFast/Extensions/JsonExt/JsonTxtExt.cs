@@ -149,7 +149,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <typeparam name="T">Type of the sourceCollection data</typeparam>
         /// <param name="source">input blocking collection to JSON serialize</param>
         /// <param name="target">target JSON writer</param>
-        /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.AdaptJsonSerializer(JsonWriter)"/></param>
+        /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.AdaptedJsonSerializer(JsonWriter)"/></param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="producerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the producer side in case of error during json serialization (consumer side),
@@ -162,7 +162,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             try
             {
                 target.WriteStartArray();
-                var nullHandledSerializer = serializer ?? target.AdaptJsonSerializer();
+                var nullHandledSerializer = serializer ?? target.AdaptedJsonSerializer();
                 while (source.TryTake(out T obj, Timeout.Infinite, token))
                 {
                     InternalToJson(obj, target, nullHandledSerializer);
@@ -271,7 +271,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <typeparam name="T">Type of the input object array</typeparam>
         /// <param name="source">input object enumerable to JSON serialize</param>
         /// <param name="target">target JSON writer</param>
-        /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.AdaptJsonSerializer(JsonWriter)"/></param>
+        /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.AdaptedJsonSerializer(JsonWriter)"/></param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="disposeTarget">If true, <paramref name="target"/> is disposed after the serialization</param>
         public static void ToJsonArray<T>(this IEnumerable<T> source, JsonWriter target,
@@ -281,7 +281,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             try
             {
                 target.WriteStartArray();
-                var nullHandledSerializer = serializer ?? target.AdaptJsonSerializer();
+                var nullHandledSerializer = serializer ?? target.AdaptedJsonSerializer();
                 if (token.CanBeCanceled)
                 {
                     foreach (var obj in source)
@@ -389,12 +389,12 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <typeparam name="T">Type of the input object to serialize</typeparam>
         /// <param name="source">input object to JSON serialize</param>
         /// <param name="target">target JSON writer</param>
-        /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.AdaptJsonSerializer(JsonWriter)"/></param>
+        /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.AdaptedJsonSerializer(JsonWriter)"/></param>
         /// <param name="disposeTarget">If true, <paramref name="target"/> is disposed after the serialization</param>
         public static void ToJson<T>(this T source, JsonWriter target, JsonSerializer serializer = null,
             bool disposeTarget = true)
         {
-            InternalToJson(source, target, serializer ?? target.AdaptJsonSerializer());
+            InternalToJson(source, target, serializer ?? target.AdaptedJsonSerializer());
             target.DisposeIfRequired(disposeTarget);
         }
 
@@ -465,14 +465,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
         /// <param name="source">JSON reader as data source</param>
-        /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.AdaptJsonSerializer(JsonReader)"/></param>
+        /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.AdaptedJsonSerializer(JsonReader)"/></param>
         /// <param name="disposeSource">If true, <paramref name="source"/> is disposed after the deserialization</param>
         public static T FromJson<T>(this JsonReader source, JsonSerializer serializer = null,
             bool disposeSource = true)
         {
             try
             {
-                return (serializer ?? source.AdaptJsonSerializer()).Deserialize<T>(source);
+                return (serializer ?? source.AdaptedJsonSerializer()).Deserialize<T>(source);
             }
             finally
             {
@@ -558,7 +558,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// </summary>
         /// <typeparam name="T">Type of deserialized object</typeparam>
         /// <param name="source">JSON reader as data source</param>
-        /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.AdaptJsonSerializer(JsonReader)"/></param>
+        /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.AdaptedJsonSerializer(JsonReader)"/></param>
         /// <param name="token">Cancellation token to observe</param>
         /// <param name="disposeSource">If true, <paramref name="source"/> is disposed after the deserialization</param>
         public static IEnumerable<T> FromJsonAsEnumerable<T>(this JsonReader source, JsonSerializer serializer = null, 
@@ -567,7 +567,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             try
             {
                 if (source.ThrowIfTokenNotStartArray()) yield break;
-                var nullHandledSerializer = serializer ?? source.AdaptJsonSerializer();
+                var nullHandledSerializer = serializer ?? source.AdaptedJsonSerializer();
                 if (token.CanBeCanceled)
                 {
                     while (source.NotAnEndArrayToken())
@@ -772,7 +772,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <typeparam name="T">Type of deserialized object</typeparam>
         /// <param name="source">JSON reader as data source</param>
         /// <param name="target">target blocking collection to populate deserialied JSON data objects</param>
-        /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.AdaptJsonSerializer(JsonReader)"/></param>
+        /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.AdaptedJsonSerializer(JsonReader)"/></param>
         /// <param name="token">Cancellation token to observe</param>
         /// <param name="consumerTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
         /// cancel the consumer side in case of error during json deserialization (producer side),
@@ -797,7 +797,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             try
             {
                 if (source.ThrowIfTokenNotStartArray()) return;
-                var nullHandledSerializer = serializer ?? source.AdaptJsonSerializer();
+                var nullHandledSerializer = serializer ?? source.AdaptedJsonSerializer();
                 while (source.NotAnEndArrayToken())
                 {
                     target.Add(source.FromJsonGetNext<T>(nullHandledSerializer), token);
