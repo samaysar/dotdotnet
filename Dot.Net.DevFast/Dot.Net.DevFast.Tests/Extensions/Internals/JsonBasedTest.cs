@@ -1,10 +1,8 @@
-﻿using System;
-using Dot.Net.DevFast.Etc;
+﻿using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions;
 using Dot.Net.DevFast.Extensions.Internals;
 using Dot.Net.DevFast.Extensions.JsonExt;
 using Newtonsoft.Json;
-using NSubstitute;
 using NUnit.Framework;
 
 namespace Dot.Net.DevFast.Tests.Extensions.Internals

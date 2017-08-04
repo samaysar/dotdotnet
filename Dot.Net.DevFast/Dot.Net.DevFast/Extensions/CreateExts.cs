@@ -316,37 +316,36 @@ namespace Dot.Net.DevFast.Extensions
         #region Compression Stream Related
 
         /// <summary>
-        /// Creates compression stream (GZip or Deflate) that would write compressed data on
-        /// <paramref name="target"/> using <paramref name="level"/> with an option to
-        /// dispose the target after the operation.
+        /// Creates compression stream (GZip or Deflate) that would hold <paramref name="innerStream"/> 
+        /// and <paramref name="level"/> with an option to dispose the <paramref name="innerStream"/> after the operation.
         /// </summary>
-        /// <param name="target">stream on which compressed data will be written</param>
+        /// <param name="innerStream">stream on which compressed data will be written</param>
         /// <param name="gzip">if true, <seealso cref="GZipStream"/> is created else <seealso cref="DeflateStream"/>
         /// is created.</param>
         /// <param name="level">Compression level</param>
-        /// <param name="disposeTarget">If true, <paramref name="target"/> is disposed after the operation.</param>
-        public static Stream CreateCompressionStream(this Stream target, bool gzip = true,
-            CompressionLevel level = CompressionLevel.Optimal, bool disposeTarget = true)
+        /// <param name="disposeInner">If true, <paramref name="innerStream"/> is disposed after the operation.</param>
+        public static Stream CreateCompressionStream(this Stream innerStream, bool gzip = true,
+            CompressionLevel level = CompressionLevel.Optimal, bool disposeInner = true)
         {
             return gzip
-                ? new GZipStream(target, level, !disposeTarget)
-                : (Stream)new DeflateStream(target, level, !disposeTarget);
+                ? new GZipStream(innerStream, level, !disposeInner)
+                : (Stream)new DeflateStream(innerStream, level, !disposeInner);
         }
 
         /// <summary>
-        /// Creates decompression stream (GZip or Deflate) that would write decompressed data on
-        /// <paramref name="target"/> with an option to dispose the target after the operation.
+        /// Creates compression stream (GZip or Deflate) that would hold <paramref name="innerStream"/> 
+        /// with an option to dispose the <paramref name="innerStream"/> after the operation.
         /// </summary>
-        /// <param name="target">stream on which compressed data will be written</param>
+        /// <param name="innerStream">stream on which compressed data will be written</param>
         /// <param name="gzip">if true, <seealso cref="GZipStream"/> is created else <seealso cref="DeflateStream"/>
         /// is created.</param>
-        /// <param name="disposeTarget">If true, <paramref name="target"/> is disposed after the operation.</param>
-        public static Stream CreateDecompressionStream(this Stream target, bool gzip = true,
-            bool disposeTarget = true)
+        /// <param name="disposeSource">If true, <paramref name="innerStream"/> is disposed after the operation.</param>
+        public static Stream CreateDecompressionStream(this Stream innerStream, bool gzip = true,
+            bool disposeSource = true)
         {
             return gzip
-                ? new GZipStream(target, CompressionMode.Decompress, !disposeTarget)
-                : (Stream)new DeflateStream(target, CompressionMode.Decompress, !disposeTarget);
+                ? new GZipStream(innerStream, CompressionMode.Decompress, !disposeSource)
+                : (Stream)new DeflateStream(innerStream, CompressionMode.Decompress, !disposeSource);
         }
 
         #endregion Compression Stream Related

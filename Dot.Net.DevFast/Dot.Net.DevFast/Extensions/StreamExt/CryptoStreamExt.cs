@@ -62,6 +62,45 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
             return output.CreateCryptoStream(transform, CryptoStreamMode.Write, disposeOutput)
                 .CopyFromWithDisposeAsync(input, bufferSize, token, output, disposeInput);
         }
+        
+        /// <summary>
+        /// Reads characters from <paramref name="source"/> and writes transformed data on <paramref name="output"/>,
+        /// using <paramref name="transform"/> and <paramref name="encoding"/> while observing 
+        /// <paramref name="token"/> for cancellation.
+        /// </summary>
+        /// <param name="source">String to convert</param>
+        /// <param name="transform">transform to use</param>
+        /// <param name="output">Stream to write transformed data to.</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="disposeOutput">If true, disposes <paramref name="output"/> upon operation completion, else leaves it open</param>
+        /// <param name="encoding">Encoding to use to get string bytes, if not supplied <seealso cref="Encoding.UTF8"/> is used</param>
+        /// <param name="bufferSize">Buffer size</param>
+        public static Task TransformAsync(this StringBuilder source, ICryptoTransform transform,
+            Stream output, CancellationToken token = default(CancellationToken), bool disposeOutput = false,
+            Encoding encoding = null, int bufferSize = StdLookUps.DefaultBufferSize)
+        {
+            return output.TransformChunksAsync(transform, source.Length, encoding, token, disposeOutput, bufferSize,
+                source.CopyTo);
+        }
+
+        /// <summary>
+        /// Reads characters from <paramref name="source"/> and writes transformed data on <paramref name="output"/>, 
+        /// using <paramref name="transform"/> and <paramref name="encoding"/> while observing <paramref name="token"/> for cancellation.
+        /// </summary>
+        /// <param name="source">String to convert</param>
+        /// <param name="transform">transform to use</param>
+        /// <param name="output">Stream to write transformed data to.</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="disposeOutput">If true, disposes <paramref name="output"/> upon operation completion, else leaves it open</param>
+        /// <param name="encoding">Encoding to use to get string bytes, if not supplied <seealso cref="Encoding.UTF8"/> is used</param>
+        /// <param name="bufferSize">Buffer size</param>
+        public static Task TransformAsync(this string source, ICryptoTransform transform,
+            Stream output, CancellationToken token = default(CancellationToken), bool disposeOutput = false,
+            Encoding encoding = null, int bufferSize = StdLookUps.DefaultBufferSize)
+        {
+            return output.TransformChunksAsync(transform, source.Length, encoding, token, disposeOutput, bufferSize,
+                source.CopyTo);
+        }
 
         /// <summary>
         /// Reads from <paramref name="input"/> and prepares decoded byte array (return value),
@@ -109,7 +148,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="encoding">Encoding to use to compose string characters, if not supplied <seealso cref="Encoding.UTF8"/> is used</param>
         /// <param name="bufferSize">Buffer size</param>
         public static async Task<string> TransformAsStringAsync(this Stream input, ICryptoTransform transform,
-            Encoding encoding = null, CancellationToken token = default(CancellationToken), 
+            Encoding encoding = null, CancellationToken token = default(CancellationToken),
             bool disposeInput = false, int bufferSize = StdLookUps.DefaultBufferSize)
         {
             var strBuilder = new StringBuilder();
@@ -135,45 +174,6 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         {
             return input.CreateCryptoStream(transform, CryptoStreamMode.Read, disposeInput)
                 .CopyToBuilderAsync(target, token, encoding ?? Encoding.UTF8, bufferSize, true);
-        }
-
-        /// <summary>
-        /// Reads characters from <paramref name="source"/> and writes transformed data on <paramref name="output"/>,
-        /// using <paramref name="transform"/> and <paramref name="encoding"/> while observing 
-        /// <paramref name="token"/> for cancellation.
-        /// </summary>
-        /// <param name="source">String to convert</param>
-        /// <param name="transform">transform to use</param>
-        /// <param name="output">Stream to write transformed data to.</param>
-        /// <param name="token">Cancellation token</param>
-        /// <param name="disposeOutput">If true, disposes <paramref name="output"/> upon operation completion, else leaves it open</param>
-        /// <param name="encoding">Encoding to use to get string bytes, if not supplied <seealso cref="Encoding.UTF8"/> is used</param>
-        /// <param name="bufferSize">Buffer size</param>
-        public static Task TransformAsync(this StringBuilder source, ICryptoTransform transform,
-            Stream output, CancellationToken token = default(CancellationToken), bool disposeOutput = false,
-            Encoding encoding = null, int bufferSize = StdLookUps.DefaultBufferSize)
-        {
-            return output.TransformChunksAsync(transform, source.Length, encoding, token, disposeOutput, bufferSize,
-                source.CopyTo);
-        }
-
-        /// <summary>
-        /// Reads characters from <paramref name="source"/> and writes transformed data on <paramref name="output"/>, 
-        /// using <paramref name="transform"/> and <paramref name="encoding"/> while observing <paramref name="token"/> for cancellation.
-        /// </summary>
-        /// <param name="source">String to convert</param>
-        /// <param name="transform">transform to use</param>
-        /// <param name="output">Stream to write transformed data to.</param>
-        /// <param name="token">Cancellation token</param>
-        /// <param name="disposeOutput">If true, disposes <paramref name="output"/> upon operation completion, else leaves it open</param>
-        /// <param name="encoding">Encoding to use to get string bytes, if not supplied <seealso cref="Encoding.UTF8"/> is used</param>
-        /// <param name="bufferSize">Buffer size</param>
-        public static Task TransformAsync(this string source, ICryptoTransform transform,
-            Stream output, CancellationToken token = default(CancellationToken), bool disposeOutput = false,
-            Encoding encoding = null, int bufferSize = StdLookUps.DefaultBufferSize)
-        {
-            return output.TransformChunksAsync(transform, source.Length, encoding, token, disposeOutput, bufferSize,
-                source.CopyTo);
         }
 
         private static Task TransformChunksAsync(this Stream writable, ICryptoTransform transform,
