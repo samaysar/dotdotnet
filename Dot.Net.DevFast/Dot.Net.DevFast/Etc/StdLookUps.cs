@@ -3,7 +3,6 @@
     /// <summary>
     /// Provides fixed values.
     /// </summary>
-    
     public static class StdLookUps
     {
         /// <summary>
@@ -15,5 +14,10 @@
         /// Default Buffer size for stream related operations.
         /// </summary>
         public const int DefaultBufferSize = 1024;
+
+        /// <summary>
+        /// Default Buffer size for file stream related operations.
+        /// </summary>
+        public const int DefaultFileBufferSize = 4*1024;
     }
 }

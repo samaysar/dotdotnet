@@ -72,12 +72,23 @@ namespace Dot.Net.DevFast.Etc
         /// <summary>
         /// When string parsing to a given type fails.
         /// </summary>
-        StringParsingFailed
+        StringParsingFailed,
+
+        /// <summary>
+        /// When json does NOT start with start-array token
+        /// </summary>
+        JsonIsNotAnArray,
+
+        /// <summary>
+        /// When unable to retrieve buffer of memory stream
+        /// </summary>
+        UnableToGetMemoryStreamBuffer
     }
 
     /// <summary>
     /// Exceptions used inside DevFast library.
     /// </summary>
+    [Serializable]
     public sealed class DdnDfException : DdnException<DdnDfErrorCode>
     {
         /// <summary>

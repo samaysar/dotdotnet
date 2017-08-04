@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using Dot.Net.DevFast.Etc;
 using System.Collections.Generic;
@@ -285,6 +286,147 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="dictionary">dictionary instance</param>
         /// <param name="key">key instance</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
+        public static TV ThrowOnMiss<TK, TV>(this Dictionary<TK, TV> dictionary, TK key)
+        {
+            return ThrowOnMissPredicate(dictionary, key, out TV value).ThrowIfNot(DdnDfErrorCode.KeyNotFound, value);
+        }
+
+        /// <summary>
+        /// Throws exception when provided key is not found in dictionary. Else associated value instance is returned
+        /// to performed method chaining on the value.
+        /// </summary>
+        /// <typeparam name="TK">Type of key of the dictionary</typeparam>
+        /// <typeparam name="TV">Type of value of the dictionary</typeparam>
+        /// <param name="dictionary">dictionary instance</param>
+        /// <param name="key">key instance</param>
+        /// <param name="errorMessage">error message of the exception</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
+        public static TV ThrowOnMiss<TK, TV>(this Dictionary<TK, TV> dictionary, TK key, string errorMessage)
+        {
+            return ThrowOnMissPredicate(dictionary, key, out TV value)
+                .ThrowIfNot(DdnDfErrorCode.KeyNotFound, errorMessage, value);
+        }
+
+        /// <summary>
+        /// Throws exception when provided key is not found in dictionary. Else associated value instance is returned
+        /// to performed method chaining on the value.
+        /// </summary>
+        /// <typeparam name="TK">Type of key of the dictionary</typeparam>
+        /// <typeparam name="TV">Type of value of the dictionary</typeparam>
+        /// <param name="dictionary">dictionary instance</param>
+        /// <param name="key">key instance</param>
+        /// <param name="errorMessageDelegate">error message generating delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
+        public static TV ThrowOnMiss<TK, TV>(this Dictionary<TK, TV> dictionary, TK key,
+            Func<string> errorMessageDelegate)
+        {
+            return ThrowOnMissPredicate(dictionary, key, out TV value)
+                .ThrowIfNot(DdnDfErrorCode.KeyNotFound, errorMessageDelegate, value);
+        }
+
+        /// <summary>
+        /// Throws exception when provided key is not found in dictionary. Else associated value instance is returned
+        /// to performed method chaining on the value.
+        /// </summary>
+        /// <typeparam name="TK">Type of key of the dictionary</typeparam>
+        /// <typeparam name="TV">Type of value of the dictionary</typeparam>
+        /// <param name="dictionary">dictionary instance</param>
+        /// <param name="key">key instance</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
+        public static TV ThrowOnMiss<TK, TV>(this ConcurrentDictionary<TK, TV> dictionary, TK key)
+        {
+            return ThrowOnMissPredicate(dictionary, key, out TV value).ThrowIfNot(DdnDfErrorCode.KeyNotFound, value);
+        }
+
+        /// <summary>
+        /// Throws exception when provided key is not found in dictionary. Else associated value instance is returned
+        /// to performed method chaining on the value.
+        /// </summary>
+        /// <typeparam name="TK">Type of key of the dictionary</typeparam>
+        /// <typeparam name="TV">Type of value of the dictionary</typeparam>
+        /// <param name="dictionary">dictionary instance</param>
+        /// <param name="key">key instance</param>
+        /// <param name="errorMessage">error message of the exception</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
+        public static TV ThrowOnMiss<TK, TV>(this ConcurrentDictionary<TK, TV> dictionary, TK key, string errorMessage)
+        {
+            return ThrowOnMissPredicate(dictionary, key, out TV value)
+                .ThrowIfNot(DdnDfErrorCode.KeyNotFound, errorMessage, value);
+        }
+
+        /// <summary>
+        /// Throws exception when provided key is not found in dictionary. Else associated value instance is returned
+        /// to performed method chaining on the value.
+        /// </summary>
+        /// <typeparam name="TK">Type of key of the dictionary</typeparam>
+        /// <typeparam name="TV">Type of value of the dictionary</typeparam>
+        /// <param name="dictionary">dictionary instance</param>
+        /// <param name="key">key instance</param>
+        /// <param name="errorMessageDelegate">error message generating delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
+        public static TV ThrowOnMiss<TK, TV>(this ConcurrentDictionary<TK, TV> dictionary, TK key,
+            Func<string> errorMessageDelegate)
+        {
+            return ThrowOnMissPredicate(dictionary, key, out TV value)
+                .ThrowIfNot(DdnDfErrorCode.KeyNotFound, errorMessageDelegate, value);
+        }
+
+        /// <summary>
+        /// Throws exception when provided key is not found in dictionary. Else associated value instance is returned
+        /// to performed method chaining on the value.
+        /// </summary>
+        /// <typeparam name="TK">Type of key of the dictionary</typeparam>
+        /// <typeparam name="TV">Type of value of the dictionary</typeparam>
+        /// <param name="dictionary">dictionary instance</param>
+        /// <param name="key">key instance</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
+        public static TV ThrowOnMiss<TK, TV>(this IDictionary<TK, TV> dictionary, TK key)
+        {
+            return ThrowOnMissPredicateIDict(dictionary, key, out TV value).ThrowIfNot(DdnDfErrorCode.KeyNotFound, value);
+        }
+
+        /// <summary>
+        /// Throws exception when provided key is not found in dictionary. Else associated value instance is returned
+        /// to performed method chaining on the value.
+        /// </summary>
+        /// <typeparam name="TK">Type of key of the dictionary</typeparam>
+        /// <typeparam name="TV">Type of value of the dictionary</typeparam>
+        /// <param name="dictionary">dictionary instance</param>
+        /// <param name="key">key instance</param>
+        /// <param name="errorMessage">error message of the exception</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
+        public static TV ThrowOnMiss<TK, TV>(this IDictionary<TK, TV> dictionary, TK key, string errorMessage)
+        {
+            return ThrowOnMissPredicateIDict(dictionary, key, out TV value)
+                .ThrowIfNot(DdnDfErrorCode.KeyNotFound, errorMessage, value);
+        }
+
+        /// <summary>
+        /// Throws exception when provided key is not found in dictionary. Else associated value instance is returned
+        /// to performed method chaining on the value.
+        /// </summary>
+        /// <typeparam name="TK">Type of key of the dictionary</typeparam>
+        /// <typeparam name="TV">Type of value of the dictionary</typeparam>
+        /// <param name="dictionary">dictionary instance</param>
+        /// <param name="key">key instance</param>
+        /// <param name="errorMessageDelegate">error message generating delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
+        public static TV ThrowOnMiss<TK, TV>(this IDictionary<TK, TV> dictionary, TK key,
+            Func<string> errorMessageDelegate)
+        {
+            return ThrowOnMissPredicateIDict(dictionary, key, out TV value)
+                .ThrowIfNot(DdnDfErrorCode.KeyNotFound, errorMessageDelegate, value);
+        }
+
+        /// <summary>
+        /// Throws exception when provided key is not found in dictionary. Else associated value instance is returned
+        /// to performed method chaining on the value.
+        /// </summary>
+        /// <typeparam name="TK">Type of key of the dictionary</typeparam>
+        /// <typeparam name="TV">Type of value of the dictionary</typeparam>
+        /// <param name="dictionary">dictionary instance</param>
+        /// <param name="key">key instance</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
         public static TV ThrowOnMiss<TK, TV>(this IReadOnlyDictionary<TK, TV> dictionary, TK key)
         {
             return ThrowOnMissPredicate(dictionary, key, out TV value).ThrowIfNot(DdnDfErrorCode.KeyNotFound, value);
@@ -325,6 +467,12 @@ namespace Dot.Net.DevFast.Extensions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool ThrowOnMissPredicate<TK, TV>(IReadOnlyDictionary<TK, TV> dictionary, TK key, out TV value)
+        {
+            return dictionary.TryGetValue(key, out value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool ThrowOnMissPredicateIDict<TK, TV>(IDictionary<TK, TV> dictionary, TK key, out TV value)
         {
             return dictionary.TryGetValue(key, out value);
         }

@@ -1,18 +1,23 @@
-<?xml version="1.0"?>
-<package xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata minClientVersion="2.12">
     <id>Dot.Net.DevFast</id>
     <version>$version$</version>
-	<authors>Divya Sarthi MAHESHWARI</authors>
+	<title>DevFast</title>
+    <authors>Divya Sarthi MAHESHWARI</authors>
     <owners>samaysar</owners>
-    <licenseUrl>https://github.com/samaysar/dotdotnet/blob/develop/nuspecs/pkgdt/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/samaysar/dotdotnet</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/nuspecs/pkgdt/ddn.ico</iconUrl>
+    <licenseUrl>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/nuspecs/pkgdt/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/samaysar/dotdotnet/wiki</projectUrl>
+    <repository type="git" url="https://github.com/samaysar/dotdotnet"/>
+	<iconUrl>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/nuspecs/pkgdt/ddn.ico</iconUrl>
 	<requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Develop your code with confidence with this powerful pack of extension methods. Increased productivity and code efficiency are out of the box features.</description>
-	<releaseNotes>This is the first release containing powerful extension methods on ValueTypes, String, Stream etc.</releaseNotes>
-    <copyright>Copyright ©2017 Divya Sarthi MAHESHWARI</copyright>
-    <tags>DevFast FastDev Extension Dot.Net .Net Dot String Stream TryTo Transform Compression</tags>
+    <description>DevFast is a powerful pack of extension methods. Increased productivity and code efficiency are out of the box features.</description>
+	<releaseNotes>Newly added methods to deal with JSON data and Data compression (https://raw.githubusercontent.com/samaysar/dotdotnet/tree/NugetRelV1_1_0/ReleaseNotes.txt). See also https://www.codeproject.com/Articles/samaysar#Tip for DevFast related Articles and Tips.</releaseNotes>
+    <copyright>Copyright © Divya Sarthi MAHESHWARI 2017</copyright>
+    <tags>devfast fastdev extension dot.net .net dot string stream tryto transform compression stream-processing productivity-booster extension-methods fastdevelopement</tags>
+    <dependencies>
+	  <dependency id="Newtonsoft.Json" version="10.0.3" />
+    </dependencies>
   </metadata>
   <files>
     <file src="..\Dot.Net.DevFast\Dot.Net.DevFast\bin\Release\Dot.Net.DevFast.*" target="lib\net461" />

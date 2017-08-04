@@ -1,4 +1,5 @@
-﻿using Dot.Net.DevFast.Etc;
+﻿using System.Runtime.Serialization;
+using Dot.Net.DevFast.Etc;
 using NUnit.Framework;
 
 namespace Dot.Net.DevFast.Tests.Etc
@@ -58,6 +59,17 @@ namespace Dot.Net.DevFast.Tests.Etc
             Assert.True(error.Reason.Equals(errorCode.ToString()));
             Assert.True(error.Message.Equals($"({errorCode}) {message}"));
             Assert.True(ReferenceEquals(error.InnerException, inner));
+        }
+
+        [Test]
+        public void GetObjectData_Properly_Inserts_ErrorReason()
+        {
+            var sinfo = new SerializationInfo(typeof(DdnDfException), new FormatterConverter());
+            var sctxt = new StreamingContext();
+            var ddndfEx = new DdnDfException(DdnDfErrorCode.JsonIsNotAnArray);
+
+            ddndfEx.GetObjectData(sinfo, sctxt);
+            Assert.True(sinfo.GetValue("ErrorReason", typeof(string)).Equals(DdnDfErrorCode.JsonIsNotAnArray.ToString()));
         }
     }
 }

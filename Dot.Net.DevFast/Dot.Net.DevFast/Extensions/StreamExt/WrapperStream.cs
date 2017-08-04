@@ -27,20 +27,17 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
 
         public override long Position
         {
-            get { return _stream.Position; }
-            set { _stream.Position = value; }
+            get => _stream.Position; set => _stream.Position = value;
         }
 
         public override int WriteTimeout
         {
-            get { return _stream.WriteTimeout; }
-            set { _stream.WriteTimeout = value; }
+            get => _stream.WriteTimeout; set => _stream.WriteTimeout = value;
         }
 
         public override int ReadTimeout
         {
-            get { return _stream.ReadTimeout; }
-            set { _stream.ReadTimeout = value; }
+            get => _stream.ReadTimeout; set => _stream.ReadTimeout = value;
         }
 
         public override void Flush()

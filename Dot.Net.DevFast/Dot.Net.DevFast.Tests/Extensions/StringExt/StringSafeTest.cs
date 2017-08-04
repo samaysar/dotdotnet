@@ -583,13 +583,13 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         private static T PerformToEnumUncheckedOrDefault<T>(string input, T defValue, bool ignoreCase = true)
             where T : struct
         {
-            return input.ToEnumUncheckedOrDefault<T>(defValue, ignoreCase);
+            return input.ToEnumUncheckedOrDefault(defValue, ignoreCase);
         }
 
         private static T PerformToEnumOrDefault<T>(string input, T defValue, bool ignoreCase = true)
             where T : struct
         {
-            return input.ToEnumOrDefault<T>(defValue, ignoreCase);
+            return input.ToEnumOrDefault(defValue, ignoreCase);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions.StreamExt;
 using Dot.Net.DevFast.Extensions.StringExt;
@@ -167,6 +168,13 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
                 extB64 = Encoding.UTF8.GetString(mem.ToArray());
             }
             Assert.True(extB64.Equals(localB64));
+
+            using (var mem = new MemoryStream())
+            {
+                await bytes.ToBase64Async(mem, CancellationToken.None).ConfigureAwait(false);
+                extB64 = Encoding.UTF8.GetString(mem.ToArray());
+            }
+            Assert.True(extB64.Equals(localB64));
         }
 
         [Test]
@@ -190,6 +198,13 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
             using (var mem = new MemoryStream())
             {
                 await segment.ToBase64Async(mem).ConfigureAwait(false);
+                extB64 = Encoding.UTF8.GetString(mem.ToArray());
+            }
+            Assert.True(extB64.Equals(localB64));
+
+            using (var mem = new MemoryStream())
+            {
+                await segment.ToBase64Async(mem, CancellationToken.None).ConfigureAwait(false);
                 extB64 = Encoding.UTF8.GetString(mem.ToArray());
             }
             Assert.True(extB64.Equals(localB64));
@@ -226,6 +241,13 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
                 extB64 = Encoding.UTF8.GetString(mem.ToArray());
             }
             Assert.True(extB64.Equals(localB64));
+
+            using (var mem = new MemoryStream())
+            {
+                await TestValues.BigString.ToBase64Async(mem, CancellationToken.None, encoding: encIns).ConfigureAwait(false);
+                extB64 = Encoding.UTF8.GetString(mem.ToArray());
+            }
+            Assert.True(extB64.Equals(localB64));
         }
 
         [Test]
@@ -259,6 +281,13 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
                 extB64 = Encoding.UTF8.GetString(mem.ToArray());
             }
             Assert.True(extB64.Equals(localB64));
+
+            using (var mem = new MemoryStream())
+            {
+                await new StringBuilder(TestValues.BigString).ToBase64Async(mem, CancellationToken.None, encoding: encIns).ConfigureAwait(false);
+                extB64 = Encoding.UTF8.GetString(mem.ToArray());
+            }
+            Assert.True(extB64.Equals(localB64));
         }
 
         [Test]
@@ -283,6 +312,16 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
                 using (var input = new MemoryStream(bytes, 0, segSize))
                 {
                     await input.ToBase64Async(mem).ConfigureAwait(false);
+                    extB64 = Encoding.UTF8.GetString(mem.ToArray());
+                }
+            }
+            Assert.True(extB64.Equals(localB64));
+
+            using (var mem = new MemoryStream())
+            {
+                using (var input = new MemoryStream(bytes, 0, segSize))
+                {
+                    await input.ToBase64Async(mem, CancellationToken.None).ConfigureAwait(false);
                     extB64 = Encoding.UTF8.GetString(mem.ToArray());
                 }
             }
@@ -317,6 +356,21 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
                     }
                 }
             }
+
+            using (var mem = new MemoryStream())
+            {
+                await TestValues.BigString.ToBase64Async(mem, encoding: encIns).ConfigureAwait(false);
+                mem.Seek(0, SeekOrigin.Begin);
+                using (var output = new MemoryStream())
+                {
+                    await mem.FromBase64Async(output, CancellationToken.None).ConfigureAwait(false);
+                    output.Seek(0, SeekOrigin.Begin);
+                    using (var reader = new StreamReader(output, encIns))
+                    {
+                        Assert.True(TestValues.BigString.Equals(reader.ReadToEnd()));
+                    }
+                }
+            }
         }
 
         [Test]
@@ -341,6 +395,15 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
                 await mem.FromBase64Async(output, encoding: encIns).ConfigureAwait(false);
                 Assert.True(TestValues.BigString.Equals(output.ToString()));
             }
+
+            using (var mem = new MemoryStream())
+            {
+                await TestValues.BigString.ToBase64Async(mem, encoding: encIns).ConfigureAwait(false);
+                mem.Seek(0, SeekOrigin.Begin);
+                var output = new StringBuilder();
+                await mem.FromBase64Async(output, CancellationToken.None, encoding: encIns).ConfigureAwait(false);
+                Assert.True(TestValues.BigString.Equals(output.ToString()));
+            }
         }
 
         [Test]
@@ -362,6 +425,14 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
                 await TestValues.BigString.ToBase64Async(mem, encoding: encIns).ConfigureAwait(false);
                 mem.Seek(0, SeekOrigin.Begin);
                 var output = await mem.FromBase64AsStringAsync(encoding: encIns).ConfigureAwait(false);
+                Assert.True(TestValues.BigString.Equals(output));
+            }
+
+            using (var mem = new MemoryStream())
+            {
+                await TestValues.BigString.ToBase64Async(mem, encoding: encIns).ConfigureAwait(false);
+                mem.Seek(0, SeekOrigin.Begin);
+                var output = await mem.FromBase64AsStringAsync(CancellationToken.None, encoding: encIns).ConfigureAwait(false);
                 Assert.True(TestValues.BigString.Equals(output));
             }
         }
@@ -390,6 +461,17 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
                     Assert.True(TestValues.BigString.Equals(reader.ReadToEnd()));
                 }
             }
+
+            using (var mem = new MemoryStream())
+            {
+                await TestValues.BigString.ToBase64Async(mem, encoding: encIns).ConfigureAwait(false);
+                mem.Seek(0, SeekOrigin.Begin);
+                var output = await mem.FromBase64Async(CancellationToken.None).ConfigureAwait(false);
+                using (var reader = new StreamReader(new MemoryStream(output), encIns))
+                {
+                    Assert.True(TestValues.BigString.Equals(reader.ReadToEnd()));
+                }
+            }
         }
 
         [Test]
@@ -411,6 +493,17 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
                 await TestValues.BigString.ToBase64Async(mem, encoding: encIns).ConfigureAwait(false);
                 mem.Seek(0, SeekOrigin.Begin);
                 var output = await mem.FromBase64AsSegmentAsync().ConfigureAwait(false);
+                using (var reader = new StreamReader(new MemoryStream(output.Array, output.Offset, output.Count), encIns))
+                {
+                    Assert.True(TestValues.BigString.Equals(reader.ReadToEnd()));
+                }
+            }
+
+            using (var mem = new MemoryStream())
+            {
+                await TestValues.BigString.ToBase64Async(mem, encoding: encIns).ConfigureAwait(false);
+                mem.Seek(0, SeekOrigin.Begin);
+                var output = await mem.FromBase64AsSegmentAsync(CancellationToken.None).ConfigureAwait(false);
                 using (var reader = new StreamReader(new MemoryStream(output.Array, output.Offset, output.Count), encIns))
                 {
                     Assert.True(TestValues.BigString.Equals(reader.ReadToEnd()));

@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("Dot.Net.DevFast")]
 [assembly: AssemblyProduct("Dot.Net.DevFast")]
-[assembly: AssemblyDescription("Contains extension methods for day to day usage")]
+[assembly: AssemblyDescription("Power set of extension methods")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else

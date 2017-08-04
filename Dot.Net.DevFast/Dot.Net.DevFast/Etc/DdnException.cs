@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
+using Dot.Net.DevFast.Extensions;
 
 namespace Dot.Net.DevFast.Etc
 {
@@ -7,6 +10,7 @@ namespace Dot.Net.DevFast.Etc
     /// <para>All libraries must throw this exception for known error cases.</para>
     /// <typeparam name="T">Normally should be ENUM type explaining the cause behind the exception</typeparam>
     /// </summary>
+    [Serializable]
     public abstract class DdnException<T> : DdnException where T: struct
     {
         /// <summary>
@@ -44,11 +48,23 @@ namespace Dot.Net.DevFast.Etc
         {
             ErrorCode = errorCode;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+        }
     }
 
     /// <summary>
     /// Non generic base exception class for Dot.Net libraries.
     /// </summary>
+    [Serializable]
     public abstract class DdnException : Exception
     {
         /// <summary>
@@ -85,6 +101,18 @@ namespace Dot.Net.DevFast.Etc
             : base($"({reason}) {message}", inner)
         {
             Reason = reason;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.ThrowIfNull($"{nameof(SerializationInfo)} object is null").AddValue("ErrorReason", Reason);
+            base.GetObjectData(info, context);
         }
     }
 }

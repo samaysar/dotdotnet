@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
+using Dot.Net.DevFast.Extensions;
 using Dot.Net.DevFast.Extensions.StringExt;
 using Dot.Net.DevFast.Tests.TestHelpers;
 using NUnit.Framework;
@@ -796,7 +799,70 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
                 Assert.True(ex.Message.Contains($"{nameof(DateTime)}"));
             }
         }
-        
+
+        [Test]
+        [TestCase(null)]
+        public void ToBytes_N_ToByteSegment_Throws_Error_For_Null_String(string nullVal)
+        {
+            Assert.True(Assert.Throws<DdnDfException>(() =>
+                            nullVal.ToBytes()).ErrorCode == DdnDfErrorCode.NullObject);
+            Assert.True(Assert.Throws<DdnDfException>(() =>
+                            nullVal.ToByteSegment()).ErrorCode == DdnDfErrorCode.NullObject);
+        }
+
+        [Test]
+        [TestCase("")]
+        [TestCase("        ")]
+        [TestCase("any valid string")]
+        public void ToBytes_N_ToByteSegment_Works_As_Expected(string input)
+        {
+            var arr = input.ToBytes();
+            var arrSeg = input.ToByteSegment();
+
+            Assert.True(arr.Length == arrSeg.Count);
+            var segmentArr = arrSeg.CreateBytes();
+            for (var i = 0; i < arr.Length; i++)
+            {
+                Assert.True(segmentArr[i].Equals(arr[i]));
+            }
+        }
+
+        [Test]
+        [TestCase("")]
+        [TestCase("        ")]
+        [TestCase("any valid string")]
+        public async Task ToStreamAsync_Works_As_Expected(string input)
+        {
+            var arr = input.ToBytes();
+            var memStrm = new MemoryStream();
+
+            await input.ToStreamAsync(memStrm).ConfigureAwait(false);
+            var segmentArr = memStrm.ToArray();
+            for (var i = 0; i < arr.Length; i++)
+            {
+                Assert.True(segmentArr[i].Equals(arr[i]));
+            }
+        }
+
+        [Test]
+        [TestCase("", true)]
+        [TestCase("        ", false)]
+        [TestCase("any valid string", true)]
+        public async Task StringBuilder_ToStreamAsync_Works_As_Expected(string input,
+            bool dispose)
+        {
+            var arr = input.ToBytes();
+            var memStrm = new MemoryStream();
+
+            await (new StringBuilder(input)).ToStreamAsync(memStrm, disposeTarget: dispose)
+                .ConfigureAwait(false);
+            var segmentArr = memStrm.ToArray();
+            for (var i = 0; i < arr.Length; i++)
+            {
+                Assert.True(segmentArr[i].Equals(arr[i]));
+            }
+        }
+
         private static void PerformToEnumUnchecked<T>(string input, out T value, bool ignoreCase = true)
             where T : struct
         {
