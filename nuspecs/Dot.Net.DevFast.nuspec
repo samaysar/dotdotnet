@@ -12,7 +12,7 @@
 	<iconUrl>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/nuspecs/pkgdt/ddn.ico</iconUrl>
 	<requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>DevFast is a powerful pack of extension methods. Increased productivity and code efficiency are out of the box features. See also https://www.codeproject.com/Articles/samaysar#Tip for DevFast related Articles and Tips.</description>
-	<releaseNotes>https://raw.githubusercontent.com/samaysar/dotdotnet/vNugetRelV1_1_0/ReleaseNotes.txt</releaseNotes>
+	<releaseNotes>https://raw.githubusercontent.com/samaysar/dotdotnet/v1_1_0-Df/ReleaseNotes.txt</releaseNotes>
     <copyright>Copyright © Divya Sarthi MAHESHWARI 2017</copyright>
     <tags>devfast fastdev extension dot.net .net dot string stream tryto transform compression stream-processing productivity-booster extension-methods fastdevelopement</tags>
     <dependencies>
