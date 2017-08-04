@@ -42,7 +42,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// the properties of the <paramref name="writer"/>.
         /// </summary>
         /// <param name="writer">writer to reference</param>
-        public static JsonSerializer AdaptJsonSerializer(this JsonWriter writer)
+        public static JsonSerializer AdaptedJsonSerializer(this JsonWriter writer)
         {
             var serializer = Serializer();
             serializer.Culture = writer.Culture;
@@ -60,7 +60,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// the properties of the <paramref name="reader"/>.
         /// </summary>
         /// <param name="reader">reader to reference</param>
-        public static JsonSerializer AdaptJsonSerializer(this JsonReader reader)
+        public static JsonSerializer AdaptedJsonSerializer(this JsonReader reader)
         {
             var serializer = Serializer();
             serializer.Culture = reader.Culture;

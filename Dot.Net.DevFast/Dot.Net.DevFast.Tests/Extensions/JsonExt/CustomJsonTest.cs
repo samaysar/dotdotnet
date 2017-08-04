@@ -35,7 +35,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
         }
 
         [Test]
-        public void AdaptJsonSerializer_Set_Serialization_Properties_Of_Writer_To_Serializer()
+        public void AdaptedJsonSerializer_Set_Serialization_Properties_Of_Writer_To_Serializer()
         {
             using(var writer = new JsonTextWriter(TextWriter.Null)
             {
@@ -49,7 +49,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
                 CloseOutput = true
             })
             {
-                var serializer = writer.AdaptJsonSerializer();
+                var serializer = writer.AdaptedJsonSerializer();
                 Assert.True(serializer.Culture.Equals(new CultureInfo("fr-FR")));
                 Assert.True(serializer.DateFormatHandling.Equals(DateFormatHandling.MicrosoftDateFormat));
                 Assert.True(serializer.DateTimeZoneHandling.Equals(DateTimeZoneHandling.RoundtripKind));
@@ -61,7 +61,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
         }
 
         [Test]
-        public void AdaptJsonSerializer_Set_Deserialization_Properties_Of_Reader_To_Serializer()
+        public void AdaptedJsonSerializer_Set_Deserialization_Properties_Of_Reader_To_Serializer()
         {
             using (var writer = new JsonTextReader(TextReader.Null)
             {
@@ -74,7 +74,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
                 CloseInput = true
             })
             {
-                var serializer = writer.AdaptJsonSerializer();
+                var serializer = writer.AdaptedJsonSerializer();
                 Assert.True(serializer.Culture.Equals(new CultureInfo("en-GB")));
                 Assert.True(serializer.DateTimeZoneHandling.Equals(DateTimeZoneHandling.Unspecified));
                 Assert.True(serializer.DateParseHandling.Equals(DateParseHandling.DateTimeOffset));
@@ -85,7 +85,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
         }
 
         [Test]
-        public void CreateJsonWriter_Holds_Serializer_Properties()
+        public void AdaptedJsonWriter_Holds_Serializer_Properties()
         {
             var serializer = CustomJson.Serializer();
             using (var jsonWriter = serializer.AdaptedJsonWriter(TextWriter.Null))
@@ -102,7 +102,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
         }
 
         [Test]
-        public void CreateJsonReader_Holds_Serializer_Properties()
+        public void AdaptedJsonReader_Holds_Serializer_Properties()
         {
             var serializer = CustomJson.Serializer();
             using (var jsonReader = serializer.AdaptedJsonReader(TextReader.Null))
