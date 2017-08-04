@@ -177,8 +177,8 @@ namespace Dot.Net.DevFast.Extensions
             CancellationToken token = default(CancellationToken), int bufferSize = StdLookUps.DefaultBufferSize, 
             bool disposeSource = false, bool disposeTarget = false)
         {
-            return target.CreateDecompressionStream(gzip, disposeTarget)
-                .CopyFromWithDisposeAsync(source, bufferSize, token, target, disposeSource);
+            return source.CreateDecompressionStream(gzip, disposeSource)
+                .CopyToWithDisposeAsync(target, bufferSize, token, disposeTarget);
         }
 
         /// <summary>

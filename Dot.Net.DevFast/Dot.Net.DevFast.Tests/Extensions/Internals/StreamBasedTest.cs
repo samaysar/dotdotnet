@@ -90,6 +90,33 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals
         }
 
         [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task Stream_Stream_Based_CopyToWithDisposeAsync_Works_Properly(bool dispose)
+        {
+            using (var mem = new MemoryStream())
+            {
+                await "123".ToStreamAsync(mem).ConfigureAwait(false);
+                mem.Seek(0, SeekOrigin.Begin);
+                var newbuff = new MemoryStream();
+
+                await mem.CopyToWithDisposeAsync(newbuff, 10, CancellationToken.None, dispose)
+                    .ConfigureAwait(false);
+                Assert.True(newbuff.CanSeek == !dispose);
+                Assert.False(mem.CanSeek);
+
+                var memArr = mem.ToArray();
+                var newBuffArr = newbuff.ToArray();
+
+                Assert.True(memArr.Length == newBuffArr.Length);
+                for (var i = 0; i < memArr.Length; i++)
+                {
+                    Assert.True(memArr[i].Equals(newBuffArr[i]));
+                }
+            }
+        }
+
+        [Test]
         public async Task Stream_Array_Based_CopyFromWithDisposeAsync_Works_Properly()
         {
             using (var mem = new MemoryStream())

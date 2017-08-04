@@ -86,6 +86,17 @@ namespace Dot.Net.DevFast.Extensions.Internals
             readable.DisposeIfRequired(disposeReadable);
         }
 
+        internal static async Task CopyToWithDisposeAsync(this Stream from, Stream to,
+            int bufferSize, CancellationToken token, bool disposeTo)
+        {
+            using (from)
+            {
+                await from.CopyToAsync(to, bufferSize, token).ConfigureAwait(false);
+                await to.FlushAsync(token).ConfigureAwait(false);
+            }
+            to.DisposeIfRequired(disposeTo);
+        }
+
         internal static async Task CopyFromWithDisposeAsync(this Stream writable, byte[] input,
             int byteOffset, int byteCount, CancellationToken token, Stream writableInner)
         {
