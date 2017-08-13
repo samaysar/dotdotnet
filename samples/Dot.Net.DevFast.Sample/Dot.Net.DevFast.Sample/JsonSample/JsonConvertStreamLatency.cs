@@ -15,7 +15,7 @@ namespace Dot.Net.DevFast.Sample.JsonSample
         {
             Console.Out.WriteLine("-------SmallObj Serialization-------");
             //Small Object serialization in 10M loops
-            Run(1024 * 16, new SmallObj
+            Run(1024 * 32, new SmallObj
             {
                 Address = "123, Json street",
                 Age = 20,
@@ -23,7 +23,7 @@ namespace Dot.Net.DevFast.Sample.JsonSample
             });
             Console.Out.WriteLine("-------LargeObj Serialization-------");
             //Large Object serialization in 1M loops
-            Run(1024 * 16, LargeObj);
+            Run(1024 * 32, LargeObj);
 
             Console.Out.WriteLine("-------LargeObj Array Serialization-------");
             //creating array of 1K LargeObj
@@ -33,7 +33,7 @@ namespace Dot.Net.DevFast.Sample.JsonSample
                 objArr[i] = LargeObj;
             }
             //Large Object Array serialization in 1K loops
-            Run(16, objArr);
+            Run(128, objArr);
         }
 
         private static void Run(int iteration, object data)
@@ -60,15 +60,12 @@ namespace Dot.Net.DevFast.Sample.JsonSample
             Console.Out.WriteLine();
         }
 
-        private static double MeasureJsonConvert(this object val, int iteration, FileInfo target, bool print = true)
+        private static double MeasureJsonConvert(this object obj, int iteration, FileInfo target, bool print = true)
         {
             var sw = Stopwatch.StartNew();
             for (var i = 0; i < iteration; i++)
             {
-                using (var writer = target.CreateStreamWriter())
-                {
-                    writer.Write(JsonConvert.SerializeObject(val));
-                }
+                File.WriteAllText(target.FullName, JsonConvert.SerializeObject(obj));
             }
             sw.Stop();
             if (print)
@@ -83,14 +80,13 @@ namespace Dot.Net.DevFast.Sample.JsonSample
             return sw.Elapsed.TotalMilliseconds;
         }
 
-        private static double MeasureDevFast(this object val, FileInfo target, int iteration, bool print = true)
+        private static double MeasureDevFast(this object obj, FileInfo target, int iteration, bool print = true)
         {
             var sw = Stopwatch.StartNew();
             for (var i = 0; i < iteration; i++)
             {
-                var writer = target.CreateStreamWriter();
-                writer.AutoFlush = false;
-                val.ToJson(writer, new JsonSerializer());
+                obj.ToJson(target.CreateStream(FileMode.Create, options: FileOptions.None), new JsonSerializer(),
+                    new UTF8Encoding(false), 4 * 1024);
             }
             sw.Stop();
             if (print)

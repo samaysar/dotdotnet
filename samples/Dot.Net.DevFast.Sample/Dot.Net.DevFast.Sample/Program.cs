@@ -21,7 +21,7 @@ namespace Dot.Net.DevFast.Sample
             //Console.Out.WriteLine();
             //TransformSample.Run();
 
-            JsonConvertStreamLatency.Run();
+            JsonConvertMemStreamLatency.Run();
 
             Console.ReadLine();
         }
