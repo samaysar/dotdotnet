@@ -5,7 +5,7 @@ using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
 using Dot.Net.DevFast.Etc;
-using Dot.Net.DevFast.Extensions.StreamExt;
+using Dot.Net.DevFast.Extensions.Internals;
 using Dot.Net.DevFast.Extensions.StringExt;
 using Newtonsoft.Json;
 
@@ -224,7 +224,6 @@ namespace Dot.Net.DevFast.Extensions
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc,
                 DateParseHandling = DateParseHandling.DateTime,
                 FloatParseHandling = FloatParseHandling.Double,
-                DateFormatString = "yyyy-MM-dd HH:mm:ss",
                 CloseInput = disposeReader
             };
         }
@@ -241,7 +240,6 @@ namespace Dot.Net.DevFast.Extensions
                 Culture = CultureInfo.CurrentCulture,
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc,
                 DateFormatHandling = DateFormatHandling.IsoDateFormat,
-                DateFormatString = "yyyy-MM-dd HH:mm:ss",
                 FloatFormatHandling = FloatFormatHandling.DefaultValue,
                 Formatting = Formatting.None,
                 StringEscapeHandling = StringEscapeHandling.Default,
@@ -273,12 +271,13 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeStream">If true, <paramref name="targetStream"/> is disposed after the serialization</param>
+        /// <param name="autoFlush">Auto flush</param>
         public static StreamWriter CreateWriter(this Stream targetStream, Encoding enc = null,
-            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
+            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true, bool autoFlush = false)
         {
             return new StreamWriter(targetStream, enc ?? Encoding.UTF8, bufferSize, !disposeStream)
             {
-                AutoFlush = true
+                AutoFlush = autoFlush
             };
         }
 

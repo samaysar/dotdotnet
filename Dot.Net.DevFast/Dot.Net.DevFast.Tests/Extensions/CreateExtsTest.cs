@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using Dot.Net.DevFast.Extensions;
-using Dot.Net.DevFast.Extensions.StreamExt;
+using Dot.Net.DevFast.Extensions.Internals;
 using Dot.Net.DevFast.Extensions.StringExt;
 using Dot.Net.DevFast.Tests.TestHelpers;
 using Newtonsoft.Json;
@@ -122,7 +122,6 @@ namespace Dot.Net.DevFast.Tests.Extensions
             {
                 Assert.True(ReferenceEquals(jsonReader.Culture, CultureInfo.CurrentCulture));
                 Assert.True(jsonReader.DateParseHandling.Equals(DateParseHandling.DateTime));
-                Assert.True(jsonReader.DateFormatString.Equals("yyyy-MM-dd HH:mm:ss"));
                 Assert.True(jsonReader.DateTimeZoneHandling.Equals(DateTimeZoneHandling.Utc));
                 Assert.True(jsonReader.FloatParseHandling.Equals(FloatParseHandling.Double));
                 Assert.True(jsonReader.MaxDepth.Equals(null));
@@ -140,14 +139,13 @@ namespace Dot.Net.DevFast.Tests.Extensions
             using (var streamWriter = fileInfo.CreateStreamWriter(options: FileOptions.DeleteOnClose))
             {
                 Assert.True(streamWriter.Encoding.WebName.Equals(Encoding.UTF8.WebName));
-                Assert.True(streamWriter.AutoFlush);
+                Assert.False(streamWriter.AutoFlush);
                 Assert.True(streamWriter.BaseStream is FileStream);
             }
             using (var jsonWriter = fileInfo.CreateJsonWriter(options: FileOptions.DeleteOnClose))
             {
                 Assert.True(ReferenceEquals(jsonWriter.Culture, CultureInfo.CurrentCulture));
                 Assert.True(jsonWriter.DateFormatHandling.Equals(DateFormatHandling.IsoDateFormat));
-                Assert.True(jsonWriter.DateFormatString.Equals("yyyy-MM-dd HH:mm:ss"));
                 Assert.True(jsonWriter.DateTimeZoneHandling.Equals(DateTimeZoneHandling.Utc));
                 Assert.True(jsonWriter.FloatFormatHandling.Equals(FloatFormatHandling.DefaultValue));
                 Assert.True(jsonWriter.Formatting.Equals(Formatting.None));
@@ -173,7 +171,6 @@ namespace Dot.Net.DevFast.Tests.Extensions
             {
                 Assert.True(ReferenceEquals(jsonWriter.Culture, CultureInfo.CurrentCulture));
                 Assert.True(jsonWriter.DateFormatHandling.Equals(DateFormatHandling.IsoDateFormat));
-                Assert.True(jsonWriter.DateFormatString.Equals("yyyy-MM-dd HH:mm:ss"));
                 Assert.True(jsonWriter.DateTimeZoneHandling.Equals(DateTimeZoneHandling.Utc));
                 Assert.True(jsonWriter.FloatFormatHandling.Equals(FloatFormatHandling.DefaultValue));
                 Assert.True(jsonWriter.Formatting.Equals(Formatting.None));
@@ -204,7 +201,6 @@ namespace Dot.Net.DevFast.Tests.Extensions
             {
                 Assert.True(ReferenceEquals(jsonReader.Culture, CultureInfo.CurrentCulture));
                 Assert.True(jsonReader.DateParseHandling.Equals(DateParseHandling.DateTime));
-                Assert.True(jsonReader.DateFormatString.Equals("yyyy-MM-dd HH:mm:ss"));
                 Assert.True(jsonReader.DateTimeZoneHandling.Equals(DateTimeZoneHandling.Utc));
                 Assert.True(jsonReader.FloatParseHandling.Equals(FloatParseHandling.Double));
                 Assert.True(jsonReader.MaxDepth.Equals(null));
@@ -219,7 +215,6 @@ namespace Dot.Net.DevFast.Tests.Extensions
             {
                 Assert.True(ReferenceEquals(jsonReader.Culture, CultureInfo.CurrentCulture));
                 Assert.True(jsonReader.DateParseHandling.Equals(DateParseHandling.DateTime));
-                Assert.True(jsonReader.DateFormatString.Equals("yyyy-MM-dd HH:mm:ss"));
                 Assert.True(jsonReader.DateTimeZoneHandling.Equals(DateTimeZoneHandling.Utc));
                 Assert.True(jsonReader.FloatParseHandling.Equals(FloatParseHandling.Double));
                 Assert.True(jsonReader.MaxDepth.Equals(null));
@@ -239,7 +234,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
             {
                 Assert.True(writer.Encoding.WebName.Equals(Encoding.UTF32.WebName));
                 Assert.True(ReferenceEquals(writer.BaseStream, Stream.Null));
-                Assert.True(writer.AutoFlush);
+                Assert.False(writer.AutoFlush);
             }
             using (var reader = Stream.Null.CreateReader(Encoding.UTF32))
             {
@@ -255,7 +250,6 @@ namespace Dot.Net.DevFast.Tests.Extensions
             {
                 Assert.True(ReferenceEquals(jsonReader.Culture, CultureInfo.CurrentCulture));
                 Assert.True(jsonReader.DateParseHandling.Equals(DateParseHandling.DateTime));
-                Assert.True(jsonReader.DateFormatString.Equals("yyyy-MM-dd HH:mm:ss"));
                 Assert.True(jsonReader.DateTimeZoneHandling.Equals(DateTimeZoneHandling.Utc));
                 Assert.True(jsonReader.FloatParseHandling.Equals(FloatParseHandling.Double));
                 Assert.True(jsonReader.MaxDepth.Equals(null));
@@ -266,7 +260,6 @@ namespace Dot.Net.DevFast.Tests.Extensions
             {
                 Assert.True(ReferenceEquals(jsonWriter.Culture, CultureInfo.CurrentCulture));
                 Assert.True(jsonWriter.DateFormatHandling.Equals(DateFormatHandling.IsoDateFormat));
-                Assert.True(jsonWriter.DateFormatString.Equals("yyyy-MM-dd HH:mm:ss"));
                 Assert.True(jsonWriter.DateTimeZoneHandling.Equals(DateTimeZoneHandling.Utc));
                 Assert.True(jsonWriter.FloatFormatHandling.Equals(FloatFormatHandling.DefaultValue));
                 Assert.True(jsonWriter.Formatting.Equals(Formatting.None));
@@ -284,7 +277,6 @@ namespace Dot.Net.DevFast.Tests.Extensions
             Assert.True(jr.DateTimeZoneHandling.Equals(DateTimeZoneHandling.Utc));
             Assert.True(jr.DateParseHandling.Equals(DateParseHandling.DateTime));
             Assert.True(jr.FloatParseHandling.Equals(FloatParseHandling.Double));
-            Assert.True(jr.DateFormatString.Equals("yyyy-MM-dd HH:mm:ss"));
             Assert.True(jr.CloseInput);
         }
 
@@ -295,7 +287,6 @@ namespace Dot.Net.DevFast.Tests.Extensions
             Assert.True(jw.Culture.Equals(CultureInfo.CurrentCulture));
             Assert.True(jw.DateTimeZoneHandling.Equals(DateTimeZoneHandling.Utc));
             Assert.True(jw.DateFormatHandling.Equals(DateFormatHandling.IsoDateFormat));
-            Assert.True(jw.DateFormatString.Equals("yyyy-MM-dd HH:mm:ss"));
             Assert.True(jw.FloatFormatHandling.Equals(FloatFormatHandling.DefaultValue));
             Assert.True(jw.Formatting.Equals(Formatting.None));
             Assert.True(jw.StringEscapeHandling.Equals(StringEscapeHandling.Default));

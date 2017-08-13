@@ -4,7 +4,7 @@ using System.Runtime.Remoting;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Dot.Net.DevFast.Extensions.StreamExt
+namespace Dot.Net.DevFast.Extensions.Internals
 {
     internal class WrappedStream : Stream
     {

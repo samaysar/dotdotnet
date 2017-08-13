@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
+using Dot.Net.DevFast.Etc;
+using Dot.Net.DevFast.Extensions;
 using Dot.Net.DevFast.Extensions.JsonExt;
 using Newtonsoft.Json;
 
 namespace Dot.Net.DevFast.Sample.JsonSample
 {
-    public static class JsonConvertLatency
+    public static class JsonConvertStreamLatency
     {
         public static void Run()
         {
             Console.Out.WriteLine("-------SmallObj Serialization-------");
             //Small Object serialization in 10M loops
-            Run(10 * 1024 * 1024, new SmallObj
+            Run(1024 * 16, new SmallObj
             {
                 Address = "123, Json street",
                 Age = 20,
@@ -20,7 +23,7 @@ namespace Dot.Net.DevFast.Sample.JsonSample
             });
             Console.Out.WriteLine("-------LargeObj Serialization-------");
             //Large Object serialization in 1M loops
-            Run(1024 * 1024, LargeObj);
+            Run(1024 * 16, LargeObj);
 
             Console.Out.WriteLine("-------LargeObj Array Serialization-------");
             //creating array of 1K LargeObj
@@ -30,14 +33,14 @@ namespace Dot.Net.DevFast.Sample.JsonSample
                 objArr[i] = LargeObj;
             }
             //Large Object Array serialization in 1K loops
-            Run(1024, objArr);
+            Run(16, objArr);
         }
 
         private static void Run(int iteration, object data)
         {
             //warm up
-            data.MeasureJsonConvert(2, false);
-            var jsonTime = data.MeasureJsonConvert(iteration);
+            data.MeasureJsonConvert(2, new FileInfo(@"C:\Temp\jsonTest.json"), false);
+            var jsonTime = data.MeasureJsonConvert(iteration, new FileInfo(@"C:\Temp\jsonTest.json"));
 
             GC.Collect();
             GC.WaitForFullGCApproach();
@@ -49,22 +52,23 @@ namespace Dot.Net.DevFast.Sample.JsonSample
             GC.WaitForFullGCComplete();
             GC.WaitForPendingFinalizers();
 
-            var reusableStringBuilder = new StringBuilder(256);
             //warm up
-            data.MeasureDevFast(reusableStringBuilder, 2, false);
-            var devfastTime = data.MeasureDevFast(reusableStringBuilder, iteration);
-            var dfFastness = ((int) ((100 - (devfastTime / jsonTime * 100)) * 100)) / 100.0;
+            data.MeasureDevFast(new FileInfo(@"C:\Temp\jsonTestDf.json"), 2, false);
+            var devfastTime = data.MeasureDevFast(new FileInfo(@"C:\Temp\jsonTestDf.json"), iteration);
+            var dfFastness = ((int)((100 - (devfastTime / jsonTime * 100)) * 100)) / 100.0;
             Console.Out.WriteLine("DevFast " + Math.Abs(dfFastness) + (dfFastness < 0 ? " % Slower" : " % Faster"));
             Console.Out.WriteLine();
         }
 
-        private static double MeasureJsonConvert(this object val, int iteration, bool print = true)
+        private static double MeasureJsonConvert(this object val, int iteration, FileInfo target, bool print = true)
         {
-            var json = string.Empty;
             var sw = Stopwatch.StartNew();
             for (var i = 0; i < iteration; i++)
             {
-                json = JsonConvert.SerializeObject(val);
+                using (var writer = target.CreateStreamWriter())
+                {
+                    writer.Write(JsonConvert.SerializeObject(val));
+                }
             }
             sw.Stop();
             if (print)
@@ -73,20 +77,20 @@ namespace Dot.Net.DevFast.Sample.JsonSample
             }
             else
             {
-                Console.Out.WriteLine("StringLen: " + json.Length);
+                target.Refresh();
+                Console.Out.WriteLine("FileLen: " + target.Length);
             }
             return sw.Elapsed.TotalMilliseconds;
         }
 
-        private static double MeasureDevFast(this object val, StringBuilder sb, int iteration, bool print = true)
+        private static double MeasureDevFast(this object val, FileInfo target, int iteration, bool print = true)
         {
-            var json = string.Empty;
             var sw = Stopwatch.StartNew();
             for (var i = 0; i < iteration; i++)
             {
-                val.ToJson(sb, new JsonSerializer());
-                json = sb.ToString();
-                sb.Clear();
+                var writer = target.CreateStreamWriter();
+                writer.AutoFlush = false;
+                val.ToJson(writer, new JsonSerializer());
             }
             sw.Stop();
             if (print)
@@ -95,7 +99,8 @@ namespace Dot.Net.DevFast.Sample.JsonSample
             }
             else
             {
-                Console.Out.WriteLine("StringLen: " + json.Length);
+                target.Refresh();
+                Console.Out.WriteLine("FileLen: " + target.Length);
             }
             return sw.Elapsed.TotalMilliseconds;
         }
