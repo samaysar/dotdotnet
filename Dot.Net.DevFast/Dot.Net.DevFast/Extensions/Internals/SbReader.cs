@@ -34,8 +34,9 @@ namespace Dot.Net.DevFast.Extensions.Internals
 
         public override int Peek()
         {
+            _sb.ThrowIfNull("Source is closed/disposed");
             if (_position == _length) return -1;
-            return _sb.ThrowIfNull("Source is closed/disposed")[_position];
+            return _sb[_position];
         }
 
         public override int Read()
@@ -49,11 +50,12 @@ namespace Dot.Net.DevFast.Extensions.Internals
         {
             (buffer.ThrowIfNull("null buffer").Length - index.ThrowIfNegative("index negative")).ThrowIfLess(
                 count.ThrowIfNegative("count negative"), "invalid offset length");
+            _sb.ThrowIfNull("Source is closed/disposed");
             var n = _length - _position;
             if (n > 0)
             {
                 if (n > count) n = count;
-                _sb.ThrowIfNull("Source is closed/disposed").CopyTo(_position, buffer, index, n);
+                _sb.CopyTo(_position, buffer, index, n);
                 _position += n;
             }
             return n;
@@ -111,8 +113,6 @@ namespace Dot.Net.DevFast.Extensions.Internals
 
         public override Task<int> ReadAsync(char[] buffer, int index, int count)
         {
-            (buffer.ThrowIfNull("null buffer").Length - index.ThrowIfNegative("index negative")).ThrowIfLess(
-                count.ThrowIfNegative("count negative"), "invalid offset length");
             return Task.FromResult(Read(buffer, index, count));
         }
     }

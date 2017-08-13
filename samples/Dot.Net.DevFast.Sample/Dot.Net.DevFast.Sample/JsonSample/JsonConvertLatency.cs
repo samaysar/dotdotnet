@@ -49,7 +49,7 @@ namespace Dot.Net.DevFast.Sample.JsonSample
             GC.WaitForFullGCComplete();
             GC.WaitForPendingFinalizers();
 
-            var reusableStringBuilder = new StringBuilder(256);
+            var reusableStringBuilder = new StringBuilder();
             //warm up
             data.MeasureDevFast(reusableStringBuilder, 2, false);
             var devfastTime = data.MeasureDevFast(reusableStringBuilder, iteration);

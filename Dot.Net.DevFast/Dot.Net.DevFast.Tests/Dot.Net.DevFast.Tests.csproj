@@ -58,6 +58,7 @@
     <Compile Include="Etc\StdLookUpsTest.cs" />
     <Compile Include="Extensions\CreateExtsTest.cs" />
     <Compile Include="Extensions\Internals\OthersTest.cs" />
+    <Compile Include="Extensions\Internals\SbReaderTest.cs" />
     <Compile Include="Extensions\Internals\StreamBasedTest.cs" />
     <Compile Include="Extensions\JsonExt\CustomJsonTest.cs" />
     <Compile Include="Extensions\Internals\JsonBasedTest.cs" />
