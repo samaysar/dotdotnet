@@ -1,6 +1,4 @@
 ﻿using System;
-using Dot.Net.DevFast.Extensions;
-using Dot.Net.DevFast.Extensions.StringExt;
 using Dot.Net.DevFast.Sample.JsonSample;
 
 namespace Dot.Net.DevFast.Sample
@@ -23,7 +21,7 @@ namespace Dot.Net.DevFast.Sample
             //Console.Out.WriteLine();
             //TransformSample.Run();
 
-            JsonConvertLatency.Run(10000);
+            JsonConvertLatency.Run();
 
             Console.ReadLine();
         }

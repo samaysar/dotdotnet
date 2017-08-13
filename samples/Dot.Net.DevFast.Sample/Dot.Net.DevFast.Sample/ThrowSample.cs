@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Dot.Net.DevFast.Extensions;
-using Dot.Net.DevFast.Extensions.StringExt;
 
 namespace Dot.Net.DevFast.Sample
 {

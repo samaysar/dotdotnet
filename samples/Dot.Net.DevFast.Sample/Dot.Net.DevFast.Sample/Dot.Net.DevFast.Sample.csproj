@@ -50,7 +50,7 @@
   <ItemGroup>
     <Compile Include="Base64Sample.cs" />
     <Compile Include="DateTimeParser.cs" />
-    <Compile Include="JsonSample\Employee.cs" />
+    <Compile Include="JsonSample\JsonObjs.cs" />
     <Compile Include="JsonSample\JsonConvertLatency.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
