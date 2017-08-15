@@ -30,10 +30,11 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dot.Net.DevFast, Version=1.1.0.0, Culture=neutral, PublicKeyToken=798f1b0d6cc02439, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dot.Net.DevFast.1.1.0\lib\net461\Dot.Net.DevFast.dll</HintPath>
+    <Reference Include="Dot.Net.DevFast, Version=1.1.1.0, Culture=neutral, PublicKeyToken=798f1b0d6cc02439, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dot.Net.DevFast.1.1.1\lib\net461\Dot.Net.DevFast.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -50,6 +51,9 @@
   <ItemGroup>
     <Compile Include="Base64Sample.cs" />
     <Compile Include="DateTimeParser.cs" />
+    <Compile Include="JsonSample\FromExt\JsonConvertDeLatency.cs" />
+    <Compile Include="JsonSample\FromExt\JsonConvertMemStreamDeLatency.cs" />
+    <Compile Include="JsonSample\FromExt\JsonConvertStreamDeLatency.cs" />
     <Compile Include="JsonSample\ToExt\JsonConvertMemStreamLatency.cs" />
     <Compile Include="JsonSample\ToExt\JsonConvertStreamLatency.cs" />
     <Compile Include="JsonSample\JsonObjs.cs" />
@@ -62,10 +66,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="JsonSample\FromExt\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
