@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using Dot.Net.DevFast.Extensions;
 using Dot.Net.DevFast.Extensions.JsonExt;
 using Newtonsoft.Json;
@@ -11,19 +12,19 @@ namespace Dot.Net.DevFast.Sample.JsonSample.FromExt
     {
         public static void Run()
         {
-            Console.Out.WriteLine("-------SmallObj Serialization-------");
+            Console.Out.WriteLine("-------SmallObj Mem Deserialization-------");
             //Small Object serialization in 10M loops
-            Run(1024 * 128, new SmallObj
+            Run(1024 * 1024, new SmallObj
             {
                 Address = "123, Json street",
                 Age = 20,
                 Name = "Json Born"
             });
-            Console.Out.WriteLine("-------LargeObj Serialization-------");
+            Console.Out.WriteLine("-------LargeObj Mem Deserialization-------");
             //Large Object serialization in 1M loops
             Run(1024 * 128, LargeObj);
 
-            Console.Out.WriteLine("-------LargeObj Array Serialization-------");
+            Console.Out.WriteLine("-------LargeObj Array Mem Deserialization-------");
             //creating array of 1K LargeObj
             var objArr = new LargeObj[1024];
             for (var i = 0; i < 1024; i++)
@@ -34,11 +35,15 @@ namespace Dot.Net.DevFast.Sample.JsonSample.FromExt
             Run(256, objArr);
         }
 
-        private static void Run(int iteration, object data)
+        private static void Run<T>(int iteration, T data)
         {
+            var json = new MemoryStream();
+            data.ToJson(json, new JsonSerializer(), disposeTarget: false);
+            Console.Out.WriteLine("SerializedLen: " + json.Length);
+
             //warm up
-            data.MeasureJsonConvert(2, false);
-            var jsonTime = data.MeasureJsonConvert(iteration);
+            json.MeasureJsonConvert<T>(2, false);
+            var jsonTime = json.MeasureJsonConvert<T>(iteration);
 
             GC.Collect();
             GC.WaitForFullGCApproach();
@@ -51,54 +56,46 @@ namespace Dot.Net.DevFast.Sample.JsonSample.FromExt
             GC.WaitForPendingFinalizers();
 
             //warm up
-            data.MeasureDevFast(2, false);
-            var devfastTime = data.MeasureDevFast(iteration);
+            json.MeasureDevFast<T>(2, false);
+            var devfastTime = json.MeasureDevFast<T>(iteration);
             var dfFastness = ((int)((100 - (devfastTime / jsonTime * 100)) * 100)) / 100.0;
             Console.Out.WriteLine("DevFast " + Math.Abs(dfFastness) + (dfFastness < 0 ? " % Slower" : " % Faster"));
             Console.Out.WriteLine();
         }
 
-        private static double MeasureJsonConvert(this object obj, int iteration, bool print = true)
+        private static double MeasureJsonConvert<T>(this Stream data, int iteration, bool print = true)
         {
-            var memStream = new MemoryStream();
             var sw = Stopwatch.StartNew();
             for (var i = 0; i < iteration; i++)
             {
-                memStream = new MemoryStream();
-                using (var memoryWriter = memStream.CreateWriter())
+                data.Seek(0, SeekOrigin.Begin);
+                using (var streamReader = data.CreateReader(disposeStream:false))
                 {
-                    memoryWriter.Write(JsonConvert.SerializeObject(obj));
+                    var desrialJson = JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
                 }
             }
             sw.Stop();
+
             if (print)
             {
                 Console.Out.WriteLine("JsonConvert Total Time: " + sw.Elapsed.TotalMilliseconds);
             }
-            else
-            {
-                Console.Out.WriteLine("MemorySize: " + memStream.ToArray().Length);
-            }
             return sw.Elapsed.TotalMilliseconds;
         }
 
-        private static double MeasureDevFast(this object obj, int iteration, bool print = true)
+        private static double MeasureDevFast<T>(this Stream data, int iteration, bool print = true)
         {
-            var memStream = new MemoryStream();
             var sw = Stopwatch.StartNew();
             for (var i = 0; i < iteration; i++)
             {
-                memStream = new MemoryStream();
-                obj.ToJson(memStream, new JsonSerializer());
+                data.Seek(0, SeekOrigin.Begin);
+                var desrialJson = data.FromJson<T>(new JsonSerializer(), disposeSource: false);
             }
             sw.Stop();
+
             if (print)
             {
                 Console.Out.WriteLine("DevFast Total Time: " + sw.Elapsed.TotalMilliseconds);
-            }
-            else
-            {
-                Console.Out.WriteLine("MemorySize: " + memStream.ToArray().Length);
             }
             return sw.Elapsed.TotalMilliseconds;
         }

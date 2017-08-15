@@ -33,13 +33,13 @@ namespace Dot.Net.DevFast.Sample
             //JsonConvertMemStreamLatency.Run();
 
             //Console.Clear();
-            JsonConvertDeLatency.Run();
+            //JsonConvertDeLatency.Run();
 
             //Console.Clear();
-            //JsonConvertStreamLatency.Run();
+            JsonConvertStreamDeLatency.Run();
 
             //Console.Clear();
-            //JsonConvertMemStreamLatency.Run();
+            //JsonConvertMemStreamDeLatency.Run();
 
             Console.ReadLine();
         }
