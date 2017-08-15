@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Dot.Net.DevFast.Extensions;
 using Dot.Net.DevFast.Extensions.StreamExt;
 
 namespace Dot.Net.DevFast.Sample

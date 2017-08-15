@@ -3,11 +3,11 @@ using System.IO;
 using System.Runtime.Remoting;
 using System.Threading;
 using System.Threading.Tasks;
-using Dot.Net.DevFast.Extensions.StreamExt;
+using Dot.Net.DevFast.Extensions.Internals;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
+namespace Dot.Net.DevFast.Tests.Extensions.Internals
 {
     [TestFixture]
     public class WrappedStreamTest

@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions.StreamExt;
-using Dot.Net.DevFast.Extensions.StringExt;
 
 namespace Dot.Net.DevFast.Sample
 {

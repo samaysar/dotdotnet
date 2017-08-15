@@ -63,13 +63,14 @@
     <Compile Include="Extensions\CompressionExts.cs" />
     <Compile Include="Extensions\CreateExts.cs" />
     <Compile Include="Extensions\Internals\Others.cs" />
+    <Compile Include="Extensions\Internals\SbReader.cs" />
     <Compile Include="Extensions\JsonExt\CustomJson.cs" />
     <Compile Include="Extensions\Internals\JsonBased.cs" />
     <Compile Include="Extensions\JsonExt\JsonTxtExt.cs" />
     <Compile Include="Extensions\StreamExt\Base64Ext.cs" />
     <Compile Include="Extensions\StreamExt\CryptoStreamExt.cs" />
     <Compile Include="Extensions\Internals\StreamBased.cs" />
-    <Compile Include="Extensions\StreamExt\WrapperStream.cs" />
+    <Compile Include="Extensions\Internals\WrapperStream.cs" />
     <Compile Include="Extensions\StringExt\StringSafe.cs" />
     <Compile Include="Extensions\StringExt\StringTryTo.cs" />
     <Compile Include="Extensions\StringExt\StringUnsafe.cs" />

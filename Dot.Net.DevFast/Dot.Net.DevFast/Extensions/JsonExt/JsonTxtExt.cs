@@ -39,7 +39,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             JsonSerializer serializer = null, CancellationToken token = default(CancellationToken),
             CancellationTokenSource producerTokenSource = null, IFormatProvider formatProvider = null)
         {
-            var stringBuilder = new StringBuilder();
+            var stringBuilder = new StringBuilder(256);
             source.ToJsonArrayParallely(stringBuilder, serializer, token, producerTokenSource,
                 formatProvider);
             return stringBuilder.ToString();
@@ -197,7 +197,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         public static string ToJsonArray<T>(this IEnumerable<T> source, JsonSerializer serializer = null,
             CancellationToken token = default(CancellationToken), IFormatProvider formatProvider = null)
         {
-            var stringBuilder = new StringBuilder();
+            var stringBuilder = new StringBuilder(256);
             source.ToJsonArray(stringBuilder, serializer, token, formatProvider);
             return stringBuilder.ToString();
         }
@@ -320,7 +320,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         public static string ToJson<T>(this T source, JsonSerializer serializer = null,
             IFormatProvider formatProvider = null)
         {
-            var stringBuilder = new StringBuilder();
+            var stringBuilder = new StringBuilder(256);
             source.ToJson(stringBuilder, serializer, formatProvider);
             return stringBuilder.ToString();
         }
@@ -416,7 +416,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.Serializer"/></param>
         public static T FromJson<T>(this StringBuilder source, JsonSerializer serializer = null)
         {
-            return source.ToString().FromJson<T>(serializer);
+            return new SbReader(source).FromJson<T>(serializer);
         }
 
         /// <summary>
@@ -496,7 +496,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         public static IEnumerable<T> FromJsonAsEnumerable<T>(this StringBuilder source,
             JsonSerializer serializer = null, CancellationToken token = default(CancellationToken))
         {
-            return source.ToString().FromJsonAsEnumerable<T>(serializer, token);
+            return new SbReader(source).FromJsonAsEnumerable<T>(serializer, token);
         }
 
         /// <summary>
@@ -629,7 +629,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             CancellationTokenSource consumerTokenSource = null,
             bool closeTarget = true, bool forceCloseWhenError = true)
         {
-            source.ToString()
+            new SbReader(source)
                 .FromJsonArrayParallely(target, serializer, token, consumerTokenSource, closeTarget, forceCloseWhenError);
         }
 

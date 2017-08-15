@@ -58,13 +58,14 @@
     <Compile Include="Etc\StdLookUpsTest.cs" />
     <Compile Include="Extensions\CreateExtsTest.cs" />
     <Compile Include="Extensions\Internals\OthersTest.cs" />
+    <Compile Include="Extensions\Internals\SbReaderTest.cs" />
     <Compile Include="Extensions\Internals\StreamBasedTest.cs" />
     <Compile Include="Extensions\JsonExt\CustomJsonTest.cs" />
     <Compile Include="Extensions\Internals\JsonBasedTest.cs" />
     <Compile Include="Extensions\JsonExt\JsonTxtExtTest.cs" />
     <Compile Include="Extensions\StreamExt\Base64ExtTest.cs" />
     <Compile Include="Extensions\StreamExt\CryptoStreamExtTest.cs" />
-    <Compile Include="Extensions\StreamExt\WrappedStreamTest.cs" />
+    <Compile Include="Extensions\Internals\WrappedStreamTest.cs" />
     <Compile Include="Extensions\StringExt\StringSafeTest.cs" />
     <Compile Include="Extensions\StringExt\StringTryToTest.cs" />
     <Compile Include="Extensions\StringExt\StringUnsafeTest.cs" />

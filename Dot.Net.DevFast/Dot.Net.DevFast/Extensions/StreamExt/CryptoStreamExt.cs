@@ -151,7 +151,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
             Encoding encoding = null, CancellationToken token = default(CancellationToken),
             bool disposeInput = false, int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            var strBuilder = new StringBuilder();
+            var strBuilder = new StringBuilder(256);
             await input.TransformAsync(transform, strBuilder, token, disposeInput, encoding, bufferSize)
                 .ConfigureAwait(false);
             return strBuilder.ToString();
