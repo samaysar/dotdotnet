@@ -1,12 +1,5 @@
-Changes to Dot.Net.DevFast 1.1.0
+Changes to Dot.Net.DevFast 1.1.1
 
- 1. New feature - Added useful CreateXXX methods on FileInfo, StringBuilder, String, Stream.
- 2. New feature - Added efficient CompressAsync and DecompressXXXAsync methods on StringBuilder, String, Stream, byte[], ArraySegment<byte>.
- 3. New feature - Added generic ToJson/FromJson methods on StringBuilder, String, Stream, TextReader, JsonReader.
- 4. New feature - Added efficient generic IEnumerable<T> based ToJsonArray/FromJsonAsEnumerable methods on StringBuilder, String, Stream, TextReader, JsonReader to support LINQ based data manipulation.
- 5. New feature - Added efficient generic BlockingCollection<T> based ToJsonArrayParallely/FromJsonArrayParallely methods on StringBuilder, String, Stream, TextReader, JsonReader to support Parallel Producer-Consumer pattern based data manipulation.
- 6. New feature - Added AdaptedJsonSerializer methods on JsonWriter, JsonReader.
- 7. New feature - Added AdaptedJsonWriter/AdaptedJsonReader methods on JsonSerializer.
- 8. New feature - Added efficient ToBytes/ToByteSegment methods on string.
- 9. New feature - Added efficient ToStreamAsync methods on string, StringBuilder.
-10. Change/Fix  - Under CryptoStreamExt, Task<string> returning TransformAsync name changed to TransformAsStringAsync to avoid name collision due to optional arguments.
+ 1. Change/Fix - Removed DateFormatString property initialization from CreateJsonWriter/JsonTextReader extension methods.
+ 2. Change/Fix - AutoFlush added as method parameter to CreateWriter, default value as false.
+ 3. Change/Fix - StringBuilder related transperant changes.
