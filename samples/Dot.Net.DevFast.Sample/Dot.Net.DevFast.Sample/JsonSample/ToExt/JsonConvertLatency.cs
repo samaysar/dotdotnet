@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
-using Dot.Net.DevFast.Etc;
-using Dot.Net.DevFast.Extensions;
 using Dot.Net.DevFast.Extensions.JsonExt;
 using Newtonsoft.Json;
 
-namespace Dot.Net.DevFast.Sample.JsonSample
+namespace Dot.Net.DevFast.Sample.JsonSample.ToExt
 {
-    public static class JsonConvertMemStreamLatency
+    public static class JsonConvertLatency
     {
         public static void Run()
         {
             Console.Out.WriteLine("-------SmallObj Serialization-------");
             //Small Object serialization in 10M loops
-            Run(1024 * 128, new SmallObj
+            Run(10 * 1024 * 1024, new SmallObj
             {
                 Address = "123, Json street",
                 Age = 20,
@@ -23,7 +20,7 @@ namespace Dot.Net.DevFast.Sample.JsonSample
             });
             Console.Out.WriteLine("-------LargeObj Serialization-------");
             //Large Object serialization in 1M loops
-            Run(1024 * 128, LargeObj);
+            Run(1024 * 1024, LargeObj);
 
             Console.Out.WriteLine("-------LargeObj Array Serialization-------");
             //creating array of 1K LargeObj
@@ -33,7 +30,7 @@ namespace Dot.Net.DevFast.Sample.JsonSample
                 objArr[i] = LargeObj;
             }
             //Large Object Array serialization in 1K loops
-            Run(256, objArr);
+            Run(1024, objArr);
         }
 
         private static void Run(int iteration, object data)
@@ -52,55 +49,55 @@ namespace Dot.Net.DevFast.Sample.JsonSample
             GC.WaitForFullGCComplete();
             GC.WaitForPendingFinalizers();
 
+            var reusableStringBuilder = new StringBuilder();
             //warm up
-            data.MeasureDevFast(2, false);
-            var devfastTime = data.MeasureDevFast(iteration);
-            var dfFastness = ((int)((100 - (devfastTime / jsonTime * 100)) * 100)) / 100.0;
+            data.MeasureDevFast(reusableStringBuilder, 2, false);
+            var devfastTime = data.MeasureDevFast(reusableStringBuilder, iteration);
+            var dfFastness = ((int) ((100 - (devfastTime / jsonTime * 100)) * 100)) / 100.0;
             Console.Out.WriteLine("DevFast " + Math.Abs(dfFastness) + (dfFastness < 0 ? " % Slower" : " % Faster"));
             Console.Out.WriteLine();
         }
 
         private static double MeasureJsonConvert(this object obj, int iteration, bool print = true)
         {
-            var memStream = new MemoryStream();
+            var json = string.Empty;
             var sw = Stopwatch.StartNew();
             for (var i = 0; i < iteration; i++)
             {
-                memStream = new MemoryStream();
-                using (var memoryWriter = memStream.CreateWriter())
-                {
-                    memoryWriter.Write(JsonConvert.SerializeObject(obj));
-                }
+                json = JsonConvert.SerializeObject(obj);
             }
             sw.Stop();
+
             if (print)
             {
                 Console.Out.WriteLine("JsonConvert Total Time: " + sw.Elapsed.TotalMilliseconds);
             }
             else
             {
-                Console.Out.WriteLine("MemorySize: " + memStream.ToArray().Length);
+                Console.Out.WriteLine("StringLen: " + json.Length);
             }
             return sw.Elapsed.TotalMilliseconds;
         }
 
-        private static double MeasureDevFast(this object obj, int iteration, bool print = true)
+        private static double MeasureDevFast(this object obj, StringBuilder sb, int iteration, bool print = true)
         {
-            var memStream = new MemoryStream();
+            var json = string.Empty;
             var sw = Stopwatch.StartNew();
             for (var i = 0; i < iteration; i++)
             {
-                memStream = new MemoryStream();
-                obj.ToJson(memStream, new JsonSerializer());
+                obj.ToJson(sb, new JsonSerializer());
+                json = sb.ToString();
+                sb.Clear();
             }
             sw.Stop();
+
             if (print)
             {
                 Console.Out.WriteLine("DevFast Total Time: " + sw.Elapsed.TotalMilliseconds);
             }
             else
             {
-                Console.Out.WriteLine("MemorySize: " + memStream.ToArray().Length);
+                Console.Out.WriteLine("StringLen: " + json.Length);
             }
             return sw.Elapsed.TotalMilliseconds;
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Dot.Net.DevFast.Sample.JsonSample;
+using Dot.Net.DevFast.Sample.JsonSample.ToExt;
 
 namespace Dot.Net.DevFast.Sample
 {
