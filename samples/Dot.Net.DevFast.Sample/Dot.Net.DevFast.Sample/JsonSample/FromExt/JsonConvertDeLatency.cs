@@ -12,7 +12,7 @@ namespace Dot.Net.DevFast.Sample.JsonSample.FromExt
         {
             Console.Out.WriteLine("-------SmallObj Deserialization-------");
             //Small Object serialization in 10M loops
-            Run(1024 * 1024, new SmallObj
+            Run(2 * 1024 * 1024, new SmallObj
             {
                 Address = "123, Json street",
                 Age = 20,
@@ -20,7 +20,7 @@ namespace Dot.Net.DevFast.Sample.JsonSample.FromExt
             });
             Console.Out.WriteLine("-------LargeObj Deserialization-------");
             //Large Object serialization in 1M loops
-            Run(128 * 1024, LargeObj);
+            Run(512 * 1024, LargeObj);
 
             Console.Out.WriteLine("-------LargeObj Array Deserialization-------");
             //creating array of 1K LargeObj
@@ -30,17 +30,17 @@ namespace Dot.Net.DevFast.Sample.JsonSample.FromExt
                 objArr[i] = LargeObj;
             }
             //Large Object Array serialization in 1K loops
-            Run(64, objArr);
+            Run(512, objArr);
         }
 
-        private static void Run(int iteration, object data)
+        private static void Run<T>(int iteration, T data)
         {
             var json = new StringBuilder(data.ToJson(new JsonSerializer()));
-            Console.Out.WriteLine("StringLen: " + json.Length);
+            Console.Out.WriteLine("SerializedLen: " + json.Length);
 
             //warm up
-            json.MeasureJsonConvert(2, false);
-            var jsonTime = json.MeasureJsonConvert(iteration);
+            json.MeasureJsonConvert<T>(2, false);
+            var jsonTime = json.MeasureJsonConvert<T>(iteration);
 
             GC.Collect();
             GC.WaitForFullGCApproach();
@@ -53,19 +53,19 @@ namespace Dot.Net.DevFast.Sample.JsonSample.FromExt
             GC.WaitForPendingFinalizers();
 
             //warm up
-            json.MeasureDevFast(2, false);
-            var devfastTime = json.MeasureDevFast(iteration);
+            json.MeasureDevFast<T>(2, false);
+            var devfastTime = json.MeasureDevFast<T>(iteration);
             var dfFastness = ((int) ((100 - (devfastTime / jsonTime * 100)) * 100)) / 100.0;
             Console.Out.WriteLine("DevFast " + Math.Abs(dfFastness) + (dfFastness < 0 ? " % Slower" : " % Faster"));
             Console.Out.WriteLine();
         }
 
-        private static double MeasureJsonConvert(this StringBuilder data, int iteration, bool print = true)
+        private static double MeasureJsonConvert<T>(this StringBuilder data, int iteration, bool print = true)
         {
             var sw = Stopwatch.StartNew();
             for (var i = 0; i < iteration; i++)
             {
-                var desrialJson = JsonConvert.DeserializeObject(data.ToString());
+                var desrialJson = JsonConvert.DeserializeObject<T>(data.ToString());
             }
             sw.Stop();
 
@@ -75,13 +75,13 @@ namespace Dot.Net.DevFast.Sample.JsonSample.FromExt
             }
             return sw.Elapsed.TotalMilliseconds;
         }
-        
-        private static double MeasureDevFast(this StringBuilder data, int iteration, bool print = true)
+
+        private static double MeasureDevFast<T>(this StringBuilder data, int iteration, bool print = true)
         {
             var sw = Stopwatch.StartNew();
             for (var i = 0; i < iteration; i++)
             {
-                var desrialJson = data.FromJson<object>(new JsonSerializer());
+                var desrialJson = data.FromJson<T>(new JsonSerializer());
             }
             sw.Stop();
 
