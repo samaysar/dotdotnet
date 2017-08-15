@@ -36,10 +36,10 @@ namespace Dot.Net.DevFast.Sample
             //JsonConvertDeLatency.Run();
 
             //Console.Clear();
-            JsonConvertStreamDeLatency.Run();
+            //JsonConvertStreamDeLatency.Run();
 
             //Console.Clear();
-            //JsonConvertMemStreamDeLatency.Run();
+            JsonConvertMemStreamDeLatency.Run();
 
             Console.ReadLine();
         }

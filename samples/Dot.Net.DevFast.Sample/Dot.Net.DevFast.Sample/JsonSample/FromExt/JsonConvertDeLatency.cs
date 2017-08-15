@@ -35,6 +35,7 @@ namespace Dot.Net.DevFast.Sample.JsonSample.FromExt
 
         private static void Run<T>(int iteration, T data)
         {
+            Console.Out.WriteLine("Iterations: " + iteration);
             var json = new StringBuilder(data.ToJson(new JsonSerializer()));
             Console.Out.WriteLine("SerializedLen: " + json.Length);
 

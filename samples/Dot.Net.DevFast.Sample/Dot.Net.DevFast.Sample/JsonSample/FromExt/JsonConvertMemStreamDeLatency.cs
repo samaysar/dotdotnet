@@ -22,7 +22,7 @@ namespace Dot.Net.DevFast.Sample.JsonSample.FromExt
             });
             Console.Out.WriteLine("-------LargeObj Mem Deserialization-------");
             //Large Object serialization in 1M loops
-            Run(1024 * 128, LargeObj);
+            Run(1024 * 256, LargeObj);
 
             Console.Out.WriteLine("-------LargeObj Array Mem Deserialization-------");
             //creating array of 1K LargeObj
@@ -37,6 +37,7 @@ namespace Dot.Net.DevFast.Sample.JsonSample.FromExt
 
         private static void Run<T>(int iteration, T data)
         {
+            Console.Out.WriteLine("Iterations: " + iteration);
             var json = new MemoryStream();
             data.ToJson(json, new JsonSerializer(), disposeTarget: false);
             Console.Out.WriteLine("SerializedLen: " + json.Length);

@@ -37,6 +37,7 @@ namespace Dot.Net.DevFast.Sample.JsonSample.FromExt
 
         private static void Run<T>(int iteration, T data)
         {
+            Console.Out.WriteLine("Iterations: " + iteration);
             var convertFile = new FileInfo(@"C:\Temp\jsonTest.json");
             var dfFile = new FileInfo(@"C:\Temp\jsonTestDf.json");
 
@@ -44,7 +45,7 @@ namespace Dot.Net.DevFast.Sample.JsonSample.FromExt
             convertFile.Refresh();
             Console.Out.WriteLine("Con-SerializedLen: " + convertFile.Length);
 
-            data.ToJson(dfFile.CreateStream(FileMode.Create), new JsonSerializer());
+            data.ToJson(dfFile.CreateStream(FileMode.Create), new JsonSerializer(), enc: new UTF8Encoding(false));
             dfFile.Refresh();
             Console.Out.WriteLine("Df-SerializedLen: " + dfFile.Length);
 
