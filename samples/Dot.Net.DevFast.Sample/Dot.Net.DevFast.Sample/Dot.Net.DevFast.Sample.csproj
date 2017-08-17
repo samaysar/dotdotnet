@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -54,6 +55,7 @@
     <Compile Include="JsonSample\FromExt\JsonConvertDeLatency.cs" />
     <Compile Include="JsonSample\FromExt\JsonConvertMemStreamDeLatency.cs" />
     <Compile Include="JsonSample\FromExt\JsonConvertStreamDeLatency.cs" />
+    <Compile Include="JsonSample\JsonEnumeration\LatencyFileSerializationZeroComputation.cs" />
     <Compile Include="JsonSample\ToExt\JsonConvertMemStreamLatency.cs" />
     <Compile Include="JsonSample\ToExt\JsonConvertStreamLatency.cs" />
     <Compile Include="JsonSample\JsonObjs.cs" />

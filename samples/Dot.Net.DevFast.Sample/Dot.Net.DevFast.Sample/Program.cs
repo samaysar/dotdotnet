@@ -1,6 +1,7 @@
 ﻿using System;
 using Dot.Net.DevFast.Sample.JsonSample;
 using Dot.Net.DevFast.Sample.JsonSample.FromExt;
+using Dot.Net.DevFast.Sample.JsonSample.JsonEnumeration;
 using Dot.Net.DevFast.Sample.JsonSample.ToExt;
 
 namespace Dot.Net.DevFast.Sample
@@ -39,7 +40,10 @@ namespace Dot.Net.DevFast.Sample
             //JsonConvertStreamDeLatency.Run();
 
             //Console.Clear();
-            JsonConvertMemStreamDeLatency.Run();
+            //JsonConvertMemStreamDeLatency.Run();
+
+            //Console.Clear();
+            LatencyFileSerializationZeroComputation.Run();
 
             Console.ReadLine();
         }
