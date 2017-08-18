@@ -35,7 +35,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Dot.Net.DevFast, Version=1.1.1.0, Culture=neutral, PublicKeyToken=798f1b0d6cc02439, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dot.Net.DevFast.1.1.1\lib\net461\Dot.Net.DevFast.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Downloads\Dot.Net.DevFast.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -55,6 +56,9 @@
     <Compile Include="JsonSample\FromExt\JsonConvertDeLatency.cs" />
     <Compile Include="JsonSample\FromExt\JsonConvertMemStreamDeLatency.cs" />
     <Compile Include="JsonSample\FromExt\JsonConvertStreamDeLatency.cs" />
+    <Compile Include="JsonSample\JsonEnumeration\BcLatencyFileDeserializationZeroComputation.cs" />
+    <Compile Include="JsonSample\JsonEnumeration\BcLatencyFileSerializationZeroComputation.cs" />
+    <Compile Include="JsonSample\JsonEnumeration\LatencyFileDeserializationZeroComputation.cs" />
     <Compile Include="JsonSample\JsonEnumeration\LatencyFileSerializationZeroComputation.cs" />
     <Compile Include="JsonSample\ToExt\JsonConvertMemStreamLatency.cs" />
     <Compile Include="JsonSample\ToExt\JsonConvertStreamLatency.cs" />

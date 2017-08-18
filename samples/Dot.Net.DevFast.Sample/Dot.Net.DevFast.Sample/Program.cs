@@ -45,6 +45,15 @@ namespace Dot.Net.DevFast.Sample
             //Console.Clear();
             LatencyFileSerializationZeroComputation.Run();
 
+            //Console.Clear();
+            //BcLatencyFileSerializationZeroComputation.Run();
+
+            //Console.Clear();
+            //LatencyFileDeserializationZeroComputation.Run();
+
+            //Console.Clear();
+            //BcLatencyFileDeserializationZeroComputation.Run();
+
             Console.ReadLine();
         }
     }
