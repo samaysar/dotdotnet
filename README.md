@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/f7ben6w9ecd09tg3/branch/develop?svg=true)](https://ci.appveyor.com/project/samaysar/dotdotnet/branch/develop)
+
 # dotdotnet
 ## DevFast (.T to begin with...) [WIKI](https://github.com/samaysar/dotdotnet/wiki/DevFast) [NUGET](https://www.nuget.org/packages/Dot.Net.DevFast)
 An easy to use, yet powerful, set of extension methods to increase developement productivity and allows you to write code faster and with confidence. It, as v1:
