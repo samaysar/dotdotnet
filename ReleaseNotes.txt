@@ -1,5 +1,31 @@
+Changes to Dot.Net.DevFast 1.1.2
+ 1. Change/Fix - Performance related transperant changes.
+
 Changes to Dot.Net.DevFast 1.1.1
 
  1. Change/Fix - Removed DateFormatString property initialization from CreateJsonWriter/JsonTextReader extension methods.
  2. Change/Fix - AutoFlush added as method parameter to CreateWriter, default value as false.
  3. Change/Fix - StringBuilder related transperant changes.
+ 
+Changes to Dot.Net.DevFast 1.1.0
+
+ 1. New feature - Added useful CreateXXX methods on FileInfo, StringBuilder, String, Stream.
+ 2. New feature - Added efficient CompressAsync and DecompressXXXAsync methods on StringBuilder, String, Stream, byte[], ArraySegment<byte>.
+ 3. New feature - Added generic ToJson/FromJson methods on StringBuilder, String, Stream, TextReader, JsonReader.
+ 4. New feature - Added efficient generic IEnumerable<T> based ToJsonArray/FromJsonAsEnumerable methods on StringBuilder, String, Stream, TextReader, JsonReader to support LINQ based data manipulation.
+ 5. New feature - Added efficient generic BlockingCollection<T> based ToJsonArrayParallely/FromJsonArrayParallely methods on StringBuilder, String, Stream, TextReader, JsonReader to support Parallel Producer-Consumer pattern based data manipulation.
+ 6. New feature - Added AdaptedJsonSerializer methods on JsonWriter, JsonReader.
+ 7. New feature - Added AdaptedJsonWriter/AdaptedJsonReader methods on JsonSerializer.
+ 8. New feature - Added efficient ToBytes/ToByteSegment methods on string.
+ 9. New feature - Added efficient ToStreamAsync methods on string, StringBuilder.
+10. Change/Fix  - Under CryptoStreamExt, Task<string> returning TransformAsync name changed to TransformAsStringAsync to avoid name collision due to optional arguments.
+
+Dot.Net.DevFast 1.0.0
+
+ 1. TryToXXX string parsing methods (bool as success indicator with parsed value in out variable)
+ 2. ToOrDefaultXXX string parsing methods (either parsed value is returned or the given default)
+ 3. ToXXX string parsing methods (throws Exception when parsing fails)
+ 4. TrimXXX methods on string (useful when dealing with white-spaces, null values etc)
+ 5. ThrowIfXXX methods (conditional exception generators, on bool, string, IEquatable, IComparable, ICollection, Dictionary etc)
+ 6. ToBase64XXX / FromBase64XXX async / non-async methods for Base64 to/fro conversions
+ 7. TransformXXX async / non-async methods for other kinds of Crypto transformation.
