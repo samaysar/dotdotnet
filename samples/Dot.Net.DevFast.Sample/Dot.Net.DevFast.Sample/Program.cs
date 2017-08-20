@@ -2,6 +2,7 @@
 using Dot.Net.DevFast.Sample.JsonSample;
 using Dot.Net.DevFast.Sample.JsonSample.FromExt;
 using Dot.Net.DevFast.Sample.JsonSample.JsonEnumeration;
+using Dot.Net.DevFast.Sample.JsonSample.JsonReportDb;
 using Dot.Net.DevFast.Sample.JsonSample.ToExt;
 
 namespace Dot.Net.DevFast.Sample
@@ -43,7 +44,7 @@ namespace Dot.Net.DevFast.Sample
             //JsonConvertMemStreamDeLatency.Run();
 
             //Console.Clear();
-            LatencyFileSerializationZeroComputation.Run();
+            //LatencyFileSerializationZeroComputation.Run();
 
             //Console.Clear();
             //BcLatencyFileSerializationZeroComputation.Run();
@@ -53,6 +54,8 @@ namespace Dot.Net.DevFast.Sample
 
             //Console.Clear();
             //BcLatencyFileDeserializationZeroComputation.Run();
+
+            PpcMysql.Run();
 
             Console.ReadLine();
         }
