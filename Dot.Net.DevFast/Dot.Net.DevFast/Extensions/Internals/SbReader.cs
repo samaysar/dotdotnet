@@ -48,8 +48,6 @@ namespace Dot.Net.DevFast.Extensions.Internals
 
         public override int Read(char[] buffer, int index, int count)
         {
-            (buffer.ThrowIfNull("null buffer").Length - index.ThrowIfNegative("index negative")).ThrowIfLess(
-                count.ThrowIfNegative("count negative"), "invalid offset length");
             _sb.ThrowIfNull("Source is closed/disposed");
             var n = _length - _position;
             if (n > 0)
@@ -106,8 +104,6 @@ namespace Dot.Net.DevFast.Extensions.Internals
 
         public override Task<int> ReadBlockAsync(char[] buffer, int index, int count)
         {
-            (buffer.ThrowIfNull("null buffer").Length - index.ThrowIfNegative("index negative")).ThrowIfLess(
-                count.ThrowIfNegative("count negative"), "invalid offset length");
             return Task.FromResult(ReadBlock(buffer, index, count));
         }
 

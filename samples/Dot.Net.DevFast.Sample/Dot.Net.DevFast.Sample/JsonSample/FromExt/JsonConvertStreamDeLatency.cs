@@ -6,13 +6,13 @@ using Dot.Net.DevFast.Extensions;
 using Dot.Net.DevFast.Extensions.JsonExt;
 using Newtonsoft.Json;
 
-namespace Dot.Net.DevFast.Sample.JsonSample.ToExt
+namespace Dot.Net.DevFast.Sample.JsonSample.FromExt
 {
-    public static class JsonConvertStreamLatency
+    public static class JsonConvertStreamDeLatency
     {
         public static void Run()
         {
-            Console.Out.WriteLine("-------SmallObj Serialization-------");
+            Console.Out.WriteLine("-------SmallObj File Deserialization-------");
             //Small Object serialization in 10M loops
             Run(1024 * 32, new SmallObj
             {
@@ -20,11 +20,11 @@ namespace Dot.Net.DevFast.Sample.JsonSample.ToExt
                 Age = 20,
                 Name = "Json Born"
             });
-            Console.Out.WriteLine("-------LargeObj Serialization-------");
+            Console.Out.WriteLine("-------LargeObj File Deserialization-------");
             //Large Object serialization in 1M loops
             Run(1024 * 32, LargeObj);
 
-            Console.Out.WriteLine("-------LargeObj Array Serialization-------");
+            Console.Out.WriteLine("-------LargeObj Array File Deserialization-------");
             //creating array of 1K LargeObj
             var objArr = new LargeObj[1024];
             for (var i = 0; i < 1024; i++)
@@ -35,12 +35,23 @@ namespace Dot.Net.DevFast.Sample.JsonSample.ToExt
             Run(128, objArr);
         }
 
-        private static void Run(int iteration, object data)
+        private static void Run<T>(int iteration, T data)
         {
             Console.Out.WriteLine("Iterations: " + iteration);
+            var convertFile = new FileInfo(@"C:\Temp\jsonTest.json");
+            var dfFile = new FileInfo(@"C:\Temp\jsonTestDf.json");
+
+            File.WriteAllText(convertFile.FullName, JsonConvert.SerializeObject(data));
+            convertFile.Refresh();
+            Console.Out.WriteLine("Con-SerializedLen: " + convertFile.Length);
+
+            data.ToJson(dfFile.CreateStream(FileMode.Create), new JsonSerializer(), enc: new UTF8Encoding(false));
+            dfFile.Refresh();
+            Console.Out.WriteLine("Df-SerializedLen: " + dfFile.Length);
+
             //warm up
-            data.MeasureJsonConvert(2, new FileInfo(@"C:\Temp\jsonTest.json"), false);
-            var jsonTime = data.MeasureJsonConvert(iteration, new FileInfo(@"C:\Temp\jsonTest.json"));
+            convertFile.MeasureJsonConvert<T>(2, false);
+            var jsonTime = convertFile.MeasureJsonConvert<T>(iteration);
 
             GC.Collect();
             GC.WaitForFullGCApproach();
@@ -53,50 +64,42 @@ namespace Dot.Net.DevFast.Sample.JsonSample.ToExt
             GC.WaitForPendingFinalizers();
 
             //warm up
-            data.MeasureDevFast(new FileInfo(@"C:\Temp\jsonTestDf.json"), 2, false);
-            var devfastTime = data.MeasureDevFast(new FileInfo(@"C:\Temp\jsonTestDf.json"), iteration);
+            dfFile.MeasureDevFast<T>(2, false);
+            var devfastTime = dfFile.MeasureDevFast<T>(iteration);
             var dfFastness = ((int)((100 - (devfastTime / jsonTime * 100)) * 100)) / 100.0;
             Console.Out.WriteLine("DevFast " + Math.Abs(dfFastness) + (dfFastness < 0 ? " % Slower" : " % Faster"));
             Console.Out.WriteLine();
         }
 
-        private static double MeasureJsonConvert(this object obj, int iteration, FileInfo target, bool print = true)
+        private static double MeasureJsonConvert<T>(this FileInfo data, int iteration, bool print = true)
         {
             var sw = Stopwatch.StartNew();
             for (var i = 0; i < iteration; i++)
             {
-                File.WriteAllText(target.FullName, JsonConvert.SerializeObject(obj));
+                var desrialJson = JsonConvert.DeserializeObject<T>(File.ReadAllText(data.FullName));
             }
             sw.Stop();
+
             if (print)
             {
                 Console.Out.WriteLine("JsonConvert Total Time: " + sw.Elapsed.TotalMilliseconds);
             }
-            else
-            {
-                target.Refresh();
-                Console.Out.WriteLine("FileLen: " + target.Length);
-            }
             return sw.Elapsed.TotalMilliseconds;
         }
 
-        private static double MeasureDevFast(this object obj, FileInfo target, int iteration, bool print = true)
+        private static double MeasureDevFast<T>(this FileInfo data, int iteration, bool print = true)
         {
             var sw = Stopwatch.StartNew();
             for (var i = 0; i < iteration; i++)
             {
-                obj.ToJson(target.CreateStream(FileMode.Create, options: FileOptions.None), new JsonSerializer(),
-                    new UTF8Encoding(false), 4 * 1024);
+                var desrialJson = data.CreateStream(FileMode.Open, options: FileOptions.SequentialScan)
+                    .FromJson<T>(new JsonSerializer());
             }
             sw.Stop();
+
             if (print)
             {
                 Console.Out.WriteLine("DevFast Total Time: " + sw.Elapsed.TotalMilliseconds);
-            }
-            else
-            {
-                target.Refresh();
-                Console.Out.WriteLine("FileLen: " + target.Length);
             }
             return sw.Elapsed.TotalMilliseconds;
         }

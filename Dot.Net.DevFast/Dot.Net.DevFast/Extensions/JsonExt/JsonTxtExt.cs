@@ -165,7 +165,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
                 var nullHandledSerializer = serializer ?? target.AdaptedJsonSerializer();
                 while (source.TryTake(out T obj, Timeout.Infinite, token))
                 {
-                    InternalToJson(obj, target, nullHandledSerializer);
+                    nullHandledSerializer.Serialize(target, obj);
                 }
                 target.WriteEndArray();
                 target.Flush();
@@ -287,14 +287,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
                     foreach (var obj in source)
                     {
                         token.ThrowIfCancellationRequested();
-                        InternalToJson(obj, target, nullHandledSerializer);
+                        nullHandledSerializer.Serialize(target, obj);
                     }
                 }
                 else
                 {
                     foreach (var obj in source)
                     {
-                        InternalToJson(obj, target, nullHandledSerializer);
+                        nullHandledSerializer.Serialize(target, obj);
                     }
                 }
                 target.WriteEndArray();
@@ -377,7 +377,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             var nullHandledSerializer = serializer ?? CustomJson.Serializer();
             using (var jsonWriter = nullHandledSerializer.AdaptedJsonWriter(target, disposeTarget))
             {
-                InternalToJson(source, jsonWriter, nullHandledSerializer);
+                nullHandledSerializer.Serialize(jsonWriter, source);
                 target.Flush();
             }
         }
@@ -394,14 +394,9 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         public static void ToJson<T>(this T source, JsonWriter target, JsonSerializer serializer = null,
             bool disposeTarget = true)
         {
-            InternalToJson(source, target, serializer ?? target.AdaptedJsonSerializer());
-            target.DisposeIfRequired(disposeTarget);
-        }
-
-        private static void InternalToJson<T>(T source, JsonWriter target, JsonSerializer serializer)
-        {
-            serializer.Serialize(target, source);
+            (serializer ?? target.AdaptedJsonSerializer()).Serialize(target, source);
             target.Flush();
+            target.DisposeIfRequired(disposeTarget);
         }
 
         #endregion ToJson region

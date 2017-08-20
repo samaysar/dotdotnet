@@ -36,6 +36,7 @@ namespace Dot.Net.DevFast.Sample.JsonSample.ToExt
 
         private static void Run(int iteration, object data)
         {
+            Console.Out.WriteLine("Iterations: " + iteration);
             //warm up
             data.MeasureJsonConvert(2, false);
             var jsonTime = data.MeasureJsonConvert(iteration);
