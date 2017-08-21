@@ -30,12 +30,12 @@ namespace Dot.Net.DevFast.Sample.JsonSample.JsonReportDb
 
             var sw = Stopwatch.StartNew();
 
-            //Start data fetching.
+            //Start data fetching in Parallel.
             var fetchTask = Task.Run(() => FetchData(connStr.ToString(), coll));
 
             //Single line to serialize the BlockingCollection to the file.
             //Serialization would terminate as soon as collection.CompleteAdding(); is called
-            //while fetching and serialization runs in parallel.
+            //fetching and serialization runs in parallel.
             var serialTask = Task.Run(() =>
                 coll.ToJsonArrayParallely(new FileInfo(@"C:\Temp\jsonDfMysql.json").CreateStream(FileMode.Create))
             );
