@@ -16,6 +16,7 @@ namespace Dot.Net.DevFast.Sample.JsonSample.JsonReportDb
     {
         public static void Run()
         {
+            Console.Out.WriteLine("Running Parallel Producer-Consumer on MySql");
             var oraConnDetails = File.ReadAllText(@"c:/temp/oracleConn.txt").Split('|');
             var connStr = new MySqlConnectionStringBuilder
             {
@@ -33,10 +34,9 @@ namespace Dot.Net.DevFast.Sample.JsonSample.JsonReportDb
             //Start data fetching in Parallel.
             var fetchTask = Task.Run(() => FetchData(connStr.ToString(), coll));
 
-            //Single line to serialize the BlockingCollection to the file.
-            //Serialization would terminate as soon as collection.CompleteAdding(); is called
-            //fetching and serialization runs in parallel.
             var serialTask = Task.Run(() =>
+                //this line is sufficient to let the serialization run in parallel
+                //while DB related code is populating the BlockingCollection in parallel
                 coll.ToJsonArrayParallely(new FileInfo(@"C:\Temp\jsonDfMysql.json").CreateStream(FileMode.Create))
             );
             

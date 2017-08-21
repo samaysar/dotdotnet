@@ -63,6 +63,7 @@
     <Compile Include="JsonSample\JsonEnumeration\BcLatencyFileSerializationZeroComputation.cs" />
     <Compile Include="JsonSample\JsonEnumeration\LatencyFileDeserializationZeroComputation.cs" />
     <Compile Include="JsonSample\JsonEnumeration\LatencyFileSerializationZeroComputation.cs" />
+    <Compile Include="JsonSample\JsonReportDb\PpcFileStats.cs" />
     <Compile Include="JsonSample\JsonReportDb\PpcMysql.cs" />
     <Compile Include="JsonSample\ToExt\JsonConvertMemStreamLatency.cs" />
     <Compile Include="JsonSample\ToExt\JsonConvertStreamLatency.cs" />
