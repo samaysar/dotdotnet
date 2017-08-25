@@ -3,6 +3,7 @@ using Dot.Net.DevFast.Sample.JsonSample;
 using Dot.Net.DevFast.Sample.JsonSample.FromExt;
 using Dot.Net.DevFast.Sample.JsonSample.JsonEnumeration;
 using Dot.Net.DevFast.Sample.JsonSample.JsonReportDb;
+using Dot.Net.DevFast.Sample.JsonSample.Pipelining;
 using Dot.Net.DevFast.Sample.JsonSample.ToExt;
 
 namespace Dot.Net.DevFast.Sample
@@ -91,7 +92,17 @@ namespace Dot.Net.DevFast.Sample
             //Console.ReadLine();
 
             //Console.Clear();
-            PpcFileStats.Run();
+            //PpcFileStats.Run();
+            //Console.Out.WriteLine("Enter to run next sample...");
+            //Console.ReadLine();
+
+            //Console.Clear();
+            //PpcMysqlCompression.Run();
+            //Console.Out.WriteLine("Enter to run next sample...");
+            //Console.ReadLine();
+
+            //Console.Clear();
+            EnumerableMysqlCompression.Run();
             //Console.Out.WriteLine("Enter to run next sample...");
             //Console.ReadLine();
 
