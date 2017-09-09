@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Dot.Net.DevFast.Etc;
 
 namespace Dot.Net.DevFast.Extensions.Ppc
 {
@@ -17,10 +18,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer instance</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        public static Task CreatePpc<T>(this IProducer<T> producer, IConsumer<T> consumer,
-            CancellationToken token = default(CancellationToken), int bufferSize = ParallelBuffer.StandardSize)
+        public static async Task CreatePpc<T>(this IProducer<T> producer, IConsumer<T> consumer,
+            CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new ItemDistributor<T>(token, bufferSize).ConnectAsync(new[] {producer}, consumer);
+            using (var distributor = new IdentityDistributor<T>(token, bufferSize))
+            {
+                await distributor.RunPpcAsync(new[] {producer}, consumer).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -31,10 +35,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumers">consumer instances</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        public static Task CreatePpc<T>(this IProducer<T> producer, IConsumer<T>[] consumers,
-            CancellationToken token = default(CancellationToken), int bufferSize = ParallelBuffer.StandardSize)
+        public static async Task CreatePpc<T>(this IProducer<T> producer, IConsumer<T>[] consumers,
+            CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new ItemDistributor<T>(token, bufferSize).ConnectAsync(new[] {producer}, consumers);
+            using (var distributor = new IdentityDistributor<T>(token, bufferSize))
+            {
+                await distributor.RunPpcAsync(new[] {producer}, consumers).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -45,10 +52,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumers">consumer instances</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        public static Task CreatePpc<T>(this IProducer<T>[] producers, IConsumer<T>[] consumers,
-            CancellationToken token = default(CancellationToken), int bufferSize = ParallelBuffer.StandardSize)
+        public static async Task CreatePpc<T>(this IProducer<T>[] producers, IConsumer<T>[] consumers,
+            CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new ItemDistributor<T>(token, bufferSize).ConnectAsync(producers, consumers);
+            using (var distributor = new IdentityDistributor<T>(token, bufferSize))
+            {
+                await distributor.RunPpcAsync(producers, consumers).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -59,10 +69,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer instance</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        public static Task CreatePpc<T>(this IProducer<T>[] producers, IConsumer<T> consumer,
-            CancellationToken token = default(CancellationToken), int bufferSize = ParallelBuffer.StandardSize)
+        public static async Task CreatePpc<T>(this IProducer<T>[] producers, IConsumer<T> consumer,
+            CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new ItemDistributor<T>(token, bufferSize).ConnectAsync(producers, consumer);
+            using (var distributor = new IdentityDistributor<T>(token, bufferSize))
+            {
+                await distributor.RunPpcAsync(producers, consumer).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -78,12 +91,14 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// remaining produced items).</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        public static Task CreatePpc<T>(this IProducer<T> producer, IConsumer<List<T>> consumer,
+        public static async Task CreatePpc<T>(this IProducer<T> producer, IConsumer<List<T>> consumer,
             int listMaxSize, CancellationToken token = default(CancellationToken),
-            int bufferSize = ParallelBuffer.StandardSize)
+            int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new ItemCollectionDistributor<T>(listMaxSize, token, bufferSize).ConnectAsync(new[] {producer},
-                consumer);
+            using (var distributor = new ListDistributor<T>(listMaxSize, token, bufferSize))
+            {
+                await distributor.RunPpcAsync(new[] {producer}, consumer).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -99,12 +114,14 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// remaining produced items).</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        public static Task CreatePpc<T>(this IProducer<T> producer, IConsumer<List<T>>[] consumers,
+        public static async Task CreatePpc<T>(this IProducer<T> producer, IConsumer<List<T>>[] consumers,
             int listMaxSize, CancellationToken token = default(CancellationToken),
-            int bufferSize = ParallelBuffer.StandardSize)
+            int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new ItemCollectionDistributor<T>(listMaxSize, token, bufferSize).ConnectAsync(new[] {producer},
-                consumers);
+            using (var distributor = new ListDistributor<T>(listMaxSize, token, bufferSize))
+            {
+                await distributor.RunPpcAsync(new[] {producer}, consumers).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -120,11 +137,14 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// remaining produced items).</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        public static Task CreatePpc<T>(this IProducer<T>[] producers, IConsumer<List<T>>[] consumers,
+        public static async Task CreatePpc<T>(this IProducer<T>[] producers, IConsumer<List<T>>[] consumers,
             int listMaxSize, CancellationToken token = default(CancellationToken),
-            int bufferSize = ParallelBuffer.StandardSize)
+            int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new ItemCollectionDistributor<T>(listMaxSize, token, bufferSize).ConnectAsync(producers, consumers);
+            using (var distributor = new ListDistributor<T>(listMaxSize, token, bufferSize))
+            {
+                await distributor.RunPpcAsync(producers, consumers).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -140,11 +160,14 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// remaining produced items).</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        public static Task CreatePpc<T>(this IProducer<T>[] producers, IConsumer<List<T>> consumer,
+        public static async Task CreatePpc<T>(this IProducer<T>[] producers, IConsumer<List<T>> consumer,
             int listMaxSize, CancellationToken token = default(CancellationToken),
-            int bufferSize = ParallelBuffer.StandardSize)
+            int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new ItemCollectionDistributor<T>(listMaxSize, token, bufferSize).ConnectAsync(producers, consumer);
+            using (var distributor = new ListDistributor<T>(listMaxSize, token, bufferSize))
+            {
+                await distributor.RunPpcAsync(producers, consumer).ConfigureAwait(false);
+            }
         }
     }
 }

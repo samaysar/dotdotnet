@@ -1,11 +1,12 @@
 ﻿using System.Collections.Concurrent;
+using Dot.Net.DevFast.Extensions;
 
-namespace Dot.Net.DevFast.Extensions.Ppc
+namespace Dot.Net.DevFast.Etc
 {
     /// <summary>
     /// Parallel buffer related standard values and methods.
     /// </summary>
-    public static class ParallelBuffer
+    public static class ConcurrentBuffer
     {
         /// <summary>
         /// Standard buffer size.

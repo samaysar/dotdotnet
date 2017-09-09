@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Dot.Net.DevFast.Etc;
 
 namespace Dot.Net.DevFast.Extensions.Ppc
 {
@@ -11,7 +12,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     /// <para>Collects data from producer(s) and transfers it to consumer(s)</para>
     /// </summary>
     /// <typeparam name="T">Content type</typeparam>
-    public interface IDataDistributor<in T>
+    public interface IDistributor<in T>
     {
         /// <summary>
         /// Collects the item from the producer to distribute it to the consumer down the lane.
@@ -22,11 +23,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         void Distribute(T item);
     }
 
-    internal sealed class ItemCollectionDistributor<TIn> : DataDistributor<TIn, List<TIn>>
+    internal class ListDistributor<TIn> : PpcPipeline<TIn, List<TIn>>
     {
         private readonly int _maxListSize;
 
-        public ItemCollectionDistributor(int maxListSize, CancellationToken externalToken, int bufferSize)
+        public ListDistributor(int maxListSize, CancellationToken externalToken, int bufferSize)
             : base(externalToken, bufferSize)
         {
             _maxListSize = maxListSize.ThrowIfLess(2, $"List size cannot be less than 2. (Value: {maxListSize})");
@@ -53,9 +54,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
     }
 
-    internal sealed class ItemDistributor<TIn> : DataDistributor<TIn, TIn>
+    internal class IdentityDistributor<TIn> : PpcPipeline<TIn, TIn>
     {
-        public ItemDistributor(CancellationToken externalToken, int bufferSize) : base(externalToken, bufferSize)
+        public IdentityDistributor(CancellationToken externalToken, int bufferSize) : base(externalToken, bufferSize)
         {
         }
 
@@ -66,16 +67,16 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
     }
 
-    internal abstract class DataDistributor<TIn, TOut> : IDataDistributor<TIn>, IDisposable
+    internal abstract class PpcPipeline<TProduce, TConsume> : IDistributor<TProduce>, IDisposable
     {
         private readonly CancellationTokenSource _globalCts;
         private readonly CancellationTokenSource _localCts;
         private readonly CancellationToken _token;
-        private readonly BlockingCollection<TIn> _collection;
+        private readonly BlockingCollection<TProduce> _collection;
 
-        protected DataDistributor(CancellationToken externalToken, int bufferSize)
+        protected PpcPipeline(CancellationToken externalToken, int bufferSize)
         {
-            _collection = ParallelBuffer.CreateBuffer<TIn>(bufferSize);
+            _collection = ConcurrentBuffer.CreateBuffer<TProduce>(bufferSize);
             _localCts = new CancellationTokenSource();
             _globalCts = CancellationTokenSource.CreateLinkedTokenSource(externalToken, _localCts.Token);
             _token = _globalCts.Token;
@@ -88,37 +89,44 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             _collection?.Dispose();
         }
 
-        public void Distribute(TIn item)
+        public void Distribute(TProduce item)
         {
             _collection.Add(item, _token);
         }
 
-        public async Task ConnectAsync(IProducer<TIn>[] producers, params IConsumer<TOut>[] consumers)
+        public Task RunPpcAsync(IProducer<TProduce>[] producers, params IConsumer<TConsume>[] consumers)
         {
             var runningConsumers = RunConsumers(consumers);
             var runningProducers = RunProducers(producers);
-            await Task.WhenAll(runningProducers, runningConsumers).ConfigureAwait(false);
+            return Task.WhenAll(runningProducers, runningConsumers);
         }
 
-        private Task RunConsumers(IReadOnlyList<IConsumer<TOut>> consumers)
+        private Task RunConsumers(IReadOnlyList<IConsumer<TConsume>> consumers)
         {
-            var consumerTasks = new Task[consumers.Count];
-            for (var i = 0; i < consumers.Count; i++)
+            return Task.Run(async () =>
             {
-                consumerTasks[i] = RunConsumer(consumers[i]);
-            }
-            return Task.WhenAll(consumerTasks);
+                var consumerTasks = new Task[consumers.Count];
+                for (var i = 0; i < consumers.Count; i++)
+                {
+                    consumerTasks[i] = RunConsumer(consumers[i]);
+                }
+                await Task.WhenAll(consumerTasks).ConfigureAwait(false);
+            }, CancellationToken.None);
         }
 
-        private Task RunConsumer(IConsumer<TOut> parallelConsumer)
+        private Task RunConsumer(IConsumer<TConsume> parallelConsumer)
         {
             return Task.Run(async () =>
             {
                 try
                 {
-                    while (TryGetData(_collection, _token, out TOut consumable))
+                    using (parallelConsumer)
                     {
-                        await parallelConsumer.BeginConsumptionAsync(consumable, _token).ConfigureAwait(false);
+                        await parallelConsumer.InitAsync().ConfigureAwait(false);
+                        while (TryGetData(_collection, _token, out TConsume consumable))
+                        {
+                            await parallelConsumer.ConsumeAsync(consumable, _token).ConfigureAwait(false);
+                        }
                     }
                 }
                 catch
@@ -129,7 +137,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             }, CancellationToken.None);
         }
 
-        private Task RunProducers(IReadOnlyList<IProducer<TIn>> producers)
+        private Task RunProducers(IReadOnlyList<IProducer<TProduce>> producers)
         {
             return Task.Run(async () =>
             {
@@ -149,13 +157,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             }, CancellationToken.None);
         }
 
-        private Task RunProducer(IProducer<TIn> parallelProducer)
+        private Task RunProducer(IProducer<TProduce> parallelProducer)
         {
             return Task.Run(async () =>
             {
                 try
                 {
-                    await parallelProducer.BeginProductionAsync(this, _token).ConfigureAwait(false);
+                    await parallelProducer.ProduceAsync(this, _token).ConfigureAwait(false);
                 }
                 catch
                 {
@@ -165,7 +173,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             }, CancellationToken.None);
         }
 
-        protected abstract bool TryGetData(BlockingCollection<TIn> collection, CancellationToken token,
-            out TOut consumable);
+        protected abstract bool TryGetData(BlockingCollection<TProduce> collection, CancellationToken token,
+            out TConsume consumable);
     }
 }

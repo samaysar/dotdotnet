@@ -63,11 +63,14 @@
     <Compile Include="Extensions\CompressionExts.cs" />
     <Compile Include="Extensions\CreateExts.cs" />
     <Compile Include="Extensions\Internals\Others.cs" />
-    <Compile Include="Extensions\Ppc\ParallelBuffer.cs" />
+    <Compile Include="Extensions\Internals\PpcBuffer.cs" />
+    <Compile Include="Extensions\Ppc\IDataAdapter.cs" />
+    <Compile Include="Etc\ConcurrentBuffer.cs" />
     <Compile Include="Extensions\Internals\SbReader.cs" />
     <Compile Include="Extensions\JsonExt\CustomJson.cs" />
     <Compile Include="Extensions\Internals\JsonBased.cs" />
     <Compile Include="Extensions\JsonExt\JsonTxtExt.cs" />
+    <Compile Include="Extensions\Ppc\IDataFeed.cs" />
     <Compile Include="Extensions\Ppc\IDistributor.cs" />
     <Compile Include="Extensions\Ppc\IConsumer.cs" />
     <Compile Include="Extensions\Ppc\IProducer.cs" />

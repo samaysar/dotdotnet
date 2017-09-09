@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Dot.Net.DevFast.Extensions.Ppc
@@ -7,7 +8,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     /// Producer interface for parallel Producer consumer pattern.
     /// </summary>
     /// <typeparam name="T">Content type</typeparam>
-    public interface IProducer<out T>
+    public interface IProducer<out T> : IDisposable
     {
         /// <summary>
         /// Call to this method starts the data production.
@@ -18,6 +19,6 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="distributor">All produced data intances must be added to 
         /// <paramref name="distributor"/> instance, in order to pass on to associated consumers.</param>
         /// <param name="cancellationToken">Cancellation token</param>
-        Task BeginProductionAsync(IDataDistributor<T> distributor, CancellationToken cancellationToken);
+        Task ProduceAsync(IDistributor<T> distributor, CancellationToken cancellationToken);
     }
 }
