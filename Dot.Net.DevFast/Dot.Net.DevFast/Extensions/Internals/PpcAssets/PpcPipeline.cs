@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions.Ppc;
 
-namespace Dot.Net.DevFast.Extensions.Internals
+namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
 {
     internal sealed class PpcPipeline<TP, TC>
     {

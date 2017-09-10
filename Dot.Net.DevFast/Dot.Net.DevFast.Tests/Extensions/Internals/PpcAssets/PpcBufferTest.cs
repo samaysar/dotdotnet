@@ -2,10 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
-using Dot.Net.DevFast.Extensions.Internals;
+using Dot.Net.DevFast.Extensions.Internals.PpcAssets;
 using NUnit.Framework;
 
-namespace Dot.Net.DevFast.Tests.Extensions.Internals
+namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
 {
     [TestFixture]
     public class PpcBufferTest
@@ -91,18 +91,20 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals
         [Test]
         public async Task TryGet_Blocks_The_Call_If_Close_Not_Called_Returns_Added_Element_If_Available()
         {
-            using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
+            var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
+            var obj = new object();
+            object outObj = null;
+            var tryGetTask = Task.Run(() => instance.TryGet(out outObj));
+            Assert.True(tryGetTask.Status != TaskStatus.RanToCompletion);
+            instance.Add(obj);
+            Assert.True(await tryGetTask.ConfigureAwait(false) && ReferenceEquals(outObj, obj));
+            tryGetTask = Task.Run(() => instance.TryGet(out outObj));
+            Assert.True(tryGetTask.Status != TaskStatus.RanToCompletion);
+            instance.Close();
+            Assert.False(await tryGetTask.ConfigureAwait(false));
+            using (instance)
             {
-                var obj = new object();
-                object outObj = null;
-                var tryGetTask = Task.Run(() => instance.TryGet(out outObj));
-                Assert.True(tryGetTask.Status != TaskStatus.RanToCompletion);
-                instance.Add(obj);
-                Assert.True(await tryGetTask.ConfigureAwait(false) && ReferenceEquals(outObj, obj));
-                tryGetTask = Task.Run(() => instance.TryGet(out outObj));
-                Assert.True(tryGetTask.Status != TaskStatus.RanToCompletion);
-                instance.Close();
-                Assert.False(await tryGetTask.ConfigureAwait(false));
+                //to dispose.
             }
         }
     }

@@ -3,7 +3,7 @@ using System.Threading;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.Ppc;
 
-namespace Dot.Net.DevFast.Extensions.Internals
+namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
 {
     internal sealed class PpcBuffer<T> : IPpcFeed<T>
     {
