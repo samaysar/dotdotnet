@@ -16,6 +16,6 @@
         /// </summary>
         /// <param name="producerDataFeed">Data feed</param>
         /// <param name="consumable">consumable data instance</param>
-        bool TryGet(IDataFeed<TProducer> producerDataFeed, out TConsumer consumable);
+        bool TryGet(IProducerFeed<TProducer> producerDataFeed, out TConsumer consumable);
     }
 }
