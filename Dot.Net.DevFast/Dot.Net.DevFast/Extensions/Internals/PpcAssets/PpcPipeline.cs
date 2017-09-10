@@ -8,7 +8,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
     internal static class PpcPipeline<TP, TC>
     {
         public static async Task RunPpcAsync(CancellationToken token, int bufferSize, IDataAdapter<TP, TC> adapter,
-            IProducer<TP>[] producers, params IConsumer<TC>[] consumers)
+            IReadOnlyList<IProducer<TP>> producers, IReadOnlyList<IConsumer<TC>> consumers)
         {
             using (var localCts = new CancellationTokenSource())
             {
