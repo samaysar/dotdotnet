@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>DevFast - Rendezvous with JSON</title>
+<meta http-equiv="content-language" content="en-US">
+<meta charset="UTF-8">
+<meta name="Description" CONTENT="REST is buzzword & JSON is ubiquitously present. Are we good at parsing? What about huge JSON array? Can we efficiently enumerate on JSON array? Or use parallel producer-consumer? Can we do it in single line?, Author: D Sarthi Maheshwari, Category: C# .Net Programming Library Fast Efficient Code Development">
+<meta name="Author" content="D Sarthi Maheshwari">
+<link type="text/css" rel="stylesheet" href="main.min.css">
+</head>
+
+<body>
+<h1 class="ttlpl">DevFast - Rendezvous with JSON</h1>
+
+<p>REST is buzzword & JSON is ubiquitously present. Are we good at parsing? What about huge JSON array? Can we efficiently enumerate on JSON array? Or use parallel producer-consumer? Can we do it in single line?</p>
+
+<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr class="artclnk">
+			<td style="text-align: left"><h2><a href="SimplyDevFast.html">&lt;&lt; Previous Article (Lets Shake Hands)</a></h2></td>
+			<td style="text-align: right"><h2><a href="MeetPpc.html">Next Article (Meet Parallel Producers/Consumers) &gt;&gt;</a></h2></td>
+		</tr>
+	</tbody>
+</table>
+
+<h2>Boring Flashback</h2>
+
+<p>In <strong><a href="SimplyDevFast.html">DevFast - Lets Shake Hands</a></strong>, we started with some basic, yet powerful, set of extension methods. Those are powerful in following sense:</p>
+
+<ul>
+	<li>Less keystrokes to achieve same code behavior, i.e. more productivity</li>
+	<li>Fully test covered standard implementation (<strong><a href="https://github.com/samaysar/dotdotnet">GIT Repo</a></strong>)</li>
+	<li>Efficient and easy to use</li>
+	<li>Method chaining, Readability etc...</li>
+</ul>
+
+<p>In summary, following was bundled together (more <a href="https://github.com/samaysar/dotdotnet/wiki">on WIKI</a>&nbsp;and <a href="https://github.com/samaysar/dotdotnet/releases">Releases</a>):</p>
+
+<ul>
+	<li>TryToXXX&nbsp;<code>string</code>&nbsp;parsing methods (<code>bool</code>&nbsp;as success indicator with parsed value in&nbsp;<code>out</code>&nbsp;variable)</li>
+	<li>ToOrDefaultXXX&nbsp;<code>string</code>&nbsp;parsing methods (either parsed value is returned or the given default)</li>
+	<li>ToXXX string parsing methods (throws&nbsp;<code>Exception</code>&nbsp;when parsing fails)</li>
+	<li>TrimXXX methods on string (useful when dealing with white-spaces,&nbsp;<code>null</code>&nbsp;values etc)</li>
+	<li>ThrowIfXXX methods (conditional exception generators, on&nbsp;<code>bool</code>,&nbsp;<code>string</code>,&nbsp;<code>IEquatable</code>,&nbsp;<code>IComparable</code>,&nbsp;<code>ICollection</code>,&nbsp;<code>Dictionary</code>&nbsp;etc)</li>
+	<li>ToBase64XXX / FromBase64XXX&nbsp;<code>async</code>&nbsp;/ non-async methods for&nbsp;<code>Base64</code>&nbsp;to/fro conversions</li>
+	<li>TransformXXX&nbsp;<code>async</code>&nbsp;/ non-async methods for other kinds of Crypto transformation.</li>
+</ul>
+
+<h2>DevFast with JSON</h2>
+
+<p>We all know (or getting to know) that technology is changing fast. Everyone talking about <strong><a href="https://en.wikipedia.org/wiki/Representational_state_transfer">REST</a></strong>ful APIs. <strong><a href="https://en.wikipedia.org/wiki/XML">XML</a></strong>&nbsp;fading and <strong><a href="https://en.wikipedia.org/wiki/JSON">JSON</a></strong> is emerging as a standard format of data exchange over web due to its less verbose light-weight nature and immediate integration with client side scripting. Even in its RAW format, it can&nbsp;be easily understood and manipulated by hand. Moreover, there exist&nbsp;even <strong><a href="https://en.wikipedia.org/wiki/Document-oriented_database">document oriented databases</a></strong> based on JSON format.</p>
+
+<p>Nonetheless, purpose of this article is neither to explain JSON format nor technologies based on it. Here we are going to talk about how to write succinct &amp; efficient code for JSON operations (serialization/deserialization) and how <a href="https://www.nuget.org/packages/Dot.Net.DevFast/"><strong>DevFast</strong></a>&nbsp;can help you do that right!</p>
+
+<hr />
+<p><strong>All the performance statistics are collected on a Windows Machine with following configuration:</strong></p>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/MachineConfig.PNG" /></p>
+
+<p><strong>Useful links:</strong></p>
+
+<ul>
+	<li>
+	<p><strong><a href="https://github.com/samaysar/dotdotnet">Our GitHub Repo</a></strong></p>
+	</li>
+	<li>
+	<p><strong><a href="https://www.nuget.org/packages/Dot.Net.DevFast">Nuget Page</a></strong></p>
+	</li>
+	<li>
+	<p><strong><a href="https://github.com/samaysar/dotdotnet/wiki/DevFast">GitHub Wiki</a></strong></p>
+	</li>
+	<li>
+	<p><strong><a href="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/ReleaseNotes.txt">Release Notes</a></strong></p>
+	</li>
+</ul>
+
+<h3><strong>Sample Codes of Following PNG Snapshots are Available as&nbsp;<a href="https://github.com/samaysar/dotdotnet/tree/develop/samples/Dot.Net.DevFast.Sample" target="_blank">Dot.Net.DevFast.Sample</a></strong></h3>
+
+<hr />
+<h3><strong>Unwrapped eXtension...</strong></h3>
+
+<p>As of today, Newtonsoft.JSON (a.k.a. <a href="https://www.nuget.org/packages/Newtonsoft.Json/"><strong>Json.NET</strong></a>) is <a href="https://github.com/kevin-montrose/Jil#benchmarks"><strong>one of the most performing</strong></a> JSON (De)serialization libraries&nbsp;available. Among many of its useful features, the most commonly used methods are:</p>
+
+<pre lang="cs">
+Static Methods:
+&nbsp;           JsonConvert.SerializeObject(dotNetObject)
+&nbsp;           JsonConvert.DeserializeObject(jsonString)
+Instance Methods:
+&nbsp;           <strong>new </strong>JsonSerializer().Serialize(writer)
+&nbsp;           <strong>new </strong>JsonSerializer().Deserialize(reader)
+</pre>
+
+<p><a href="https://www.nuget.org/packages/Dot.Net.DevFast/"><strong>DevFast</strong></a> takes advantages of these instance methods and proposes following JSON operations as extension methods:</p>
+
+<pre lang="cs">
+Serialization Methods:
+&nbsp;           string ToJson&lt;T&gt;(<strong>this </strong>T source, ...)
+&nbsp;           void ToJson&lt;T&gt;(<strong>this </strong>T source, StringBuilder target, ...)
+&nbsp;           void ToJson&lt;T&gt;(<strong>this </strong>T source, Stream target, ...)
+&nbsp;           void ToJson&lt;T&gt;(<strong>this </strong>T source, TextWriter target, ...)
+&nbsp;           void ToJson&lt;T&gt;(<strong>this </strong>T source, JsonWriter target, ...)
+&nbsp;
+Deserialization Methods:
+&nbsp;           T FromJson&lt;T&gt;(<strong>this </strong>StringBuilder source, ...)
+&nbsp;           T FromJson&lt;T&gt;(<strong>this </strong>string source, ...)
+&nbsp;           T FromJson&lt;T&gt;(<strong>this </strong>Stream source, ...)
+&nbsp;           T FromJson&lt;T&gt;(<strong>this </strong>TextReader source, ...)
+&nbsp;           T FromJson&lt;T&gt;(<strong>this </strong>JsonReader source, ...)
+</pre>
+
+<h3><strong>Taking&nbsp;control with DevFast...</strong></h3>
+
+<p>Perhaps, C#&nbsp;<a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">Garbage Collection</a>&nbsp;(GC) offers extreme&nbsp;performance&nbsp;but it is also true that NO GC is better than any GC. Talking about&nbsp;Json.NET, the static methods,&nbsp;<strong><code>JsonConvert.SerializeObject</code>(<code>...</code>)</strong> and <strong><code>JsonConvert.DeserializeObject</code>(<code>...</code>)</strong>, are&nbsp;all good: succinct and up to the mark. Unfortunately, there are times when, having knowledge about our objects, we require more control, like passing own instance of <code>StringBuilder</code> in order to recover serialized JSON string, reusing those costly <code>StringBuilder</code>s by avoiding GC cycles, allocation of arrays. Lets consider both methods and identify where DevFast can really help you with its single-liners.</p>
+
+<h4><strong>Serialization with DevFast</strong></h4>
+
+<ul>
+	<li>In order to achieve reusability with <code>StringBuilder</code>, we coin,&nbsp;<strong>ToJson<code>&lt;T&gt;</code>(this <code>T</code> source, <code>StringBuilder </code>target, ...)</strong>, extension method.</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Json_Sb_Serial.PNG" /></p>
+
+<p>Lets consider some objects of varying sizes to obtain something substantial. Following are sampled statistics (<a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/JsonSample/ToExt/JsonConvertLatency.cs" target="_blank"><strong>source code</strong></a>):</p>
+
+<table align="center" border="2" cellpadding="5" cellspacing="5">
+	<caption style="background-color: #18bef2">Serializing to reusable StringBuilder</caption>
+	<thead>
+		<tr style="background-color: #26ceff">
+			<th>&nbsp;</th>
+			<th>ArrayLen</th>
+			<th>StringLen</th>
+			<th>Iterations</th>
+			<th>JsonConvert Time</th>
+			<th>DevFast Time</th>
+			<th>Remarks</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr style="background-color: #c4f1ff">
+			<th>SmallObj</th>
+			<td style="text-align: center">-</td>
+			<td style="text-align: center">58</td>
+			<td style="text-align: center">10M</td>
+			<td style="text-align: center"><strong>8545 ms</strong></td>
+			<td style="text-align: center">8588 ms</td>
+			<td style="text-align: center">DevFast 0.49% slower</td>
+		</tr>
+		<tr style="background-color: #c9f3ff">
+			<th>LargeObj</th>
+			<td style="text-align: center">-</td>
+			<td style="text-align: center">3976</td>
+			<td style="text-align: center">1M</td>
+			<td style="text-align: center">8413 ms</td>
+			<td style="text-align: center"><strong>7837 ms</strong></td>
+			<td style="text-align: center">DevFast 6.83% faster</td>
+		</tr>
+		<tr style="background-color: #c4f1ff">
+			<th>LargeObj Array</th>
+			<td style="text-align: center">1K</td>
+			<td style="text-align: center">4072449</td>
+			<td style="text-align: center">1K</td>
+			<td style="text-align: center">12278 ms</td>
+			<td style="text-align: center"><strong>10348 ms</strong></td>
+			<td style="text-align: center">DevFast 15.71% faster</td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<ul>
+	<li>Consider another situation when this same data needs to be written on <code>Stream</code>. This stream can be network stream, memory stream, file stream or something else. Again, we need some control on the serialization and thus, falls the burden to write the code. And what can be better than a single-line code. Thus, the need of,&nbsp;<strong>ToJson<code>&lt;T&gt;</code>(this <code>T</code> source, <code>Stream&nbsp;</code>target, ...)</strong>, extension method.</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Json_FileStream_Serial.PNG" /></p>
+
+<p>Lets consider again, the above three (3) differently sized objects in conjuction with&nbsp;<code>FileStream</code>&nbsp;this time<code>.</code> Following are sampled statistics (<a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/JsonSample/ToExt/JsonConvertStreamLatency.cs" target="_blank"><strong>source code</strong></a>):</p>
+
+<table align="center" border="2" cellpadding="5" cellspacing="5">
+	<caption style="background-color: #18bef2">Serializing to FileStream</caption>
+	<thead>
+		<tr style="background-color: #26ceff">
+			<th>&nbsp;</th>
+			<th>ArrayLen</th>
+			<th>FileSize</th>
+			<th>Iterations</th>
+			<th>JsonConvert Time*</th>
+			<th>DevFast Time*</th>
+			<th>Remarks</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr style="background-color: #c4f1ff">
+			<th>SmallObj</th>
+			<td style="text-align: center">-</td>
+			<td style="text-align: center">58 B</td>
+			<td style="text-align: center">32K</td>
+			<td style="text-align: center">4351 ms</td>
+			<td style="text-align: center"><strong>3888 ms</strong></td>
+			<td style="text-align: center">DevFast 10.26% faster</td>
+		</tr>
+		<tr style="background-color: #c9f3ff">
+			<th>LargeObj</th>
+			<td style="text-align: center">-</td>
+			<td style="text-align: center">3985 B</td>
+			<td style="text-align: center">32K</td>
+			<td style="text-align: center"><strong>4226 ms</strong></td>
+			<td style="text-align: center">5023 ms</td>
+			<td style="text-align: center">DevFast 18.84% slower</td>
+		</tr>
+		<tr style="background-color: #c4f1ff">
+			<th>LargeObj Array</th>
+			<td style="text-align: center">1K</td>
+			<td style="text-align: center">4081665 B</td>
+			<td style="text-align: center">128</td>
+			<td style="text-align: center">2676 ms</td>
+			<td style="text-align: center"><strong>1794 ms</strong></td>
+			<td style="text-align: center">DevFast 32.96% faster</td>
+		</tr>
+	</tbody>
+</table>
+
+<p><em>*Inclusive of File opening/closing time.</em></p>
+
+<p>&nbsp;</p>
+
+<ul>
+	<li>Lets also use <code>MemoryStream</code>&nbsp;instead, in order to collect performance statistics, to perform the same round of tests.&nbsp;We obtained following set of sampled statistics (<a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/JsonSample/ToExt/JsonConvertMemStreamLatency.cs" target="_blank"><strong>source code</strong></a>):</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Json_MemStream_Serial.PNG" /></p>
+
+<table align="center" border="2" cellpadding="5" cellspacing="5">
+	<caption style="background-color: #18bef2">Serializing to MemoryStream</caption>
+	<thead>
+		<tr style="background-color: #26ceff">
+			<th>&nbsp;</th>
+			<th>ArrayLen</th>
+			<th>FileSize</th>
+			<th>Iterations</th>
+			<th>JsonConvert Time</th>
+			<th>DevFast Time</th>
+			<th>Remarks</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr style="background-color: #c4f1ff">
+			<th>SmallObj</th>
+			<td style="text-align: center">-</td>
+			<td style="text-align: center">61 B</td>
+			<td style="text-align: center">128K</td>
+			<td style="text-align: center">169 ms</td>
+			<td style="text-align: center"><strong>168 ms</strong></td>
+			<td style="text-align: center">DevFast 0.56% faster</td>
+		</tr>
+		<tr style="background-color: #c9f3ff">
+			<th>LargeObj</th>
+			<td style="text-align: center">-</td>
+			<td style="text-align: center">3988 B</td>
+			<td style="text-align: center">128K</td>
+			<td style="text-align: center">1554 ms</td>
+			<td style="text-align: center"><strong>1342 ms</strong></td>
+			<td style="text-align: center">DevFast 13.64% faster</td>
+		</tr>
+		<tr style="background-color: #c4f1ff">
+			<th>LargeObj Array</th>
+			<td style="text-align: center">1K</td>
+			<td style="text-align: center">4081668 B</td>
+			<td style="text-align: center">256</td>
+			<td style="text-align: center">4423 ms</td>
+			<td style="text-align: center"><strong>3073 ms</strong></td>
+			<td style="text-align: center">DevFast 30.51% faster</td>
+		</tr>
+	</tbody>
+</table>
+
+<h4><strong>Deserialization with DevFast</strong></h4>
+
+<ul>
+	<li>In order to avoid a new string allocation, with&nbsp;<code>StringBuilder.ToString()</code>, before deserialization can take place; we have obtained,&nbsp;<strong>FromJson<code>&lt;T&gt;</code>(this <code>StringBuilder </code>source, ...)</strong>&nbsp;extension method. If we run our object samples, we obtain following sampled statistics (<a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/JsonSample/FromExt/JsonConvertDeLatency.cs"><strong>source code</strong></a>):</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Json_Sb_Deserial.PNG" /></p>
+
+<table align="center" border="2" cellpadding="5" cellspacing="5">
+	<caption style="background-color: #18bef2">Deserializing from StringBuilder</caption>
+	<thead>
+		<tr style="background-color: #26ceff">
+			<th>&nbsp;</th>
+			<th>ArrayLen</th>
+			<th>StringLen</th>
+			<th>Iterations</th>
+			<th>JsonConvert Time</th>
+			<th>DevFast Time</th>
+			<th>Remarks</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr style="background-color: #c4f1ff">
+			<th>SmallObj</th>
+			<td style="text-align: center">-</td>
+			<td style="text-align: center">58</td>
+			<td style="text-align: center">2M</td>
+			<td style="text-align: center"><strong>2772 ms</strong></td>
+			<td style="text-align: center">3051 ms</td>
+			<td style="text-align: center">DevFast 10.06% slower</td>
+		</tr>
+		<tr style="background-color: #c9f3ff">
+			<th>LargeObj</th>
+			<td style="text-align: center">-</td>
+			<td style="text-align: center">3976</td>
+			<td style="text-align: center">512K</td>
+			<td style="text-align: center">4853 ms</td>
+			<td style="text-align: center"><strong>4680 ms</strong></td>
+			<td style="text-align: center">DevFast 3.56% faster</td>
+		</tr>
+		<tr style="background-color: #c4f1ff">
+			<th>LargeObj Array</th>
+			<td style="text-align: center">1K</td>
+			<td style="text-align: center">4072449</td>
+			<td style="text-align: center">512</td>
+			<td style="text-align: center">6192 ms</td>
+			<td style="text-align: center"><strong>4828 ms</strong></td>
+			<td style="text-align: center">DevFast 22.02% faster</td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<ul>
+	<li>Similarly, to handle the data directly from <code>Stream</code>, we introduce&nbsp;<strong>FromJson<code>&lt;T&gt;</code>(this </strong><code>Stream</code><strong><code> </code>source, ...)</strong>&nbsp;extension method. Lets first again run our object samples using <code>FileStream</code>, we obtain following sampled statistics (<a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/JsonSample/FromExt/JsonConvertStreamDeLatency.cs"><strong>source code</strong></a>):</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Json_FileStream_Deserial.PNG" /></p>
+
+<table align="center" border="2" cellpadding="5" cellspacing="5">
+	<caption style="background-color: #18bef2">Deserializing from FileStream</caption>
+	<thead>
+		<tr style="background-color: #26ceff">
+			<th>&nbsp;</th>
+			<th>ArrayLen</th>
+			<th>StringLen</th>
+			<th>Iterations</th>
+			<th>JsonConvert Time*</th>
+			<th>DevFast Time*</th>
+			<th>Remarks</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr style="background-color: #c4f1ff">
+			<th>SmallObj</th>
+			<td style="text-align: center">-</td>
+			<td style="text-align: center">58</td>
+			<td style="text-align: center">32K</td>
+			<td style="text-align: center">1362 ms</td>
+			<td style="text-align: center"><strong>1283 ms</strong></td>
+			<td style="text-align: center">DevFast 5.79% faster</td>
+		</tr>
+		<tr style="background-color: #c9f3ff">
+			<th>LargeObj</th>
+			<td style="text-align: center">-</td>
+			<td style="text-align: center">3976</td>
+			<td style="text-align: center">32K</td>
+			<td style="text-align: center">1899 ms</td>
+			<td style="text-align: center"><strong>1753 ms</strong></td>
+			<td style="text-align: center">DevFast 7.69% faster</td>
+		</tr>
+		<tr style="background-color: #c4f1ff">
+			<th>LargeObj Array</th>
+			<td style="text-align: center">1K</td>
+			<td style="text-align: center">4072449</td>
+			<td style="text-align: center">128</td>
+			<td style="text-align: center">2417 ms</td>
+			<td style="text-align: center"><strong>1893 ms</strong></td>
+			<td style="text-align: center">DevFast 21.66% faster</td>
+		</tr>
+	</tbody>
+</table>
+
+<p><em>*Inclusive of File opening/closing time.</em></p>
+
+<p>&nbsp;</p>
+
+<ul>
+	<li>And, when using <code>MemoryStream</code>, sampled statistics are as follow (<a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/JsonSample/FromExt/JsonConvertMemStreamDeLatency.cs"><strong>source code</strong></a>):</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Json_MemStream_Deserial.PNG" /></p>
+
+<table align="center" border="2" cellpadding="5" cellspacing="5">
+	<caption style="background-color: #18bef2">Deserializing from MemoryStream</caption>
+	<thead>
+		<tr style="background-color: #26ceff">
+			<th>&nbsp;</th>
+			<th>ArrayLen</th>
+			<th>StringLen</th>
+			<th>Iterations</th>
+			<th>JsonConvert Time</th>
+			<th>DevFast Time</th>
+			<th>Remarks</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr style="background-color: #c4f1ff">
+			<th>SmallObj</th>
+			<td style="text-align: center">-</td>
+			<td style="text-align: center">58</td>
+			<td style="text-align: center">1M</td>
+			<td style="text-align: center">1990 ms</td>
+			<td style="text-align: center"><strong>1846 ms</strong></td>
+			<td style="text-align: center">DevFast 7.22% faster</td>
+		</tr>
+		<tr style="background-color: #c9f3ff">
+			<th>LargeObj</th>
+			<td style="text-align: center">-</td>
+			<td style="text-align: center">3976</td>
+			<td style="text-align: center">256K</td>
+			<td style="text-align: center">3594 ms</td>
+			<td style="text-align: center"><strong>3048 ms</strong></td>
+			<td style="text-align: center">DevFast 15.18% faster</td>
+		</tr>
+		<tr style="background-color: #c4f1ff">
+			<th>LargeObj Array</th>
+			<td style="text-align: center">1K</td>
+			<td style="text-align: center">4072449</td>
+			<td style="text-align: center">256</td>
+			<td style="text-align: center">4214 ms</td>
+			<td style="text-align: center"><strong>2917 ms</strong></td>
+			<td style="text-align: center">DevFast 30.76% faster</td>
+		</tr>
+	</tbody>
+</table>
+
+<h3><strong>Monumental JSON Array</strong></h3>
+
+<p>Most of the times. at client&nbsp;side, using <code>JsonConvert</code> or <code>JsonSerializer</code>&nbsp;for regular (de)serialization hardly makes any difference, specially with modern hardware;&nbsp;as the user hardly perceives those milliseconds of difference. However, this does NOT hold true, specially at, all time busy, server side. Latency aside, memory too becomes one of the major concerns when we deal with JSON Array, especially BIG ones! There are some commonly observed cases, when we deal with these gigantic arrays:</p>
+
+<ul>
+	<li>Batch file processing</li>
+	<li>Data Reporting</li>
+</ul>
+
+<p>Even on a modest shared server,&nbsp;this can soon result in <code>OutOfMemoryException&nbsp;</code>(<code>OOM</code>), failed/delayed reports etc. In effect, as a quick win, first thought comes to mind is to start creating/receiving smaller size files for processing. At least, this buys some time as <code>OOM</code>&nbsp;are avoided, though, the file count has increased and perhaps some other part of the code became complicated and so as bookkeeping. But hold on!&nbsp;what if we can read those JSON array element one by one? Perform computation in-sync or in-async? What if we can decide how many of those objects should stay in memory at given point in time?</p>
+
+<p>To address these&nbsp;(or similar) requirements, <a href="https://www.nuget.org/packages/Dot.Net.DevFast/"><strong>DevFast</strong></a> proposes two (2)&nbsp;approaches to deal with the situation at hands:</p>
+
+<ul>
+	<li>Either (de)serialize those elements (to)from&nbsp;<code>IEumerable&lt;T&gt;</code></li>
+	<li>(De)serialize those (to)from <code>BlockingCollection&lt;T&gt;</code>&nbsp;to support <strong>Parallel <a href="https://en.wikipedia.org/wiki/Producer%E2%80%93consumer_problem">Producer-Consumer</a> (PPC)</strong></li>
+</ul>
+
+<h4>JSON Enumeration with DevFast</h4>
+
+<p>As a first approach, following extension methods are proposed:</p>
+
+<pre lang="cs">
+Serialization Methods:
+&nbsp;           string ToJsonArray&lt;T&gt;(<strong>this </strong>IEnumerable<strong>&lt;</strong>T&gt; source, ...)
+&nbsp;           void ToJsonArray&lt;T&gt;(<strong>this </strong>IEnumerable<strong>&lt;</strong>T&gt; source, StringBuilder target, ...)
+&nbsp;           void ToJsonArray&lt;T&gt;(<strong>this </strong>IEnumerable<strong>&lt;</strong>T&gt; source, Stream target, ...)
+&nbsp;           void ToJsonArray&lt;T&gt;(<strong>this </strong>IEnumerable<strong>&lt;</strong>T&gt; source, TextWriter target, ...)
+&nbsp;           void ToJsonArray&lt;T&gt;(<strong>this </strong>IEnumerable<strong>&lt;</strong>T&gt; source, JsonWriter target, ...)
+&nbsp;
+Deserialization Methods:
+&nbsp;           IEnumerable<strong>&lt;</strong>T&gt; FromJsonAsEnumerable&lt;T&gt;(<strong>this </strong>StringBuilder source, ...)
+&nbsp;           IEnumerable<strong>&lt;</strong>T&gt; FromJsonAsEnumerable&lt;T&gt;(<strong>this </strong>string source, ...)
+&nbsp;           IEnumerable<strong>&lt;</strong>T&gt; FromJsonAsEnumerable&lt;T&gt;(<strong>this </strong>Stream source, ...)
+&nbsp;           IEnumerable<strong>&lt;</strong>T&gt; FromJsonAsEnumerable&lt;T&gt;(<strong>this </strong>TextReader source, ...)
+&nbsp;           IEnumerable<strong>&lt;</strong>T&gt; FromJsonAsEnumerable&lt;T&gt;(<strong>this </strong>JsonReader source, ...)
+</pre>
+
+<p>Lets quickly see what we gain in terms of memory and/or speed:</p>
+
+<table align="center" border="2" cellpadding="5" cellspacing="5">
+	<caption style="background-color: #18bef2">Json Array (De)serialization with FileStream (Array Length = 5M, File Size = 629,145,601 Bytes)</caption>
+	<thead>
+		<tr style="background-color: #26ceff">
+			<th>Operation</th>
+			<th>Peak Memory<br />
+			(JsonConvert Vs DevFast)</th>
+			<th>JsonConvert Time</th>
+			<th>DevFast Time</th>
+			<th>Remarks</th>
+			<th>Link</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr style="background-color: #c4f1ff">
+			<th>Serialization*<sup><span style="font-size: 11.6667px">M1</span></sup></th>
+			<td style="text-align: center">2,599,284 K Vs <strong>22,968 K</strong></td>
+			<td style="text-align: center">7218 ms</td>
+			<td style="text-align: center"><strong>6177 ms</strong></td>
+			<td style="text-align: center">DevFast 14.4% faster</td>
+			<td style="text-align: center"><a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/JsonSample/JsonEnumeration/LatencyFileSerializationZeroComputation.cs"><strong>Source Code</strong></a></td>
+		</tr>
+		<tr style="background-color: #c9f3ff">
+			<th>Deserialization*<sup><span style="font-size: 11.6667px">M2</span></sup></th>
+			<td style="text-align: center">3,092,008 K Vs <strong>23,884 K</strong></td>
+			<td style="text-align: center"><strong>13392 ms</strong></td>
+			<td style="text-align: center">27331 ms</td>
+			<td style="text-align: center">DevFast 104.08% slower</td>
+			<td style="text-align: center"><a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/JsonSample/JsonEnumeration/LatencyFileDeserializationZeroComputation.cs"><strong>Source Code</strong></a></td>
+		</tr>
+	</tbody>
+</table>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/JArray_Ser_Mem.PNG" /></p>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/JArray_Des_Mem.PNG" /></p>
+
+<p>As a matter of fact, IEnumerable approach would keep one object alive per iteration (i.e. elements would be (de)serialized as iterator moves and hopefully <code>GC</code>ed on each iteration), thus those <strong>noticeable memory gain</strong>. Nonetheless, sometimes it might be beneficial to let the (de)serialization in parallel as (producer)consumer. Thus, following set of extension methods is proposed:</p>
+
+<pre lang="cs">
+Serialization Methods:
+&nbsp;       string ToJsonArrayParallely&lt;T&gt;(<strong>this </strong>BlockingCollection<strong>&lt;</strong>T&gt; source, ...)
+&nbsp;       void ToJsonArrayParallely&lt;T&gt;(<strong>this </strong>BlockingCollection<strong>&lt;</strong>T&gt; source, StringBuilder target, ...)
+&nbsp;       void ToJsonArrayParallely&lt;T&gt;(<strong>this </strong>BlockingCollection<strong>&lt;</strong>T&gt; source, Stream target, ...)
+&nbsp;       void ToJsonArrayParallely&lt;T&gt;(<strong>this </strong>BlockingCollection<strong>&lt;</strong>T&gt; source, TextWriter target, ...)
+&nbsp;       void ToJsonArrayParallely&lt;T&gt;(<strong>this </strong>BlockingCollection<strong>&lt;</strong>T&gt; source, JsonWriter target, ...)
+&nbsp;
+Deserialization Methods:
+&nbsp;       void FromJsonArrayParallely&lt;T&gt;(<strong>this </strong>StringBuilder source, BlockingCollection&lt;T&gt; target, ...)
+&nbsp;       void FromJsonArrayParallely&lt;T&gt;(<strong>this </strong>string source, BlockingCollection&lt;T&gt; target, ...)
+&nbsp;       void FromJsonArrayParallely&lt;T&gt;(<strong>this </strong>Stream source, BlockingCollection&lt;T&gt; target, ...)
+&nbsp;       void FromJsonArrayParallely&lt;T&gt;(<strong>this </strong>TextReader source, BlockingCollection&lt;T&gt; target, ...)
+&nbsp;       void FromJsonArrayParallely&lt;T&gt;(<strong>this </strong>JsonReader source, BlockingCollection&lt;T&gt; target, ...)
+</pre>
+
+<p>Another feature of such an approach is that we can control the number of objects we would like to keep in transit, during the whole operation, by assigning <code>BoundedCapacity</code>&nbsp;to our <code>BlockingCollection</code>&nbsp;(in other words, controlling memory profile). Lets quickly tabulate sample of memory and speed statistics:</p>
+
+<table align="center" border="2" cellpadding="5" cellspacing="5">
+	<caption style="background-color: #18bef2">Json Array (De)serialization with FileStream (Array Length = 5M, File Size = 629,145,601 Bytes)</caption>
+	<thead>
+		<tr style="background-color: #26ceff">
+			<th>Operation</th>
+			<th>Bounded Capacity*</th>
+			<th>Peak Memory<br />
+			(JsonConvert Vs DevFast)</th>
+			<th>DevFast Time</th>
+			<th>Link</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr style="background-color: #c4f1ff">
+			<td rowspan="2" style="text-align: center">Serialization</td>
+			<td style="text-align: center">NONE</td>
+			<td style="text-align: center"><strong>95,736 K</strong></td>
+			<td style="text-align: center"><strong>7105 ms</strong></td>
+			<td rowspan="2" style="text-align: center"><a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/JsonSample/JsonEnumeration/BcLatencyFileSerializationZeroComputation.cs"><strong>Source Code</strong></a></td>
+		</tr>
+		<tr style="background-color: #c9f3ff">
+			<td style="text-align: center">256</td>
+			<td style="text-align: center"><strong>25,476 K</strong></td>
+			<td style="text-align: center"><strong>8403 ms</strong></td>
+		</tr>
+		<tr style="background-color: #c4f1ff">
+			<td rowspan="2" style="text-align: center">Deserialization</td>
+			<td style="text-align: center">NONE</td>
+			<td style="text-align: center"><strong>26,932 K</strong></td>
+			<td style="text-align: center"><strong>30469 ms</strong></td>
+			<td rowspan="2" style="text-align: center"><a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/JsonSample/JsonEnumeration/BcLatencyFileDeserializationZeroComputation.cs"><strong>Source Code</strong></a></td>
+		</tr>
+		<tr style="background-color: #c9f3ff">
+			<td style="text-align: center">256</td>
+			<td style="text-align: center"><strong>25,020 K</strong></td>
+			<td style="text-align: center"><strong>31134 ms</strong></td>
+		</tr>
+	</tbody>
+</table>
+
+<p><em>*Must be instrumented with sample data, especially when producer is faster than consumer.</em></p>
+
+<h4><strong>Parallel Producer Consumer&nbsp;(</strong>PPC) case study with DevFast</h4>
+
+<p>As listed above, lets see how we can handle the two (2) cases, JSON file processing &amp; Reporting, using <code>PPC</code>&nbsp;with <strong><a href="http://www.nuget.org/packages/Dot.Net.DevFast/">DevFast</a></strong>.</p>
+
+<h5><a name="mysqlexample"><strong>Writing JSON records to file</strong></a></h5>
+
+<p>In order to demostrate the idea, we have (<a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/JsonSample/JsonReportDb/PpcMysql.cs"><strong>source code</strong></a>):</p>
+
+<ul>
+	<li>A local instance of <a href="https://www.mysql.com/"><strong>MySql</strong></a>&nbsp;database running.</li>
+	<li>This database contains its famous <strong>&quot;sakila&quot;</strong> <a href="https://en.wikipedia.org/wiki/Database_schema">Db-Schema</a>, that contains the table <code>&lt;film&gt;</code>&nbsp;(normally it contains 1000 rows with 13 columns)</li>
+	<li>we will simply use the SQL : <code>SELECT * FROM sakila.film where film_id &lt;=</code> <strong>SOME_UPPER_LIMIT</strong> <code>and&nbsp;film_id &gt;</code> <strong>SOME_LOWER_LIMIT</strong></li>
+	<li>We&#39;ll use a connection pool of 30 connections.</li>
+	<li>We will divide the &lt;<strong>SOME_LOWER_LIMIT,&nbsp;SOME_UPPER_LIMIT</strong>&gt; into 10 equal size chunks: <code>{(0, 100),&nbsp;(100, 200),&nbsp;(200, 300) ...&nbsp;(900, 1000)}</code></li>
+	<li>We&#39;ll fetch each chunk on a parallel connection and populate our <code>BlockingCollection</code></li>
+	<li>In order to increase the number of records, we&#39;ll do it over and over 1000 times (in parallel too, populating the same <code>BlockingCollection</code>)</li>
+	<li>Thus, in total we would be writing 1M records to JSON file.</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/MySql_Json_Array.PNG" /></p>
+
+<p>While running sample code we obtain following sampled performance statistics:</p>
+
+<ul>
+	<li>BlockingCollection bounded capacity: <strong>256</strong></li>
+	<li>Execution Time: <strong>14397 ms</strong></li>
+	<li>Peak Working Memory: <strong>44,544 K</strong></li>
+	<li>Json File Size:&nbsp;<strong>337,569,004 Bytes</strong></li>
+</ul>
+
+<h5>Reading JSON records from file</h5>
+
+<p>In order to demostrate the idea, we have (<a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/JsonSample/JsonReportDb/PpcFileStats.cs"><strong>source code</strong></a>):</p>
+
+<ul>
+	<li>JSON file created using MySql&#39;s sakila.film table above</li>
+	<li>File contains the Json Array of film objects</li>
+	<li>We use again PPC pattern to deserialize the data and perform loping at the same time on our BlockingCollection.</li>
+	<li>We perform some trivial calculations:
+	<ul>
+		<li>Count&nbsp;of items (i.e. films)</li>
+		<li>Average Rantal Rate</li>
+		<li>Average Film Length</li>
+	</ul>
+	</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/SimpleStats_Bc_Ppc_Json_Array.PNG" /></p>
+
+<p>While running sample code we obtain following sampled performance statistics:</p>
+
+<ul>
+	<li>BlockingCollection bounded capacity: <strong>256</strong></li>
+	<li>Execution Time: <strong>17731 ms</strong></li>
+	<li>Peak Working Memory: <strong>26,008 K</strong></li>
+	<li>Deserialized File Size:&nbsp;<strong>337,569,004 Bytes</strong></li>
+	<li>Total Records: <strong>1M</strong></li>
+</ul>
+
+<p>Though, the above sample shows a simple <code>PPC</code>&nbsp;pattern of single producer (i.e. deserializer) single consumer (i.e. our dequeuing&nbsp;<code>while</code> loop). Nonetheless, following patterns can also be easily constructed:</p>
+
+<ul>
+	<li>Multiple producer (deserialization on multiple files feeding same BlockingCollection) - single consumer (single dequeuing loop)</li>
+	<li>Single producer (single file deserialization) - multiple consumer (multiple dequeuing loop)</li>
+	<li>Multiple producer (deserialization on multiple files feeding same BlockingCollection) - multiple consumer (multiple dequeuing loop)</li>
+</ul>
+
+<h2>DevFast with Compression</h2>
+
+<p>C# .Net comes with <code>Deflate</code> &amp; <code>GZip</code>&nbsp;compression out of the box. <a href="http://www.nuget.org/packages/Dot.Net.DevFast/"><strong>DevFast</strong></a> takes the advantage over the fact and proposes following extension methods:</p>
+
+<pre lang="cs">
+Compression Methods:
+&nbsp;           Task CompressAsync(<strong>this </strong>ArraySegment&lt;byte&gt; source, Stream target, ...)
+&nbsp;           Task CompressAsync(<strong>this </strong>byte[] source, Stream target, ...)
+&nbsp;           Task CompressAsync(<strong>this </strong>Stream source, Stream target, ...)
+&nbsp;           Task CompressAsync(<strong>this </strong>StringBuilder source, Stream target, ...)
+&nbsp;           Task CompressAsync(<strong>this </strong>string source, Stream target, ...)
+&nbsp;
+Decompression Methods:
+&nbsp;           Task&lt;string&gt; DecompressAsStringAsync(<strong>this </strong>Stream source, ...)
+            Task DecompressAsync(<strong>this </strong>Stream source, StringBuilder target, ...)
+&nbsp;           Task DecompressAsync(<strong>this </strong>Stream source, Stream target, ...)
+&nbsp;           Task&lt;byte[]&gt; DecompressAsync(<strong>this </strong>Stream source, ...)
+&nbsp;           Task&lt;ArraySegment&lt;byte&gt;&gt; DecompressAsSegmentAsync(<strong>this </strong>Stream source, ...)
+</pre>
+
+<p>Reason behind introducing these extensions on&nbsp;<code>ArraySegment&lt;byte&gt;</code> &amp;&nbsp;<code>StringBuilder</code>&nbsp;is to avoid the extra Array (byte or string) creation/copy operations. As these methods are quite straight forward, we quickly lok at these; so that we can look at something more interesting in the next section. Following snapshot provide a quick look on the usage of these methods:</p>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Trivial_compression.PNG" /></p>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Trivial_Decompression.PNG" /></p>
+
+<h2>DevFast Pipelines</h2>
+
+<p>It is true, compression extension methods usage is not rocket science and technically less interesting (yet useful, and who does not love these single liners... haha!). But, moving forward lets think bigger (and better)... afterall, we have introduced all these extensions. We are in a position, now, to exploit the possibility of <strong>low-latency pipeline</strong>, yet pursue <strong>readability</strong> with the help of these single-liners. To see it, we must set a non-trivial use case. Lets begin:</p>
+
+<blockquote class="quote">
+<div class="op">Client Story:</div>
+
+<p>One fine day, your client asks you to implement a feature with following user-story:</p>
+
+<p>As a user, I would like to have an extract of all the transactions of&nbsp;a given date.</p>
+</blockquote>
+
+<blockquote class="quote">
+<div class="op">Product Owner Story:</div>
+
+<p>Based on user story, product owner, after an apocalyptical introspection/brain-storm, decides to create a new service &quot;TransactionReporting&quot; and claims the budget for the same. Client/PO negotiate on a delivery within 6 months with 100K $ of budget + some regular running feature maintenance budget.</p>
+</blockquote>
+
+<blockquote class="quote">
+<div class="op">Architect Story:</div>
+
+<p>Once budget is sanctioned, PO initiates bilateral talk, with an Architect in confidence, to arrange a solution design, Tech Specs etc. As, <a href="https://en.wikipedia.org/wiki/Web_API"><strong>WebAPI</strong></a>/<code>JSON</code> are&nbsp;buzzwords, Architect proposes using <code>JSON</code> data exchange in streaming over <code>GET</code>. He also noticed that the byte volume could be high for available bandwidth, thus, suggests compression. Furthermore, due to large number of records, he warns about some significant latency during the database fetch operation (<code>select query</code>), thus, suggest implementation of <code>POST</code> (with <code>202</code> response) to accept <code>Date</code>. And another <code>GET</code>&nbsp;(for status monitoring purpose, <code>200</code> and <code>201</code> responses) and a final <code>GET</code>&nbsp;(to actually recover the file, <code>200</code>&nbsp;response) with GZip compressed JSON file in streaming.</p>
+
+<p>(other possibilities:&nbsp;<strong><a href="https://blogs.msdn.microsoft.com/webdev/2015/09/04/introducing-microsoft-asp-net-webhooks-preview/">WebHooks</a></strong>, 3<sup>rd</sup> party <a href="https://en.wikipedia.org/wiki/Middleware"><strong>Middleware</strong></a>,&nbsp;<a href="https://en.wikipedia.org/wiki/File_Transfer_Protocol"><strong>FTP</strong></a>,&nbsp;<a href="https://en.wikipedia.org/wiki/Shared_resource"><strong>shared resource</strong></a>&nbsp;for file exchange etc... Nevermind...)</p>
+</blockquote>
+
+<blockquote class="quote">
+<div class="op">Team Lead Story:</div>
+
+<p>Once design is on the table, Team Lead starts <strong><a href="https://en.wikipedia.org/wiki/Continuous_delivery">continuous delivery</a></strong>&nbsp;cycle with developers in the team and start creating technical tasks with associated functional &amp; technical specs and sprint planning. So he decides a common multi-layered approach with Presentation/Business/Data Access/Data etc layers.</p>
+</blockquote>
+
+<blockquote class="quote">
+<div class="op">Developer Story:</div>
+
+<p>Based on received functional/tenchnical specs, developer&#39;s work reduced to:</p>
+
+<ul>
+	<li>Development of all the tiers</li>
+	<li><a href="https://en.wikipedia.org/wiki/Software_testing#Unit_testing"><strong>Unit</strong></a> &amp; <a href="https://en.wikipedia.org/wiki/Software_testing#Integration_testing"><strong>Integration</strong></a> Testing</li>
+	<li><a href="https://en.wikipedia.org/wiki/Software_testing#Software_performance_testing"><strong>Performance</strong></a> Testing</li>
+</ul>
+</blockquote>
+
+<p>Now having all these stories available, we have a better view of the problem. From a developer perspective (from <a href="https://en.wikipedia.org/wiki/Agile_software_development"><strong>AGILE</strong></a> point of view), we have lot to do under these three (3) major category. Testing (even under <a href="https://en.wikipedia.org/wiki/Test-driven_development"><strong>TDD</strong></a>), <a href="https://en.wikipedia.org/wiki/Code_coverage"><strong>code coverage</strong></a>, improving <a href="https://en.wikipedia.org/wiki/SonarQube"><strong>SONAR</strong></a> <a href="https://en.wikipedia.org/wiki/Performance_indicator"><strong>KPI</strong></a>s etc demands a lot of efforts and time. And to be truthful, Performance testing (latency, volume, network load etc tests) is procrastinated&nbsp;most of the time until the very end. <strong>And if those tests are unsatisfactory... hmmm! God helps the team :)</strong></p>
+
+<p>Anyway, in this given situation, we know that we need to perform performance testing at least at following places:</p>
+
+<ol>
+	<li>Network layer (file streaming during <code>GET</code>) : Beyond the scope of this article and warrants a separate article; nonetheless, have a look at&nbsp;<strong><a href="https://msdn.microsoft.com/en-us/library/system.net.http.pushstreamcontent(v=vs.118).aspx">PushStreamContent</a></strong>&nbsp;and just to begin with create a bogus large text/json file to be transferred from server to client using <code>Get</code> with a <strong><a href="https://msdn.microsoft.com/en-us/library/system.diagnostics.stopwatch(v=vs.110).aspx">Stopwatch</a></strong>.</li>
+	<li>Database Select Query (assuming we are still talking about&nbsp;<a href="https://en.wikipedia.org/wiki/Relational_database"><strong>Relational DBs</strong></a>) : Query/Data-Model optimization is beyond the scope of this article and warrants a separate article.</li>
+	<li>JSON Serialization to file</li>
+	<li>JSON file compression</li>
+</ol>
+
+<p>So this section is all about point 3) &amp; 4) and here we will see how <a href="https://www.nuget.org/packages/Dot.Net.DevFast/"><strong>DevFast</strong></a>&nbsp;is going to help you out. <strong>I urge you to pause reading and think for a while, if it would be you, what would be your solution look like? Also, assume for the moment you do NOT have DevFast package available to you!</strong></p>
+
+<p>In order to understand what&nbsp;we are trying to achieve, it is important we perform the iteration in the same fashion as a developer, who iteratively improves his solution everytime his performance <a href="https://en.wikipedia.org/wiki/Performance_indicator"><strong>KPI</strong></a>s are in <font color="#ff0000"><strong>RED</strong></font>, would do! So lets look at following approaches:</p>
+
+<h5>Approach 1 (Lists are Friendly)</h5>
+
+<p>We consider following kind-of-<a href="https://en.wikipedia.org/wiki/Pseudocode"><strong>pseudocode</strong></a>: (// as comments lines)</p>
+
+<pre lang="cs">
+//This line is a Memory <strong>Black Hole</strong>!
+//Fetching a small set of record is all OK in this fashion
+//but fetching 10&#39;s of thousands or millions of records! No way!
+//Either you invite OutOfMemory (OOM) exception OR
+//you have a HELL lot of RAM installed, do NOT breach
+//.Net physical boundaries, do NOT care about GC and so on...
+//And in such a case, wts the use of performance testing?
+List&lt;TransactionRecord&gt; transactionRecords = dataAccessInstance
+                                    .FetchTransactionRecordFor(dateOfTheTransaction);
+
+//Another devil in the corner! Likely to trigger OOM
+//or breach Max Object size
+var jsonString = JsonConvert.SerializeObject(transactionRecords);
+
+//just need to choose where the file is: on FAR network system,
+//or locally?
+File.WriteAllText(@&quot;&lt;Full Path Of JSON file&gt;&quot;, jsonString);
+
+//After doing all writing, again reading from 1 file and writing to another!!!
+//I/O operations are known to be slower! Thus, latency is expected. 
+//Careful choice of buffersize/compression scheme might be helpful
+FileInfo compressedFile = compressionEngine.Compress(@&quot;&lt;Full Path Of JSON file&gt;&quot;);
+</pre>
+
+<h5>Approach 2 (IEnumerable is Friendly)</h5>
+
+<p>So we have problems with <code>List</code>s, but thanks to <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/yield"><strong>yield return</strong></a>&nbsp;we can iterate over our implementation.&nbsp;We consider following kind-of-<a href="https://en.wikipedia.org/wiki/Pseudocode"><strong>pseudocode</strong></a>: (// as comments lines)</p>
+
+<pre>
+//once we have DataReader:
+//while(dataReader.Read())
+//{
+//     yield return CreateNewTransactionRecord(dataReader); // usual column to property mapping
+//}
+using(var fileHandle = CreateFileWriter(@&quot;&lt;Full Path Of JSON file&gt;&quot;))
+{
+    //writing &quot;[&quot;
+    fileHandle.Write(jsonArrayStartToken);
+    foreach(var obj in dataAccessInstance.FetchTransactionRecordAsEnumerable(dateOfTheTransaction))
+    {
+        //writing json string of the object
+        fileHandle.Write(JsonConvert.SerializeObject(obj));
+        
+        //writing &quot;,&quot;
+        fileHandle.Write(objectSeparatorToken);
+    }
+    //writing &quot;]&quot;
+    fileHandle.Write(jsonArrayEndToken);
+}
+
+//After doing all writing, again reading from 1 file and writing to another!!!
+//I/O operations are known to be slower! Thus, latency is expected. 
+//Careful choice of buffersize/compression scheme might be helpful
+FileInfo compressedFile = compressionEngine.Compress(@&quot;&lt;Full Path Of JSON file&gt;&quot;);
+</pre>
+
+<p>All looks good for the moment, nonetheless, we notice that while we fetch data from DB we neither do JSON serialization nor do file writing and vice-versa. Furthermore, we also know that both DB operation and File operation are I/O bound, so we must consider Parallel Producer-Consumer (PPC) implementation. Very interstingly, once we are on PPC, we are free to launch many queries in parallel on disjoint partitions of the data.</p>
+
+<h5>Approach 3&nbsp;(PPC is Friendly)</h5>
+
+<p>In order to decouple data fetching from JSON writing lets consider following kind-of-<a href="https://en.wikipedia.org/wiki/Pseudocode"><strong>pseudocode</strong></a>: (// as comments lines)</p>
+
+<pre>
+//Inside PopulateTransactionRecordParallel function:
+//try
+//{
+//      while(dataReader.Read())
+//      {
+//           //Adding objs using usual column to property mapping
+//           blockingCollection.Add(CreateNewTransactionRecord(dataReader));
+//      }
+//}
+//finally
+//{
+//    blockingCollection.CompleteAdding();// mandatory, else consumer will go in infinite sleep (DEADLOCK!)
+//}
+using(var fileHandle = CreateFileWriter(@&quot;&lt;Full Path Of JSON file&gt;&quot;))
+{
+    var collection = new BlockingCollection();//perhaps with some capacity
+    var dbtask = Task.Run(() =&gt; dataAccessInstance
+            .PopulateTransactionRecordParallel(dateOfTheTransaction, collection));
+    //writing &quot;[&quot;
+    fileHandle.Write(jsonArrayStartToken);
+    foreach(var obj in collection.GetConsumingEnumerable())
+    {
+        //writing json string of the object
+        fileHandle.Write(JsonConvert.SerializeObject(obj));
+        
+        //writing &quot;,&quot;
+        fileHandle.Write(objectSeparatorToken);
+    }
+    //writing &quot;]&quot;
+    fileHandle.Write(jsonArrayEndToken);
+    
+    //in case, task throw some error.
+    await dbtask.ConfigureAwait(false);
+}
+
+//After doing all writing, again reading from 1 file and writing to another!!!
+//I/O operations are known to be slower! Thus, latency is expected. 
+//Careful choice of buffersize/compression scheme might be helpful
+FileInfo compressedFile = compressionEngine.Compress(@&quot;&lt;Full Path Of JSON file&gt;&quot;);
+</pre>
+
+<p>All looks good for the moment, nonetheless, we notice that there are other places where we can improve performance, for example:</p>
+
+<ul>
+	<li>Instead of creating JSON string and then writing on the file, why not directly write it on the file stream?</li>
+	<li>Instead of first creating a JSON file and then performing compression on it, why not perform compression at the file writing time?</li>
+</ul>
+
+<p><strong>This is where DevFast will pitch-in to help you (of course, with its single liners!!!).</strong> But before, we begin we need to, again, assume few things:</p>
+
+<ul>
+	<li>As we practically do <strong>NOT</strong> have these transaction records with a timestamp, we will assume that we need to send our famous <strong>MySql&#39;s sakila.film</strong> data.</li>
+	<li>In order to mimic the volume, we will redundantly fetch those 1000 records over and over again and, of course, we will fetch those in the chunk of 100 records per select query.</li>
+	<li>We will maintain our connection pool of 30 connections as we have done previously in this article (of course, you remember all this! No worries, you can always go back to&nbsp;<a href="#mysqlexample"><strong>Writing JSON records to file</strong></a>)</li>
+	<li>Compression is either GZip or Deflate.</li>
+</ul>
+
+<p>Lets see how using <a href="https://www.nuget.org/packages/Dot.Net.DevFast/"><strong>DevFast library</strong></a>&nbsp;we can re-write Approach 2 and Approach 3 and generate some sample statistics:</p>
+
+<ul>
+	<li>Approach 4 =&gt; Rewriting Approach 2, using DevFast ToJsonArray extension method</li>
+	<li>Approach 5 =&gt; Rewriting Approach 3, using&nbsp;DevFast ToJsonArrayParallely extension method</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Enumerable_Pipeline_1_Liners.PNG" /></p>
+
+<table align="center" border="2" cellpadding="5" cellspacing="5">
+	<caption style="background-color: #18bef2">DevFast IEnumerable Pipeline</caption>
+	<thead>
+		<tr style="background-color: #26ceff">
+			<th>Operation</th>
+			<th>Approach 2<br />
+			Time</th>
+			<th>Approach 4<br />
+			(DevFast) Time</th>
+			<th>Peak Memory<br />
+			Bytes</th>
+			<th>Remarks</th>
+			<th>Link</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr style="background-color: #fffbc9">
+			<td colspan="7" style="text-align: center"><strong>(Total Records = 1M, Uncompressed JSON File = 337,569,004 Bytes, GZip Compression)</strong></td>
+		</tr>
+		<tr style="background-color: #c4f1ff">
+			<td style="text-align: center">Serialization</td>
+			<td style="text-align: center">33930 ms</td>
+			<td style="text-align: center"><strong>24865 ms</strong></td>
+			<td style="text-align: center">42,172 K</td>
+			<td style="text-align: center">DevFast is<br />
+			26.71% faster</td>
+			<td rowspan="2" style="text-align: center"><strong><a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/JsonSample/Pipelining/EnumerableMysqlCompression.cs">Source Code</a></strong></td>
+		</tr>
+		<tr style="background-color: #c4f1ff">
+			<td style="text-align: center">Deserialization<sup>2</sup></td>
+			<td style="text-align: center">-</td>
+			<td style="text-align: center">13491 ms<sup>3</sup></td>
+			<td style="text-align: center">24,932 K<sup>3</sup></td>
+			<td style="text-align: center">-</td>
+		</tr>
+	</tbody>
+</table>
+
+<p><em><sup>1</sup>Must be instrumented with sample data, especially when producer is faster than consumer.</em><br />
+<em><sup>2</sup>For Approach 2, no mechanism is known to fetch data as IEnumerable without Memory pressure!&nbsp;For DevFast only Compression &amp; Looping considered (DB operations left for readers)<br />
+<sup>3</sup>Fast consumer effect (counting loop is faster than deserialization). This time can be viewed as pure <u><strong>Enumerable&nbsp;Pipeline Horsepower</strong></u> (Deserialization+Decompression&nbsp;time)</em></p>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Ppc_Pipeline_1_Liners.PNG" /></p>
+
+<table align="center" border="2" cellpadding="5" cellspacing="5">
+	<caption style="background-color: #18bef2">DevFast PPC Pipeline</caption>
+	<thead>
+		<tr style="background-color: #26ceff">
+			<th>Operation</th>
+			<th>Bounded Capacity<sup>1</sup></th>
+			<th>Approach 3<br />
+			Time</th>
+			<th>Approach 5<br />
+			(DevFast) Time</th>
+			<th>Peak Memory<br />
+			Bytes (3 &amp; 5)</th>
+			<th>Remarks</th>
+			<th>Link</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr style="background-color: #fffbc9">
+			<td colspan="7" style="text-align: center"><strong>(Total Records = 1M, Uncompressed JSON File = 337,569,004 Bytes, GZip Compression)</strong></td>
+		</tr>
+		<tr style="background-color: #c4f1ff">
+			<td rowspan="2" style="text-align: center">Serialization</td>
+			<td style="text-align: center">NONE</td>
+			<td style="text-align: center">31839&nbsp;ms</td>
+			<td style="text-align: center"><strong>16599 ms</strong></td>
+			<td style="text-align: center">647,816 K</td>
+			<td style="text-align: center">DevFast is<br />
+			47.86% faster</td>
+			<td rowspan="4" style="text-align: center"><strong><a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/JsonSample/Pipelining/PpcMysqlCompression.cs">Source Code</a></strong></td>
+		</tr>
+		<tr style="background-color: #c9f3ff">
+			<td style="text-align: center">256</td>
+			<td style="text-align: center">41496 ms</td>
+			<td style="text-align: center"><strong>31614 ms</strong></td>
+			<td style="text-align: center">45,388 K</td>
+			<td style="text-align: center">DevFast is<br />
+			23.81% faster</td>
+		</tr>
+		<tr style="background-color: #c4f1ff">
+			<td rowspan="2" style="text-align: center">Deserialization<sup>2</sup></td>
+			<td style="text-align: center">NONE</td>
+			<td style="text-align: center">-</td>
+			<td style="text-align: center">14334 ms<sup>3</sup></td>
+			<td style="text-align: center">26,736 K<sup>3</sup></td>
+			<td style="text-align: center">-</td>
+		</tr>
+		<tr style="background-color: #c9f3ff">
+			<td style="text-align: center">256</td>
+			<td style="text-align: center">-</td>
+			<td style="text-align: center">14634 ms<sup>3</sup></td>
+			<td style="text-align: center">26,744 K<sup>3</sup></td>
+			<td style="text-align: center">-</td>
+		</tr>
+	</tbody>
+</table>
+
+<p><em><sup>1</sup>Must be instrumented with sample data, especially when producer is faster than consumer.</em><br />
+<em><sup>2</sup>For Approach 3, no mechanism is known to fetch data in BlockingCollection directly!&nbsp;For DevFast only Compression &amp; Looping considered (DB operations left for readers)<br />
+<sup>3</sup>Fast consumer effect (counting loop is faster than deserialization). This time can be viewed as pure <u><strong>PPC Pipeline Horsepower</strong></u> (Deserialization+Decompression&nbsp;time)</em></p>
+
+<h2>Miles to go...</h2>
+
+<p>Here we wrote about what we have proposed until v1.1.2 and we have a lot more to propose and constraint by the time :( Nonetheless, we hope that this article has a lots of statistics, snapshots, and 1-liners for you.</p>
+
+<p>Incessantly, we are adding more and more code in this lib, in order to bring you helpful one-liners. We would be happy to know your requirements and on the way, we&#39;ll prioritize those. Hope to see you back in a couple of months.</p>
+
+<p><strong>Useful links:</strong></p>
+
+<ul>
+	<li>
+	<p><strong><a href="https://github.com/samaysar/dotdotnet">Our GitHub Repo</a></strong></p>
+	</li>
+	<li>
+	<p><strong><a href="https://www.nuget.org/packages/Dot.Net.DevFast">Nuget Page</a></strong></p>
+	</li>
+	<li>
+	<p><strong><a href="https://github.com/samaysar/dotdotnet/wiki/DevFast">GitHub Wiki</a></strong></p>
+	</li>
+	<li>
+	<p><strong><a href="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/ReleaseNotes.txt">Release Notes</a></strong></p>
+	</li>
+</ul>
+
+<p>Let us know your thoughts.</p>
+
+<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr class="artclnk">
+			<td style="text-align: left"><h2><a href="SimplyDevFast.html">&lt;&lt; Previous Article (Lets Shake Hands)</a></h2></td>
+			<td style="text-align: right"><h2><a href="MeetPpc.html">Next Article (Meet Parallel Producers/Consumers) &gt;&gt;</a></h2></td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>

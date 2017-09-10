@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>DevFast - Lets Shake Hands</title>
+<meta http-equiv="content-language" content="en-US">
+<meta charset="UTF-8">
+<meta name="Description" CONTENT="What if boilerplate code can be written as one-liner? What if you never need to write more than a single line to test condition & throw exception? What if Sonar metrics can be improved without fuss? What if without compromising the code readability, method chaining can be used extensively?, Author: D Sarthi Maheshwari, Category: C# .Net Programming Library Fast Efficient Code Development">
+<meta name="Author" content="D Sarthi Maheshwari">
+<link type="text/css" rel="stylesheet" href="main.min.css">
+</head>
+
+<body>
+<h1 class="ttlpl">DevFast - Lets Shake Hands</h1>
+
+<p>What if boilerplate code can be written as one-liner? What if you never need to write more than a single line to test condition & throw exception? What if Sonar metrics can be improved without fuss? What if without compromising the code readability, method chaining can be used extensively?</p>
+
+<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr class="artclnk">
+			<td style="text-align: left"></td>
+			<td style="text-align: right"><h2><a href="RDV_JSON.html">Next Article (Rendezvous with JSON) &gt;&gt;</a></h2></td>
+		</tr>
+	</tbody>
+</table>
+
+<h2>Hello DevFast!</h2>
+
+<p>DevFast stands for &quot;Develop Fast&quot;; and never means that to do faster code development, we compromise the code quality or leave soft corners in the code.</p>
+
+<p>Keeping this in mind, here we talk about a library that is easy to use, yet powerful, contains a set of extension methods, and that is equipped with extensive XML documentation too. A set of extension methods which any C# .NET programmer requires almost all the time.</p>
+
+<p>In the v1 of this library, we propose the following features:</p>
+
+<ul>
+	<li>Carefully naming of methods to maintain code readability</li>
+	<li>Proposing a lot of quotidian programming needs as one-liner</li>
+	<li>Method chaining is all the way</li>
+	<li>Minimal boilerplate code</li>
+	<li>Extensively test covered</li>
+</ul>
+
+<p><strong>Useful links:</strong></p>
+
+<ul>
+	<li>
+	<p><strong><a href="https://github.com/samaysar/dotdotnet">Our GitHub Repo</a></strong></p>
+	</li>
+	<li>
+	<p><strong><a href="https://www.nuget.org/packages/Dot.Net.DevFast">Nuget Page</a></strong></p>
+	</li>
+	<li>
+	<p><strong><a href="https://github.com/samaysar/dotdotnet/wiki/DevFast">GitHub Wiki</a></strong></p>
+	</li>
+	<li>
+	<p><strong><a href="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/ReleaseNotes.txt">Release Notes</a></strong></p>
+	</li>
+</ul>
+
+<h2>Trying Is Everything</h2>
+
+<h3>Simplest Way to Understand What this Lib Can Do For You is to:</h3>
+
+<ul>
+	<li>Reference it in your project</li>
+	<li>Take a <code>string</code> variable and type <code>.T</code> to find possible extensions</li>
+</ul>
+
+<hr />
+<h3>Sample Codes of Following PNG Snapshots are Available as <a href="https://github.com/samaysar/dotdotnet/tree/develop/samples/Dot.Net.DevFast.Sample">Dot.Net.DevFast.Sample</a></h3>
+
+<hr />
+<h2>DevFast Over Breakfast</h2>
+
+<p>Before we look at those methods, first let&#39;s see if we would like to write the following program:</p>
+
+<blockquote class="quote">
+<div class="op">&nbsp;</div>
+
+<h5><strong>&quot;Create a function that accepts a string, parses it as <code>DateTime</code>, if parsing fails, return 12 Jan, 2000 as value&quot;</strong></h5>
+</blockquote>
+
+<p>To write such a program for such a simple requirement, we might:</p>
+
+<ul>
+	<li>need to consider <code>null</code> values</li>
+	<li>perform unit testing</li>
+	<li>maintain it throughout the project lifetime</li>
+	<li>most interestingly, we need to spend time writing it! It means during that time, we CANNOT do something else far more exciting!</li>
+	<li>above all, such mundane requirements are seldom project specific; so if not packetized, we need to reinvent the wheel again.</li>
+</ul>
+
+<p>On the other hand, with DevFast added as reference, this code a one-liner. Let&#39;s see a sample as the following picture (<a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/DateTimeParser.cs">sample code</a>):</p>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/ToOrDefault.png" style="height: 453px; width: 640px" /></p>
+
+<h2>String.T Variants</h2>
+
+<ul>
+	<li><code>.TryTo</code> =&gt; <code>string</code> parsing to <code>bool</code>,<code>int</code>,<code>long</code>,<code>decimal</code>,<code>DateTime</code>,<code>Enum</code>,<code>Type</code>, etc.</li>
+	<li><code>.ToOrDefault</code> =&gt; <code>string</code> parsing to <code>bool</code>, <code>int</code>, <code>long</code>, <code>decimal</code>, <code>DateTime</code>, <code>Enum</code>, <code>Type</code>, etc. with given default value</li>
+	<li><code>.To</code> variants =&gt; <code>string</code> parsing to <code>FileInfo</code>, <code>DirectoryInfo</code>, <code>bool</code>,<code>int</code>,<code>long</code>,<code>decimal</code>,<code>DateTime</code>,<code>Enum</code>,<code>Type</code>, etc. throws Exception when parsing fails.</li>
+	<li><code>.Trim</code> variants =&gt; <code>string</code> <code>trim</code> specific methods</li>
+	<li><code>.Throw</code> variants =&gt; Exception throwing methods when <code>string</code> satisfies certain conditions.</li>
+	<li><code>.ToBase64</code> / <code>.FromBase64</code> variants =&gt; <code>Base64</code> <code>string</code> conversion methods</li>
+	<li><code>.Transform</code> variants =&gt; <code>String</code> transformation methods (<code>Base64</code> is a special case)</li>
+</ul>
+
+<p>The below picture shows some sample use cases (<a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/StringSample.cs">sample code</a>):</p>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/StringVariants.png" style="height: 240px; width: 640px" /></p>
+
+<h2>.Throw Variants</h2>
+
+<ul>
+	<li><code>.ThrowIf</code> / <code>.ThrowIfNot</code> =&gt; on <code>bool.</code> throws when <code>true</code> (<code>ThrowIf</code>) or <code>false</code> (<code>ThrowIfNot</code>). Though it might look trivial, it is very powerful. Almost all other <code>Throw</code>s fallbacks on it.</li>
+	<li><code>.ThrowIfNull</code> =&gt; On any <code>T</code> which is <code>class</code> (<code>ReferenceType</code>).</li>
+	<li><code>.ThrowIfNullOrEmpty</code> =&gt; On any <code>T</code> which is <code>ICollection</code> (<code>Array</code>, <code>List</code>, etc.).</li>
+	<li><code>.ThrowOnMiss</code> =&gt; On Dictionary / Collections type. When supplied Key / valye is not in it.</li>
+	<li><code>.ThrowIfZero</code> / <code>.ThrowIfNotZero</code> =&gt; as the name suggests (<code>int</code>/ <code>long</code>)</li>
+	<li><code>.ThrowIfEqual</code> / <code>.ThrowIfNotEqual</code> =&gt; Any <code>T</code> which is <code>IEquatable</code></li>
+	<li><code>.ThrowIfLess</code> / <code>.ThrowIfGreater</code> =&gt; Any <code>T</code> which is <code>IComparable</code></li>
+	<li><code>.ThrowIfBounded</code> / <code>.ThrowIfNotBounded</code> =&gt; Any <code>T</code> which is <code>IComparable</code></li>
+</ul>
+
+<p>The below picture shows some sample use cases (<a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/ThrowSample.cs">sample code</a>):</p>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/ThrowVariants.png" style="height: 435px; width: 640px" /></p>
+
+<h2>.ToBase64 Variants</h2>
+
+<ul>
+	<li><code>.ToBase64</code> / <code>.FromBase64</code> =&gt; on <code>string</code>, <code>byte[]</code>, <code>ArraySegment&lt;byte&gt;</code></li>
+	<li><code>.ToBase64Async </code>/ <code>.FromBase64Async</code> =&gt; on <code>string</code>, <code>byte[]</code>, <code>ArraySegment&lt;byte&gt;</code>, <code>StringBuilder</code>, <code>Stream</code></li>
+</ul>
+
+<p>The below picture shows some sample use cases (<a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/Base64Sample.cs">sample code</a>):</p>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Base64.png" style="height: 612px; width: 640px" /></p>
+
+<h2>Miscellaneous Methods</h2>
+
+<ul>
+	<li><code>.TransformAsync</code> =&gt; on <code>string</code>, <code>byte[]</code>, <code>ArraySegment&lt;byte&gt;</code>, <code>StringBuilder</code>, <code>Stream</code> to perform various <code>Crypto</code> transformations</li>
+	<li><code>.CreateFileInfo</code> =&gt; on <code>DirectoryInfo</code> to create <code>FileInfo</code> object</li>
+	<li><code>.CreateBytes</code> =&gt; on <code>ArraySegment&lt;byte&gt;</code> to create <code>byte[]</code></li>
+</ul>
+
+<p>The below picture shows some sample use cases (<a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/TransformSample.cs">sample code</a>):</p>
+
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Rijndael.png" style="height: 505px; width: 640px" /></p>
+
+<h2>Let&#39;s NOT Say Goodbye...</h2>
+
+<p>Here, we discussed what we propose as v1 of DevFast. We are continuously adding more and more code in it to bring you helpful one-liners. We would be happy to know your requirements and on the way, we&#39;ll prioritize those.</p>
+
+<p><strong>Useful links:</strong></p>
+
+<ul>
+	<li>
+	<p><strong><a href="https://github.com/samaysar/dotdotnet">Our GitHub Repo</a></strong></p>
+	</li>
+	<li>
+	<p><strong><a href="https://www.nuget.org/packages/Dot.Net.DevFast">Nuget Page</a></strong></p>
+	</li>
+	<li>
+	<p><strong><a href="https://github.com/samaysar/dotdotnet/wiki/DevFast">GitHub Wiki</a></strong></p>
+	</li>
+	<li>
+	<p><strong><a href="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/ReleaseNotes.txt">Release Notes</a></strong></p>
+	</li>
+</ul>
+
+<p>Let us know your thoughts.</p>
+
+<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr class="artclnk">
+			<td style="text-align: left"></td>
+			<td style="text-align: right"><h2><a href="RDV_JSON.html">Next Article (Rendezvous with JSON) &gt;&gt;</a></h2></td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>
