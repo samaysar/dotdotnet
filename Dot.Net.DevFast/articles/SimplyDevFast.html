@@ -5,10 +5,18 @@
 html {
  font-size: 18px;
 }
+blockquote {
+ background-color: #ffffcc;
+ font-size: 32px
+}
+pre {
+ background-color: #ffffcc;
+ font-size: 16px
+}
 </style>
 </head>
 <body bgcolor="#e8f4fc">
-<h3 style="text-align: right"><a href="https://rawgit.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/articles/RDV_JSON.html">Next Article (Rendezvous with JSON)&gt;&gt; </a></h3>
+<h2 style="background-color:#e06266;text-align: right"><a href="RDV_JSON.html">Next Article (Rendezvous with JSON)&gt;&gt; </a></h2>
 
 <h2>Hello DevFast!</h2>
 
@@ -26,9 +34,22 @@ html {
 	<li>Extensively test covered</li>
 </ul>
 
-<h3><a href="https://github.com/samaysar/dotdotnet/wiki">WIKI LINK</a></h3>
+<p><strong>Useful links:</strong></p>
 
-<h3><a href="https://www.nuget.org/packages/Dot.Net.DevFast">NUGET PACKAGE</a></h3>
+<ul>
+	<li>
+	<p><strong><a href="https://github.com/samaysar/dotdotnet">Our GitHub Repo</a></strong></p>
+	</li>
+	<li>
+	<p><strong><a href="https://www.nuget.org/packages/Dot.Net.DevFast">Nuget Page</a></strong></p>
+	</li>
+	<li>
+	<p><strong><a href="https://github.com/samaysar/dotdotnet/wiki/DevFast">GitHub Wiki</a></strong></p>
+	</li>
+	<li>
+	<p><strong><a href="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/ReleaseNotes.txt">Release Notes</a></strong></p>
+	</li>
+</ul>
 
 <h2>Trying Is Everything</h2>
 
@@ -48,8 +69,6 @@ html {
 <p>Before we look at those methods, first let&#39;s see if we would like to write the following program:</p>
 
 <blockquote class="quote">
-<div class="op">&nbsp;</div>
-
 <h5><strong>&quot;Create a function that accepts a string, parses it as <code>DateTime</code>, if parsing fails, return 12 Jan, 2000 as value&quot;</strong></h5>
 </blockquote>
 
@@ -65,7 +84,7 @@ html {
 
 <p>On the other hand, with DevFast added as reference, this code a one-liner. Let&#39;s see a sample as the following picture (<a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/DateTimeParser.cs">sample code</a>):</p>
 
-<p><img src="ToOrDefault.png" style="height: 453px; width: 640px" /></p>
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/ToOrDefault.png" style="height: 453px; width: 640px" /></p>
 
 <h2>String.T Variants</h2>
 
@@ -81,7 +100,7 @@ html {
 
 <p>The below picture shows some sample use cases (<a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/StringSample.cs">sample code</a>):</p>
 
-<p><img src="StringVariants.png" style="height: 240px; width: 640px" /></p>
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/StringVariants.png" style="height: 240px; width: 640px" /></p>
 
 <h2>.Throw Variants</h2>
 
@@ -98,7 +117,7 @@ html {
 
 <p>The below picture shows some sample use cases (<a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/ThrowSample.cs">sample code</a>):</p>
 
-<p><img src="ThrowVariants.png" style="height: 435px; width: 640px" /></p>
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/ThrowVariants.png" style="height: 435px; width: 640px" /></p>
 
 <h2>.ToBase64 Variants</h2>
 
@@ -109,7 +128,7 @@ html {
 
 <p>The below picture shows some sample use cases (<a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/Base64Sample.cs">sample code</a>):</p>
 
-<p><img src="Base64.png" style="height: 612px; width: 640px" /></p>
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Base64.png" style="height: 612px; width: 640px" /></p>
 
 <h2>Miscellaneous Methods</h2>
 
@@ -121,22 +140,30 @@ html {
 
 <p>The below picture shows some sample use cases (<a href="https://github.com/samaysar/dotdotnet/blob/develop/samples/Dot.Net.DevFast.Sample/Dot.Net.DevFast.Sample/TransformSample.cs">sample code</a>):</p>
 
-<p><img src="Rijndael.png" style="height: 505px; width: 640px" /></p>
+<p><img src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Rijndael.png" style="height: 505px; width: 640px" /></p>
 
 <h2>Let&#39;s NOT Say Goodbye...</h2>
 
 <p>Here, we discussed what we propose as v1 of DevFast. We are continuously adding more and more code in it to bring you helpful one-liners. We would be happy to know your requirements and on the way, we&#39;ll prioritize those.</p>
 
-<p>Useful links:</p>
+<p><strong>Useful links:</strong></p>
 
 <ul>
-	<li><a href="https://github.com/samaysar/dotdotnet">Our GitHub Repo</a></li>
-	<li><a href="https://www.nuget.org/packages/Dot.Net.DevFast">Nuget Page</a></li>
-	<li><a href="https://github.com/samaysar/dotdotnet/wiki/DevFast">GitHub Wiki</a></li>
+	<li>
+	<p><strong><a href="https://github.com/samaysar/dotdotnet">Our GitHub Repo</a></strong></p>
+	</li>
+	<li>
+	<p><strong><a href="https://www.nuget.org/packages/Dot.Net.DevFast">Nuget Page</a></strong></p>
+	</li>
+	<li>
+	<p><strong><a href="https://github.com/samaysar/dotdotnet/wiki/DevFast">GitHub Wiki</a></strong></p>
+	</li>
+	<li>
+	<p><strong><a href="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/ReleaseNotes.txt">Release Notes</a></strong></p>
+	</li>
 </ul>
 
 <p>Let us know your thoughts.</p>
 
-<h3 style="text-align: right"><a href="https://rawgit.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/articles/RDV_JSON.html">Next Article (Rendezvous with JSON)&gt;&gt; </a></h3>
-</body>
+<h2 style="background-color:#e06266;text-align: right"><a href="RDV_JSON.html">Next Article (Rendezvous with JSON)&gt;&gt; </a></h2></body>
 </html>
