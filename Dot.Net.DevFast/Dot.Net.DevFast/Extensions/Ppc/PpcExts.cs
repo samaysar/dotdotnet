@@ -200,7 +200,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             IConsumer<TConsumer>[] consumers, IDataAdapter<TProducer, TConsumer> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new PpcPipeline<TProducer, TConsumer>(token, bufferSize, adapter).RunPpcAsync(producers, consumers);
+            return PpcPipeline<TProducer, TConsumer>.RunPpcAsync(token, bufferSize, adapter, producers, consumers);
         }
     }
 }

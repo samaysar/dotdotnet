@@ -5,29 +5,19 @@ using Dot.Net.DevFast.Extensions.Ppc;
 
 namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
 {
-    internal sealed class PpcPipeline<TP, TC>
+    internal static class PpcPipeline<TP, TC>
     {
-        private readonly CancellationToken _externalToken;
-        private readonly int _bufferSize;
-        private readonly IDataAdapter<TP, TC> _adapter;
-
-        internal PpcPipeline(CancellationToken externalToken, int bufferSize, IDataAdapter<TP, TC> adapter)
-        {
-            _externalToken = externalToken;
-            _bufferSize = bufferSize;
-            _adapter = adapter;
-        }
-
-        public async Task RunPpcAsync(IProducer<TP>[] producers, params IConsumer<TC>[] consumers)
+        public static async Task RunPpcAsync(CancellationToken token, int bufferSize, IDataAdapter<TP, TC> adapter,
+            IProducer<TP>[] producers, params IConsumer<TC>[] consumers)
         {
             using (var localCts = new CancellationTokenSource())
             {
                 using (var combinedCts = CancellationTokenSource
-                    .CreateLinkedTokenSource(_externalToken, localCts.Token))
+                    .CreateLinkedTokenSource(token, localCts.Token))
                 {
-                    using (var ppcBuffer = new PpcBuffer<TP>(_bufferSize, combinedCts.Token))
+                    using (var ppcBuffer = new PpcBuffer<TP>(bufferSize, combinedCts.Token))
                     {
-                        var runningConsumers = RunConsumers(consumers, ppcBuffer, _adapter, combinedCts.Token, localCts);
+                        var runningConsumers = RunConsumers(consumers, ppcBuffer, adapter, combinedCts.Token, localCts);
                         var runningProducers = RunProducers(producers, ppcBuffer, combinedCts.Token, localCts);
                         await Task.WhenAll(runningProducers, runningConsumers).ConfigureAwait(false);
                     }
