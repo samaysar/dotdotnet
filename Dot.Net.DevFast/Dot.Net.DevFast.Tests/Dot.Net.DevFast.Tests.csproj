@@ -57,12 +57,18 @@
     <Compile Include="Etc\DdnDfExceptionTest.cs" />
     <Compile Include="Etc\StdLookUpsTest.cs" />
     <Compile Include="Extensions\CreateExtsTest.cs" />
+    <Compile Include="Extensions\Internals\PpcAssets\IdentityAdapterTest.cs" />
     <Compile Include="Extensions\Internals\OthersTest.cs" />
+    <Compile Include="Extensions\Internals\PpcAssets\ListAdapterTest.cs" />
+    <Compile Include="Extensions\Internals\PpcAssets\PpcBufferTest.cs" />
+    <Compile Include="Extensions\Internals\PpcAssets\PpcPipelineTest.cs" />
     <Compile Include="Extensions\Internals\SbReaderTest.cs" />
     <Compile Include="Extensions\Internals\StreamBasedTest.cs" />
     <Compile Include="Extensions\JsonExt\CustomJsonTest.cs" />
     <Compile Include="Extensions\Internals\JsonBasedTest.cs" />
     <Compile Include="Extensions\JsonExt\JsonTxtExtTest.cs" />
+    <Compile Include="Etc\ConcurrentBufferTest.cs" />
+    <Compile Include="Extensions\Ppc\PpcExtsTest.cs" />
     <Compile Include="Extensions\StreamExt\Base64ExtTest.cs" />
     <Compile Include="Extensions\StreamExt\CryptoStreamExtTest.cs" />
     <Compile Include="Extensions\Internals\WrappedStreamTest.cs" />
@@ -85,5 +91,6 @@
     <None Include="Dot.Net.snk" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
