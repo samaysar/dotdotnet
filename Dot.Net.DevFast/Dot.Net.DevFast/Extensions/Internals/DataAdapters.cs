@@ -34,10 +34,6 @@ namespace Dot.Net.DevFast.Extensions.Internals
 
     internal class IdentityAdapter<T> : IDataAdapter<T, T>
     {
-        internal IdentityAdapter()
-        {
-        }
-        
         public bool TryGet(IProducerFeed<T> producerDataFeed, out T consumable)
         {
             return producerDataFeed.TryGet(out consumable);

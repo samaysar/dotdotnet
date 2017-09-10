@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Threading;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.Ppc;
 
 namespace Dot.Net.DevFast.Extensions.Internals
 {
-    internal sealed class PpcBuffer<T> : IPpcFeed<T>, IDisposable
+    internal sealed class PpcBuffer<T> : IPpcFeed<T>
     {
         private readonly CancellationToken _token;
         private BlockingCollection<T> _collection;
