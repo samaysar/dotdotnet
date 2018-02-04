@@ -27,7 +27,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// (refer <seealso cref="DdnDfErrorCode.NullString"/>)</exception>
         public static string TrimUnsafe(this string input, params char[] trimChars)
         {
-            return ReferenceEquals(null, input).ThrowIf(DdnDfErrorCode.NullString, "cannot trim", input).Trim(trimChars);
+            return (input is null).ThrowIf(DdnDfErrorCode.NullString, "cannot trim", input).Trim(trimChars);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// (refer  <seealso cref="DdnDfErrorCode.NullOrEmptyCollection"/>)</exception>
         public static DirectoryInfo ToDirectoryInfo(this string basePath, string[] subPaths, bool create = false)
         {
-            subPaths = (ReferenceEquals(null, subPaths) || subPaths.Length == 0)
+            subPaths = (subPaths is null || subPaths.Length == 0)
                 .ThrowIf(DdnDfErrorCode.NullOrEmptyCollection,
                     () => $"{nameof(subPaths)} array invalid inside {nameof(ToDirectoryInfo)}", subPaths);
             var paths = new string[1 + subPaths.Length];

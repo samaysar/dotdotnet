@@ -19,7 +19,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             while (collectionNonEmpty &&
                    (consumable.Count < _maxListSize))
             {
-                if (producerDataFeed.TryGet(out T value))
+                if (producerDataFeed.TryGet(out var value))
                 {
                     consumable.Add(value);
                 }

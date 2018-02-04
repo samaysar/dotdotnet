@@ -163,7 +163,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             {
                 target.WriteStartArray();
                 var nullHandledSerializer = serializer ?? target.AdaptedJsonSerializer();
-                while (source.TryTake(out T obj, Timeout.Infinite, token))
+                while (source.TryTake(out var obj, Timeout.Infinite, token))
                 {
                     nullHandledSerializer.Serialize(target, obj);
                 }

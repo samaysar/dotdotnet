@@ -51,7 +51,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
                     using (parallelConsumer)
                     {
                         await parallelConsumer.InitAsync().ConfigureAwait(false);
-                        while (adapter.TryGet(feed, out TC consumable))
+                        while (adapter.TryGet(feed, out var consumable))
                         {
                             await parallelConsumer.ConsumeAsync(consumable, token)
                                 .ConfigureAwait(false);

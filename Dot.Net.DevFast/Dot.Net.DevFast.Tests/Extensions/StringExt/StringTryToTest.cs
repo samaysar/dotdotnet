@@ -313,7 +313,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         public void TryTo_Type_Works_As_Expected_When_IgnoreCase_Is_False(string input,
             Type expected, bool returnVal)
         {
-            Assert.True(input.TryTo(out Type outcome, false) == returnVal);
+            Assert.True(input.TryTo(out var outcome, false) == returnVal);
             Assert.True(ReferenceEquals(outcome, expected));
         }
 

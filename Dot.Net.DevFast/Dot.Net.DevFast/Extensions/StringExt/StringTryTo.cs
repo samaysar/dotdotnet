@@ -29,8 +29,8 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static bool TryTo(this string input, out Type value, bool ignoreCase = true)
         {
             value = default(Type);
-            return !ReferenceEquals(null, input) &&
-                   !ReferenceEquals((value = Type.GetType(input, false, ignoreCase)), null);
+            return !(input is null) &&
+                   !((value = Type.GetType(input, false, ignoreCase)) is null);
         }
 
         /// <summary>

@@ -17,7 +17,7 @@ namespace Dot.Net.DevFast.Extensions.Internals
 
         internal static ArraySegment<byte> ThrowIfNoBuffer(this MemoryStream membuffer)
         {
-            return membuffer.TryGetBuffer(out ArraySegment<byte> buffer)
+            return membuffer.TryGetBuffer(out var buffer)
                 .ThrowIfNot(DdnDfErrorCode.UnableToGetMemoryStreamBuffer,
                     "Please check if buffer is exposable. Unable to get buffer.", buffer);
         }

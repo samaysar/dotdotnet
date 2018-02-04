@@ -144,7 +144,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             bc = new BlockingCollection<Data>(1);
             jsontask = Task.Run(() => sb.CreateJsonReader().FromJsonArrayParallely(bc));
             var count = 0;
-            while (bc.TryTake(out Data outData, Timeout.Infinite))
+            while (bc.TryTake(out var outData, Timeout.Infinite))
             {
                 AssertOnObjData(outData);
                 count++;
@@ -164,7 +164,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.CreateJsonReader().FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out string outDataStr, Timeout.Infinite))
+            while (strbc.TryTake(out var outDataStr, Timeout.Infinite))
             {
                 Assert.True(outDataStr.Equals(StrArr[count++]));
             }
@@ -183,7 +183,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.CreateJsonReader().FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out string outDataStrEmpty, Timeout.Infinite))
+            while (strbc.TryTake(out var outDataStrEmpty, Timeout.Infinite))
             {
                 count++;
             }
@@ -194,7 +194,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.CreateJsonReader().FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out string outDataStrNothing, Timeout.Infinite))
+            while (strbc.TryTake(out var outDataStrNothing, Timeout.Infinite))
             {
                 count++;
             }
@@ -265,7 +265,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             bc = new BlockingCollection<Data>(1);
             jsontask = Task.Run(() => sb.CreateReader().FromJsonArrayParallely(bc));
             var count = 0;
-            while (bc.TryTake(out Data outData, Timeout.Infinite))
+            while (bc.TryTake(out var outData, Timeout.Infinite))
             {
                 AssertOnObjData(outData);
                 count++;
@@ -285,7 +285,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.CreateReader().FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out string outDataStr, Timeout.Infinite))
+            while (strbc.TryTake(out var outDataStr, Timeout.Infinite))
             {
                 Assert.True(outDataStr.Equals(StrArr[count++]));
             }
@@ -304,7 +304,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.CreateReader().FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out string outDataStrEmpty, Timeout.Infinite))
+            while (strbc.TryTake(out var outDataStrEmpty, Timeout.Infinite))
             {
                 count++;
             }
@@ -315,7 +315,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.CreateReader().FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out string outDataStrNothing, Timeout.Infinite))
+            while (strbc.TryTake(out var outDataStrNothing, Timeout.Infinite))
             {
                 count++;
             }
@@ -390,7 +390,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             bc = new BlockingCollection<Data>(1);
             jsontask = Task.Run(() => sb.FromJsonArrayParallely(bc));
             var count = 0;
-            while (bc.TryTake(out Data outData, Timeout.Infinite))
+            while (bc.TryTake(out var outData, Timeout.Infinite))
             {
                 AssertOnObjData(outData);
                 count++;
@@ -412,7 +412,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out string outDataStr, Timeout.Infinite))
+            while (strbc.TryTake(out var outDataStr, Timeout.Infinite))
             {
                 Assert.True(outDataStr.Equals(StrArr[count++]));
             }
@@ -430,7 +430,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out string outDataStrEmpty, Timeout.Infinite))
+            while (strbc.TryTake(out var outDataStrEmpty, Timeout.Infinite))
             {
                 count++;
             }
@@ -441,7 +441,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out string outDataStrNothing, Timeout.Infinite))
+            while (strbc.TryTake(out var outDataStrNothing, Timeout.Infinite))
             {
                 count++;
             }
@@ -489,7 +489,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             bc = new BlockingCollection<Data>(1);
             var deserialjsontask = Task.Run(() => json.FromJsonArrayParallely(bc));
             var count = 0;
-            while (bc.TryTake(out Data outData, Timeout.Infinite))
+            while (bc.TryTake(out var outData, Timeout.Infinite))
             {
                 AssertOnObjData(outData);
                 count++;
@@ -508,7 +508,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             deserialjsontask = Task.Run(() => json.FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out string outDataStr, Timeout.Infinite))
+            while (strbc.TryTake(out var outDataStr, Timeout.Infinite))
             {
                 Assert.True(outDataStr.Equals(StrArr[count++]));
             }
@@ -525,7 +525,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             deserialjsontask = Task.Run(() => json.FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out string outDataStrEmpty, Timeout.Infinite))
+            while (strbc.TryTake(out var outDataStrEmpty, Timeout.Infinite))
             {
                 count++;
             }
@@ -535,7 +535,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             deserialjsontask = Task.Run(() => "".FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out string outDataStrNothing, Timeout.Infinite))
+            while (strbc.TryTake(out var outDataStrNothing, Timeout.Infinite))
             {
                 count++;
             }
@@ -604,7 +604,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             bc = new BlockingCollection<Data>(1);
             jsontask = Task.Run(() => sb.FromJsonArrayParallely(bc));
             var count = 0;
-            while (bc.TryTake(out Data outData, Timeout.Infinite))
+            while (bc.TryTake(out var outData, Timeout.Infinite))
             {
                 AssertOnObjData(outData);
                 count++;
@@ -624,7 +624,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out string outDataStr, Timeout.Infinite))
+            while (strbc.TryTake(out var outDataStr, Timeout.Infinite))
             {
                 Assert.True(outDataStr.Equals(StrArr[count++]));
             }
@@ -643,7 +643,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out string outDataStrEmpty, Timeout.Infinite))
+            while (strbc.TryTake(out var outDataStrEmpty, Timeout.Infinite))
             {
                 count++;
             }
@@ -654,7 +654,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out string outDataStrNothing, Timeout.Infinite))
+            while (strbc.TryTake(out var outDataStrNothing, Timeout.Infinite))
             {
                 count++;
             }

@@ -9,6 +9,50 @@ namespace Dot.Net.DevFast.Extensions.StringExt
     public static class StringSafe
     {
         /// <summary>
+        /// Checks whether <paramref name="input"/> is NullOrWhiteSpace string.
+        /// </summary>
+        /// <param name="input">stirng to check</param>
+        public static bool IsNows(this string input)
+        {
+            return string.IsNullOrWhiteSpace(input);
+        }
+
+        /// <summary>
+        /// Checks whether <paramref name="input"/> is NOT NullOrWhiteSpace string.
+        /// </summary>
+        /// <param name="input">stirng to check</param>
+        public static bool IsNotNows(this string input)
+        {
+            return !input.IsNows();
+        }
+
+        /// <summary>
+        /// Trims and converts the <paramref name="input"/> string based on given culture 
+        /// (if not supplied then <seealso cref="CultureInfo.CurrentCulture"/> is used). 
+        /// If null, returns the provided <paramref name="defaultValue"/>.
+        /// </summary>
+        /// <param name="input">value to operate on</param>
+        /// <param name="defaultValue">return value in case, supplied value is null</param>
+        /// <param name="culture">Culture to use, if null or not supplied, then <seealso cref="CultureInfo.CurrentCulture"/> is used.</param>
+        public static string ToTrimmedUpperSafe(this string input, string defaultValue = "", CultureInfo culture = null)
+        {
+            return input?.Trim().ToUpper(culture ?? CultureInfo.CurrentCulture) ?? defaultValue;
+        }
+
+        /// <summary>
+        /// Trims and converts the <paramref name="input"/> string based on given culture 
+        /// (if not supplied then <seealso cref="CultureInfo.CurrentCulture"/> is used). 
+        /// If null, returns the provided <paramref name="defaultValue"/>.
+        /// </summary>
+        /// <param name="input">value to operate on</param>
+        /// <param name="defaultValue">return value in case, supplied value is null</param>
+        /// <param name="culture">Culture to use, if null or not supplied, then <seealso cref="CultureInfo.CurrentCulture"/> is used.</param>
+        public static string ToTrimmedLowerSafe(this string input, string defaultValue = "", CultureInfo culture = null)
+        {
+            return input?.Trim().ToLower(culture ?? CultureInfo.CurrentCulture) ?? defaultValue;
+        }
+
+        /// <summary>
         /// If value is null <seealso cref="string.Empty"/> is returned else trimmed string.
         /// <para>Also check <seealso cref="StringUnsafe.TrimUnsafe"/>,
         /// <seealso cref="TrimSafeOrNull"/> and <seealso cref="TrimSafeOrDefault"/></para>
@@ -45,7 +89,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// whitespaces will be removed</param>
         public static string TrimSafeOrDefault(this string input, string defaultValue, params char[] trimChars)
         {
-            return ReferenceEquals(input, null) ? defaultValue : input.Trim(trimChars);
+            return input?.Trim(trimChars) ?? defaultValue;
         }
 
         /// <summary>

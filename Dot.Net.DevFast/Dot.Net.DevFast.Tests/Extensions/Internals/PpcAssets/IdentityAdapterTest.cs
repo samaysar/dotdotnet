@@ -13,7 +13,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         {
             var feed = Substitute.For<IProducerFeed<object>>();
             var instance = new IdentityAdapter<object>();
-            instance.TryGet(feed, out object outobj);
+            instance.TryGet(feed, out var outobj);
             feed.Received(1).TryGet(out outobj);
         }
 
@@ -24,13 +24,13 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         {
             var obj = new object();
             var feed = Substitute.For<IProducerFeed<object>>();
-            feed.TryGet(out object outObj).Returns(x =>
+            feed.TryGet(out var outObj).Returns(x =>
             {
                 x[0] = obj;
                 return feedValue;
             });
             var instance = new IdentityAdapter<object>();
-            Assert.True(instance.TryGet(feed, out object newobj).Equals(feedValue) && ReferenceEquals(newobj, obj));
+            Assert.True(instance.TryGet(feed, out var newobj).Equals(feedValue) && ReferenceEquals(newobj, obj));
         }
     }
 }
