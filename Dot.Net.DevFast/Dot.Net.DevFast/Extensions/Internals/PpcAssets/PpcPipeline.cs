@@ -97,7 +97,11 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             {
                 try
                 {
-                    await parallelProducer.ProduceAsync(feed, token).ConfigureAwait(false);
+                    using (parallelProducer)
+                    {
+                        await parallelProducer.InitAsync().ConfigureAwait(false);
+                        await parallelProducer.ProduceAsync(feed, token).ConfigureAwait(false);
+                    }
                 }
                 catch
                 {

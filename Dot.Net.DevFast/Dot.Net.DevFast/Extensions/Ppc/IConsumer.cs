@@ -18,14 +18,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         Task InitAsync();
 
         /// <summary>
-        /// Multiple calls to this function everytime some data is available from 
-        /// <seealso cref="IProducer{T}"/>.
+        /// Expect multiple calls to this function as calls are made whenever some data is 
+        /// available from <seealso cref="IProducer{T}"/>.
         /// <para><seealso cref="IDisposable.Dispose"/> will be called when there is 
         /// NO more data available.</para>
         /// <para>Method must return as soon as EITHER data consumption is done
         /// OR some error has occurred.</para>
-        /// <para>Explicit thread safety is NOT required, as this method will NOT be called
-        /// in parallel.</para>
+        /// <para>Explicit thread safety is NOT required, as this method will NOT be called in parallel.</para>
+        /// <para><seealso cref="IDisposable.Dispose"/> will be called when there is no more
+        /// data available.</para>
         /// <para>All exceptions must be thrown back.</para>
         /// </summary>
         /// <param name="item">instance to be consumed</param>

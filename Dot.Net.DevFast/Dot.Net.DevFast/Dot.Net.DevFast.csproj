@@ -67,6 +67,7 @@
     <Compile Include="Extensions\Internals\Others.cs" />
     <Compile Include="Extensions\Internals\PpcAssets\PpcBuffer.cs" />
     <Compile Include="Extensions\Internals\PpcAssets\PpcPipeline.cs" />
+    <Compile Include="Extensions\Internals\PpcAssets\PpcWrappers.cs" />
     <Compile Include="Extensions\Ppc\IDataAdapter.cs" />
     <Compile Include="Etc\ConcurrentBuffer.cs" />
     <Compile Include="Extensions\Internals\SbReader.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Extensions\StringExt\StringSafe.cs" />
     <Compile Include="Extensions\StringExt\StringTryTo.cs" />
     <Compile Include="Extensions\StringExt\StringUnsafe.cs" />
+    <Compile Include="Extensions\SyncAsync.cs" />
     <Compile Include="Extensions\ThrowIfPredicate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

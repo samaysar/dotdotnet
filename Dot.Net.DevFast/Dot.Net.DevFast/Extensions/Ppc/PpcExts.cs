@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
@@ -11,6 +12,156 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     /// </summary>
     public static class PpcExts
     {
+        /// <summary>
+        /// Accepts an async producer action and a consumer action instance. 
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producer">producer action</param>
+        /// <param name="consumer">consumer action</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(
+            this Action<IConsumerFeed<T>, CancellationToken> producer, Action<T, CancellationToken> consumer,
+            CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producer.ToAsync().RunProducerConsumerAsync(consumer, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts an async producer function and a consumer action instance. 
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producer">producer function</param>
+        /// <param name="consumer">consumer action</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(
+            this Func<IConsumerFeed<T>, CancellationToken, Task> producer, Action<T, CancellationToken> consumer,
+            CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return new AsyncProducer<T>(producer).RunProducerConsumerAsync(consumer, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a producer and an async consumer action instance. 
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producer">producer instance</param>
+        /// <param name="consumer">consumer action</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(this IProducer<T> producer, Action<T, CancellationToken> consumer,
+            CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producer.RunProducerConsumerAsync(consumer.ToAsync(), token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts an async producer action and a consumer function instance. 
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producer">producer action</param>
+        /// <param name="consumer">consumer function</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(
+            this Action<IConsumerFeed<T>, CancellationToken> producer, Func<T, CancellationToken, Task> consumer,
+            CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producer.ToAsync().RunProducerConsumerAsync(consumer, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts an async producer and a consumer function instances. 
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producer">producer function</param>
+        /// <param name="consumer">consumer function</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(
+            this Func<IConsumerFeed<T>, CancellationToken, Task> producer, Func<T, CancellationToken, Task> consumer,
+            CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return new AsyncProducer<T>(producer).RunProducerConsumerAsync(consumer, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a producer and an async consumer function instance. 
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producer">producer instance</param>
+        /// <param name="consumer">consumer function</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(this IProducer<T> producer, Func<T, CancellationToken, Task> consumer,
+            CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producer.RunProducerConsumerAsync(new AsyncConsumer<T>(consumer), token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a synchronous producer action and a consumer instance. 
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producer">producer action</param>
+        /// <param name="consumer">consumer instance</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(
+            this Action<IConsumerFeed<T>, CancellationToken> producer, IConsumer<T> consumer,
+            CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producer.ToAsync().RunProducerConsumerAsync(consumer, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts an async producer function and a consumer instance. 
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producer">producer function</param>
+        /// <param name="consumer">consumer instance</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(
+            this Func<IConsumerFeed<T>, CancellationToken, Task> producer, IConsumer<T> consumer,
+            CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return new AsyncProducer<T>(producer).RunProducerConsumerAsync(consumer, token, bufferSize);
+        }
+
         /// <summary>
         /// Accepts a producer and a consumer instance. 
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
