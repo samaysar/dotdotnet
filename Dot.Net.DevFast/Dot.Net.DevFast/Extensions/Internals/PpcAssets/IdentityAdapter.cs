@@ -1,4 +1,5 @@
-﻿using Dot.Net.DevFast.Extensions.Ppc;
+﻿using System.Threading;
+using Dot.Net.DevFast.Extensions.Ppc;
 
 namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
 {
@@ -6,7 +7,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
     {
         public bool TryGet(IProducerFeed<T> producerDataFeed, out T consumable)
         {
-            return producerDataFeed.TryGet(out consumable);
+            return producerDataFeed.TryGet(Timeout.Infinite, out consumable);
         }
     }
 }

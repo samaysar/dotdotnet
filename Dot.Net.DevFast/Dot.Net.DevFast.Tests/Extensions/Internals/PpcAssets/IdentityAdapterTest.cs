@@ -14,7 +14,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             var feed = Substitute.For<IProducerFeed<object>>();
             var instance = new IdentityAdapter<object>();
             instance.TryGet(feed, out var outobj);
-            feed.Received(1).TryGet(out outobj);
+            feed.Received(1).TryGet(Arg.Any<int>(), out outobj);
         }
 
         [Test]
@@ -24,9 +24,9 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         {
             var obj = new object();
             var feed = Substitute.For<IProducerFeed<object>>();
-            feed.TryGet(out var outObj).Returns(x =>
+            feed.TryGet(Arg.Any<int>(), out var outObj).Returns(x =>
             {
-                x[0] = obj;
+                x[1] = obj;
                 return feedValue;
             });
             var instance = new IdentityAdapter<object>();

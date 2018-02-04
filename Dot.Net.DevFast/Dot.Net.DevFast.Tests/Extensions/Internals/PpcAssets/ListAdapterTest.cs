@@ -29,7 +29,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             var feed = Substitute.For<IProducerFeed<object>>();
             var instance = new ListAdapter<object>(2);
             instance.TryGet(feed, out var outList);
-            feed.Received(1).TryGet(out var outobj);
+            feed.Received(1).TryGet(Arg.Any<int>(), out var outobj);
         }
 
         [Test]
@@ -43,10 +43,10 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             var localFeedSize = feedSize;
             var obj = new object();
             var feed = Substitute.For<IProducerFeed<object>>();
-            feed.TryGet(out var outObj).ReturnsForAnyArgs(x =>
+            feed.TryGet(Arg.Any<int>(), out var outObj).ReturnsForAnyArgs(x =>
             {
                 if (localFeedSize <= 0) return false;
-                x[0] = obj;
+                x[1] = obj;
                 Interlocked.Decrement(ref localFeedSize);
                 return true;
             });
@@ -63,7 +63,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         public void TryGet_Returns_Empty_List_When_Feed_Is_Empty(int listSize)
         {
             var feed = Substitute.For<IProducerFeed<object>>();
-            feed.TryGet(out var outObj).ReturnsForAnyArgs(x => false);
+            feed.TryGet(Arg.Any<int>(), out var outObj).ReturnsForAnyArgs(x => false);
             var instance = new ListAdapter<object>(listSize);
             Assert.False(instance.TryGet(feed, out var newList));
             Assert.True(newList == null || newList.Count.Equals(0));

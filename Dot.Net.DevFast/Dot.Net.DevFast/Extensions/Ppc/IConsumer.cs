@@ -24,7 +24,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// NO more data available.</para>
         /// <para>Method must return as soon as EITHER data consumption is done
         /// OR some error has occurred.</para>
-        /// <para>Explicit thread safety is NOT required, as this method will NOT be called in parallel.</para>
+        /// <para>Explicit thread safety is NOT required as long as consumer instances are wholly distinct.</para>
         /// <para><seealso cref="IDisposable.Dispose"/> will be called when there is no more
         /// data available.</para>
         /// <para>All exceptions must be thrown back.</para>

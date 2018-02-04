@@ -18,7 +18,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 cts.Cancel();
                 using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, cts.Token))
                 {
-                    Assert.Throws<OperationCanceledException>(() => instance.TryGet(out var data));
+                    Assert.Throws<OperationCanceledException>(() => instance.TryGet(Timeout.Infinite, out var data));
                 }
             }
         }
@@ -42,7 +42,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
             {
                 instance.Close();
-                Assert.False(instance.TryGet(out var data));
+                Assert.False(instance.TryGet(Timeout.Infinite, out var data));
             }
         }
 
@@ -62,7 +62,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
             {
                 instance.Dispose();
-                Assert.Throws<NullReferenceException>(() => instance.TryGet(out var obj));
+                Assert.Throws<NullReferenceException>(() => instance.TryGet(Timeout.Infinite, out var obj));
             }
         }
 
@@ -83,7 +83,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             {
                 var obj = new object();
                 instance.Add(obj);
-                Assert.True(instance.TryGet(out var newObj) && ReferenceEquals(newObj, obj));
+                Assert.True(instance.TryGet(Timeout.Infinite, out var newObj) && ReferenceEquals(newObj, obj));
                 instance.Close();
             }
         }
@@ -94,11 +94,11 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
             var obj = new object();
             object outObj = null;
-            var tryGetTask = Task.Run(() => instance.TryGet(out outObj));
+            var tryGetTask = Task.Run(() => instance.TryGet(Timeout.Infinite, out outObj));
             Assert.True(tryGetTask.Status != TaskStatus.RanToCompletion);
             instance.Add(obj);
             Assert.True(await tryGetTask.ConfigureAwait(false) && ReferenceEquals(outObj, obj));
-            tryGetTask = Task.Run(() => instance.TryGet(out outObj));
+            tryGetTask = Task.Run(() => instance.TryGet(Timeout.Infinite, out outObj));
             Assert.True(tryGetTask.Status != TaskStatus.RanToCompletion);
             instance.Close();
             Assert.False(await tryGetTask.ConfigureAwait(false));
