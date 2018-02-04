@@ -65,9 +65,9 @@
     <Compile Include="Etc\DdnDfExceptionTest.cs" />
     <Compile Include="Etc\StdLookUpsTest.cs" />
     <Compile Include="Extensions\CreateExtsTest.cs" />
-    <Compile Include="Extensions\Internals\PpcAssets\IdentityAdapterTest.cs" />
+    <Compile Include="Extensions\Ppc\IdentityAdapterTest.cs" />
     <Compile Include="Extensions\Internals\OthersTest.cs" />
-    <Compile Include="Extensions\Internals\PpcAssets\ListAdapterTest.cs" />
+    <Compile Include="Extensions\Ppc\AwaitableListAdapterTest.cs" />
     <Compile Include="Extensions\Internals\PpcAssets\PpcBufferTest.cs" />
     <Compile Include="Extensions\Internals\PpcAssets\PpcPipelineTest.cs" />
     <Compile Include="Extensions\Internals\SbReaderTest.cs" />
