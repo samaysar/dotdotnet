@@ -71,7 +71,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             Action<T, CancellationToken> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.RunProducerConsumerAsync(consumer.ToAsync(), token, bufferSize);
+            return producer.RunProducerConsumerAsync(consumer.ToConsumer(), token, bufferSize);
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             Func<T, CancellationToken, Task> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.RunProducerConsumerAsync(new AsyncConsumer<T>(consumer), token, bufferSize);
+            return producer.RunProducerConsumerAsync(consumer.ToConsumer(), token, bufferSize);
         }
 
         /// <summary>
@@ -245,8 +245,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             IReadOnlyList<Action<T, CancellationToken>> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.RunProducerConsumerAsync(consumer.ToConsumer(),
-                token, bufferSize);
+            return producer.RunProducerConsumerAsync(consumer.ToConsumer(), token, bufferSize);
         }
 
         /// <summary>
@@ -305,8 +304,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             IReadOnlyList<Func<T, CancellationToken, Task>> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.RunProducerConsumerAsync(consumer.ToConsumer(), token,
-                bufferSize);
+            return producer.RunProducerConsumerAsync(consumer.ToConsumer(), token, bufferSize);
         }
 
         /// <summary>
@@ -385,8 +383,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             Action<T, CancellationToken> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -406,8 +403,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             Action<T, CancellationToken> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -426,7 +422,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             Action<T, CancellationToken> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.RunProducerConsumerAsync(consumer.ToAsync(), token, bufferSize);
+            return producer.RunProducerConsumerAsync(consumer.ToConsumer(), token, bufferSize);
         }
 
         /// <summary>
@@ -446,8 +442,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             Func<T, CancellationToken, Task> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -467,8 +462,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             Func<T, CancellationToken, Task> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -487,7 +481,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             Func<T, CancellationToken, Task> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.RunProducerConsumerAsync(new AsyncConsumer<T>(consumer), token, bufferSize);
+            return producer.RunProducerConsumerAsync(consumer.ToConsumer(), token, bufferSize);
         }
 
         /// <summary>
@@ -506,8 +500,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer, IConsumer<T> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -526,8 +519,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producer, IConsumer<T> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -543,8 +535,8 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task RunProducerConsumerAsync<T>(this IReadOnlyList<IProducer<T>> producers,
-            IConsumer<T> consumer,
-            CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
+            IConsumer<T> consumer, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.RunProducerConsumerAsync(new[] {consumer}, token, bufferSize);
         }
@@ -568,8 +560,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             IReadOnlyList<Action<T, CancellationToken>> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -589,8 +580,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             IReadOnlyList<Action<T, CancellationToken>> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -609,8 +599,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             IReadOnlyList<Action<T, CancellationToken>> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.RunProducerConsumerAsync(consumer.ToConsumer(),
-                token, bufferSize);
+            return producer.RunProducerConsumerAsync(consumer.ToConsumer(), token, bufferSize);
         }
 
         /// <summary>
@@ -630,8 +619,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             IReadOnlyList<Func<T, CancellationToken, Task>> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -651,8 +639,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             IReadOnlyList<Func<T, CancellationToken, Task>> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -671,8 +658,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             IReadOnlyList<Func<T, CancellationToken, Task>> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.RunProducerConsumerAsync(consumer.ToConsumer(), token,
-                bufferSize);
+            return producer.RunProducerConsumerAsync(consumer.ToConsumer(), token, bufferSize);
         }
 
         /// <summary>
@@ -692,8 +678,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             IReadOnlyList<IConsumer<T>> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -713,8 +698,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             IReadOnlyList<IConsumer<T>> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -733,8 +717,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             IReadOnlyList<IConsumer<T>> consumers,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.RunProducerConsumerAsync(consumers, new IdentityAdapter<T>(), token,
-                bufferSize);
+            return producers.RunProducerConsumerAsync(consumers, new IdentityAdapter<T>(), token, bufferSize);
         }
 
         #endregion
@@ -815,7 +798,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.RunProducerConsumerAsync(consumer.ToAsync(), listMaxSize, token, bufferSize);
+            return producer.RunProducerConsumerAsync(consumer.ToConsumer(), listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -891,8 +874,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.RunProducerConsumerAsync(new AsyncConsumer<List<T>>(consumer), listMaxSize, token,
-                bufferSize);
+            return producer.RunProducerConsumerAsync(consumer.ToConsumer(), listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1045,8 +1027,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.RunProducerConsumerAsync(
-                consumer.ToConsumer(), listMaxSize, token, bufferSize);
+            return producer.RunProducerConsumerAsync(consumer.ToConsumer(), listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1123,8 +1104,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.RunProducerConsumerAsync(consumer.Select(x => new AsyncConsumer<List<T>>(x)).ToList(),
-                listMaxSize, token, bufferSize);
+            return producer.RunProducerConsumerAsync(consumer.ToConsumer(), listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1227,8 +1207,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1254,8 +1233,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1280,7 +1258,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.RunProducerConsumerAsync(consumer.ToAsync(), listMaxSize, token, bufferSize);
+            return producer.RunProducerConsumerAsync(consumer.ToConsumer(), listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1306,8 +1284,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1333,8 +1310,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1359,8 +1335,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.RunProducerConsumerAsync(new AsyncConsumer<List<T>>(consumer), listMaxSize, token,
-                bufferSize);
+            return producer.RunProducerConsumerAsync(consumer.ToConsumer(), listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1385,8 +1360,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1411,8 +1385,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1465,8 +1438,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1492,8 +1464,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1518,8 +1489,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.RunProducerConsumerAsync(
-                consumer.ToConsumer(), listMaxSize, token, bufferSize);
+            return producer.RunProducerConsumerAsync(consumer.ToConsumer(), listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1545,8 +1515,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1572,8 +1541,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1598,8 +1566,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.RunProducerConsumerAsync(consumer.Select(x => new AsyncConsumer<List<T>>(x)).ToList(),
-                listMaxSize, token, bufferSize);
+            return producer.RunProducerConsumerAsync(consumer.ToConsumer(), listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1625,8 +1592,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1652,8 +1618,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer()
-                .RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().RunProducerConsumerAsync(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1688,6 +1653,236 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< SINGLE PRODUCER SINGLE AWAITABLE LIST CONSUMER
 
         /// <summary>
+        /// Accepts a collection of producers and consumers, while using an internal 
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
+        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(
+            this Action<IConsumerFeed<T>, CancellationToken> producers,
+            Action<List<T>, CancellationToken> consumers,
+            int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer()
+                .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, while using an internal 
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
+        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(
+            this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
+            Action<List<T>, CancellationToken> consumers,
+            int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer()
+                .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, while using an internal 
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
+        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(this IProducer<T> producers,
+            Action<List<T>, CancellationToken> consumers,
+            int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.RunProducerConsumerAsync(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
+                bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, while using an internal 
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
+        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(
+            this Action<IConsumerFeed<T>, CancellationToken> producers,
+            Func<List<T>, CancellationToken, Task> consumers,
+            int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer()
+                .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, while using an internal 
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
+        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(
+            this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
+            Func<List<T>, CancellationToken, Task> consumers,
+            int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer()
+                .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, while using an internal 
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
+        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(this IProducer<T> producers,
+            Func<List<T>, CancellationToken, Task> consumers,
+            int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.RunProducerConsumerAsync(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
+                bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, while using an internal 
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
+        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(
+            this Action<IConsumerFeed<T>, CancellationToken> producers,
+            IConsumer<List<T>> consumers,
+            int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer()
+                .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, while using an internal 
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
+        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(
+            this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
+            IConsumer<List<T>> consumers,
+            int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer()
+                .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+        }
+
+        /// <summary>
         /// Accepts a producer and a consumer instance, while using an internal 
         /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
@@ -1715,6 +1910,236 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         //<<<<<<<<<<< SINGLE PRODUCER MULTIPLE AWAITABLE LIST CONSUMER
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, while using an internal 
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
+        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(
+            this Action<IConsumerFeed<T>, CancellationToken> producers,
+            IReadOnlyList<Action<List<T>, CancellationToken>> consumers,
+            int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer()
+                .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, while using an internal 
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
+        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(
+            this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
+            IReadOnlyList<Action<List<T>, CancellationToken>> consumers,
+            int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer()
+                .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, while using an internal 
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
+        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(this IProducer<T> producers,
+            IReadOnlyList<Action<List<T>, CancellationToken>> consumers,
+            int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.RunProducerConsumerAsync(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
+                bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, while using an internal 
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
+        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(
+            this Action<IConsumerFeed<T>, CancellationToken> producers,
+            IReadOnlyList<Func<List<T>, CancellationToken, Task>> consumers,
+            int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer()
+                .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, while using an internal 
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
+        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(
+            this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
+            IReadOnlyList<Func<List<T>, CancellationToken, Task>> consumers,
+            int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer()
+                .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, while using an internal 
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
+        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(this IProducer<T> producers,
+            IReadOnlyList<Func<List<T>, CancellationToken, Task>> consumers,
+            int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.RunProducerConsumerAsync(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
+                bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, while using an internal 
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
+        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(
+            this Action<IConsumerFeed<T>, CancellationToken> producers,
+            IReadOnlyList<IConsumer<List<T>>> consumers,
+            int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer()
+                .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, while using an internal 
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="T">Produced data type.</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
+        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="bufferSize">buffer size</param>
+        public static Task RunProducerConsumerAsync<T>(
+            this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
+            IReadOnlyList<IConsumer<List<T>>> consumers,
+            int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer()
+                .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+        }
 
         /// <summary>
         /// Accepts a producer instance and collection of consumers, while using an internal 
@@ -1771,7 +2196,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.Select(x => new AsyncProducer<T>(x.ToAsync())).ToList()
+            return producers.ToProducer()
                 .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
@@ -1800,7 +2225,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.Select(x => new AsyncProducer<T>(x)).ToList()
+            return producers.ToProducer()
                 .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
@@ -1828,7 +2253,8 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.RunProducerConsumerAsync(consumers.ToAsync(), listMaxSize, millisecondTimeout, token, bufferSize);
+            return producers.RunProducerConsumerAsync(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
+                bufferSize);
         }
 
         /// <summary>
@@ -1856,7 +2282,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.Select(x => new AsyncProducer<T>(x.ToAsync())).ToList()
+            return producers.ToProducer()
                 .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
@@ -1885,7 +2311,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.Select(x => new AsyncProducer<T>(x)).ToList()
+            return producers.ToProducer()
                 .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
@@ -1913,8 +2339,8 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.RunProducerConsumerAsync(new AsyncConsumer<List<T>>(consumers),
-                listMaxSize, millisecondTimeout, token, bufferSize);
+            return producers.RunProducerConsumerAsync(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
+                bufferSize);
         }
 
         /// <summary>
@@ -1942,7 +2368,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.Select(x => new AsyncProducer<T>(x.ToAsync())).ToList()
+            return producers.ToProducer()
                 .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
@@ -1971,7 +2397,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.Select(x => new AsyncProducer<T>(x)).ToList()
+            return producers.ToProducer()
                 .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
@@ -2030,7 +2456,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.Select(x => new AsyncProducer<T>(x.ToAsync())).ToList()
+            return producers.ToProducer()
                 .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
@@ -2059,7 +2485,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.Select(x => new AsyncProducer<T>(x)).ToList()
+            return producers.ToProducer()
                 .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
@@ -2087,8 +2513,8 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.RunProducerConsumerAsync(
-                consumers.Select(x => new AsyncConsumer<List<T>>(x.ToAsync())).ToList(), listMaxSize, millisecondTimeout, token, bufferSize);
+            return producers.RunProducerConsumerAsync(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
+                bufferSize);
         }
 
         /// <summary>
@@ -2116,7 +2542,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.Select(x => new AsyncProducer<T>(x.ToAsync())).ToList()
+            return producers.ToProducer()
                 .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
@@ -2145,7 +2571,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.Select(x => new AsyncProducer<T>(x)).ToList()
+            return producers.ToProducer()
                 .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
@@ -2173,8 +2599,8 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.RunProducerConsumerAsync(consumers.Select(x => new AsyncConsumer<List<T>>(x)).ToList(),
-                listMaxSize, millisecondTimeout, token, bufferSize);
+            return producers.RunProducerConsumerAsync(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
+                bufferSize);
         }
 
         /// <summary>
@@ -2202,7 +2628,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.Select(x => new AsyncProducer<T>(x.ToAsync())).ToList()
+            return producers.ToProducer()
                 .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
@@ -2231,7 +2657,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.Select(x => new AsyncProducer<T>(x)).ToList()
+            return producers.ToProducer()
                 .RunProducerConsumerAsync(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
@@ -2271,6 +2697,198 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< SINGLE PRODUCER SINGLE ADAPTER CONSUMER
 
         /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this Action<IConsumerFeed<TProducer>, CancellationToken> producers,
+            Action<TConsumer, CancellationToken> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this Func<IConsumerFeed<TProducer>, CancellationToken, Task> producers,
+            Action<TConsumer, CancellationToken> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IProducer<TProducer> producers,
+            Action<TConsumer, CancellationToken> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.RunProducerConsumerAsync(consumers.ToConsumer(), adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this Action<IConsumerFeed<TProducer>, CancellationToken> producers,
+            Func<TConsumer, CancellationToken, Task> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this Func<IConsumerFeed<TProducer>, CancellationToken, Task> producers,
+            Func<TConsumer, CancellationToken, Task> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IProducer<TProducer> producers,
+            Func<TConsumer, CancellationToken, Task> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.RunProducerConsumerAsync(consumers.ToConsumer(), adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this Action<IConsumerFeed<TProducer>, CancellationToken> producers,
+            IConsumer<TConsumer> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this Func<IConsumerFeed<TProducer>, CancellationToken, Task> producers,
+            IConsumer<TConsumer> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
         /// Accepts a producer and a consumer instance, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
         /// producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
@@ -2295,6 +2913,198 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< SINGLE PRODUCER MULTIPLE ADAPTER CONSUMER
 
         /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this Action<IConsumerFeed<TProducer>, CancellationToken> producers,
+            IReadOnlyList<Action<TConsumer, CancellationToken>> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this Func<IConsumerFeed<TProducer>, CancellationToken, Task> producers,
+            IReadOnlyList<Action<TConsumer, CancellationToken>> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IProducer<TProducer> producers,
+            IReadOnlyList<Action<TConsumer, CancellationToken>> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.RunProducerConsumerAsync(consumers.ToConsumer(), adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this Action<IConsumerFeed<TProducer>, CancellationToken> producers,
+            IReadOnlyList<Func<TConsumer, CancellationToken, Task>> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this Func<IConsumerFeed<TProducer>, CancellationToken, Task> producers,
+            IReadOnlyList<Func<TConsumer, CancellationToken, Task>> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IProducer<TProducer> producers,
+            IReadOnlyList<Func<TConsumer, CancellationToken, Task>> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.RunProducerConsumerAsync(consumers.ToConsumer(), adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this Action<IConsumerFeed<TProducer>, CancellationToken> producers,
+            IReadOnlyList<IConsumer<TConsumer>> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this Func<IConsumerFeed<TProducer>, CancellationToken, Task> producers,
+            IReadOnlyList<IConsumer<TConsumer>> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
         /// Accepts a producer instance and a collection of consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
         /// producer and consumers concurrently (parallel producer-consumer pattern) while mediating 
@@ -2317,6 +3127,198 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         //<<<<<<<<<<< MULTIPLE PRODUCER SINGLE ADAPTER CONSUMER
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IReadOnlyList<Action<IConsumerFeed<TProducer>, CancellationToken>> producers,
+            Action<TConsumer, CancellationToken> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IReadOnlyList<Func<IConsumerFeed<TProducer>, CancellationToken, Task>> producers,
+            Action<TConsumer, CancellationToken> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IReadOnlyList<IProducer<TProducer>> producers,
+            Action<TConsumer, CancellationToken> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.RunProducerConsumerAsync(consumers.ToConsumer(), adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IReadOnlyList<Action<IConsumerFeed<TProducer>, CancellationToken>> producers,
+            Func<TConsumer, CancellationToken, Task> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IReadOnlyList<Func<IConsumerFeed<TProducer>, CancellationToken, Task>> producers,
+            Func<TConsumer, CancellationToken, Task> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IReadOnlyList<IProducer<TProducer>> producers,
+            Func<TConsumer, CancellationToken, Task> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.RunProducerConsumerAsync(consumers.ToConsumer(), adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IReadOnlyList<Action<IConsumerFeed<TProducer>, CancellationToken>> producers,
+            IConsumer<TConsumer> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IReadOnlyList<Func<IConsumerFeed<TProducer>, CancellationToken, Task>> producers,
+            IConsumer<TConsumer> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
 
         /// <summary>
         /// Accepts a collection of producers and a consumer instance, along with an instance of
@@ -2359,6 +3361,198 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
         public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IReadOnlyList<Action<IConsumerFeed<TProducer>, CancellationToken>> producers,
+            IReadOnlyList<Action<TConsumer, CancellationToken>> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IReadOnlyList<Func<IConsumerFeed<TProducer>, CancellationToken, Task>> producers,
+            IReadOnlyList<Action<TConsumer, CancellationToken>> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IReadOnlyList<IProducer<TProducer>> producers,
+            IReadOnlyList<Action<TConsumer, CancellationToken>> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.RunProducerConsumerAsync(consumers.ToConsumer(), adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IReadOnlyList<Action<IConsumerFeed<TProducer>, CancellationToken>> producers,
+            IReadOnlyList<Func<TConsumer, CancellationToken, Task>> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IReadOnlyList<Func<IConsumerFeed<TProducer>, CancellationToken, Task>> producers,
+            IReadOnlyList<Func<TConsumer, CancellationToken, Task>> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IReadOnlyList<IProducer<TProducer>> producers,
+            IReadOnlyList<Func<TConsumer, CancellationToken, Task>> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.RunProducerConsumerAsync(consumers.ToConsumer(), adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IReadOnlyList<Action<IConsumerFeed<TProducer>, CancellationToken>> producers,
+            IReadOnlyList<IConsumer<TConsumer>> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
+            this IReadOnlyList<Func<IConsumerFeed<TProducer>, CancellationToken, Task>> producers,
+            IReadOnlyList<IConsumer<TConsumer>> consumers,
+            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+            int bufferSize = ConcurrentBuffer.StandardSize)
+        {
+            return producers.ToProducer().RunProducerConsumerAsync(consumers, adapter, token, bufferSize);
+        }
+
+        /// <summary>
+        /// Accepts a collection of producers and consumers, along with an instance of
+        /// data adapter which transforms the produced data into consumable data type. Executes
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// for available standard buffer size); at the same time, observing given cancellation token.
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// </summary>
+        /// <typeparam name="TProducer">Produced data type</typeparam>
+        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <param name="producers">Collection of producers</param>
+        /// <param name="consumers">Collection of consumers</param>
+        /// <param name="adapter">data adapter</param>
+        /// <param name="token">cancellation token to observe</param>
+        /// <param name="bufferSize">size of data buffer</param>
+        public static Task RunProducerConsumerAsync<TProducer, TConsumer>(
             this IReadOnlyList<IProducer<TProducer>> producers,
             IReadOnlyList<IConsumer<TConsumer>> consumers, IDataAdapter<TProducer, TConsumer> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
@@ -2367,6 +3561,8 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         #endregion
+
+        #region Convertors
 
         private static IProducer<T> ToProducer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer)
         {
@@ -2381,13 +3577,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         private static IReadOnlyList<IProducer<T>> ToProducer<T>(
             this IEnumerable<Func<IConsumerFeed<T>, CancellationToken, Task>> producers)
         {
-            return producers.Select(x => new AsyncProducer<T>(x)).ToList();
+            return producers.Select(x => x.ToProducer()).ToList();
         }
 
         private static IReadOnlyList<IProducer<T>> ToProducer<T>(
             this IEnumerable<Action<IConsumerFeed<T>, CancellationToken>> producers)
         {
-            return producers.Select(x => x.ToAsync()).ToProducer();
+            return producers.Select(x => x.ToProducer()).ToList();
         }
 
         private static IConsumer<T> ToConsumer<T>(this Func<T, CancellationToken, Task> consumer)
@@ -2403,13 +3599,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         private static IReadOnlyList<IConsumer<T>> ToConsumer<T>(
             this IEnumerable<Func<T, CancellationToken, Task>> consumers)
         {
-            return consumers.Select(x => new AsyncConsumer<T>(x)).ToList();
+            return consumers.Select(x => x.ToConsumer()).ToList();
         }
 
         private static IReadOnlyList<IConsumer<T>> ToConsumer<T>(
             this IEnumerable<Action<T, CancellationToken>> consumers)
         {
-            return consumers.Select(x => x.ToAsync()).ToConsumer();
+            return consumers.Select(x => x.ToConsumer()).ToList();
         }
+
+        #endregion
     }
 }
