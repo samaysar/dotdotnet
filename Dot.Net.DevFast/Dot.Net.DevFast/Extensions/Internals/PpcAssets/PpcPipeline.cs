@@ -20,6 +20,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
                         var runningConsumers = RunConsumers(consumers, ppcBuffer, adapter, combinedCts.Token, localCts);
                         var runningProducers = RunProducers(producers, ppcBuffer, combinedCts.Token, localCts);
                         await Task.WhenAll(runningProducers, runningConsumers).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
                     }
                 }
             }
@@ -60,7 +61,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
                 }
                 catch
                 {
-                    tokenSrc.Cancel();
+                    if (!token.IsCancellationRequested) tokenSrc.Cancel();
                     throw;
                 }
             }, CancellationToken.None);
@@ -100,7 +101,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
                 }
                 catch
                 {
-                    tokenSrc.Cancel();
+                    if (!token.IsCancellationRequested) tokenSrc.Cancel();
                     throw;
                 }
             }, CancellationToken.None);

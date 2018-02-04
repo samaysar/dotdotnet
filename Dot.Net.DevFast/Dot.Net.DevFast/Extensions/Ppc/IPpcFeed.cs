@@ -23,9 +23,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     public interface IConsumerFeed<in T>
     {
         /// <summary>
-        /// Adds an item in the feed to be consumer by consumers observing the feed.
+        /// Adds an item in the feed to be consumed by consumers observing the feed.
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">item to add</param>
         void Add(T item);
     }
 
