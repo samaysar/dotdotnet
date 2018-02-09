@@ -3571,7 +3571,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         private static IProducer<T> ToProducer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer)
         {
-            return producer.ToAsync().ToProducer();
+            return producer.ToAsync(false).ToProducer();
         }
 
         private static IReadOnlyList<IProducer<T>> ToProducer<T>(
@@ -3593,7 +3593,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         private static IConsumer<T> ToConsumer<T>(this Action<T, CancellationToken> consumer)
         {
-            return consumer.ToAsync().ToConsumer();
+            return consumer.ToAsync(false).ToConsumer();
         }
 
         private static IReadOnlyList<IConsumer<T>> ToConsumer<T>(
