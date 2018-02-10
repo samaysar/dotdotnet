@@ -83,6 +83,7 @@
     <Compile Include="Extensions\StringExt\StringSafeTest.cs" />
     <Compile Include="Extensions\StringExt\StringTryToTest.cs" />
     <Compile Include="Extensions\StringExt\StringUnsafeTest.cs" />
+    <Compile Include="Extensions\SyncAsyncTest.cs" />
     <Compile Include="Extensions\ThrowIfPredicateTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelpers\FileSys.cs" />
