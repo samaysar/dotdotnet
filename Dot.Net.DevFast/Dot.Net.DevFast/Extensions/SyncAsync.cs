@@ -17,7 +17,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous action method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -72,7 +72,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous func method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned. Setting is false is good when the await is just made on the function call.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -123,7 +123,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous action method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -178,7 +178,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous func method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned. Setting is false is good when the await is just made on the function call.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -229,7 +229,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous action method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -284,7 +284,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous func method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned. Setting is false is good when the await is just made on the function call.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -335,7 +335,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous action method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -390,7 +390,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous func method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned. Setting is false is good when the await is just made on the function call.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -441,7 +441,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous action method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -496,7 +496,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous func method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned. Setting is false is good when the await is just made on the function call.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -547,7 +547,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous action method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -602,7 +602,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous func method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned. Setting is false is good when the await is just made on the function call.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -654,7 +654,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous action method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -710,7 +710,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous func method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned. Setting is false is good when the await is just made on the function call.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -762,7 +762,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous action method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -819,7 +819,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous func method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned. Setting is false is good when the await is just made on the function call.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -872,7 +872,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous action method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -929,7 +929,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous func method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned. Setting is false is good when the await is just made on the function call.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -982,7 +982,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous action method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -1039,7 +1039,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous func method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned. Setting is false is good when the await is just made on the function call.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -1093,7 +1093,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous action method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -1151,7 +1151,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous func method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned. Setting is false is good when the await is just made on the function call.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -1206,7 +1206,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous action method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -1264,7 +1264,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous func method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned. Setting is false is good when the await is just made on the function call.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -1319,7 +1319,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous action method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -1377,7 +1377,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous func method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned. Setting is false is good when the await is just made on the function call.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -1432,7 +1432,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous action method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -1490,7 +1490,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous func method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned. Setting is false is good when the await is just made on the function call.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -1545,7 +1545,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous action method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -1603,7 +1603,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous func method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned. Setting is false is good when the await is just made on the function call.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -1659,7 +1659,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous action method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -1719,7 +1719,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous func method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned. Setting is false is good when the await is just made on the function call.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -1776,7 +1776,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous action method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
@@ -1836,7 +1836,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="sync">synchronous func method</param>
         /// <param name="withDelgation">when true, a new task is created else a task containing the results
-        /// is returned. Setting is false is good when the await is just made on the function call.</param>
+        /// is returned, i.e. <paramref name="sync"/> executes inline no matter when the returned task is awaited.</param>
         /// <param name="options">Options to use when <paramref name="withDelgation"/> is set to true else those
         /// are ignored.</param>
         /// <param name="token">cancellation token to observe. When the cancellation token is cancelled the task
