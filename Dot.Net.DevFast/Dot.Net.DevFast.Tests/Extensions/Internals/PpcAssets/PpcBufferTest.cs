@@ -102,6 +102,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             Assert.True(tryGetTask.Status != TaskStatus.RanToCompletion);
             instance.Close();
             Assert.False(await tryGetTask.ConfigureAwait(false));
+            Assert.True(instance.Finished);
             using (instance)
             {
                 //to dispose.

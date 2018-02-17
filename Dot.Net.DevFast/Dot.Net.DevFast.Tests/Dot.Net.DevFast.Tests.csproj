@@ -65,6 +65,7 @@
     <Compile Include="Etc\DdnDfExceptionTest.cs" />
     <Compile Include="Etc\StdLookUpsTest.cs" />
     <Compile Include="Extensions\CreateExtsTest.cs" />
+    <Compile Include="Extensions\Internals\PpcAssets\PpcWrappersTest.cs" />
     <Compile Include="Extensions\Ppc\IdentityAdapterTest.cs" />
     <Compile Include="Extensions\Internals\OthersTest.cs" />
     <Compile Include="Extensions\Ppc\AwaitableListAdapterTest.cs" />

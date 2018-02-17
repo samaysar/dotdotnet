@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.Ppc;
@@ -81,8 +80,8 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             for (var i = 0; i < count; i++)
             {
                 producers[i] = Substitute.For<IProducer<object>>();
-                producers[i].ProduceAsync(Arg.Any<IConsumerFeed<object>>(),
-                    Arg.Any<CancellationToken>()).Returns(x => Task.CompletedTask);
+                //producers[i].ProduceAsync(Arg.Any<IConsumerFeed<object>>(),
+                //    Arg.Any<CancellationToken>()).Returns(x => Task.CompletedTask);
             }
             return producers;
         }
@@ -93,7 +92,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             for (var i = 0; i < count; i++)
             {
                 consumers[i] = Substitute.For<IConsumer<T>>();
-                consumers[i].InitAsync().Returns(x => Task.CompletedTask);
+                //consumers[i].InitAsync().Returns(x => Task.CompletedTask);
             }
             return consumers;
         }

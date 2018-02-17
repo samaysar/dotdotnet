@@ -65,7 +65,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// any wait. Then the list if finalized and returned. Step 2 and 3 are same when inifinite timeout 
         /// is suplied.</para>
         /// <para>4. If method returns true, then the list would contains at least 1 item.</para>
-        /// <para>5. List max size would be respected as provided in Ctor..</para>
+        /// <para>5. List max size would be respected as provided in Ctor.</para>
         /// </summary>
         /// <param name="producerDataFeed">Data feed</param>
         /// <param name="consumable">consumable data instance</param>
@@ -83,8 +83,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             if (!producerDataFeed.TryGet(Timeout.Infinite, out var value)) return false;
             consumable = new List<T>(_maxListSize) { value };
             var timeRemains = (int)Math.Max(0, _millisecTimeout - sw.ElapsedMilliseconds);
-            while (consumable.Count < _maxListSize &&
-                   timeRemains >= 0)
+            while (consumable.Count < _maxListSize)
             {
                 if (producerDataFeed.TryGet(timeRemains, out value))
                 {
@@ -94,10 +93,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
                         timeRemains = (int) Math.Max(0, _millisecTimeout - sw.ElapsedMilliseconds);
                     }
                 }
-                else
-                {
-                    timeRemains = -1;
-                }
+                else return true;
             }
             return true;
         }
@@ -107,19 +103,14 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             consumable = null;
             if (!producerDataFeed.TryGet(Timeout.Infinite, out var value)) return false;
             consumable = new List<T>(_maxListSize) {value};
-            var hasItems = true;
-            while (consumable.Count < _maxListSize && hasItems)
+            while (consumable.Count < _maxListSize)
             {
                 if (producerDataFeed.TryGet(Timeout.Infinite, out value))
                 {
                     consumable.Add(value);
                 }
-                else
-                {
-                    hasItems = false;
-                }
+                else return true;
             }
-
             return true;
         }
     }
