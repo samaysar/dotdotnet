@@ -86,6 +86,7 @@
     <Compile Include="Extensions\StringExt\StringTryTo.cs" />
     <Compile Include="Extensions\StringExt\StringUnsafe.cs" />
     <Compile Include="Extensions\SyncAsync.cs" />
+    <Compile Include="Extensions\TaskExts.cs" />
     <Compile Include="Extensions\ThrowIfPredicate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

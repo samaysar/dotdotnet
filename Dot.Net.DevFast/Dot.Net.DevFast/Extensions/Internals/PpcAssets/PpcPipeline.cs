@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions.Ppc;
@@ -17,10 +18,19 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
                 {
                     using (var ppcBuffer = new PpcBuffer<TP>(bufferSize, combinedCts.Token))
                     {
-                        var runningConsumers = RunConsumers(consumers, ppcBuffer, adapter, combinedCts.Token, localCts);
-                        var runningProducers = RunProducers(producers, ppcBuffer, combinedCts.Token, localCts);
-                        await Task.WhenAll(runningProducers, runningConsumers).ConfigureAwait(false);
-                        token.ThrowIfCancellationRequested();
+                        try
+                        {
+                            var runningConsumers =
+                                RunConsumers(consumers, ppcBuffer, adapter, combinedCts.Token, localCts);
+                            var runningProducers = RunProducers(producers, ppcBuffer, combinedCts.Token, localCts);
+                            await Task.WhenAll(runningProducers, runningConsumers).ConfigureAwait(false);
+                        }
+                        catch(Exception e)
+                        {
+                            if (token.IsCancellationRequested)
+                                throw new OperationCanceledException("PpcCancelled", e, token);
+                            throw;
+                        }
                     }
                 }
             }

@@ -14,23 +14,20 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
     {
         [Test]
         [TestCase(1, 1)]
-        [TestCase(1, 10)]
-        [TestCase(10, 10)]
-        [TestCase(10, 1)]
+        [TestCase(1, 2)]
+        [TestCase(2, 2)]
+        [TestCase(2, 1)]
         public async Task RunPpcAsync_Returns_Normally_When_No_Data_Is_Produced(int pc, int cc)
         {
             var producers = new IProducer<object>[pc];
             for (var i = 0; i < pc; i++)
             {
                 producers[i] = Substitute.For<IProducer<object>>();
-                producers[i].ProduceAsync(Arg.Any<IConsumerFeed<object>>(),
-                    Arg.Any<CancellationToken>()).Returns(x => Task.CompletedTask);
             }
             var consumers = new IConsumer<object>[cc];
             for (var i = 0; i < cc; i++)
             {
                 consumers[i] = Substitute.For<IConsumer<object>>();
-                consumers[i].InitAsync().Returns(x => Task.CompletedTask);
             }
             await PpcPipeline<object, object>.RunPpcAsync(CancellationToken.None, ConcurrentBuffer.MinSize,
                 new IdentityAdapter<object>(), producers, consumers).ConfigureAwait(false);
@@ -45,9 +42,9 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
 
         [Test]
         [TestCase(1, 1)]
-        [TestCase(1, 10)]
-        [TestCase(10, 10)]
-        [TestCase(10, 1)]
+        [TestCase(1, 2)]
+        [TestCase(2, 2)]
+        [TestCase(2, 1)]
         public void RunPpcAsync_Wrappes_All_Exceptions_And_Destroys_Ppc(int pcount, int ccount)
         {
             //to make all producer consumers to throw error almost at same time!
@@ -82,12 +79,13 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 ConcurrentBuffer.MinSize, new IdentityAdapter<object>(), producers, consumers));
             countHandle.Wait();
             waitHandle.Set();
-            Assert.Throws<AggregateException>(() => ppcTask.Wait());
+            var ex = Assert.Throws<AggregateException>(() => ppcTask.Wait());
+            Assert.True(ex.InnerExceptions[0].Message.Equals("Testing"));
         }
 
         [Test]
         [TestCase(1)]
-        [TestCase(10)]
+        [TestCase(2)]
         public async Task RunPpcAsync_Forwards_Items_To_Consumer(int ccount)
         {
             //to make all consumers to recieve an item!
