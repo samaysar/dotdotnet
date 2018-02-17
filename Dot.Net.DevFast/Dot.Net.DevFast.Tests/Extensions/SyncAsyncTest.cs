@@ -826,7 +826,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
         }
 
         [Test]
-        public async Task Action_ToAsyncFunc_WithDelegation_Cancels_Task_Well()
+        public void Action_ToAsyncFunc_WithDelegation_Cancels_Task_Well()
         {
             //Here we want to Assert that when token is cancelled, task will throw
             //operation or Task cancellation error, but the action would continue to
@@ -856,10 +856,450 @@ namespace Dot.Net.DevFast.Tests.Extensions
                         var awaitAfter = async0();
                         Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
                         Assert.True(taskValue == 0);
-                        cts0.Cancel();
                         waitHandle.Set();
                         taskToUtestHandle.Wait(CancellationToken.None);
                         Assert.True(taskValue == 100);
+                        cts0.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+
+                        // testing Action with 1 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts1 = new CancellationTokenSource();
+                        Action<int> sync1 = (t0) =>
+                        {
+                            waitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 100);
+                            taskToUtestHandle.Set();
+                            cancellationWaitHandle.Wait(CancellationToken.None);
+                            taskToUtestHandle.Set();
+                        };
+                        var async1 = sync1.ToAsync(token: cts1.Token);
+                        awaitAfter = async1(1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts1.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+
+                        // testing Action with 2 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts2 = new CancellationTokenSource();
+                        Action<int, int> sync2 = (t0, t1) =>
+                        {
+                            waitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 100);
+                            taskToUtestHandle.Set();
+                            cancellationWaitHandle.Wait(CancellationToken.None);
+                            taskToUtestHandle.Set();
+                        };
+                        var async2 = sync2.ToAsync(token: cts2.Token);
+                        awaitAfter = async2(1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts2.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+
+                        // testing Action with 3 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts3 = new CancellationTokenSource();
+                        Action<int, int, int> sync3 = (t0, t1, t2) =>
+                        {
+                            waitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 100);
+                            taskToUtestHandle.Set();
+                            cancellationWaitHandle.Wait(CancellationToken.None);
+                            taskToUtestHandle.Set();
+                        };
+                        var async3 = sync3.ToAsync(token: cts3.Token);
+                        awaitAfter = async3(1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts3.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+
+                        // testing Action with 4 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts4 = new CancellationTokenSource();
+                        Action<int, int, int, int> sync4 = (t0, t1, t2, t3) =>
+                        {
+                            waitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 100);
+                            taskToUtestHandle.Set();
+                            cancellationWaitHandle.Wait(CancellationToken.None);
+                            taskToUtestHandle.Set();
+                        };
+                        var async4 = sync4.ToAsync(token: cts4.Token);
+                        awaitAfter = async4(1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts4.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+
+                        // testing Action with 5 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts5 = new CancellationTokenSource();
+                        Action<int, int, int, int, int> sync5 = (t0, t1, t2, t3, t4) =>
+                        {
+                            waitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 100);
+                            taskToUtestHandle.Set();
+                            cancellationWaitHandle.Wait(CancellationToken.None);
+                            taskToUtestHandle.Set();
+                        };
+                        var async5 = sync5.ToAsync(token: cts5.Token);
+                        awaitAfter = async5(1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts5.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+
+                        // testing Action with 6 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts6 = new CancellationTokenSource();
+                        Action<int, int, int, int, int, int> sync6 = (t0, t1, t2, t3, t4, t5) =>
+                        {
+                            waitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 100);
+                            taskToUtestHandle.Set();
+                            cancellationWaitHandle.Wait(CancellationToken.None);
+                            taskToUtestHandle.Set();
+                        };
+                        var async6 = sync6.ToAsync(token: cts6.Token);
+                        awaitAfter = async6(1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts6.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+
+                        // testing Action with 7 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts7 = new CancellationTokenSource();
+                        Action<int, int, int, int, int, int, int> sync7 = (t0, t1, t2, t3, t4, t5, t6) =>
+                        {
+                            waitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 100);
+                            taskToUtestHandle.Set();
+                            cancellationWaitHandle.Wait(CancellationToken.None);
+                            taskToUtestHandle.Set();
+                        };
+                        var async7 = sync7.ToAsync(token: cts7.Token);
+                        awaitAfter = async7(1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts7.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+
+                        // testing Action with 8 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts8 = new CancellationTokenSource();
+                        Action<int, int, int, int, int, int, int, int> sync8 = (t0, t1, t2, t3, t4, t5, t6, t7) =>
+                        {
+                            waitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 100);
+                            taskToUtestHandle.Set();
+                            cancellationWaitHandle.Wait(CancellationToken.None);
+                            taskToUtestHandle.Set();
+                        };
+                        var async8 = sync8.ToAsync(token: cts8.Token);
+                        awaitAfter = async8(1, 1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts8.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+
+                        // testing Action with 9 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts9 = new CancellationTokenSource();
+                        Action<int, int, int, int, int, int, int, int, int> sync9 =
+                            (t0, t1, t2, t3, t4, t5, t6, t7, t8) =>
+                            {
+                                waitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 100);
+                                taskToUtestHandle.Set();
+                                cancellationWaitHandle.Wait(CancellationToken.None);
+                                taskToUtestHandle.Set();
+                            };
+                        var async9 = sync9.ToAsync(token: cts9.Token);
+                        awaitAfter = async9(1, 1, 1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts9.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+
+                        // testing Action with 10 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts10 = new CancellationTokenSource();
+                        Action<int, int, int, int, int, int, int, int, int, int> sync10 =
+                            (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9) =>
+                            {
+                                waitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 100);
+                                taskToUtestHandle.Set();
+                                cancellationWaitHandle.Wait(CancellationToken.None);
+                                taskToUtestHandle.Set();
+                            };
+                        var async10 = sync10.ToAsync(token: cts10.Token);
+                        awaitAfter = async10(1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts10.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+
+                        // testing Action with 11 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts11 = new CancellationTokenSource();
+                        Action<int, int, int, int, int, int, int, int, int, int, int> sync11 =
+                            (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10) =>
+                            {
+                                waitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 100);
+                                taskToUtestHandle.Set();
+                                cancellationWaitHandle.Wait(CancellationToken.None);
+                                taskToUtestHandle.Set();
+                            };
+                        var async11 = sync11.ToAsync(token: cts11.Token);
+                        awaitAfter = async11(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts11.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+
+                        // testing Action with 12 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts12 = new CancellationTokenSource();
+                        Action<int, int, int, int, int, int, int, int, int, int, int, int> sync12 =
+                            (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11) =>
+                            {
+                                waitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 100);
+                                taskToUtestHandle.Set();
+                                cancellationWaitHandle.Wait(CancellationToken.None);
+                                taskToUtestHandle.Set();
+                            };
+                        var async12 = sync12.ToAsync(token: cts12.Token);
+                        awaitAfter = async12(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts12.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+
+                        // testing Action with 13 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts13 = new CancellationTokenSource();
+                        Action<int, int, int, int, int, int, int, int, int, int, int, int, int> sync13 =
+                            (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12) =>
+                            {
+                                waitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 100);
+                                taskToUtestHandle.Set();
+                                cancellationWaitHandle.Wait(CancellationToken.None);
+                                taskToUtestHandle.Set();
+                            };
+                        var async13 = sync13.ToAsync(token: cts13.Token);
+                        awaitAfter = async13(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts13.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+
+                        // testing Action with 14 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts14 = new CancellationTokenSource();
+                        Action<int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync14 =
+                            (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13) =>
+                            {
+                                waitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 100);
+                                taskToUtestHandle.Set();
+                                cancellationWaitHandle.Wait(CancellationToken.None);
+                                taskToUtestHandle.Set();
+                            };
+                        var async14 = sync14.ToAsync(token: cts14.Token);
+                        awaitAfter = async14(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts14.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+
+                        // testing Action with 15 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts15 = new CancellationTokenSource();
+                        Action<int, int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync15 =
+                            (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14) =>
+                            {
+                                waitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 100);
+                                taskToUtestHandle.Set();
+                                cancellationWaitHandle.Wait(CancellationToken.None);
+                                taskToUtestHandle.Set();
+                            };
+                        var async15 = sync15.ToAsync(token: cts15.Token);
+                        awaitAfter = async15(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts15.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+
+                        // testing Action with 16 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts16 = new CancellationTokenSource();
+                        Action<int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync16 =
+                            (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15) =>
+                            {
+                                waitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 100);
+                                taskToUtestHandle.Set();
+                                cancellationWaitHandle.Wait(CancellationToken.None);
+                                taskToUtestHandle.Set();
+                            };
+                        var async16 = sync16.ToAsync(token: cts16.Token);
+                        awaitAfter = async16(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts16.Cancel();
                         Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
                         taskToUtestHandle.Reset();
                         cancellationWaitHandle.Set();
@@ -867,6 +1307,769 @@ namespace Dot.Net.DevFast.Tests.Extensions
                     }
                 }
             }
+        }
+
+        [Test]
+        public void Func_ToAsyncFunc_WithDelegation_Cancels_Task_Well()
+        {
+            //Here we want to Assert that when token is cancelled, task will throw
+            //operation or Task cancellation error, but the func would continue to
+            //execute as we won't observe the token in our action!!!
+
+            using (var waitHandle = new ManualResetEventSlim())
+            {
+                using (var taskToUtestHandle = new ManualResetEventSlim())
+                {
+                    using (var cancellationWaitHandle = new ManualResetEventSlim())
+                    {
+                        // testing Func with 0 generics
+                        var taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts0 = new CancellationTokenSource();
+                        Func<int> sync0 = () =>
+                        {
+                            waitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 100);
+                            taskToUtestHandle.Set();
+                            cancellationWaitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 1);
+                            taskToUtestHandle.Set();
+                            return 1;
+                        };
+                        var async0 = sync0.ToAsync(token: cts0.Token);
+                        var awaitAfter = async0();
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts0.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 1);
+
+                        // testing Func with 1 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts1 = new CancellationTokenSource();
+                        Func<int, int> sync1 = (t0) =>
+                        {
+                            waitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 100);
+                            taskToUtestHandle.Set();
+                            cancellationWaitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 1);
+                            taskToUtestHandle.Set();
+                            return 1;
+                        };
+                        var async1 = sync1.ToAsync(token: cts1.Token);
+                        awaitAfter = async1(1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts1.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 1);
+
+                        // testing Func with 2 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts2 = new CancellationTokenSource();
+                        Func<int, int, int> sync2 = (t0, t1) =>
+                        {
+                            waitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 100);
+                            taskToUtestHandle.Set();
+                            cancellationWaitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 1);
+                            taskToUtestHandle.Set();
+                            return 1;
+                        };
+                        var async2 = sync2.ToAsync(token: cts2.Token);
+                        awaitAfter = async2(1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts2.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 1);
+
+                        // testing Func with 3 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts3 = new CancellationTokenSource();
+                        Func<int, int, int, int> sync3 = (t0, t1, t2) =>
+                        {
+                            waitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 100);
+                            taskToUtestHandle.Set();
+                            cancellationWaitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 1);
+                            taskToUtestHandle.Set();
+                            return 1;
+                        };
+                        var async3 = sync3.ToAsync(token: cts3.Token);
+                        awaitAfter = async3(1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts3.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 1);
+
+                        // testing Func with 4 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts4 = new CancellationTokenSource();
+                        Func<int, int, int, int, int> sync4 = (t0, t1, t2, t3) =>
+                        {
+                            waitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 100);
+                            taskToUtestHandle.Set();
+                            cancellationWaitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 1);
+                            taskToUtestHandle.Set();
+                            return 1;
+                        };
+                        var async4 = sync4.ToAsync(token: cts4.Token);
+                        awaitAfter = async4(1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts4.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 1);
+
+                        // testing Func with 5 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts5 = new CancellationTokenSource();
+                        Func<int, int, int, int, int, int> sync5 = (t0, t1, t2, t3, t4) =>
+                        {
+                            waitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 100);
+                            taskToUtestHandle.Set();
+                            cancellationWaitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 1);
+                            taskToUtestHandle.Set();
+                            return 1;
+                        };
+                        var async5 = sync5.ToAsync(token: cts5.Token);
+                        awaitAfter = async5(1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts5.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 1);
+
+                        // testing Func with 6 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts6 = new CancellationTokenSource();
+                        Func<int, int, int, int, int, int, int> sync6 = (t0, t1, t2, t3, t4, t5) =>
+                        {
+                            waitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 100);
+                            taskToUtestHandle.Set();
+                            cancellationWaitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 1);
+                            taskToUtestHandle.Set();
+                            return 1;
+                        };
+                        var async6 = sync6.ToAsync(token: cts6.Token);
+                        awaitAfter = async6(1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts6.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 1);
+
+                        // testing Func with 7 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts7 = new CancellationTokenSource();
+                        Func<int, int, int, int, int, int, int, int> sync7 = (t0, t1, t2, t3, t4, t5, t6) =>
+                        {
+                            waitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 100);
+                            taskToUtestHandle.Set();
+                            cancellationWaitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 1);
+                            taskToUtestHandle.Set();
+                            return 1;
+                        };
+                        var async7 = sync7.ToAsync(token: cts7.Token);
+                        awaitAfter = async7(1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts7.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 1);
+
+                        // testing Func with 8 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts8 = new CancellationTokenSource();
+                        Func<int, int, int, int, int, int, int, int, int> sync8 = (t0, t1, t2, t3, t4, t5, t6, t7) =>
+                        {
+                            waitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 100);
+                            taskToUtestHandle.Set();
+                            cancellationWaitHandle.Wait(CancellationToken.None);
+                            Interlocked.Exchange(ref taskValue, 1);
+                            taskToUtestHandle.Set();
+                            return 1;
+                        };
+                        var async8 = sync8.ToAsync(token: cts8.Token);
+                        awaitAfter = async8(1, 1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts8.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 1);
+
+                        // testing Func with 9 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts9 = new CancellationTokenSource();
+                        Func<int, int, int, int, int, int, int, int, int, int> sync9 =
+                            (t0, t1, t2, t3, t4, t5, t6, t7, t8) =>
+                            {
+                                waitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 100);
+                                taskToUtestHandle.Set();
+                                cancellationWaitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 1);
+                                taskToUtestHandle.Set();
+                                return 1;
+                            };
+                        var async9 = sync9.ToAsync(token: cts9.Token);
+                        awaitAfter = async9(1, 1, 1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts9.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 1);
+
+                        // testing Func with 10 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts10 = new CancellationTokenSource();
+                        Func<int, int, int, int, int, int, int, int, int, int, int> sync10 =
+                            (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9) =>
+                            {
+                                waitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 100);
+                                taskToUtestHandle.Set();
+                                cancellationWaitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 1);
+                                taskToUtestHandle.Set();
+                                return 1;
+                            };
+                        var async10 = sync10.ToAsync(token: cts10.Token);
+                        awaitAfter = async10(1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts10.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 1);
+
+                        // testing Func with 11 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts11 = new CancellationTokenSource();
+                        Func<int, int, int, int, int, int, int, int, int, int, int, int> sync11 =
+                            (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10) =>
+                            {
+                                waitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 100);
+                                taskToUtestHandle.Set();
+                                cancellationWaitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 1);
+                                taskToUtestHandle.Set();
+                                return 1;
+                            };
+                        var async11 = sync11.ToAsync(token: cts11.Token);
+                        awaitAfter = async11(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts11.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 1);
+
+                        // testing Func with 12 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts12 = new CancellationTokenSource();
+                        Func<int, int, int, int, int, int, int, int, int, int, int, int, int> sync12 =
+                            (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11) =>
+                            {
+                                waitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 100);
+                                taskToUtestHandle.Set();
+                                cancellationWaitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 1);
+                                taskToUtestHandle.Set();
+                                return 1;
+                            };
+                        var async12 = sync12.ToAsync(token: cts12.Token);
+                        awaitAfter = async12(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts12.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 1);
+
+                        // testing Func with 13 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts13 = new CancellationTokenSource();
+                        Func<int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync13 =
+                            (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12) =>
+                            {
+                                waitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 100);
+                                taskToUtestHandle.Set();
+                                cancellationWaitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 1);
+                                taskToUtestHandle.Set();
+                                return 1;
+                            };
+                        var async13 = sync13.ToAsync(token: cts13.Token);
+                        awaitAfter = async13(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts13.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 1);
+
+                        // testing Func with 14 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts14 = new CancellationTokenSource();
+                        Func<int, int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync14 =
+                            (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13) =>
+                            {
+                                waitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 100);
+                                taskToUtestHandle.Set();
+                                cancellationWaitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 1);
+                                taskToUtestHandle.Set();
+                                return 1;
+                            };
+                        var async14 = sync14.ToAsync(token: cts14.Token);
+                        awaitAfter = async14(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts14.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 1);
+
+                        // testing Func with 15 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts15 = new CancellationTokenSource();
+                        Func<int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync15 =
+                            (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14) =>
+                            {
+                                waitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 100);
+                                taskToUtestHandle.Set();
+                                cancellationWaitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 1);
+                                taskToUtestHandle.Set();
+                                return 1;
+                            };
+                        var async15 = sync15.ToAsync(token: cts15.Token);
+                        awaitAfter = async15(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts15.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 1);
+
+                        // testing Func with 16 generics
+                        taskValue = 0;
+                        waitHandle.Reset();
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Reset();
+                        var cts16 = new CancellationTokenSource();
+                        Func<int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync16
+                            = (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15) =>
+                            {
+                                waitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 100);
+                                taskToUtestHandle.Set();
+                                cancellationWaitHandle.Wait(CancellationToken.None);
+                                Interlocked.Exchange(ref taskValue, 1);
+                                taskToUtestHandle.Set();
+                                return 1;
+                            };
+                        var async16 = sync16.ToAsync(token: cts16.Token);
+                        awaitAfter = async16(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+                        Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
+                        Assert.True(taskValue == 0);
+                        waitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 100);
+                        cts16.Cancel();
+                        Assert.ThrowsAsync<TaskCanceledException>(() => awaitAfter);
+                        taskToUtestHandle.Reset();
+                        cancellationWaitHandle.Set();
+                        taskToUtestHandle.Wait(CancellationToken.None);
+                        Assert.True(taskValue == 1);
+                    }
+                }
+            }
+        }
+
+        [Test]
+        public void Action_ToAsyncFunc_WithDelegation_Throws_Action_Exception()
+        {
+            //Here we want to Assert that when action throws an exception, 
+            //task throws the exact same exception without tinkering with it!!!
+
+            const string erroText = "My custom error";
+            var cts = new CancellationTokenSource();
+            var customException = new Exception(erroText);
+            // testing Action with 0 generics
+            Action sync0 = () => throw customException;
+            Assert.True(Assert.ThrowsAsync<Exception>(() => sync0.ToAsync(token: cts.Token)()).Message
+                .Equals(erroText));
+
+            // testing Action with 1 generics
+            Action<int> sync1 = (t0) => throw customException;
+            Assert.True(
+                Assert.ThrowsAsync<Exception>(() => sync1.ToAsync(token: cts.Token)(1)).Message.Equals(erroText));
+
+            // testing Action with 2 generics
+            Action<int, int> sync2 = (t0, t1) => throw customException;
+            Assert.True(Assert.ThrowsAsync<Exception>(() => sync2.ToAsync(token: cts.Token)(1, 1)).Message
+                .Equals(erroText));
+
+            // testing Action with 3 generics
+            Action<int, int, int> sync3 = (t0, t1, t2) => throw customException;
+            Assert.True(Assert.ThrowsAsync<Exception>(() => sync3.ToAsync(token: cts.Token)(1, 1, 1)).Message
+                .Equals(erroText));
+
+            // testing Action with 4 generics
+            Action<int, int, int, int> sync4 = (t0, t1, t2, t3) => throw customException;
+            Assert.True(Assert.ThrowsAsync<Exception>(() => sync4.ToAsync(token: cts.Token)(1, 1, 1, 1)).Message
+                .Equals(erroText));
+
+            // testing Action with 5 generics
+            Action<int, int, int, int, int> sync5 = (t0, t1, t2, t3, t4) => throw customException;
+            Assert.True(Assert.ThrowsAsync<Exception>(() => sync5.ToAsync(token: cts.Token)(1, 1, 1, 1, 1)).Message
+                .Equals(erroText));
+
+            // testing Action with 6 generics
+            Action<int, int, int, int, int, int> sync6 = (t0, t1, t2, t3, t4, t5) => throw customException;
+            Assert.True(Assert.ThrowsAsync<Exception>(() => sync6.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1)).Message
+                .Equals(erroText));
+
+            // testing Action with 7 generics
+            Action<int, int, int, int, int, int, int> sync7 = (t0, t1, t2, t3, t4, t5, t6) => throw customException;
+            Assert.True(Assert.ThrowsAsync<Exception>(() => sync7.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1))
+                .Message.Equals(erroText));
+
+            // testing Action with 8 generics
+            Action<int, int, int, int, int, int, int, int> sync8 = (t0, t1, t2, t3, t4, t5, t6, t7) =>
+                throw customException;
+            Assert.True(Assert.ThrowsAsync<Exception>(() => sync8.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1))
+                .Message.Equals(erroText));
+
+            // testing Action with 9 generics
+            Action<int, int, int, int, int, int, int, int, int> sync9 = (t0, t1, t2, t3, t4, t5, t6, t7, t8) =>
+                throw customException;
+            Assert.True(Assert.ThrowsAsync<Exception>(() => sync9.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1, 1))
+                .Message.Equals(erroText));
+
+            // testing Action with 10 generics
+            Action<int, int, int, int, int, int, int, int, int, int> sync10 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9) => throw customException;
+            Assert.True(Assert
+                .ThrowsAsync<Exception>(() => sync10.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1, 1, 1)).Message
+                .Equals(erroText));
+
+            // testing Action with 11 generics
+            Action<int, int, int, int, int, int, int, int, int, int, int> sync11 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10) => throw customException;
+            Assert.True(Assert
+                .ThrowsAsync<Exception>(() => sync11.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)).Message
+                .Equals(erroText));
+
+            // testing Action with 12 generics
+            Action<int, int, int, int, int, int, int, int, int, int, int, int> sync12 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11) => throw customException;
+            Assert.True(Assert
+                .ThrowsAsync<Exception>(() => sync12.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1))
+                .Message.Equals(erroText));
+
+            // testing Action with 13 generics
+            Action<int, int, int, int, int, int, int, int, int, int, int, int, int> sync13 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12) => throw customException;
+            Assert.True(Assert
+                .ThrowsAsync<Exception>(() => sync13.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1))
+                .Message.Equals(erroText));
+
+            // testing Action with 14 generics
+            Action<int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync14 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13) => throw customException;
+            Assert.True(Assert
+                .ThrowsAsync<Exception>(
+                    () => sync14.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)).Message
+                .Equals(erroText));
+
+            // testing Action with 15 generics
+            Action<int, int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync15 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14) => throw customException;
+            Assert.True(Assert
+                .ThrowsAsync<Exception>(() =>
+                    sync15.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)).Message
+                .Equals(erroText));
+
+            // testing Action with 16 generics
+            Action<int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync16 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15) => throw customException;
+            Assert.True(Assert
+                .ThrowsAsync<Exception>(() =>
+                    sync16.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)).Message
+                .Equals(erroText));
+        }
+
+        [Test]
+        public void Func_ToAsyncFunc_WithDelegation_Throws_Func_Exception()
+        {
+            //Here we want to Assert that when action throws an exception, 
+            //task throws the exact same exception without tinkering with it!!!
+
+            const string erroText = "My custom error";
+            var cts = new CancellationTokenSource();
+            var customException = new Exception(erroText);
+            // testing Func with 0 generics
+            Func<int> sync0 = () => throw customException;
+            Assert.True(Assert.ThrowsAsync<Exception>(() => sync0.ToAsync(token: cts.Token)()).Message
+                .Equals(erroText));
+
+            // testing Func with 1 generics
+            Func<int, int> sync1 = (t0) => throw customException;
+            Assert.True(
+                Assert.ThrowsAsync<Exception>(() => sync1.ToAsync(token: cts.Token)(1)).Message.Equals(erroText));
+
+            // testing Func with 2 generics
+            Func<int, int, int> sync2 = (t0, t1) => throw customException;
+            Assert.True(Assert.ThrowsAsync<Exception>(() => sync2.ToAsync(token: cts.Token)(1, 1)).Message
+                .Equals(erroText));
+
+            // testing Func with 3 generics
+            Func<int, int, int, int> sync3 = (t0, t1, t2) => throw customException;
+            Assert.True(Assert.ThrowsAsync<Exception>(() => sync3.ToAsync(token: cts.Token)(1, 1, 1)).Message
+                .Equals(erroText));
+
+            // testing Func with 4 generics
+            Func<int, int, int, int, int> sync4 = (t0, t1, t2, t3) => throw customException;
+            Assert.True(Assert.ThrowsAsync<Exception>(() => sync4.ToAsync(token: cts.Token)(1, 1, 1, 1)).Message
+                .Equals(erroText));
+
+            // testing Func with 5 generics
+            Func<int, int, int, int, int, int> sync5 = (t0, t1, t2, t3, t4) => throw customException;
+            Assert.True(Assert.ThrowsAsync<Exception>(() => sync5.ToAsync(token: cts.Token)(1, 1, 1, 1, 1)).Message
+                .Equals(erroText));
+
+            // testing Func with 6 generics
+            Func<int, int, int, int, int, int, int> sync6 = (t0, t1, t2, t3, t4, t5) => throw customException;
+            Assert.True(Assert.ThrowsAsync<Exception>(() => sync6.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1)).Message
+                .Equals(erroText));
+
+            // testing Func with 7 generics
+            Func<int, int, int, int, int, int, int, int> sync7 = (t0, t1, t2, t3, t4, t5, t6) => throw customException;
+            Assert.True(Assert.ThrowsAsync<Exception>(() => sync7.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1))
+                .Message.Equals(erroText));
+
+            // testing Func with 8 generics
+            Func<int, int, int, int, int, int, int, int, int> sync8 = (t0, t1, t2, t3, t4, t5, t6, t7) =>
+                throw customException;
+            Assert.True(Assert.ThrowsAsync<Exception>(() => sync8.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1))
+                .Message.Equals(erroText));
+
+            // testing Func with 9 generics
+            Func<int, int, int, int, int, int, int, int, int, int> sync9 = (t0, t1, t2, t3, t4, t5, t6, t7, t8) =>
+                throw customException;
+            Assert.True(Assert.ThrowsAsync<Exception>(() => sync9.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1, 1))
+                .Message.Equals(erroText));
+
+            // testing Func with 10 generics
+            Func<int, int, int, int, int, int, int, int, int, int, int> sync10 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9) => throw customException;
+            Assert.True(Assert
+                .ThrowsAsync<Exception>(() => sync10.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1, 1, 1)).Message
+                .Equals(erroText));
+
+            // testing Func with 11 generics
+            Func<int, int, int, int, int, int, int, int, int, int, int, int> sync11 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10) => throw customException;
+            Assert.True(Assert
+                .ThrowsAsync<Exception>(() => sync11.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)).Message
+                .Equals(erroText));
+
+            // testing Func with 12 generics
+            Func<int, int, int, int, int, int, int, int, int, int, int, int, int> sync12 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11) => throw customException;
+            Assert.True(Assert
+                .ThrowsAsync<Exception>(() => sync12.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1))
+                .Message.Equals(erroText));
+
+            // testing Func with 13 generics
+            Func<int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync13 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12) => throw customException;
+            Assert.True(Assert
+                .ThrowsAsync<Exception>(() => sync13.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1))
+                .Message.Equals(erroText));
+
+            // testing Func with 14 generics
+            Func<int, int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync14 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13) => throw customException;
+            Assert.True(Assert
+                .ThrowsAsync<Exception>(
+                    () => sync14.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)).Message
+                .Equals(erroText));
+
+            // testing Func with 15 generics
+            Func<int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync15 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14) => throw customException;
+            Assert.True(Assert
+                .ThrowsAsync<Exception>(() =>
+                    sync15.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)).Message
+                .Equals(erroText));
+
+            // testing Func with 16 generics
+            Func<int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync16 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15) => throw customException;
+            Assert.True(Assert
+                .ThrowsAsync<Exception>(() =>
+                    sync16.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)).Message
+                .Equals(erroText));
         }
     }
 }
