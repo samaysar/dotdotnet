@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Dot.Net.DevFast.Etc;
-using Dot.Net.DevFast.Extensions;
 using Dot.Net.DevFast.Extensions.Ppc;
 using NSubstitute;
 using NUnit.Framework;
@@ -18,262 +16,262 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         //inside PpcPipeline implementation!
 
         [Test]
-        public async Task One_To_One_RunProducerConsumerAsync_Harmonizes()
+        public async Task One_To_One_ProducerConsumer_Harmonizes()
         {
             var producer = Producer();
             var consumer = Consumer<object>();
             var listConsumer = Consumer<List<object>>();
 
-            await producer.RunProducerConsumerAsync(consumer).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(listConsumer, 3).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(listConsumer, 3, 10).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(consumer, new IdentityAdapter<object>()).ConfigureAwait(false);
+            await producer.ProducerConsumer(consumer).ConfigureAwait(false);
+            await producer.ProducerConsumer(listConsumer, 3).ConfigureAwait(false);
+            await producer.ProducerConsumer(listConsumer, 3, 10).ConfigureAwait(false);
+            await producer.ProducerConsumer(consumer, new IdentityAdapter<object>()).ConfigureAwait(false);
 
-            await ProducerFunc(producer).RunProducerConsumerAsync(consumer).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(listConsumer, 3).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(listConsumer, 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(consumer, new IdentityAdapter<object>())
+            await ProducerFunc(producer).ProducerConsumer(consumer).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(listConsumer, 3).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(listConsumer, 3, 10).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(consumer, new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerAction(producer).RunProducerConsumerAsync(consumer).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(listConsumer, 3).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(listConsumer, 3, 10).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(consumer, new IdentityAdapter<object>())
+            await ProducerAction(producer).ProducerConsumer(consumer).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(listConsumer, 3).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(listConsumer, 3, 10).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(consumer, new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await producer.RunProducerConsumerAsync(ConsumerFunc(consumer)).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerFunc(consumer), 3).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerFunc(consumer), new IdentityAdapter<object>())
+            await producer.ProducerConsumer(ConsumerFunc(consumer)).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerFunc(consumer), 3).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerFunc(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerFunc(consumer)).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), 3).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), new IdentityAdapter<object>())
+            await ProducerFunc(producer).ProducerConsumer(ConsumerFunc(consumer)).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerFunc(consumer), 3).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerFunc(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerFunc(consumer)).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), 3).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), 3, 10)
+            await ProducerAction(producer).ProducerConsumer(ConsumerFunc(consumer)).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(ConsumerFunc(consumer), 3).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(ConsumerFunc(consumer), 3, 10)
                 .ConfigureAwait(false);
             await ProducerAction(producer)
-                .RunProducerConsumerAsync(ConsumerFunc(consumer), new IdentityAdapter<object>())
+                .ProducerConsumer(ConsumerFunc(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await producer.RunProducerConsumerAsync(ConsumerAction(consumer)).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerAction(consumer), 3).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerAction(consumer), new IdentityAdapter<object>())
+            await producer.ProducerConsumer(ConsumerAction(consumer)).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerAction(consumer), 3).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerAction(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerAction(consumer)).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerAction(consumer), 3).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerAction(consumer), new IdentityAdapter<object>())
+            await ProducerFunc(producer).ProducerConsumer(ConsumerAction(consumer)).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerAction(consumer), 3).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerAction(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerAction(consumer)).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerAction(consumer), 3).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerAction(consumer), 3, 10)
+            await ProducerAction(producer).ProducerConsumer(ConsumerAction(consumer)).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(ConsumerAction(consumer), 3).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(ConsumerAction(consumer), 3, 10)
                 .ConfigureAwait(false);
             await ProducerAction(producer)
-                .RunProducerConsumerAsync(ConsumerAction(consumer), new IdentityAdapter<object>())
+                .ProducerConsumer(ConsumerAction(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
         }
 
         [Test]
-        public async Task One_To_Many_RunProducerConsumerAsync_Harmonizes()
+        public async Task One_To_Many_ProducerConsumer_Harmonizes()
         {
             var producer = Producer();
             var consumer = Consumer<object>(2);
             var listConsumer = Consumer<List<object>>(2);
 
-            await producer.RunProducerConsumerAsync(consumer).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(listConsumer, 3).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(listConsumer, 3, 10).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(consumer, new IdentityAdapter<object>()).ConfigureAwait(false);
+            await producer.ProducerConsumer(consumer).ConfigureAwait(false);
+            await producer.ProducerConsumer(listConsumer, 3).ConfigureAwait(false);
+            await producer.ProducerConsumer(listConsumer, 3, 10).ConfigureAwait(false);
+            await producer.ProducerConsumer(consumer, new IdentityAdapter<object>()).ConfigureAwait(false);
 
-            await ProducerFunc(producer).RunProducerConsumerAsync(consumer).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(listConsumer, 3).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(listConsumer, 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(consumer, new IdentityAdapter<object>())
+            await ProducerFunc(producer).ProducerConsumer(consumer).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(listConsumer, 3).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(listConsumer, 3, 10).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(consumer, new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerAction(producer).RunProducerConsumerAsync(consumer).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(listConsumer, 3).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(listConsumer, 3, 10).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(consumer, new IdentityAdapter<object>())
+            await ProducerAction(producer).ProducerConsumer(consumer).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(listConsumer, 3).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(listConsumer, 3, 10).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(consumer, new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await producer.RunProducerConsumerAsync(ConsumerFunc(consumer)).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerFunc(consumer), 3).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerFunc(consumer), new IdentityAdapter<object>())
+            await producer.ProducerConsumer(ConsumerFunc(consumer)).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerFunc(consumer), 3).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerFunc(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerFunc(consumer)).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), 3).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), new IdentityAdapter<object>())
+            await ProducerFunc(producer).ProducerConsumer(ConsumerFunc(consumer)).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerFunc(consumer), 3).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerFunc(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerFunc(consumer)).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), 3).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), 3, 10)
+            await ProducerAction(producer).ProducerConsumer(ConsumerFunc(consumer)).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(ConsumerFunc(consumer), 3).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(ConsumerFunc(consumer), 3, 10)
                 .ConfigureAwait(false);
             await ProducerAction(producer)
-                .RunProducerConsumerAsync(ConsumerFunc(consumer), new IdentityAdapter<object>())
+                .ProducerConsumer(ConsumerFunc(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await producer.RunProducerConsumerAsync(ConsumerAction(consumer)).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerAction(consumer), 3).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerAction(consumer), new IdentityAdapter<object>())
+            await producer.ProducerConsumer(ConsumerAction(consumer)).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerAction(consumer), 3).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerAction(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerAction(consumer)).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerAction(consumer), 3).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerAction(consumer), new IdentityAdapter<object>())
+            await ProducerFunc(producer).ProducerConsumer(ConsumerAction(consumer)).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerAction(consumer), 3).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerAction(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerAction(consumer)).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerAction(consumer), 3).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerAction(consumer), 3, 10)
+            await ProducerAction(producer).ProducerConsumer(ConsumerAction(consumer)).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(ConsumerAction(consumer), 3).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(ConsumerAction(consumer), 3, 10)
                 .ConfigureAwait(false);
             await ProducerAction(producer)
-                .RunProducerConsumerAsync(ConsumerAction(consumer), new IdentityAdapter<object>())
+                .ProducerConsumer(ConsumerAction(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
         }
 
         [Test]
-        public async Task Many_To_One_RunProducerConsumerAsync_Harmonizes()
+        public async Task Many_To_One_ProducerConsumer_Harmonizes()
         {
             var producer = Producer(2);
             var consumer = Consumer<object>();
             var listConsumer = Consumer<List<object>>();
 
-            await producer.RunProducerConsumerAsync(consumer).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(listConsumer, 3).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(listConsumer, 3, 10).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(consumer, new IdentityAdapter<object>()).ConfigureAwait(false);
+            await producer.ProducerConsumer(consumer).ConfigureAwait(false);
+            await producer.ProducerConsumer(listConsumer, 3).ConfigureAwait(false);
+            await producer.ProducerConsumer(listConsumer, 3, 10).ConfigureAwait(false);
+            await producer.ProducerConsumer(consumer, new IdentityAdapter<object>()).ConfigureAwait(false);
 
-            await ProducerFunc(producer).RunProducerConsumerAsync(consumer).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(listConsumer, 3).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(listConsumer, 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(consumer, new IdentityAdapter<object>())
+            await ProducerFunc(producer).ProducerConsumer(consumer).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(listConsumer, 3).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(listConsumer, 3, 10).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(consumer, new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerAction(producer).RunProducerConsumerAsync(consumer).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(listConsumer, 3).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(listConsumer, 3, 10).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(consumer, new IdentityAdapter<object>())
+            await ProducerAction(producer).ProducerConsumer(consumer).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(listConsumer, 3).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(listConsumer, 3, 10).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(consumer, new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await producer.RunProducerConsumerAsync(ConsumerFunc(consumer)).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerFunc(consumer), 3).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerFunc(consumer), new IdentityAdapter<object>())
+            await producer.ProducerConsumer(ConsumerFunc(consumer)).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerFunc(consumer), 3).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerFunc(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerFunc(consumer)).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), 3).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), new IdentityAdapter<object>())
+            await ProducerFunc(producer).ProducerConsumer(ConsumerFunc(consumer)).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerFunc(consumer), 3).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerFunc(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerFunc(consumer)).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), 3).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), 3, 10)
+            await ProducerAction(producer).ProducerConsumer(ConsumerFunc(consumer)).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(ConsumerFunc(consumer), 3).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(ConsumerFunc(consumer), 3, 10)
                 .ConfigureAwait(false);
             await ProducerAction(producer)
-                .RunProducerConsumerAsync(ConsumerFunc(consumer), new IdentityAdapter<object>())
+                .ProducerConsumer(ConsumerFunc(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await producer.RunProducerConsumerAsync(ConsumerAction(consumer)).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerAction(consumer), 3).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerAction(consumer), new IdentityAdapter<object>())
+            await producer.ProducerConsumer(ConsumerAction(consumer)).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerAction(consumer), 3).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerAction(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerAction(consumer)).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerAction(consumer), 3).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerAction(consumer), new IdentityAdapter<object>())
+            await ProducerFunc(producer).ProducerConsumer(ConsumerAction(consumer)).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerAction(consumer), 3).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerAction(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerAction(consumer)).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerAction(consumer), 3).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerAction(consumer), 3, 10)
+            await ProducerAction(producer).ProducerConsumer(ConsumerAction(consumer)).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(ConsumerAction(consumer), 3).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(ConsumerAction(consumer), 3, 10)
                 .ConfigureAwait(false);
             await ProducerAction(producer)
-                .RunProducerConsumerAsync(ConsumerAction(consumer), new IdentityAdapter<object>())
+                .ProducerConsumer(ConsumerAction(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
         }
 
         [Test]
-        public async Task Many_To_Many_RunProducerConsumerAsync_Harmonizes()
+        public async Task Many_To_Many_ProducerConsumer_Harmonizes()
         {
             var producer = Producer(2);
             var consumer = Consumer<object>(2);
             var listConsumer = Consumer<List<object>>(2);
 
-            await producer.RunProducerConsumerAsync(consumer).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(listConsumer, 3).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(listConsumer, 3, 10).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(consumer, new IdentityAdapter<object>()).ConfigureAwait(false);
+            await producer.ProducerConsumer(consumer).ConfigureAwait(false);
+            await producer.ProducerConsumer(listConsumer, 3).ConfigureAwait(false);
+            await producer.ProducerConsumer(listConsumer, 3, 10).ConfigureAwait(false);
+            await producer.ProducerConsumer(consumer, new IdentityAdapter<object>()).ConfigureAwait(false);
 
-            await ProducerFunc(producer).RunProducerConsumerAsync(consumer).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(listConsumer, 3).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(listConsumer, 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(consumer, new IdentityAdapter<object>())
+            await ProducerFunc(producer).ProducerConsumer(consumer).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(listConsumer, 3).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(listConsumer, 3, 10).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(consumer, new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerAction(producer).RunProducerConsumerAsync(consumer).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(listConsumer, 3).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(listConsumer, 3, 10).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(consumer, new IdentityAdapter<object>())
+            await ProducerAction(producer).ProducerConsumer(consumer).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(listConsumer, 3).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(listConsumer, 3, 10).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(consumer, new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await producer.RunProducerConsumerAsync(ConsumerFunc(consumer)).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerFunc(consumer), 3).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerFunc(consumer), new IdentityAdapter<object>())
+            await producer.ProducerConsumer(ConsumerFunc(consumer)).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerFunc(consumer), 3).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerFunc(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerFunc(consumer)).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), 3).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), new IdentityAdapter<object>())
+            await ProducerFunc(producer).ProducerConsumer(ConsumerFunc(consumer)).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerFunc(consumer), 3).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerFunc(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerFunc(consumer)).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), 3).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerFunc(consumer), 3, 10)
+            await ProducerAction(producer).ProducerConsumer(ConsumerFunc(consumer)).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(ConsumerFunc(consumer), 3).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(ConsumerFunc(consumer), 3, 10)
                 .ConfigureAwait(false);
             await ProducerAction(producer)
-                .RunProducerConsumerAsync(ConsumerFunc(consumer), new IdentityAdapter<object>())
+                .ProducerConsumer(ConsumerFunc(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await producer.RunProducerConsumerAsync(ConsumerAction(consumer)).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerAction(consumer), 3).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
-            await producer.RunProducerConsumerAsync(ConsumerAction(consumer), new IdentityAdapter<object>())
+            await producer.ProducerConsumer(ConsumerAction(consumer)).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerAction(consumer), 3).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
+            await producer.ProducerConsumer(ConsumerAction(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerAction(consumer)).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerAction(consumer), 3).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).RunProducerConsumerAsync(ConsumerAction(consumer), new IdentityAdapter<object>())
+            await ProducerFunc(producer).ProducerConsumer(ConsumerAction(consumer)).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerAction(consumer), 3).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
+            await ProducerFunc(producer).ProducerConsumer(ConsumerAction(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
 
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerAction(consumer)).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerAction(consumer), 3).ConfigureAwait(false);
-            await ProducerAction(producer).RunProducerConsumerAsync(ConsumerAction(consumer), 3, 10)
+            await ProducerAction(producer).ProducerConsumer(ConsumerAction(consumer)).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(ConsumerAction(consumer), 3).ConfigureAwait(false);
+            await ProducerAction(producer).ProducerConsumer(ConsumerAction(consumer), 3, 10)
                 .ConfigureAwait(false);
             await ProducerAction(producer)
-                .RunProducerConsumerAsync(ConsumerAction(consumer), new IdentityAdapter<object>())
+                .ProducerConsumer(ConsumerAction(consumer), new IdentityAdapter<object>())
                 .ConfigureAwait(false);
         }
 

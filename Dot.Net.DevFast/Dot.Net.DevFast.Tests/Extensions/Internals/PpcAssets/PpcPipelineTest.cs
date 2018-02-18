@@ -29,7 +29,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             {
                 consumers[i] = Substitute.For<IConsumer<object>>();
             }
-            await PpcPipeline<object, object>.RunPpcAsync(CancellationToken.None, ConcurrentBuffer.MinSize,
+            await PpcPipeline<object, object>.Execute(CancellationToken.None, ConcurrentBuffer.MinSize,
                 new IdentityAdapter<object>(), producers, consumers).ConfigureAwait(false);
             foreach (var consumer in consumers)
             {
@@ -64,7 +64,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             }
             var cts = new CancellationTokenSource();
             cts.Cancel();
-            Assert.ThrowsAsync<TaskCanceledException>(() => PpcPipeline<object, object>.RunPpcAsync(cts.Token,
+            Assert.ThrowsAsync<TaskCanceledException>(() => PpcPipeline<object, object>.Execute(cts.Token,
                 ConcurrentBuffer.MinSize, new IdentityAdapter<object>(), producers, consumers));
         }
 
@@ -103,7 +103,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 });
             }
 
-            var ppcTask = Task.Run(() => PpcPipeline<object, object>.RunPpcAsync(CancellationToken.None,
+            var ppcTask = Task.Run(() => PpcPipeline<object, object>.Execute(CancellationToken.None,
                 ConcurrentBuffer.MinSize, new IdentityAdapter<object>(), producers, consumers));
             countHandle.Wait();
             waitHandle.Set();
@@ -145,7 +145,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 });
             }
 
-            var ppcTask = Task.Run(() => PpcPipeline<object, object>.RunPpcAsync(CancellationToken.None,
+            var ppcTask = Task.Run(() => PpcPipeline<object, object>.Execute(CancellationToken.None,
                 ConcurrentBuffer.MinSize, new IdentityAdapter<object>(), producers, consumers));
             countHandle.Wait();
             waitHandle.Set();

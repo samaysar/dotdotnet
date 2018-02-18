@@ -8,34 +8,36 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
 {
     internal static class PpcPipeline<TP, TC>
     {
-        public static async Task RunPpcAsync(CancellationToken token, int bufferSize, IDataAdapter<TP, TC> adapter,
+        public static Task Execute(CancellationToken token, int bufferSize, IDataAdapter<TP, TC> adapter,
             IReadOnlyList<IProducer<TP>> producers, IReadOnlyList<IConsumer<TC>> consumers)
         {
-            using (var localCts = new CancellationTokenSource())
+            return Task.Run(async () =>
             {
-                using (var combinedCts = CancellationTokenSource
-                    .CreateLinkedTokenSource(token, localCts.Token))
+                using (var localCts = new CancellationTokenSource())
                 {
-                    using (var ppcBuffer = new PpcBuffer<TP>(bufferSize, combinedCts.Token))
+                    using (var combinedCts = CancellationTokenSource
+                        .CreateLinkedTokenSource(token, localCts.Token))
                     {
-                        try
+                        using (var ppcBuffer = new PpcBuffer<TP>(bufferSize, combinedCts.Token))
                         {
-                            var runningConsumers =
-                                RunConsumers(consumers, ppcBuffer, adapter, combinedCts.Token, localCts);
-                            var runningProducers = RunProducers(producers, ppcBuffer, combinedCts.Token, localCts);
-                            await Task.WhenAll(runningProducers, runningConsumers).ConfigureAwait(false);
-                        }
-                        catch(Exception e)
-                        {
-                            if (token.IsCancellationRequested)
-                                throw new OperationCanceledException("PpcCancelled", e, token);
-                            throw;
+                            try
+                            {
+                                var rc = RunConsumers(consumers, ppcBuffer, adapter, combinedCts.Token, localCts);
+                                var rp = RunProducers(producers, ppcBuffer, combinedCts.Token, localCts);
+                                await Task.WhenAll(rc, rp).ConfigureAwait(false);
+                            }
+                            catch (Exception e)
+                            {
+                                if (token.IsCancellationRequested)
+                                    throw new OperationCanceledException("PpcCancelled", e, token);
+                                throw;
+                            }
                         }
                     }
                 }
-            }
+            }, token);
         }
-
+        
         private static Task RunConsumers(IReadOnlyList<IConsumer<TC>> consumers,
             IProducerFeed<TP> feed, IDataAdapter<TP, TC> adapter,
             CancellationToken token, CancellationTokenSource tokenSrc)

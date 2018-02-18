@@ -77,7 +77,8 @@
     <Compile Include="Extensions\Ppc\IPpcFeed.cs" />
     <Compile Include="Extensions\Ppc\IConsumer.cs" />
     <Compile Include="Extensions\Ppc\IProducer.cs" />
-    <Compile Include="Extensions\Ppc\PpcExts.cs" />
+    <Compile Include="Extensions\Ppc\PcPipelineExts.cs" />
+    <Compile Include="Extensions\Ppc\ProducerConsumerExts.cs" />
     <Compile Include="Extensions\StreamExt\Base64Ext.cs" />
     <Compile Include="Extensions\StreamExt\CryptoStreamExt.cs" />
     <Compile Include="Extensions\Internals\StreamBased.cs" />
