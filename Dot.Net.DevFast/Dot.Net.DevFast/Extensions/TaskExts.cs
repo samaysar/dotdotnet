@@ -11,172 +11,129 @@ namespace Dot.Net.DevFast.Extensions
     /// </summary>
     public static class TaskExts
     {
-        ///// <summary>
-        ///// Creates and returns a wrapped task that awaits on tasks generated during enumeration on <paramref name="actions"/> while respecting the
-        ///// concurrency as specified by <paramref name="maxConcurrency"/> (i.e. at no time, this loop will span more tasks
-        ///// then specified by <paramref name="maxConcurrency"/>).
-        ///// </summary>
-        ///// <param name="actions">collection of actions to execute and await on</param>
-        ///// <param name="maxConcurrency">max number of tasks to span at a given time.</param>
-        ///// <param name="token">Cancellation token, if any. This cancellation token is also passed to <paramref name="actions"/></param>
-        ///// <returns></returns>
-        //public static Task RepeatNAwaitAllTask(this IEnumerable<Action<CancellationToken>> actions,
-        //    int maxConcurrency, CancellationToken token = default(CancellationToken))
-        //{
-        //    return Task.Run(async () => await actions.RepeatNAwaitAllAsync(maxConcurrency, token).ConfigureAwait(false),
-        //        token);
-        //}
-
-        ///// <summary>
-        ///// Creates and awaits on tasks generated during enumeration on <paramref name="actions"/> while respecting the
-        ///// concurrency as specified by <paramref name="maxConcurrency"/> (i.e. at no time, this loop will span more tasks
-        ///// then specified by <paramref name="maxConcurrency"/>).
-        ///// </summary>
-        ///// <param name="actions">collection of actions to execute and await on</param>
-        ///// <param name="maxConcurrency">max number of tasks to span.</param>
-        ///// <param name="token">Cancellation token, if any. This cancellation token is also passed to <paramref name="actions"/></param>
-        ///// <returns></returns>
-        //public static async Task RepeatNAwaitAllAsync(this IEnumerable<Action<CancellationToken>> actions,
-        //    int maxConcurrency, CancellationToken token = default(CancellationToken))
-        //{
-        //    using (var etor = actions.GetEnumerator())
-        //    {
-        //        await etor.CreateLoop(new object()).RepeatNAwaitAllAsync(maxConcurrency, token)
-        //            .ConfigureAwait(false);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Creates and returns a wrapped task that awaits on tasks generated during enumeration on <paramref name="funcs"/> while respecting the
-        ///// concurrency as specified by <paramref name="maxConcurrency"/> (i.e. at no time, this loop will span more tasks
-        ///// then specified by <paramref name="maxConcurrency"/>).
-        ///// </summary>
-        ///// <param name="funcs">collection of functions to execute and await on</param>
-        ///// <param name="maxConcurrency">max number of tasks to span at a given time.</param>
-        ///// <param name="token">Cancellation token, if any. This cancellation token is also passed to <paramref name="funcs"/></param>
-        ///// <returns></returns>
-        //public static Task RepeatNAwaitAllTask(this IEnumerable<Func<CancellationToken, Task>> funcs,
-        //    int maxConcurrency, CancellationToken token = default(CancellationToken))
-        //{
-        //    return Task.Run(async () => await funcs.RepeatNAwaitAllAsync(maxConcurrency, token).ConfigureAwait(false),
-        //        token);
-        //}
-
-        ///// <summary>
-        ///// Creates and awaits on tasks generated during enumeration on <paramref name="funcs"/> while respecting the
-        ///// concurrency as specified by <paramref name="maxConcurrency"/> (i.e. at no time, this loop will span more tasks
-        ///// then specified by <paramref name="maxConcurrency"/>).
-        ///// </summary>
-        ///// <param name="funcs">collection of functions to execute and await on</param>
-        ///// <param name="maxConcurrency">max number of tasks to span.</param>
-        ///// <param name="token">Cancellation token, if any. This cancellation token is also passed to <paramref name="funcs"/></param>
-        ///// <returns></returns>
-        //public static async Task RepeatNAwaitAllAsync(this IEnumerable<Func<CancellationToken, Task>> funcs,
-        //    int maxConcurrency, CancellationToken token = default(CancellationToken))
-        //{
-        //    using (var etor = funcs.GetEnumerator())
-        //    {
-        //        await etor.CreateLoop(new object()).RepeatNAwaitAllAsync(maxConcurrency, token, false)
-        //            .ConfigureAwait(false);
-        //    }
-        //}
-        
         /// <summary>
-        /// Creates and awaits on all the repeatated tasks (as specified by <paramref name="count"/>)
+        /// Creates and returns a wrapped task that awaits on all concurrent tasks created by repeatatively (as specified by <paramref name="count"/>)
         /// executing the given <paramref name="action"/>.
         /// </summary>
-        /// <param name="action">action to repeat</param>
-        /// <param name="count">number of times <paramref name="action"/> needs to be repeated</param>
-        /// <param name="token">Cancellation token, if any. This cancellation token is also passed to <paramref name="action"/></param>
-        public static async Task RepeatNAwaitAllAsync(this Action<int, CancellationToken> action, int count,
+        /// <param name="action">action to repeat. The first <seealso cref="int"/> argument is the ith value (starting with 0) of the repeatation</param>
+        /// <param name="count">number of times <paramref name="action"/> needs to be repeated (possible min value: 1)</param>
+        /// <param name="token">Cancellation token, if any. This cancellation token is passed to <paramref name="action"/></param>
+        public static Task WhenAll(this Action<int, CancellationToken> action, int count,
             CancellationToken token = default(CancellationToken))
         {
-            await action.RepeatNAwaitAllTask(count, token).ConfigureAwait(false);
+            return action.ToAsync(false).WhenAll(count, token);
         }
 
         /// <summary>
-        /// Creates and returns a wrapped task that awaits on all the repeatated tasks (as specified by <paramref name="count"/>)
-        /// executing the given <paramref name="action"/>.
-        /// </summary>
-        /// <param name="action">action to repeat</param>
-        /// <param name="count">number of times <paramref name="action"/> needs to be repeated</param>
-        /// <param name="token">Cancellation token, if any. This cancellation token is also passed to <paramref name="action"/></param>
-        public static Task RepeatNAwaitAllTask(this Action<int, CancellationToken> action, int count,
-            CancellationToken token = default(CancellationToken))
-        {
-            return action.ToAsync(true).RepeatNAwaitAllTask(count, token, false);
-        }
-
-        /// <summary>
-        /// Creates and awaits on repeatated tasks (as specified by <paramref name="count"/>) executing the given 
-        /// <paramref name="func"/>.
-        /// </summary>
-        /// <param name="func">function to repeat</param>
-        /// <param name="count">number of times <paramref name="func"/> needs to be repeated</param>
-        /// <param name="token">Cancellation token, if any. This cancellation token is also passed to <paramref name="func"/></param>
-        /// <param name="asyncFunc">When true, each instance of <paramref name="func"/> will run in a dedicated task.</param>
-        public static async Task RepeatNAwaitAllAsync(this Func<int, CancellationToken, Task> func, int count,
-            CancellationToken token = default(CancellationToken), bool asyncFunc = true)
-        {
-            await func.RepeatNAwaitAllTask(count, token, asyncFunc).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Creates and returns a wrapped task that awaits on all the repeatated tasks (as specified by <paramref name="count"/>)
+        /// Creates and returns a wrapped task that awaits on all consurrent tasks created by repeatatively (as specified by <paramref name="count"/>)
         /// executing the given <paramref name="func"/>.
         /// </summary>
-        /// <param name="func">function to repeat</param>
-        /// <param name="count">number of times <paramref name="func"/> needs to be repeated</param>
-        /// <param name="token">Cancellation token, if any. This cancellation token is also passed to <paramref name="func"/></param>
-        /// <param name="asyncFunc">When true, each instance of <paramref name="func"/> will run in a dedicated task.</param>
-        public static Task RepeatNAwaitAllTask(this Func<int, CancellationToken, Task> func, int count,
-            CancellationToken token = default(CancellationToken), bool asyncFunc = true)
+        /// <param name="func">function to repeat. The first <seealso cref="int"/> argument is the ith value (starting with 0) of the repeatation</param>
+        /// <param name="count">number of times <paramref name="func"/> needs to be repeated (possible min value: 1)</param>
+        /// <param name="token">Cancellation token, if any. This cancellation token is passed to <paramref name="func"/></param>
+        public static Task WhenAll(this Func<int, CancellationToken, Task> func, int count,
+            CancellationToken token = default(CancellationToken))
         {
-            var tasks = new Task[count.ThrowIfLess(1, "repeatation count cannot be less than 1")];
+            return func.Repeat(count.ThrowIfLess(1, "repeatation count value is less than 1"))
+                .WhenAll(count, token);
+        }
+
+        /// <summary>
+        /// Creates and returns a wrapped task that awaits on tasks generated during enumeration on <paramref name="actions"/> while respecting the
+        /// concurrency as specified by <paramref name="maxConcurrency"/> (i.e. at no time, enumeration will span more tasks
+        /// then specified by <paramref name="maxConcurrency"/>).
+        /// </summary>
+        /// <param name="actions">collection of actions to execute and await on</param>
+        /// <param name="maxConcurrency">maximum number of task to span (possible min value: 1)</param>
+        /// <param name="token">Cancellation token, if any. This cancellation token is passed to <paramref name="actions"/></param>
+        public static Task WhenAll(this IEnumerable<Action<CancellationToken>> actions,
+            int maxConcurrency, CancellationToken token = default(CancellationToken))
+        {
+            return actions.Select(x => x.ToAsync(false)).WhenAll(maxConcurrency, token);
+        }
+
+        /// <summary>
+        /// Creates and returns a wrapped task that awaits on tasks generated during enumeration on <paramref name="funcs"/> while respecting the
+        /// concurrency as specified by <paramref name="maxConcurrency"/> (i.e. at no time, enumeration will span more tasks
+        /// then specified by <paramref name="maxConcurrency"/>).
+        /// </summary>
+        /// <param name="funcs">collection of functions to execute and await on</param>
+        /// <param name="maxConcurrency">maximum number of task to span (possible min value: 1)</param>
+        /// <param name="token">Cancellation token, if any. This cancellation token is passed to <paramref name="funcs"/></param>
+        public static Task WhenAll(this IEnumerable<Func<CancellationToken, Task>> funcs,
+            int maxConcurrency, CancellationToken token = default(CancellationToken))
+        {
+            return funcs.Select(x => new Func<Task>(() => x(token))).WhenAll(maxConcurrency);
+        }
+
+        /// <summary>
+        /// Creates and returns a wrapped task that awaits on tasks generated during enumeration on <paramref name="actions"/> while respecting the
+        /// concurrency as specified by <paramref name="maxConcurrency"/> (i.e. at no time, enumeration will span more tasks
+        /// then specified by <paramref name="maxConcurrency"/>).
+        /// </summary>
+        /// <param name="actions">collection of actions to execute and await on</param>
+        /// <param name="maxConcurrency">maximum number of task to span (possible min value: 1)</param>
+        public static Task WhenAll(this IEnumerable<Action> actions, int maxConcurrency)
+        {
+            return actions.Select(x => x.ToAsync(false)).WhenAll(maxConcurrency);
+        }
+
+        /// <summary>
+        /// Creates and returns a wrapped task that awaits on tasks generated during enumeration on <paramref name="funcs"/> while respecting the
+        /// concurrency as specified by <paramref name="maxConcurrency"/> (i.e. at no time, enumeration will span more tasks
+        /// then specified by <paramref name="maxConcurrency"/>).
+        /// </summary>
+        /// <param name="funcs">collection of functions to execute and await on</param>
+        /// <param name="maxConcurrency">maximum number of task to span (possible min value: 1)</param>
+        public static Task WhenAll(this IEnumerable<Func<Task>> funcs, int maxConcurrency)
+        {
+            maxConcurrency.ThrowIfLess(1, "concurrency value is less than 1");
+            var etor = funcs.GetEnumerator();
+            return etor.Loop(new object()).RepeatNWhenAll(maxConcurrency).WithDispose(etor);
+        }
+
+        private static IEnumerable<Func<CancellationToken, Task>> Repeat(this Func<int, CancellationToken, Task> func,
+            int count)
+        {
             for (var i = 0; i < count; i++)
             {
-                tasks[i] = asyncFunc ? func.WrappedTask(i, token) : func(i, token).StartIfNeeded();
+                yield return func.InnerFunc(i);
             }
-            return Task.WhenAll(tasks); 
         }
 
-        private static Task WrappedTask(this Func<int, CancellationToken, Task> func, int i,
-            CancellationToken token)
+        private static Func<CancellationToken, Task> InnerFunc(this Func<int, CancellationToken, Task> func, int i)
         {
-            return Task.Run(() => func(i, token), CancellationToken.None);
+            return t => func(i, t);
         }
 
-        private static Func<CancellationToken, Task> CreateLoop(
-            this IEnumerator<Func<int, CancellationToken, Task>> funcs, object syncRoot, int i)
+        private static Func<Task> Loop(this IEnumerator<Func<Task>> funcs, object syncRoot)
         {
-            return t => Task.Run(async () =>
+            return () => Task.Run(async () =>
             {
                 while (funcs.TryGetNext(syncRoot, out var next))
                 {
-                    await next(i, t).StartIfNeeded().ConfigureAwait(false);
+                    await next().StartIfNeeded().ConfigureAwait(false);
                 }
-            }, t);
+            });
         }
 
-        private static Action<CancellationToken> CreateLoop(
-            this IEnumerator<Action<int, CancellationToken>> actions, object syncRoot, int i)
+        private static Task RepeatNWhenAll(this Func<Task> func, int count)
         {
-            return t =>
+            var tasks = new Task[count];
+            for (var i = 0; i < count; i++)
             {
-                while (actions.TryGetNext(syncRoot, out var next))
-                {
-                    next(i, t);
-                }
-            };
+                tasks[i] = func();
+            }
+            return Task.WhenAll(tasks);
         }
 
-        private static bool TryGetNext<T>(this IEnumerator<T> funcs, object syncRoot, out T obj)
+        private static bool TryGetNext<T>(this IEnumerator<T> enumerator, object syncRoot, out T obj)
         {
             lock (syncRoot)
             {
-                if (funcs.MoveNext())
+                if (enumerator.MoveNext())
                 {
-                    obj = funcs.Current;
+                    obj = enumerator.Current;
                     return true;
                 }
                 obj = default(T);
@@ -188,6 +145,16 @@ namespace Dot.Net.DevFast.Extensions
         {
             if (task.Status == TaskStatus.Created) task.Start();
             return task;
+        }
+
+        private static Task WithDispose(this Task parent, IDisposable disposeIt)
+        {
+            return parent.ContinueWith(t =>
+            {
+                using (disposeIt)
+                {
+                }
+            });
         }
     }
 }
