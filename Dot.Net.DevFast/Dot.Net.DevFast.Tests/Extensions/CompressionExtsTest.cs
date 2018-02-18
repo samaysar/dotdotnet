@@ -7,7 +7,7 @@ using Dot.Net.DevFast.Extensions.StringExt;
 using Dot.Net.DevFast.Tests.TestHelpers;
 using NUnit.Framework;
 
-namespace Dot.Net.DevFast.Tests
+namespace Dot.Net.DevFast.Tests.Extensions
 {
     [TestFixture]
     public class CompressionExtsTest

@@ -40,41 +40,31 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             IProducerFeed<TP> feed, IDataAdapter<TP, TC> adapter,
             CancellationToken token, CancellationTokenSource tokenSrc)
         {
-            return Task.Run(async () =>
-            {
-                var consumerTasks = new Task[consumers.Count];
-                for (var i = 0; i < consumers.Count; i++)
-                {
-                    consumerTasks[i] = RunConsumer(consumers[i], feed, adapter, token, tokenSrc);
-                }
-                await Task.WhenAll(consumerTasks).ConfigureAwait(false);
-            }, CancellationToken.None);
+            return new Func<int, CancellationToken, Task>(async (i, t) =>
+                    await RunConsumer(consumers[i], feed, adapter, t, tokenSrc).ConfigureAwait(false))
+                .WhenAll(consumers.Count, token);
         }
 
-        private static Task RunConsumer(IConsumer<TC> parallelConsumer,
+        private static async Task RunConsumer(IConsumer<TC> parallelConsumer,
             IProducerFeed<TP> feed, IDataAdapter<TP, TC> adapter,
             CancellationToken token, CancellationTokenSource tokenSrc)
         {
-            return Task.Run(async () =>
+            try
             {
-                try
+                using (parallelConsumer)
                 {
-                    using (parallelConsumer)
+                    await parallelConsumer.InitAsync().ConfigureAwait(false);
+                    while (adapter.TryGet(feed, out var consumable))
                     {
-                        await parallelConsumer.InitAsync().ConfigureAwait(false);
-                        while (adapter.TryGet(feed, out var consumable))
-                        {
-                            await parallelConsumer.ConsumeAsync(consumable, token)
-                                .ConfigureAwait(false);
-                        }
+                        await parallelConsumer.ConsumeAsync(consumable, token).ConfigureAwait(false);
                     }
                 }
-                catch
-                {
-                    if (!token.IsCancellationRequested) tokenSrc.Cancel();
-                    throw;
-                }
-            }, CancellationToken.None);
+            }
+            catch
+            {
+                if (!token.IsCancellationRequested) tokenSrc.Cancel();
+                throw;
+            }
         }
 
         private static Task RunProducers(IReadOnlyList<IProducer<TP>> producers,
@@ -85,12 +75,9 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             {
                 try
                 {
-                    var producerTasks = new Task[producers.Count];
-                    for (var i = 0; i < producers.Count; i++)
-                    {
-                        producerTasks[i] = RunProducer(producers[i], buffer, token, tokenSrc);
-                    }
-                    await Task.WhenAll(producerTasks).ConfigureAwait(false);
+                    await new Func<int, CancellationToken, Task>(async (i, t) =>
+                            await RunProducer(producers[i], buffer, t, tokenSrc).ConfigureAwait(false))
+                        .WhenAll(producers.Count, token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -99,26 +86,23 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             }, CancellationToken.None);
         }
 
-        private static Task RunProducer(IProducer<TP> parallelProducer,
+        private static async Task RunProducer(IProducer<TP> parallelProducer,
             IConsumerFeed<TP> feed, CancellationToken token,
             CancellationTokenSource tokenSrc)
         {
-            return Task.Run(async () =>
+            try
             {
-                try
+                using (parallelProducer)
                 {
-                    using (parallelProducer)
-                    {
-                        await parallelProducer.InitAsync().ConfigureAwait(false);
-                        await parallelProducer.ProduceAsync(feed, token).ConfigureAwait(false);
-                    }
+                    await parallelProducer.InitAsync().ConfigureAwait(false);
+                    await parallelProducer.ProduceAsync(feed, token).ConfigureAwait(false);
                 }
-                catch
-                {
-                    if (!token.IsCancellationRequested) tokenSrc.Cancel();
-                    throw;
-                }
-            }, CancellationToken.None);
+            }
+            catch
+            {
+                if (!token.IsCancellationRequested) tokenSrc.Cancel();
+                throw;
+            }
         }
     }
 }

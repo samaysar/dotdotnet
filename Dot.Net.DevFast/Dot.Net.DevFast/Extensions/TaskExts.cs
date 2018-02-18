@@ -34,8 +34,7 @@ namespace Dot.Net.DevFast.Extensions
         public static Task WhenAll(this Func<int, CancellationToken, Task> func, int count,
             CancellationToken token = default(CancellationToken))
         {
-            return func.Repeat(count.ThrowIfLess(1, "repeatation count value is less than 1"))
-                .WhenAll(count, token);
+            return func.Repeat(count.ThrowIfLess(1, "repeatation count value is less than 1"), token).WhenAll(count);
         }
 
         /// <summary>
@@ -89,21 +88,21 @@ namespace Dot.Net.DevFast.Extensions
         {
             maxConcurrency.ThrowIfLess(1, "concurrency value is less than 1");
             var etor = funcs.GetEnumerator();
-            return etor.Loop(new object()).RepeatNWhenAll(maxConcurrency).WithDispose(etor);
+            return etor.Loop(new object()).RepeatNWhenAll(maxConcurrency).AwaitNDispose(etor);
         }
 
-        private static IEnumerable<Func<CancellationToken, Task>> Repeat(this Func<int, CancellationToken, Task> func,
-            int count)
+        private static IEnumerable<Func<Task>> Repeat(this Func<int, CancellationToken, Task> func,
+            int count, CancellationToken token)
         {
             for (var i = 0; i < count; i++)
             {
-                yield return func.InnerFunc(i);
+                yield return func.InnerFunc(i, token);
             }
         }
 
-        private static Func<CancellationToken, Task> InnerFunc(this Func<int, CancellationToken, Task> func, int i)
+        private static Func<Task> InnerFunc(this Func<int, CancellationToken, Task> func, int i, CancellationToken token)
         {
-            return t => func(i, t);
+            return () => func(i, token);
         }
 
         private static Func<Task> Loop(this IEnumerator<Func<Task>> funcs, object syncRoot)
@@ -147,12 +146,13 @@ namespace Dot.Net.DevFast.Extensions
             return task;
         }
 
-        private static Task WithDispose(this Task parent, IDisposable disposeIt)
+        private static Task AwaitNDispose(this Task awaitOn, IDisposable disposeIt)
         {
-            return parent.ContinueWith(t =>
+            return Task.Run(async () =>
             {
                 using (disposeIt)
                 {
+                    await awaitOn.ConfigureAwait(false);
                 }
             });
         }
