@@ -45,6 +45,34 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         [TestCase(1, 2)]
         [TestCase(2, 2)]
         [TestCase(2, 1)]
+        public void RunPpcAsync_Throws_OpCancelError_And_Destroys_Ppc_When_Token_Is_Cancelled(int pcount, int ccount)
+        {
+            //to make all producer consumers to throw error almost at same time!
+            var producers = new IProducer<object>[pcount];
+            for (var i = 0; i < pcount; i++)
+            {
+                producers[i] = Substitute.For<IProducer<object>>();
+                producers[i].ProduceAsync(Arg.Any<IConsumerFeed<object>>(),
+                    Arg.Any<CancellationToken>()).Returns(x => throw new Exception("Testing"));
+            }
+
+            var consumers = new IConsumer<object>[ccount];
+            for (var i = 0; i < ccount; i++)
+            {
+                consumers[i] = Substitute.For<IConsumer<object>>();
+                consumers[i].InitAsync().Returns(x => throw new Exception("Testing"));
+            }
+            var cts = new CancellationTokenSource();
+            cts.Cancel();
+            Assert.ThrowsAsync<TaskCanceledException>(() => PpcPipeline<object, object>.RunPpcAsync(cts.Token,
+                ConcurrentBuffer.MinSize, new IdentityAdapter<object>(), producers, consumers));
+        }
+
+        [Test]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(2, 2)]
+        [TestCase(2, 1)]
         public void RunPpcAsync_Wrappes_All_Exceptions_And_Destroys_Ppc(int pcount, int ccount)
         {
             //to make all producer consumers to throw error almost at same time!
@@ -79,8 +107,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 ConcurrentBuffer.MinSize, new IdentityAdapter<object>(), producers, consumers));
             countHandle.Wait();
             waitHandle.Set();
-            var ex = Assert.Throws<AggregateException>(() => ppcTask.Wait());
-            Assert.True(ex.InnerExceptions[0].Message.Equals("Testing"));
+            Assert.True(Assert.ThrowsAsync<Exception>(() => ppcTask).Message.Equals("Testing"));
         }
 
         [Test]
