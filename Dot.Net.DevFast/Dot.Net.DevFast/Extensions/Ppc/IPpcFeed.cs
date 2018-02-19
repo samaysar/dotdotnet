@@ -17,8 +17,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </summary>
         /// <param name="millisecTimeout">Timeout in milliseconds. use <seealso cref="Timeout.Infinite"/> 
         /// to wait inifinitely.</param>
+        /// <param name="token">Cancellation token to observer while extracting data</param>
         /// <param name="data">Produced data instance, if any</param>
-        bool TryGet(int millisecTimeout, out T data);
+        bool TryGet(int millisecTimeout, CancellationToken token, out T data);
 
         /// <summary>
         /// Returns true if the data collection would never return an item when calling

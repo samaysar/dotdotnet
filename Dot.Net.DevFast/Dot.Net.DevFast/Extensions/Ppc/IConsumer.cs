@@ -14,6 +14,8 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// This method is called ONCE before any call is made to <see cref="ConsumeAsync"/>.
         /// <para>Similarly, <seealso cref="IDisposable.Dispose"/> will be called after
         /// all the calls to <see cref="ConsumeAsync"/> are done.</para>
+        /// <para>If this method results in an exception, running producers will be signaled to quit producing data
+        /// as soon as possible and the whole pipeline will be destroyed.</para>
         /// </summary>
         Task InitAsync();
 
@@ -27,7 +29,8 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <para>Explicit thread safety is NOT required as long as consumer instances are wholly distinct.</para>
         /// <para><seealso cref="IDisposable.Dispose"/> will be called when there is no more
         /// data available.</para>
-        /// <para>All exceptions must be thrown back.</para>
+        /// <para>If this method results in an exception, running producers will be signaled to quit producing data
+        /// as soon as possible and the whole pipeline will be destroyed.</para>
         /// </summary>
         /// <param name="item">instance to be consumed</param>
         /// <param name="cancellationToken">Cancellation token</param>

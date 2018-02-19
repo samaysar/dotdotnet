@@ -35,10 +35,10 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
                         }
                     }
                 }
-            }, token);
+            }, CancellationToken.None);
         }
         
-        private static Task RunConsumers(IReadOnlyList<IConsumer<TC>> consumers,
+        internal static Task RunConsumers(IReadOnlyList<IConsumer<TC>> consumers,
             IProducerFeed<TP> feed, IDataAdapter<TP, TC> adapter,
             CancellationToken token, CancellationTokenSource tokenSrc)
         {
@@ -56,7 +56,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
                 using (parallelConsumer)
                 {
                     await parallelConsumer.InitAsync().ConfigureAwait(false);
-                    while (adapter.TryGet(feed, out var consumable))
+                    while (adapter.TryGet(feed, token, out var consumable))
                     {
                         await parallelConsumer.ConsumeAsync(consumable, token).ConfigureAwait(false);
                     }

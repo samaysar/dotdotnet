@@ -14,6 +14,8 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// This method is called ONCE before any call is made to <see cref="ProduceAsync"/>.
         /// <para>Similarly, <seealso cref="IDisposable.Dispose"/> will be called after
         /// the call to <see cref="ProduceAsync"/> are done.</para>
+        /// <para>If this method results in an exception, running consumers will be signaled to quit consuming
+        /// as soon as possible and the whole pipeline will be destroyed.</para>
         /// </summary>
         Task InitAsync();
 
@@ -24,7 +26,8 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// production is done OR any error has occurred.</para>
         /// <para>Upon returning from this function, call to <seealso cref="IDisposable.Dispose"/>
         /// will be made.</para>
-        /// <para>All exceptions must be thrown back</para>
+        /// <para>If this method results in an exception, running consumers will be signaled to quit consuming
+        /// as soon as possible and the whole pipeline will be destroyed.</para>
         /// </summary>
         /// <param name="feedToPopulate">All produced data intances must be added to 
         /// <paramref name="feedToPopulate"/> instance, in order to pass on to associated consumers.</param>

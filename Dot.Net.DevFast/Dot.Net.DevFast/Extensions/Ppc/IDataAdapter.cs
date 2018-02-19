@@ -1,4 +1,6 @@
-﻿namespace Dot.Net.DevFast.Extensions.Ppc
+﻿using System.Threading;
+
+namespace Dot.Net.DevFast.Extensions.Ppc
 {
     /// <summary>
     /// Adapter interface between produced data and consumable data.
@@ -15,7 +17,8 @@
         /// <para>Must throw all exceptions.</para>
         /// </summary>
         /// <param name="producerDataFeed">Data feed</param>
+        /// <param name="token">token to observe while adapting data</param>
         /// <param name="consumable">consumable data instance</param>
-        bool TryGet(IProducerFeed<TProducer> producerDataFeed, out TConsumer consumable);
+        bool TryGet(IProducerFeed<TProducer> producerDataFeed, CancellationToken token, out TConsumer consumable);
     }
 }

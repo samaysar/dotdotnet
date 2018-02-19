@@ -18,11 +18,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< SINGLE PRODUCER SINGLE CONSUMER
 
         /// <summary>
-        /// Accepts a producer action and a consumer action instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer action and a consumer action instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action</param>
@@ -37,11 +41,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts an async producer function and a consumer action instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer function and a consumer action instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function</param>
@@ -56,11 +64,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer and an async consumer action instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer and an async consumer action instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance</param>
@@ -74,11 +86,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts an async producer action and a consumer function instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer action and a consumer function instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action</param>
@@ -93,11 +109,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts an async producer and a consumer function instances. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer and a consumer function instances.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function</param>
@@ -112,11 +132,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer and an async consumer function instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer and an async consumer function instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance</param>
@@ -130,11 +154,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a synchronous producer action and a consumer instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a synchronous producer action and a consumer instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action</param>
@@ -149,11 +177,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts an async producer function and a consumer instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer function and a consumer instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function</param>
@@ -168,11 +200,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer and a consumer instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer and a consumer instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance</param>
@@ -188,11 +224,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< SINGLE PRODUCER MULTIPLE CONSUMER
 
         /// <summary>
-        /// Accepts an async producer action and a consumer action collection instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer action and a consumer action collection instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action</param>
@@ -207,11 +247,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts an async producer function and a consumer action collection instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer function and a consumer action collection instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function</param>
@@ -226,11 +270,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer and an async consumer action collection instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer and an async consumer action collection instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance</param>
@@ -245,11 +293,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts an async producer action and a consumer function collection instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer action and a consumer function collection instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action</param>
@@ -264,11 +316,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts an async producer and a consumer function collection instances. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer and a consumer function collection instances.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function</param>
@@ -283,11 +339,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer and an async consumer function collection instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer and an async consumer function collection instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance</param>
@@ -302,11 +362,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a synchronous producer action and a consumer collection instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a synchronous producer action and a consumer collection instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action</param>
@@ -321,11 +385,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts an async producer function and a consumer collection instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer function and a consumer collection instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function</param>
@@ -340,11 +408,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer instance and a collection of consumers. 
-        /// Executes producer and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer instance and a collection of consumers.
+        /// Executes producer and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance</param>
@@ -360,11 +432,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< MULTIPLE PRODUCER SINGLE CONSUMER
 
         /// <summary>
-        /// Accepts an async producer action collection and a consumer action instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer action collection and a consumer action instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action collection</param>
@@ -379,11 +455,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts an async producer function collection and a consumer action instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer function collection and a consumer action instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function collection</param>
@@ -399,11 +479,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer collection and an async consumer action instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer collection and an async consumer action instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer collection</param>
@@ -418,11 +502,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts an async producer action collection and a consumer function instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer action collection and a consumer function instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action collection</param>
@@ -437,11 +525,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts an async producer collection and a consumer function instances. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer collection and a consumer function instances.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function collection</param>
@@ -457,11 +549,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer collection and an async consumer function instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer collection and an async consumer function instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer collection</param>
@@ -476,11 +572,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a synchronous producer action collection and a consumer instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a synchronous producer action collection and a consumer instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action collection</param>
@@ -495,11 +595,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts an async producer function collection and a consumer instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer function collection and a consumer instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function collection</param>
@@ -514,11 +618,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and a consumer instance. 
-        /// Executes producers and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and a consumer instance.
+        /// Executes producers and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
@@ -534,11 +642,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< MULTIPLE PRODUCER MULTIPLE CONSUMER
 
         /// <summary>
-        /// Accepts an async producer action and a consumer action collection instances. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer action and a consumer action collection instances.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action collection</param>
@@ -553,11 +665,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts an async producer function and a consumer action collection instances. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer function and a consumer action collection instances.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function collection</param>
@@ -573,11 +689,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer and an async consumer action collection instances. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer and an async consumer action collection instances.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance collection</param>
@@ -592,11 +712,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts an async producer action and a consumer function collection instances. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer action and a consumer function collection instances.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action collection</param>
@@ -611,11 +735,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts an async producer and a consumer function collection instances. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer and a consumer function collection instances.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function collection</param>
@@ -631,11 +759,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer and an async consumer function collection instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer and an async consumer function collection instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance collection</param>
@@ -650,11 +782,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a synchronous producer action and a consumer collection instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a synchronous producer action and a consumer collection instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action collection</param>
@@ -669,11 +805,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts an async producer function and a consumer collection instance. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts an async producer function and a consumer collection instance.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function collection</param>
@@ -689,11 +829,15 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
@@ -714,20 +858,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< SINGLE PRODUCER SINGLE LIST CONSUMER
 
         /// <summary>
-        /// Accepts a producer action and a consumer action instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer action and a consumer action instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action</param>
         /// <param name="consumer">consumer action</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
@@ -738,20 +888,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer function and a consumer action instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer function and a consumer action instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function</param>
         /// <param name="consumer">consumer action</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
@@ -762,20 +918,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer and a consumer action instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer and a consumer action instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance</param>
         /// <param name="consumer">consumer action</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IProducer<T> producer, Action<List<T>, CancellationToken> consumer,
@@ -786,20 +948,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer action and a consumer function instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer action and a consumer function instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action</param>
         /// <param name="consumer">consumer function</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
@@ -810,20 +978,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer function and a consumer function instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer function and a consumer function instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function</param>
         /// <param name="consumer">consumer function</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
@@ -834,20 +1008,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer and a consumer function instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer and a consumer function instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance</param>
         /// <param name="consumer">consumer function</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IProducer<T> producer,
@@ -858,20 +1038,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer action and a consumer instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer action and a consumer instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action</param>
         /// <param name="consumer">consumer instance</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
@@ -882,20 +1068,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer function and a consumer instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer function and a consumer instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function</param>
         /// <param name="consumer">consumer instance</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
@@ -906,20 +1098,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer and a consumer instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer and a consumer instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance</param>
         /// <param name="consumer">consumer instance</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IProducer<T> producer, IConsumer<List<T>> consumer, int listMaxSize,
@@ -931,20 +1129,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< SINGLE PRODUCER MULTIPLE LIST CONSUMER
 
         /// <summary>
-        /// Accepts a producer action and a consumer action instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer action and a consumer action instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action</param>
         /// <param name="consumer">consumer action</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
@@ -955,20 +1159,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer function and a consumer action instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer function and a consumer action instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function</param>
         /// <param name="consumer">consumer action</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
@@ -979,20 +1189,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer and a consumer action instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer and a consumer action instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance</param>
         /// <param name="consumer">consumer action</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IProducer<T> producer,
@@ -1003,20 +1219,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer action and a consumer function instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer action and a consumer function instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action</param>
         /// <param name="consumer">consumer function</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
@@ -1027,20 +1249,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer function and a consumer function instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer function and a consumer function instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function</param>
         /// <param name="consumer">consumer function</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
@@ -1051,20 +1279,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer and a consumer function instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer and a consumer function instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance</param>
         /// <param name="consumer">consumer function</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IProducer<T> producer,
@@ -1075,20 +1309,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer action and a consumer instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer action and a consumer instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action</param>
         /// <param name="consumer">consumer instance</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
@@ -1099,20 +1339,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer function and a consumer instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer function and a consumer instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function</param>
         /// <param name="consumer">consumer instance</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
@@ -1123,20 +1369,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer instance and collection of consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer instance and collection of consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IProducer<T> producer, IReadOnlyList<IConsumer<List<T>>> consumers,
@@ -1149,20 +1401,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< MULTIPLE PRODUCER SINGLE LIST CONSUMER
 
         /// <summary>
-        /// Accepts a producer action and a consumer action instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer action and a consumer action instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action</param>
         /// <param name="consumer">consumer action</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
@@ -1173,20 +1431,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer function and a consumer action instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer function and a consumer action instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function</param>
         /// <param name="consumer">consumer action</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(
@@ -1198,20 +1462,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer and a consumer action instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer and a consumer action instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance</param>
         /// <param name="consumer">consumer action</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producer,
@@ -1222,20 +1492,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer action and a consumer function instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer action and a consumer function instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action</param>
         /// <param name="consumer">consumer function</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
@@ -1246,20 +1522,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer function and a consumer function instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer function and a consumer function instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function</param>
         /// <param name="consumer">consumer function</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(
@@ -1271,20 +1553,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer and a consumer function instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer and a consumer function instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance</param>
         /// <param name="consumer">consumer function</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producer,
@@ -1295,20 +1583,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer action and a consumer instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer action and a consumer instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action</param>
         /// <param name="consumer">consumer instance</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
@@ -1319,20 +1613,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer function and a consumer instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer function and a consumer instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function</param>
         /// <param name="consumer">consumer instance</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(
@@ -1344,20 +1644,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and a consumer instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and a consumer instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumer">consumer instance</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producers, IConsumer<List<T>> consumer,
@@ -1370,20 +1676,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< MULTIPLE PRODUCER MULTIPLE LIST CONSUMER
 
         /// <summary>
-        /// Accepts a producer action and a consumer action instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer action and a consumer action instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action</param>
         /// <param name="consumer">consumer action</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
@@ -1394,20 +1706,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer function and a consumer action instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer function and a consumer action instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function</param>
         /// <param name="consumer">consumer action</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(
@@ -1419,20 +1737,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer and a consumer action instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer and a consumer action instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance</param>
         /// <param name="consumer">consumer action</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producer,
@@ -1443,20 +1767,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer action and a consumer function instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer action and a consumer function instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action</param>
         /// <param name="consumer">consumer function</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
@@ -1467,20 +1797,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer function and a consumer function instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer function and a consumer function instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function</param>
         /// <param name="consumer">consumer function</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(
@@ -1492,20 +1828,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer and a consumer function instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer and a consumer function instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance</param>
         /// <param name="consumer">consumer function</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producer,
@@ -1516,20 +1858,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer action and a consumer instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer action and a consumer instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer action</param>
         /// <param name="consumer">consumer instance</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
@@ -1540,20 +1888,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer function and a consumer instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer function and a consumer instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer function</param>
         /// <param name="consumer">consumer instance</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(
@@ -1565,20 +1919,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
         /// Basically, all the list will have max items, but the last one (it would contain
         /// remaining produced items).
-        /// <para>Minimum acceptable size = 2.</para></param>
+        /// <para>Minimum acceptable size = 2.</para>
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producers,
@@ -1595,22 +1955,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< SINGLE PRODUCER SINGLE AWAITABLE LIST CONSUMER
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producers,
@@ -1622,22 +1990,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
@@ -1649,22 +2025,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IProducer<T> producers,
@@ -1676,22 +2060,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producers,
@@ -1703,22 +2095,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
@@ -1730,22 +2130,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IProducer<T> producers,
@@ -1757,22 +2165,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producers,
@@ -1784,22 +2200,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
@@ -1811,22 +2235,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer and a consumer instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer and a consumer instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance</param>
         /// <param name="consumer">consumer instance</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IProducer<T> producer, IConsumer<List<T>> consumer, int listMaxSize,
@@ -1840,22 +2272,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< SINGLE PRODUCER MULTIPLE AWAITABLE LIST CONSUMER
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producers,
@@ -1867,22 +2307,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
@@ -1894,22 +2342,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IProducer<T> producers,
@@ -1921,22 +2377,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producers,
@@ -1948,22 +2412,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
@@ -1975,22 +2447,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IProducer<T> producers,
@@ -2002,22 +2482,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producers,
@@ -2029,22 +2517,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
@@ -2056,22 +2552,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a producer instance and collection of consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producer and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a producer instance and collection of consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producer and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producer">producer instance</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IProducer<T> producer, IReadOnlyList<IConsumer<List<T>>> consumers,
@@ -2085,22 +2589,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< MULTIPLE PRODUCER SINGLE AWAITABLE LIST CONSUMER
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(
@@ -2113,22 +2625,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(
@@ -2141,22 +2661,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producers,
@@ -2168,22 +2696,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(
@@ -2196,22 +2732,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(
@@ -2224,22 +2768,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producers,
@@ -2251,22 +2803,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(
@@ -2279,22 +2839,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(
@@ -2307,22 +2875,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and a consumer instance, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and a consumer instance, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumer">consumer instance</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producers, IConsumer<List<T>> consumer,
@@ -2336,22 +2912,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< MULTIPLE PRODUCER MULTIPLE AWAITABLE LIST CONSUMER
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(
@@ -2364,22 +2948,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(
@@ -2392,22 +2984,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producers,
@@ -2419,22 +3019,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(
@@ -2447,22 +3055,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(
@@ -2475,22 +3091,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producers,
@@ -2502,22 +3126,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(
@@ -2530,22 +3162,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(
@@ -2558,22 +3198,30 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Accepts a collection of producers and consumers, while using an internal 
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list. 
-        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// Accepts a collection of producers and consumers, while using an internal
+        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Produced data type.</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
-        /// <param name="listMaxSize">Maximum number of items to be in the list given to consumer. 
-        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.</param>
-        /// <param name="millisecondTimeout">Maximum time to await on produced items. This is similar
-        /// to using another overloaded version without the <paramref name="millisecondTimeout"/>, though,
+        /// <param name="listMaxSize">
+        /// Maximum number of items to be in the list given to consumer.
+        /// Basically, all the list will have AT LEAST 1 item and maximum this given size.
+        /// </param>
+        /// <param name="millisecondTimeout">
+        /// Maximum time to await on produced items. This is similar
+        /// to using another overloaded version without the <paramref name="millisecondTimeout" />, though,
         /// provides an improvement when you do NOT want to wait for the SLOW producer to produce items
-        /// to fill the whole list instead would prefer to consume what is available within this timeout.</param>
+        /// to fill the whole list instead would prefer to consume what is available within this timeout.
+        /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
         public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producers,
@@ -2594,21 +3242,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this Action<IConsumerFeed<TProducer>, CancellationToken> producers,
-            Action<TConsumer, CancellationToken> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(
+            this Action<IConsumerFeed<TP>, CancellationToken> producers,
+            Action<TC, CancellationToken> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -2617,21 +3269,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this Func<IConsumerFeed<TProducer>, CancellationToken, Task> producers,
-            Action<TConsumer, CancellationToken> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(
+            this Func<IConsumerFeed<TP>, CancellationToken, Task> producers,
+            Action<TC, CancellationToken> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -2640,20 +3296,24 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(this IProducer<TProducer> producers,
-            Action<TConsumer, CancellationToken> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(this IProducer<TP> producers,
+            Action<TC, CancellationToken> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ProducerConsumer(consumers.ToConsumer(), adapter, token, bufferSize);
@@ -2662,21 +3322,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this Action<IConsumerFeed<TProducer>, CancellationToken> producers,
-            Func<TConsumer, CancellationToken, Task> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(
+            this Action<IConsumerFeed<TP>, CancellationToken> producers,
+            Func<TC, CancellationToken, Task> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -2685,21 +3349,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this Func<IConsumerFeed<TProducer>, CancellationToken, Task> producers,
-            Func<TConsumer, CancellationToken, Task> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(
+            this Func<IConsumerFeed<TP>, CancellationToken, Task> producers,
+            Func<TC, CancellationToken, Task> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -2708,20 +3376,24 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(this IProducer<TProducer> producers,
-            Func<TConsumer, CancellationToken, Task> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(this IProducer<TP> producers,
+            Func<TC, CancellationToken, Task> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ProducerConsumer(consumers.ToConsumer(), adapter, token, bufferSize);
@@ -2730,21 +3402,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this Action<IConsumerFeed<TProducer>, CancellationToken> producers, IConsumer<TConsumer> consumers,
-            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+        public static Task ProducerConsumer<TP, TC>(
+            this Action<IConsumerFeed<TP>, CancellationToken> producers, IConsumer<TC> consumers,
+            IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -2753,21 +3429,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this Func<IConsumerFeed<TProducer>, CancellationToken, Task> producers, IConsumer<TConsumer> consumers,
-            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+        public static Task ProducerConsumer<TP, TC>(
+            this Func<IConsumerFeed<TP>, CancellationToken, Task> producers, IConsumer<TC> consumers,
+            IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -2776,20 +3456,24 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a producer and a consumer instance, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producer and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producer and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producer">producer instance</param>
         /// <param name="consumer">consumer instance</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(this IProducer<TProducer> producer,
-            IConsumer<TConsumer> consumer, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(this IProducer<TP> producer,
+            IConsumer<TC> consumer, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return new[] {producer}.ProducerConsumer(new[] {consumer}, adapter, token, bufferSize);
@@ -2800,21 +3484,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this Action<IConsumerFeed<TProducer>, CancellationToken> producers,
-            IReadOnlyList<Action<TConsumer, CancellationToken>> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(
+            this Action<IConsumerFeed<TP>, CancellationToken> producers,
+            IReadOnlyList<Action<TC, CancellationToken>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -2823,21 +3511,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this Func<IConsumerFeed<TProducer>, CancellationToken, Task> producers,
-            IReadOnlyList<Action<TConsumer, CancellationToken>> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(
+            this Func<IConsumerFeed<TP>, CancellationToken, Task> producers,
+            IReadOnlyList<Action<TC, CancellationToken>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -2846,20 +3538,24 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(this IProducer<TProducer> producers,
-            IReadOnlyList<Action<TConsumer, CancellationToken>> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(this IProducer<TP> producers,
+            IReadOnlyList<Action<TC, CancellationToken>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ProducerConsumer(consumers.ToConsumer(), adapter, token, bufferSize);
@@ -2868,22 +3564,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this Action<IConsumerFeed<TProducer>, CancellationToken> producers,
-            IReadOnlyList<Func<TConsumer, CancellationToken, Task>> consumers,
-            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+        public static Task ProducerConsumer<TP, TC>(
+            this Action<IConsumerFeed<TP>, CancellationToken> producers,
+            IReadOnlyList<Func<TC, CancellationToken, Task>> consumers,
+            IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -2892,22 +3592,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this Func<IConsumerFeed<TProducer>, CancellationToken, Task> producers,
-            IReadOnlyList<Func<TConsumer, CancellationToken, Task>> consumers,
-            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+        public static Task ProducerConsumer<TP, TC>(
+            this Func<IConsumerFeed<TP>, CancellationToken, Task> producers,
+            IReadOnlyList<Func<TC, CancellationToken, Task>> consumers,
+            IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -2916,21 +3620,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(this IProducer<TProducer> producers,
-            IReadOnlyList<Func<TConsumer, CancellationToken, Task>> consumers,
-            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+        public static Task ProducerConsumer<TP, TC>(this IProducer<TP> producers,
+            IReadOnlyList<Func<TC, CancellationToken, Task>> consumers,
+            IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ProducerConsumer(consumers.ToConsumer(), adapter, token, bufferSize);
@@ -2939,21 +3647,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this Action<IConsumerFeed<TProducer>, CancellationToken> producers,
-            IReadOnlyList<IConsumer<TConsumer>> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(
+            this Action<IConsumerFeed<TP>, CancellationToken> producers,
+            IReadOnlyList<IConsumer<TC>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -2962,21 +3674,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this Func<IConsumerFeed<TProducer>, CancellationToken, Task> producers,
-            IReadOnlyList<IConsumer<TConsumer>> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(
+            this Func<IConsumerFeed<TP>, CancellationToken, Task> producers,
+            IReadOnlyList<IConsumer<TC>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -2985,20 +3701,24 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a producer instance and a collection of consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producer and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producer and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producer">producer instance</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(this IProducer<TProducer> producer,
-            IReadOnlyList<IConsumer<TConsumer>> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(this IProducer<TP> producer,
+            IReadOnlyList<IConsumer<TC>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return new[] {producer}.ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -3009,21 +3729,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this IReadOnlyList<Action<IConsumerFeed<TProducer>, CancellationToken>> producers,
-            Action<TConsumer, CancellationToken> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(
+            this IReadOnlyList<Action<IConsumerFeed<TP>, CancellationToken>> producers,
+            Action<TC, CancellationToken> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -3032,21 +3756,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this IReadOnlyList<Func<IConsumerFeed<TProducer>, CancellationToken, Task>> producers,
-            Action<TConsumer, CancellationToken> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(
+            this IReadOnlyList<Func<IConsumerFeed<TP>, CancellationToken, Task>> producers,
+            Action<TC, CancellationToken> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -3055,20 +3783,24 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(this IReadOnlyList<IProducer<TProducer>> producers,
-            Action<TConsumer, CancellationToken> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(this IReadOnlyList<IProducer<TP>> producers,
+            Action<TC, CancellationToken> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ProducerConsumer(consumers.ToConsumer(), adapter, token, bufferSize);
@@ -3077,21 +3809,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this IReadOnlyList<Action<IConsumerFeed<TProducer>, CancellationToken>> producers,
-            Func<TConsumer, CancellationToken, Task> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(
+            this IReadOnlyList<Action<IConsumerFeed<TP>, CancellationToken>> producers,
+            Func<TC, CancellationToken, Task> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -3100,21 +3836,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this IReadOnlyList<Func<IConsumerFeed<TProducer>, CancellationToken, Task>> producers,
-            Func<TConsumer, CancellationToken, Task> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(
+            this IReadOnlyList<Func<IConsumerFeed<TP>, CancellationToken, Task>> producers,
+            Func<TC, CancellationToken, Task> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -3123,20 +3863,24 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(this IReadOnlyList<IProducer<TProducer>> producers,
-            Func<TConsumer, CancellationToken, Task> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(this IReadOnlyList<IProducer<TP>> producers,
+            Func<TC, CancellationToken, Task> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ProducerConsumer(consumers.ToConsumer(), adapter, token, bufferSize);
@@ -3145,21 +3889,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this IReadOnlyList<Action<IConsumerFeed<TProducer>, CancellationToken>> producers,
-            IConsumer<TConsumer> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(
+            this IReadOnlyList<Action<IConsumerFeed<TP>, CancellationToken>> producers,
+            IConsumer<TC> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -3168,21 +3916,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this IReadOnlyList<Func<IConsumerFeed<TProducer>, CancellationToken, Task>> producers,
-            IConsumer<TConsumer> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(
+            this IReadOnlyList<Func<IConsumerFeed<TP>, CancellationToken, Task>> producers,
+            IConsumer<TC> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -3191,20 +3943,24 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and a consumer instance, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumer concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumer concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumer">consumer instance</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(this IReadOnlyList<IProducer<TProducer>> producers,
-            IConsumer<TConsumer> consumer, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(this IReadOnlyList<IProducer<TP>> producers,
+            IConsumer<TC> consumer, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ProducerConsumer(new[] {consumer}, adapter, token, bufferSize);
@@ -3214,21 +3970,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this IReadOnlyList<Action<IConsumerFeed<TProducer>, CancellationToken>> producers,
-            IReadOnlyList<Action<TConsumer, CancellationToken>> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(
+            this IReadOnlyList<Action<IConsumerFeed<TP>, CancellationToken>> producers,
+            IReadOnlyList<Action<TC, CancellationToken>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -3237,21 +3997,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this IReadOnlyList<Func<IConsumerFeed<TProducer>, CancellationToken, Task>> producers,
-            IReadOnlyList<Action<TConsumer, CancellationToken>> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(
+            this IReadOnlyList<Func<IConsumerFeed<TP>, CancellationToken, Task>> producers,
+            IReadOnlyList<Action<TC, CancellationToken>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -3260,20 +4024,24 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(this IReadOnlyList<IProducer<TProducer>> producers,
-            IReadOnlyList<Action<TConsumer, CancellationToken>> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(this IReadOnlyList<IProducer<TP>> producers,
+            IReadOnlyList<Action<TC, CancellationToken>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ProducerConsumer(consumers.ToConsumer(), adapter, token, bufferSize);
@@ -3282,22 +4050,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this IReadOnlyList<Action<IConsumerFeed<TProducer>, CancellationToken>> producers,
-            IReadOnlyList<Func<TConsumer, CancellationToken, Task>> consumers,
-            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+        public static Task ProducerConsumer<TP, TC>(
+            this IReadOnlyList<Action<IConsumerFeed<TP>, CancellationToken>> producers,
+            IReadOnlyList<Func<TC, CancellationToken, Task>> consumers,
+            IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -3306,22 +4078,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this IReadOnlyList<Func<IConsumerFeed<TProducer>, CancellationToken, Task>> producers,
-            IReadOnlyList<Func<TConsumer, CancellationToken, Task>> consumers,
-            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+        public static Task ProducerConsumer<TP, TC>(
+            this IReadOnlyList<Func<IConsumerFeed<TP>, CancellationToken, Task>> producers,
+            IReadOnlyList<Func<TC, CancellationToken, Task>> consumers,
+            IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -3330,21 +4106,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(this IReadOnlyList<IProducer<TProducer>> producers,
-            IReadOnlyList<Func<TConsumer, CancellationToken, Task>> consumers,
-            IDataAdapter<TProducer, TConsumer> adapter, CancellationToken token = default(CancellationToken),
+        public static Task ProducerConsumer<TP, TC>(this IReadOnlyList<IProducer<TP>> producers,
+            IReadOnlyList<Func<TC, CancellationToken, Task>> consumers,
+            IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ProducerConsumer(consumers.ToConsumer(), adapter, token, bufferSize);
@@ -3353,21 +4133,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this IReadOnlyList<Action<IConsumerFeed<TProducer>, CancellationToken>> producers,
-            IReadOnlyList<IConsumer<TConsumer>> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(
+            this IReadOnlyList<Action<IConsumerFeed<TP>, CancellationToken>> producers,
+            IReadOnlyList<IConsumer<TC>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -3376,21 +4160,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(
-            this IReadOnlyList<Func<IConsumerFeed<TProducer>, CancellationToken, Task>> producers,
-            IReadOnlyList<IConsumer<TConsumer>> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(
+            this IReadOnlyList<Func<IConsumerFeed<TP>, CancellationToken, Task>> producers,
+            IReadOnlyList<IConsumer<TC>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
@@ -3399,23 +4187,27 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Accepts a collection of producers and consumers, along with an instance of
         /// data adapter which transforms the produced data into consumable data type. Executes
-        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating 
-        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer"/> properties
+        /// producers and consumers concurrently (parallel producer-consumer pattern) while mediating
+        /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
-        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded"/></para>
+        /// <para>IMPORTANT: Unbounded buffer size is represented by <seealso cref="ConcurrentBuffer.Unbounded" /></para>
+        /// <para>
+        /// Upon receiving exception from either producer/consumer instances would result in the destruction of the
+        /// pipeline (all producers and consumers will be destroyed including the queued data)
+        /// </para>
         /// </summary>
-        /// <typeparam name="TProducer">Produced data type</typeparam>
-        /// <typeparam name="TConsumer">Consumable data type</typeparam>
+        /// <typeparam name="TP">Produced data type</typeparam>
+        /// <typeparam name="TC">Consumable data type</typeparam>
         /// <param name="producers">Collection of producers</param>
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        public static Task ProducerConsumer<TProducer, TConsumer>(this IReadOnlyList<IProducer<TProducer>> producers,
-            IReadOnlyList<IConsumer<TConsumer>> consumers, IDataAdapter<TProducer, TConsumer> adapter,
+        public static Task ProducerConsumer<TP, TC>(this IReadOnlyList<IProducer<TP>> producers,
+            IReadOnlyList<IConsumer<TC>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return PpcPipeline<TProducer, TConsumer>.Execute(token, bufferSize, adapter, producers, consumers);
+            return PpcPipeline<TP, TC>.Execute(token, bufferSize, adapter, producers, consumers);
         }
 
         #endregion

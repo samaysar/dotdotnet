@@ -16,9 +16,9 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             _token = token;
         }
 
-        public bool TryGet(int millisecTimeout, out T data)
+        public bool TryGet(int millisecTimeout, CancellationToken token, out T data)
         {
-            return _collection.TryTake(out data, millisecTimeout, _token);
+            return _collection.TryTake(out data, millisecTimeout, token);
         }
 
         public bool Finished => _collection.IsCompleted;

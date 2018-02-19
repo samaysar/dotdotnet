@@ -50,6 +50,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             {
                 _millisecTimeout = Timeout.Infinite;
             }
+
             _maxListSize = maxListSize.ThrowIfLess(2, $"List size cannot be less than 2. (Value: {maxListSize})");
         }
 
@@ -68,24 +69,26 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <para>5. List max size would be respected as provided in Ctor.</para>
         /// </summary>
         /// <param name="producerDataFeed">Data feed</param>
+        /// <param name="token">token to observe</param>
         /// <param name="consumable">consumable data instance</param>
-        public bool TryGet(IProducerFeed<T> producerDataFeed, out List<T> consumable)
+        public bool TryGet(IProducerFeed<T> producerDataFeed, CancellationToken token, out List<T> consumable)
         {
             return _millisecTimeout == Timeout.Infinite
-                ? TryGetWithInfiniteTo(producerDataFeed, out consumable)
-                : TryGetWithFiniteTo(producerDataFeed, out consumable);
+                ? TryGetWithInfiniteTo(producerDataFeed, token, out consumable)
+                : TryGetWithFiniteTo(producerDataFeed, token, out consumable);
         }
 
-        private bool TryGetWithFiniteTo(IProducerFeed<T> producerDataFeed, out List<T> consumable)
+        private bool TryGetWithFiniteTo(IProducerFeed<T> producerDataFeed, CancellationToken token,
+            out List<T> consumable)
         {
             consumable = null;
             var sw = Stopwatch.StartNew();
-            if (!producerDataFeed.TryGet(Timeout.Infinite, out var value)) return false;
-            consumable = new List<T>(_maxListSize) { value };
-            var timeRemains = (int)Math.Max(0, _millisecTimeout - sw.ElapsedMilliseconds);
+            if (!producerDataFeed.TryGet(Timeout.Infinite, token, out var value)) return false;
+            consumable = new List<T>(_maxListSize) {value};
+            var timeRemains = (int) Math.Max(0, _millisecTimeout - sw.ElapsedMilliseconds);
             while (consumable.Count < _maxListSize)
             {
-                if (producerDataFeed.TryGet(timeRemains, out value))
+                if (producerDataFeed.TryGet(timeRemains, token, out value))
                 {
                     consumable.Add(value);
                     if (timeRemains != 0)
@@ -95,22 +98,25 @@ namespace Dot.Net.DevFast.Extensions.Ppc
                 }
                 else return true;
             }
+
             return true;
         }
 
-        private bool TryGetWithInfiniteTo(IProducerFeed<T> producerDataFeed, out List<T> consumable)
+        private bool TryGetWithInfiniteTo(IProducerFeed<T> producerDataFeed, CancellationToken token,
+            out List<T> consumable)
         {
             consumable = null;
-            if (!producerDataFeed.TryGet(Timeout.Infinite, out var value)) return false;
+            if (!producerDataFeed.TryGet(Timeout.Infinite, token, out var value)) return false;
             consumable = new List<T>(_maxListSize) {value};
             while (consumable.Count < _maxListSize)
             {
-                if (producerDataFeed.TryGet(Timeout.Infinite, out value))
+                if (producerDataFeed.TryGet(Timeout.Infinite, token, out value))
                 {
                     consumable.Add(value);
                 }
                 else return true;
             }
+
             return true;
         }
     }

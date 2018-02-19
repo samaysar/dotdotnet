@@ -16,10 +16,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <paramref name="producerDataFeed"/> else returns false.</para>
         /// </summary>
         /// <param name="producerDataFeed">Data feed</param>
+        /// <param name="token">token to observe</param>
         /// <param name="consumable">consumable data instance</param>
-        public bool TryGet(IProducerFeed<T> producerDataFeed, out T consumable)
+        public bool TryGet(IProducerFeed<T> producerDataFeed, CancellationToken token, out T consumable)
         {
-            return producerDataFeed.TryGet(Timeout.Infinite, out consumable);
+            return producerDataFeed.TryGet(Timeout.Infinite, token, out consumable);
         }
     }
 }

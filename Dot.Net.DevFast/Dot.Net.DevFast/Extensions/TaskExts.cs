@@ -44,77 +44,108 @@ namespace Dot.Net.DevFast.Extensions
         /// Creates and returns a wrapped task that awaits on tasks generated during enumeration on <paramref name="actions"/> while respecting the
         /// concurrency as specified by <paramref name="maxConcurrency"/> (i.e. at no time, enumeration will span more tasks
         /// then specified by <paramref name="maxConcurrency"/>).
-        /// <para>NOTE: No measures are taken against exceptions raised by the passed delegates (i.e. if delegate execution
-        /// results in an error, then there is no guarantee that remaining delgates will be executed and awaited)</para>
+        /// <para>NOTE: Internally no measures are taken against exceptions raised by the passed delegates, thus, it is important to
+        /// understand the usage of <paramref name="errorHandler"/>.</para>
         /// </summary>
         /// <param name="actions">collection of actions to execute and await on</param>
         /// <param name="maxConcurrency">maximum number of task to span (possible min value: 1)</param>
-        /// <param name="token">Cancellation token, if any. This cancellation token is passed to <paramref name="actions"/></param>
+        /// <param name="token">Cancellation token, if any. This cancellation token is passed to <paramref name="actions"/>.
+        /// (Note: <seealso cref="OperationCanceledException"/> will be thrown back on await of task and will not be passed 
+        /// to <paramref name="errorHandler"/>)</param>
         /// <param name="stopOnCancel">If true, when token is canceled, enumeration loop will stop as soon as possible 
         /// (i.e. all the running tasks will be awaited but no new task will be created) and <seealso cref="OperationCanceledException"/>
         /// will be raised. If false, enumeration would continue irrespective of token state.</param>
+        /// <param name="errorHandler">If errorHandler is passed and an exception occurs during the execution of these tasks, then
+        /// the exception will be passed to it and enumeration would continue. If error handler not passed, then that perticular
+        /// concurrent enumeration would stop (i.e. concurrency would reduce by 1, but remaining delegates would be executed by other
+        /// concurrent enumerations). Thus, if N (N = <paramref name="maxConcurrency"/>) such exceptions occurs, then all enumerations 
+        /// would stop. In any case, if <paramref name="errorHandler"/> is not supplied and at least one exception occurs
+        /// then the await on this task would yield in exception, irrespective of the state of the those concurrent enumerations.</param>
         public static Task WhenAll(this IEnumerable<Action<CancellationToken>> actions,
-            int maxConcurrency, CancellationToken token = default(CancellationToken), bool stopOnCancel = true)
+            int maxConcurrency, CancellationToken token = default(CancellationToken), bool stopOnCancel = true,
+            Action<Exception> errorHandler = null)
         {
-            return actions.Select(x => x.ToAsync(false)).WhenAll(maxConcurrency, token, stopOnCancel);
+            return actions.Select(x => x.ToAsync(false)).WhenAll(maxConcurrency, token, stopOnCancel, errorHandler);
         }
 
         /// <summary>
         /// Creates and returns a wrapped task that awaits on tasks generated during enumeration on <paramref name="funcs"/> while respecting the
         /// concurrency as specified by <paramref name="maxConcurrency"/> (i.e. at no time, enumeration will span more tasks
         /// then specified by <paramref name="maxConcurrency"/>).
-        /// <para>NOTE: No measures are taken against exceptions raised by the passed delegates (i.e. if delegate execution
-        /// results in an error, then there is no guarantee that remaining delgates will be executed and awaited)</para>
+        /// <para>NOTE: Internally no measures are taken against exceptions raised by the passed delegates, thus, it is important to
+        /// understand the usage of <paramref name="errorHandler"/>.</para>
         /// </summary>
         /// <param name="funcs">collection of functions to execute and await on</param>
         /// <param name="maxConcurrency">maximum number of task to span (possible min value: 1)</param>
-        /// <param name="token">Cancellation token, if any. This cancellation token is passed to <paramref name="funcs"/></param>
+        /// <param name="token">Cancellation token, if any. This cancellation token is passed to <paramref name="funcs"/>.
+        /// (Note: <seealso cref="OperationCanceledException"/> will be thrown back on await of task and will not be passed 
+        /// to <paramref name="errorHandler"/>)</param>
         /// <param name="stopOnCancel">If true, when token is canceled, enumeration loop will stop as soon as possible 
         /// (i.e. all the running tasks will be awaited but no new task will be created) and <seealso cref="OperationCanceledException"/>
-        /// will be raised. If false, enumeration would continue irrespective of token state.</param>
+        /// will be raised. If false, enumeration would continue irrespective of token state.
+        /// </param>
+        /// <param name="errorHandler">If errorHandler is passed and an exception occurs during the execution of these tasks, then
+        /// the exception will be passed to it and enumeration would continue. If error handler not passed, then that perticular
+        /// concurrent enumeration would stop (i.e. concurrency would reduce by 1, but remaining delegates would be executed by other
+        /// concurrent enumerations). Thus, if N (N = <paramref name="maxConcurrency"/>) such exceptions occurs, then all enumerations 
+        /// would stop. In any case, if <paramref name="errorHandler"/> is not supplied and at least one exception occurs
+        /// then the await on this task would yield in exception, irrespective of the state of the those concurrent enumerations.</param>
         public static Task WhenAll(this IEnumerable<Func<CancellationToken, Task>> funcs,
-            int maxConcurrency, CancellationToken token = default(CancellationToken), bool stopOnCancel = true)
+            int maxConcurrency, CancellationToken token = default(CancellationToken), bool stopOnCancel = true, 
+            Action<Exception> errorHandler = null)
         {
             return funcs.Select(x => new Func<Task>(() => x(token)))
-                .WhenAll(maxConcurrency, stopOnCancel ? token : CancellationToken.None);
+                .WhenAll(maxConcurrency, stopOnCancel ? token : CancellationToken.None, errorHandler);
         }
 
         /// <summary>
         /// Creates and returns a wrapped task that awaits on tasks generated during enumeration on <paramref name="actions"/> while respecting the
         /// concurrency as specified by <paramref name="maxConcurrency"/> (i.e. at no time, enumeration will span more tasks
         /// then specified by <paramref name="maxConcurrency"/>).
-        /// <para>NOTE: No measures are taken against exceptions raised by the passed delegates (i.e. if delegate execution
-        /// results in an error, then there is no guarantee that remaining delgates will be executed and awaited)</para>
+        /// <para>NOTE: Internally no measures are taken against exceptions raised by the passed delegates, thus, it is important to
+        /// understand the usage of <paramref name="errorHandler"/>.</para>
         /// </summary>
         /// <param name="actions">collection of actions to execute and await on</param>
         /// <param name="maxConcurrency">maximum number of task to span (possible min value: 1)</param>
         /// <param name="token">Token to observe. When token is canceled, enumeration loop will stop as soon as possible 
         /// (i.e. all the running tasks will be awaited but no new task will be created) and <seealso cref="OperationCanceledException"/>
-        /// will be raised</param>
+        /// will be raised (Note: This error will be thrown back on await of task and will not be passed to <paramref name="errorHandler"/>)</param>
+        /// <param name="errorHandler">If errorHandler is passed and an exception occurs during the execution of these tasks, then
+        /// the exception will be passed to it and enumeration would continue. If error handler not passed, then that perticular
+        /// concurrent enumeration would stop (i.e. concurrency would reduce by 1, but remaining delegates would be executed by other
+        /// concurrent enumerations). Thus, if N (N = <paramref name="maxConcurrency"/>) such exceptions occurs, then all enumerations 
+        /// would stop. In any case, if <paramref name="errorHandler"/> is not supplied and at least one exception occurs
+        /// then the await on this task would yield in exception, irrespective of the state of the those concurrent enumerations.</param>
         public static Task WhenAll(this IEnumerable<Action> actions, int maxConcurrency,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default(CancellationToken), Action<Exception> errorHandler = null)
         {
-            return actions.Select(x => x.ToAsync(false)).WhenAll(maxConcurrency, token);
+            return actions.Select(x => x.ToAsync(false)).WhenAll(maxConcurrency, token, errorHandler);
         }
 
         /// <summary>
         /// Creates and returns a wrapped task that awaits on tasks generated during enumeration on <paramref name="funcs"/> while respecting the
         /// concurrency as specified by <paramref name="maxConcurrency"/> (i.e. at no time, enumeration will span more tasks
         /// then specified by <paramref name="maxConcurrency"/>).
-        /// <para>NOTE: No measures are taken against exceptions raised by the passed delegates (i.e. if delegate execution
-        /// results in an error, then there is no guarantee that remaining delgates will be executed and awaited)</para>
+        /// <para>NOTE: Internally no measures are taken against exceptions raised by the passed delegates, thus, it is important to
+        /// understand the usage of <paramref name="errorHandler"/>.</para>
         /// </summary>
         /// <param name="funcs">collection of functions to execute and await on</param>
         /// <param name="maxConcurrency">maximum number of task to span (possible min value: 1)</param>
         /// <param name="token">Token to observe. When token is canceled, enumeration loop will stop as soon as possible 
         /// (i.e. all the running tasks will be awaited but no new task will be created) and <seealso cref="OperationCanceledException"/>
-        /// will be raised</param>
+        /// will be raised (Note: This error will be thrown back on await of task and will not be passed to <paramref name="errorHandler"/>)</param>
+        /// <param name="errorHandler">If errorHandler is passed and an exception occurs during the execution of these tasks, then
+        /// the exception will be passed to it and enumeration would continue. If error handler not passed, then that perticular
+        /// concurrent enumeration would stop (i.e. concurrency would reduce by 1, but remaining delegates would be executed by other
+        /// concurrent enumerations). Thus, if N (N = <paramref name="maxConcurrency"/>) such exceptions occurs, then all enumerations 
+        /// would stop. In any case, if <paramref name="errorHandler"/> is not supplied and at least one exception occurs
+        /// then the await on this task would yield in exception, irrespective of the state of the those concurrent enumerations.</param>
         public static Task WhenAll(this IEnumerable<Func<Task>> funcs, int maxConcurrency,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default(CancellationToken), Action<Exception> errorHandler = null)
         {
             maxConcurrency.ThrowIfLess(1, "concurrency value is less than 1");
             var etor = funcs.GetEnumerator();
-            return etor.Loop(new object(), token).RepeatNWhenAll(maxConcurrency).AwaitNDispose(etor);
+            return etor.Loop(new object(), token, errorHandler).RepeatNWhenAll(maxConcurrency).AwaitNDispose(etor);
         }
 
         private static IEnumerable<Func<Task>> Repeat(this Func<int, CancellationToken, Task> func,
@@ -132,14 +163,23 @@ namespace Dot.Net.DevFast.Extensions
             return () => func(i, token);
         }
 
-        private static Func<Task> Loop(this IEnumerator<Func<Task>> funcs, object syncRoot, CancellationToken token)
+        private static Func<Task> Loop(this IEnumerator<Func<Task>> funcs, object syncRoot, CancellationToken token,
+            Action<Exception> errorHandler)
         {
             return () => Task.Run(async () =>
             {
                 while (funcs.TryGetNext(syncRoot, out var next))
                 {
                     token.ThrowIfCancellationRequested();
-                    await next().StartIfNeeded().ConfigureAwait(false);
+                    try
+                    {
+                        await next().StartIfNeeded().ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        if (errorHandler == null) throw;
+                        errorHandler(e);
+                    }
                 }
             }, CancellationToken.None);
         }
