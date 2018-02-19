@@ -52,15 +52,12 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             for (var i = 0; i < pcount; i++)
             {
                 producers[i] = Substitute.For<IProducer<object>>();
-                producers[i].ProduceAsync(Arg.Any<IConsumerFeed<object>>(),
-                    Arg.Any<CancellationToken>()).Returns(x => throw new Exception("Testing"));
             }
 
             var consumers = new IConsumer<object>[ccount];
             for (var i = 0; i < ccount; i++)
             {
                 consumers[i] = Substitute.For<IConsumer<object>>();
-                consumers[i].InitAsync().Returns(x => throw new Exception("Testing"));
             }
             var cts = new CancellationTokenSource();
             cts.Cancel();
@@ -73,40 +70,50 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         [TestCase(1, 2)]
         [TestCase(2, 2)]
         [TestCase(2, 1)]
-        public void RunPpcAsync_Wrappes_All_Exceptions_And_Destroys_Ppc(int pcount, int ccount)
+        public void RunPpcAsync_Wrappes_All_Producer_Exceptions_And_Destroys_Ppc(int pcount, int ccount)
         {
             //to make all producer consumers to throw error almost at same time!
-            var countHandle = new CountdownEvent(pcount + ccount);
-            var waitHandle = new ManualResetEventSlim(false);
             var producers = new IProducer<object>[pcount];
             for (var i = 0; i < pcount; i++)
             {
                 producers[i] = Substitute.For<IProducer<object>>();
-                producers[i].ProduceAsync(Arg.Any<IConsumerFeed<object>>(),
-                    Arg.Any<CancellationToken>()).Returns(x =>
-                {
-                    countHandle.Signal();
-                    waitHandle.Wait();
-                    throw new Exception("Testing");
-                });
+                producers[i].InitAsync().Returns(x => throw new Exception("Testing"));
             }
 
             var consumers = new IConsumer<object>[ccount];
             for (var i = 0; i < ccount; i++)
             {
                 consumers[i] = Substitute.For<IConsumer<object>>();
-                consumers[i].InitAsync().Returns(x =>
-                {
-                    countHandle.Signal();
-                    waitHandle.Wait();
-                    throw new Exception("Testing");
-                });
             }
 
             var ppcTask = Task.Run(() => PpcPipeline<object, object>.Execute(CancellationToken.None,
                 ConcurrentBuffer.MinSize, new IdentityAdapter<object>(), producers, consumers));
-            countHandle.Wait();
-            waitHandle.Set();
+            Assert.True(Assert.ThrowsAsync<Exception>(() => ppcTask).Message.Equals("Testing"));
+        }
+
+        [Test]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(2, 2)]
+        [TestCase(2, 1)]
+        public void RunPpcAsync_Wrappes_All_Consumer_Exceptions_And_Destroys_Ppc(int pcount, int ccount)
+        {
+            //to make all producer consumers to throw error almost at same time!
+            var producers = new IProducer<object>[pcount];
+            for (var i = 0; i < pcount; i++)
+            {
+                producers[i] = Substitute.For<IProducer<object>>();
+            }
+
+            var consumers = new IConsumer<object>[ccount];
+            for (var i = 0; i < ccount; i++)
+            {
+                consumers[i] = Substitute.For<IConsumer<object>>();
+                consumers[i].InitAsync().Returns(x => throw new Exception("Testing"));
+            }
+
+            var ppcTask = Task.Run(() => PpcPipeline<object, object>.Execute(CancellationToken.None,
+                ConcurrentBuffer.MinSize, new IdentityAdapter<object>(), producers, consumers));
             Assert.True(Assert.ThrowsAsync<Exception>(() => ppcTask).Message.Equals("Testing"));
         }
 

@@ -27,6 +27,27 @@ namespace Dot.Net.DevFast.Tests.Extensions
             var tokenAction = new Action<CancellationToken>(t => Interlocked.Increment(ref count));
             await CreateEnumeration(tokenAction, actionCount).WhenAll(concurrency).ConfigureAwait(false);
             Assert.True(count == actionCount);
+
+            var errorWithTokenAction = new Action<CancellationToken>(t => throw new Exception("with token"));
+            Assert.True(Assert.ThrowsAsync<Exception>(() => CreateEnumeration(errorWithTokenAction, actionCount)
+                .WhenAll(concurrency)).Message.Equals("with token"));
+
+            var errorAction = new Action(() => throw new Exception("with token"));
+            Assert.True(Assert.ThrowsAsync<Exception>(() => CreateEnumeration(errorAction, actionCount)
+                .WhenAll(concurrency)).Message.Equals("with token"));
+
+            var errorCount = 0;
+            var errorHandle = new Action<Exception>(e =>
+            {
+                Assert.True(e.Message.Equals("with token"));
+                Interlocked.Increment(ref errorCount);
+            });
+            await CreateEnumeration(errorWithTokenAction, actionCount).WhenAll(concurrency, errorHandler: errorHandle)
+                .ConfigureAwait(false);
+            Assert.True(errorCount == actionCount);
+            await CreateEnumeration(errorAction, actionCount).WhenAll(concurrency, errorHandler: errorHandle)
+                .ConfigureAwait(false);
+            Assert.True(errorCount == 2*actionCount);
         }
 
         [Test]
@@ -53,6 +74,27 @@ namespace Dot.Net.DevFast.Tests.Extensions
                 });
             await CreateEnumeration(tokenFunc, actionCount).WhenAll(concurrency).ConfigureAwait(false);
             Assert.True(count == actionCount);
+
+            var errorWithTokenFunc = new Func<CancellationToken, Task>(t => throw new Exception("with token"));
+            Assert.True(Assert.ThrowsAsync<Exception>(() => CreateEnumeration(errorWithTokenFunc, actionCount)
+                .WhenAll(concurrency)).Message.Equals("with token"));
+
+            var errorFunc = new Func<Task>(() => throw new Exception("with token"));
+            Assert.True(Assert.ThrowsAsync<Exception>(() => CreateEnumeration(errorFunc, actionCount)
+                .WhenAll(concurrency)).Message.Equals("with token"));
+
+            var errorCount = 0;
+            var errorHandle = new Action<Exception>(e =>
+            {
+                Assert.True(e.Message.Equals("with token"));
+                Interlocked.Increment(ref errorCount);
+            });
+            await CreateEnumeration(errorWithTokenFunc, actionCount).WhenAll(concurrency, errorHandler: errorHandle)
+                .ConfigureAwait(false);
+            Assert.True(errorCount == actionCount);
+            await CreateEnumeration(errorFunc, actionCount).WhenAll(concurrency, errorHandler: errorHandle)
+                .ConfigureAwait(false);
+            Assert.True(errorCount == 2 * actionCount);
         }
 
         [Test]
