@@ -139,9 +139,9 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [Test]
         public void ToEnumUnchecked_ThrowsError_For_Invalid_Cases()
         {
-            Assert.Throws<ArgumentException>(() => PerformToEnumUnchecked("", out DateTime wrongType, false));
-            Assert.Throws<ArgumentException>(() => PerformToEnumUnchecked("", out double wrongType));
-            Assert.Throws<ArgumentException>(() => PerformToEnumUnchecked("", out int wrongType));
+            Assert.Throws<ArgumentException>(() => PerformToEnumUnchecked("", out DateTime _, false));
+            Assert.Throws<ArgumentException>(() => PerformToEnumUnchecked("", out double _));
+            Assert.Throws<ArgumentException>(() => PerformToEnumUnchecked("", out int _));
         }
 
         [Test]
@@ -177,7 +177,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
             }
             else
             {
-                var ex = Assert.Throws<DdnDfException>(() => PerformToEnumUnchecked(input, out DateTimeKind value));
+                var ex = Assert.Throws<DdnDfException>(() => PerformToEnumUnchecked(input, out DateTimeKind _));
                 Assert.True(ex.ErrorCode == DdnDfErrorCode.StringParsingFailed);
                 Assert.True(ex.Message.Contains($" {input} "));
                 Assert.True(ex.Message.Contains($"{typeof(DateTimeKind)}"));
@@ -212,7 +212,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
             else
             {
                 var ex =
-                    Assert.Throws<DdnDfException>(() => PerformToEnumUnchecked(input, out DateTimeKind value, false));
+                    Assert.Throws<DdnDfException>(() => PerformToEnumUnchecked(input, out DateTimeKind _, false));
                 Assert.True(ex.ErrorCode == DdnDfErrorCode.StringParsingFailed);
                 Assert.True(ex.Message.Contains($" {input} "));
                 Assert.True(ex.Message.Contains($"{typeof(DateTimeKind)}"));
@@ -222,9 +222,9 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [Test]
         public void ToEnum_ThrowsError_For_Invalid_Cases()
         {
-            Assert.Throws<ArgumentException>(() => PerformToEnum("", out DateTime wrongType, false));
-            Assert.Throws<ArgumentException>(() => PerformToEnum("", out double wrongType));
-            Assert.Throws<ArgumentException>(() => PerformToEnum("", out int wrongType));
+            Assert.Throws<ArgumentException>(() => PerformToEnum("", out DateTime _, false));
+            Assert.Throws<ArgumentException>(() => PerformToEnum("", out double _));
+            Assert.Throws<ArgumentException>(() => PerformToEnum("", out int _));
         }
 
         [Test]
@@ -232,7 +232,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [TestCase(int.MinValue)]
         public void ToEnum_ThrowsError_For_Invalid_Parsable_Strings(int invalidInput)
         {
-            var ex = Assert.Throws<DdnDfException>(() => PerformToEnum(invalidInput.ToString(), out DateTimeKind value));
+            var ex = Assert.Throws<DdnDfException>(() => PerformToEnum(invalidInput.ToString(), out DateTimeKind _));
             Assert.True(ex.ErrorCode == DdnDfErrorCode.StringParsingFailed);
             Assert.True(ex.Message.Contains($" {invalidInput} "));
             Assert.True(ex.Message.Contains($"{typeof(DateTimeKind)}"));
@@ -262,7 +262,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
             }
             else
             {
-                var ex = Assert.Throws<DdnDfException>(() => PerformToEnum(input, out DateTimeKind value));
+                var ex = Assert.Throws<DdnDfException>(() => PerformToEnum(input, out DateTimeKind _));
                 Assert.True(ex.ErrorCode == DdnDfErrorCode.StringParsingFailed);
                 Assert.True(ex.Message.Contains($" {input} "));
                 Assert.True(ex.Message.Contains($"{typeof(DateTimeKind)}"));
@@ -296,7 +296,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
             }
             else
             {
-                var ex = Assert.Throws<DdnDfException>(() => PerformToEnum(input, out DateTimeKind value, false));
+                var ex = Assert.Throws<DdnDfException>(() => PerformToEnum(input, out DateTimeKind _, false));
                 Assert.True(ex.ErrorCode == DdnDfErrorCode.StringParsingFailed);
                 Assert.True(ex.Message.Contains($" {input} "));
                 Assert.True(ex.Message.Contains($"{typeof(DateTimeKind)}"));

@@ -161,7 +161,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
             var bytes = new byte[arrSize];
             randm.NextBytes(bytes);
             var localB64 = Convert.ToBase64String(bytes, Base64FormattingOptions.None);
-            string extB64 = null;
+            string extB64;
             using (var mem = new MemoryStream())
             {
                 await bytes.ToBase64Async(mem).ConfigureAwait(false);
@@ -493,6 +493,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
                 await TestValues.BigString.ToBase64Async(mem, encoding: encIns).ConfigureAwait(false);
                 mem.Seek(0, SeekOrigin.Begin);
                 var output = await mem.FromBase64AsSegmentAsync().ConfigureAwait(false);
+                Assert.NotNull(output.Array);
                 using (var reader = new StreamReader(new MemoryStream(output.Array, output.Offset, output.Count), encIns))
                 {
                     Assert.True(TestValues.BigString.Equals(reader.ReadToEnd()));
@@ -504,6 +505,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
                 await TestValues.BigString.ToBase64Async(mem, encoding: encIns).ConfigureAwait(false);
                 mem.Seek(0, SeekOrigin.Begin);
                 var output = await mem.FromBase64AsSegmentAsync(CancellationToken.None).ConfigureAwait(false);
+                Assert.NotNull(output.Array);
                 using (var reader = new StreamReader(new MemoryStream(output.Array, output.Offset, output.Count), encIns))
                 {
                     Assert.True(TestValues.BigString.Equals(reader.ReadToEnd()));

@@ -45,8 +45,8 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         {
             var feed = Substitute.For<IProducerFeed<object>>();
             var instance = new AwaitableListAdapter<object>(2, Timeout.Infinite);
-            instance.TryGet(feed, CancellationToken.None, out var outList);
-            feed.Received(1).TryGet(Arg.Any<int>(), CancellationToken.None, out var outobj);
+            instance.TryGet(feed, CancellationToken.None, out var _);
+            feed.Received(1).TryGet(Arg.Any<int>(), CancellationToken.None, out var _);
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             var localFeedSize = feedSize;
             var obj = new object();
             var feed = Substitute.For<IProducerFeed<object>>();
-            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var outObj).ReturnsForAnyArgs(x =>
+            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).ReturnsForAnyArgs(x =>
             {
                 if (localFeedSize <= 0) return false;
                 x[2] = obj;
@@ -81,7 +81,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         public void TryGet_With_Infinite_Timeout_Returns_Empty_List_When_Feed_Is_Empty(int listSize)
         {
             var feed = Substitute.For<IProducerFeed<object>>();
-            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var outObj).ReturnsForAnyArgs(x => false);
+            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).ReturnsForAnyArgs(x => false);
             var instance = new AwaitableListAdapter<object>(listSize, Timeout.Infinite);
             Assert.False(instance.TryGet(feed, CancellationToken.None, out var newList));
             Assert.True(newList == null || newList.Count.Equals(0));
@@ -104,7 +104,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             var localFeedSize = feedSize;
             var obj = new object();
             var feed = Substitute.For<IProducerFeed<object>>();
-            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var outObj).ReturnsForAnyArgs(x =>
+            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).ReturnsForAnyArgs(x =>
             {
                 if (localFeedSize <= 0) return false;
                 x[2] = obj;
@@ -126,7 +126,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         public void TryGet_With_Finite_Timeout_Returns_Empty_List_When_Feed_Is_Empty(int listSize, int timeout)
         {
             var feed = Substitute.For<IProducerFeed<object>>();
-            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var outObj).ReturnsForAnyArgs(x => false);
+            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).ReturnsForAnyArgs(x => false);
             var instance = new AwaitableListAdapter<object>(listSize, 0);
             Assert.False(instance.TryGet(feed, CancellationToken.None, out var newList));
             Assert.True(newList == null || newList.Count.Equals(0));

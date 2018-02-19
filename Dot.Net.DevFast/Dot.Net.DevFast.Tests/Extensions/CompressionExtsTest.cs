@@ -48,6 +48,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
                 else
                 {
                     var invalidCompress = compressedData.Length == segSize;
+                    Assert.NotNull(segment.Array);
                     for (var i = 0; i < Math.Min(segSize, compressedData.Length); i++)
                     {
                         if (invalidCompress)
@@ -55,11 +56,15 @@ namespace Dot.Net.DevFast.Tests.Extensions
                             invalidCompress = segment.Array[i] == compressedData[i];
                         }
                     }
+
                     Assert.False(invalidCompress);
                 }
+
                 mem.Seek(0, SeekOrigin.Begin);
                 var uncompressed = await mem.DecompressAsSegmentAsync(gzip).ConfigureAwait(false);
                 Assert.True(segment.Count == uncompressed.Count);
+                Assert.NotNull(segment.Array);
+                Assert.NotNull(uncompressed.Array);
                 for (var i = 0; i < uncompressed.Count; i++)
                 {
                     Assert.True(segment.Array[i].Equals(uncompressed.Array[i]));

@@ -11,9 +11,9 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [Test]
         public void TryToEnumUnchecked_ThrowsError_For_Invalid_Cases()
         {
-            Assert.Throws<ArgumentException>(() => PerformTryToEnumUnchecked("", out DateTime wrongType, false));
-            Assert.Throws<ArgumentException>(() => PerformTryToEnumUnchecked("", out double wrongType));
-            Assert.Throws<ArgumentException>(() => PerformTryToEnumUnchecked("", out int wrongType));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnumUnchecked("", out DateTime _, false));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnumUnchecked("", out double _));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnumUnchecked("", out int _));
         }
 
         [Test]
@@ -73,9 +73,9 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [Test]
         public void TryToEnumUnchecked_For_NullableEnum_ThrowsError_For_Invalid_Cases()
         {
-            Assert.Throws<ArgumentException>(() => PerformTryToEnumUnchecked("anything", out DateTime? wrongType, false));
-            Assert.Throws<ArgumentException>(() => PerformTryToEnumUnchecked("anything", out double? wrongType));
-            Assert.Throws<ArgumentException>(() => PerformTryToEnumUnchecked("anything", out int? wrongType));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnumUnchecked("anything", out DateTime? _, false));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnumUnchecked("anything", out double? _));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnumUnchecked("anything", out int? _));
         }
 
         [Test]
@@ -147,9 +147,9 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [Test]
         public void TryToEnum_ThrowsError_For_Invalid_Cases()
         {
-            Assert.Throws<ArgumentException>(() => PerformTryToEnum("", out DateTime wrongType, false));
-            Assert.Throws<ArgumentException>(() => PerformTryToEnum("", out double wrongType));
-            Assert.Throws<ArgumentException>(() => PerformTryToEnum("", out int wrongType));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnum("", out DateTime _, false));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnum("", out double _));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnum("", out int _));
         }
 
         [Test]
@@ -209,9 +209,9 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [Test]
         public void TryToEnum_For_NullableEnum_ThrowsError_For_Invalid_Cases()
         {
-            Assert.Throws<ArgumentException>(() => PerformTryToEnum("anything", out DateTime? wrongType, false));
-            Assert.Throws<ArgumentException>(() => PerformTryToEnum("anything", out double? wrongType));
-            Assert.Throws<ArgumentException>(() => PerformTryToEnum("anything", out int? wrongType));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnum("anything", out DateTime? _, false));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnum("anything", out double? _));
+            Assert.Throws<ArgumentException>(() => PerformTryToEnum("anything", out int? _));
         }
 
         [Test]
@@ -1030,6 +1030,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
                 }
                 else
                 {
+                    Assert.True(ts.HasValue);
                     Assert.True(new DateTime(2001, 01, 01, 0, 0, 0).Equals(ts.Value));
                 }
             }

@@ -13,8 +13,8 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         {
             var feed = Substitute.For<IProducerFeed<object>>();
             var instance = new IdentityAdapter<object>();
-            instance.TryGet(feed, CancellationToken.None, out var outobj);
-            feed.Received(1).TryGet(Arg.Any<int>(), CancellationToken.None, out outobj);
+            instance.TryGet(feed, CancellationToken.None, out var _);
+            feed.Received(1).TryGet(Arg.Any<int>(), CancellationToken.None, out _);
         }
 
         [Test]
@@ -24,7 +24,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         {
             var obj = new object();
             var feed = Substitute.For<IProducerFeed<object>>();
-            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var outObj).Returns(x =>
+            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).Returns(x =>
             {
                 x[2] = obj;
                 return feedValue;

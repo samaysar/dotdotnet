@@ -12,10 +12,7 @@ namespace Dot.Net.DevFast.Tests.Etc
         [TestCase(DdnDfErrorCode.NullString)]
         public void Ctor_Sets_Error_Code_As_Message(DdnDfErrorCode errorCode)
         {
-            var error = Assert.Throws<DdnDfException>(() =>
-            {
-                throw new DdnDfException(errorCode);
-            });
+            var error = Assert.Throws<DdnDfException>(() => throw new DdnDfException(errorCode));
             Assert.True(error.ErrorCode.Equals(errorCode));
             Assert.True(error.Reason.Equals(errorCode.ToString()));
             Assert.True(error.Message.Equals(errorCode.ToString()));
@@ -29,10 +26,7 @@ namespace Dot.Net.DevFast.Tests.Etc
         public void Ctor_Concats_ErrorCode_N_Message_As_Base_Message(DdnDfErrorCode errorCode,
             string message)
         {
-            var error = Assert.Throws<DdnDfException>(() =>
-            {
-                throw new DdnDfException(errorCode, message);
-            });
+            var error = Assert.Throws<DdnDfException>(() => throw new DdnDfException(errorCode, message));
             Assert.True(error.ErrorCode.Equals(errorCode));
             Assert.True(error.Reason.Equals(errorCode.ToString()));
             Assert.True(error.Message.Equals($"({errorCode}) {message}"));
@@ -46,15 +40,9 @@ namespace Dot.Net.DevFast.Tests.Etc
         public void Ctor_Passes_Inner_Exception_To_Base_As_It_Is(DdnDfErrorCode errorCode,
             string message)
         {
-            var inner = Assert.Throws<DdnDfException>(() =>
-            {
-                throw new DdnDfException(errorCode, message);
-            });
+            var inner = Assert.Throws<DdnDfException>(() => throw new DdnDfException(errorCode, message));
 
-            var error = Assert.Throws<DdnDfException>(() =>
-            {
-                throw new DdnDfException(errorCode, message, inner);
-            });
+            var error = Assert.Throws<DdnDfException>(() => throw new DdnDfException(errorCode, message, inner));
             Assert.True(error.ErrorCode.Equals(errorCode));
             Assert.True(error.Reason.Equals(errorCode.ToString()));
             Assert.True(error.Message.Equals($"({errorCode}) {message}"));

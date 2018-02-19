@@ -28,7 +28,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
 
             actTs = 0;
             // testing Action with 1 generics
-            Action<int> sync1 = (t0) => Interlocked.Exchange(ref actTs, DateTime.Now.Ticks);
+            Action<int> sync1 = t0 => Interlocked.Exchange(ref actTs, DateTime.Now.Ticks);
             var async1 = sync1.ToAsync(false);
             awaitAfter = async1(1);
             currentTicks = DateTime.Now.Ticks;
@@ -228,20 +228,19 @@ namespace Dot.Net.DevFast.Tests.Extensions
             //Here we want to just Assert that no matter when we await on the
             //Async Task it will always execute in line when delegation is set to false.
 
-            long actTs = 0;
             // testing Func with 0 generics
             Func<long> sync0 = () => DateTime.Now.Ticks;
             var async0 = sync0.ToAsync(false);
             var awaitAfter = async0();
             var currentTicks = DateTime.Now.Ticks;
             Assert.True(awaitAfter.Status == TaskStatus.RanToCompletion);
-            actTs = await awaitAfter.ConfigureAwait(false);
+            var actTs = await awaitAfter.ConfigureAwait(false);
             Assert.True(currentTicks >= actTs);
             Assert.True(actTs != 0);
 
             actTs = 0;
             // testing Func with 1 generics
-            Func<int, long> sync1 = (t0) => DateTime.Now.Ticks;
+            Func<int, long> sync1 = t0 => DateTime.Now.Ticks;
             var async1 = sync1.ToAsync(false);
             awaitAfter = async1(1);
             currentTicks = DateTime.Now.Ticks;
@@ -447,7 +446,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
 
                 // testing Action with 1 generics
                 waitHandle.Reset();
-                Action<int> sync1 = (t0) => waitHandle.Wait();
+                Action<int> sync1 = t0 => waitHandle.Wait();
                 var async1 = sync1.ToAsync();
                 awaitAfter = async1(1);
                 Assert.True(awaitAfter.Status != TaskStatus.RanToCompletion);
@@ -625,7 +624,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
                 Assert.True((await awaitAfter.ConfigureAwait(false)) == 1);
                 // testing Func with 1 generics
                 waitHandle.Reset();
-                Func<int, int> sync1 = (t0) =>
+                Func<int, int> sync1 = t0 =>
                 {
                     waitHandle.Wait();
                     return 1;
@@ -871,7 +870,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
                         taskToUtestHandle.Reset();
                         cancellationWaitHandle.Reset();
                         var cts1 = new CancellationTokenSource();
-                        Action<int> sync1 = (t0) =>
+                        Action<int> sync1 = t0 =>
                         {
                             waitHandle.Wait(CancellationToken.None);
                             Interlocked.Exchange(ref taskValue, 100);
@@ -1358,7 +1357,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
                         taskToUtestHandle.Reset();
                         cancellationWaitHandle.Reset();
                         var cts1 = new CancellationTokenSource();
-                        Func<int, int> sync1 = (t0) =>
+                        Func<int, int> sync1 = t0 =>
                         {
                             waitHandle.Wait(CancellationToken.None);
                             Interlocked.Exchange(ref taskValue, 100);
@@ -1859,7 +1858,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
                 .Equals(erroText));
 
             // testing Action with 1 generics
-            Action<int> sync1 = (t0) => throw customException;
+            Action<int> sync1 = t0 => throw customException;
             Assert.True(
                 Assert.ThrowsAsync<Exception>(() => sync1.ToAsync(token: cts.Token)(1)).Message.Equals(erroText));
 
@@ -1973,7 +1972,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
                 .Equals(erroText));
 
             // testing Func with 1 generics
-            Func<int, int> sync1 = (t0) => throw customException;
+            Func<int, int> sync1 = t0 => throw customException;
             Assert.True(
                 Assert.ThrowsAsync<Exception>(() => sync1.ToAsync(token: cts.Token)(1)).Message.Equals(erroText));
 

@@ -16,7 +16,8 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals
         [Test]
         public async Task Action_Based_CopyFromWithDisposeAsync_Works_Properly()
         {
-            using (var mem = new MemoryStream())
+            var mem = new MemoryStream();
+            try
             {
                 var writable = Substitute.For<Stream>();
                 writable.WriteAsync(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
@@ -27,12 +28,19 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals
                 Assert.True(Encoding.UTF8.GetString(mem.ToArray()).Equals("123"));
                 writable.Received(1).Dispose();
             }
+            finally
+            {
+                using (mem)
+                {
+                }
+            }
         }
 
         [Test]
         public async Task Action_Based_CopyFromAsync_Works_Properly()
         {
-            using (var mem = new MemoryStream())
+            var mem = new MemoryStream();
+            try
             {
                 var writable = Substitute.For<Stream>();
                 writable.WriteAsync(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
@@ -42,6 +50,12 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals
 
                 Assert.True(Encoding.UTF8.GetString(mem.ToArray()).Equals("123"));
                 writable.Received(0).Dispose();
+            }
+            finally
+            {
+                using (mem)
+                {
+                }
             }
         }
 
