@@ -27,9 +27,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         ///     <list type="bullet">
         ///     <item><description>is Thread-safe and can be called concurrently.</description></item>
         ///     <item><description>throws <seealso cref="OperationCanceledException"/> when either 
-        /// <paramref name="token"/> is cancelled or any of the consumers ends-up throwing an exception... 
-        /// and the pipeline is destroyed (<seealso cref="IConcurrentPipeline{T}.TearDown"/> or <seealso cref="IDisposable.Dispose"/> 
-        /// might not have been called at this moment)</description></item>
+        /// <paramref name="token"/> is cancelled or any of the consumers ends-up throwing an exception
+        /// (<seealso cref="IConcurrentPipeline{T}.TearDown"/> or <seealso cref="IDisposable.Dispose"/> might not have been called at 
+        /// this moment, but, at least all the consumers are disposed)</description></item>
         ///     </list></description></item>
         /// </list>
         /// </summary>

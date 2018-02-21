@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions.Ppc;
@@ -34,6 +35,10 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
 
         public void Accept(TP item)
         {
+            if (_localCts == null)
+            {
+                throw new ObjectDisposedException(nameof(ConcurrentPipeline<TP, TC>), "instance is disposed");
+            }
             _feed.Add(item);
         }
 
@@ -42,19 +47,25 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             return Task.Run(async () =>
             {
                 if (_localCts == null) return;
-                using (_localCts)
+                try
                 {
-                    using (_mergedCts)
+                    using (_localCts)
                     {
-                        using (_feed)
+                        using (_mergedCts)
                         {
-                            _localCts.Cancel();
-                            _feed.Close();
-                            await _consumerTask.ConfigureAwait(false);
+                            using (_feed)
+                            {
+                                _localCts.Cancel();
+                                _feed.Close();
+                                await _consumerTask.ConfigureAwait(false);
+                            }
                         }
                     }
                 }
-                _localCts = null;
+                finally
+                {
+                    _localCts = null;
+                }
             });
         }
     }
