@@ -16,6 +16,9 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
         {
             _localCts = new CancellationTokenSource();
             _mergedCts = CancellationTokenSource.CreateLinkedTokenSource(token, _localCts.Token);
+
+            //we pass "_mergedCts.Token" so that it starts throwing error when either consumer is in error
+            //or tear-down is called or the Ctor token is cancelled.
             _feed = new PpcBuffer<TP>(bufferSize, _mergedCts.Token);
             //we give original token to consumers to listen to... so we can cancel "_token" in dispose
             //and still let consumer run to finish remaining objects.
