@@ -17,7 +17,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// destroyed</para>
         /// </summary>
         /// <param name="item">item to be consumed</param>
-        void Accept(T item);
+        void Add(T item);
 
         /// <summary>
         /// Retruns a running task that performs following operations:

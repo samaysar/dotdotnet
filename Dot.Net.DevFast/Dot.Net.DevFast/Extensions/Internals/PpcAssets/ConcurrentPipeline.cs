@@ -33,7 +33,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             TearDown().Wait(CancellationToken.None);
         }
 
-        public void Accept(TP item)
+        public void Add(TP item)
         {
             if (_localCts == null)
             {

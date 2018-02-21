@@ -23,12 +23,12 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             {
             }
 
-            Assert.Throws<ObjectDisposedException>(() => instance.Accept(new object()));
+            Assert.Throws<ObjectDisposedException>(() => instance.Add(new object()));
 
             instance = new ConcurrentPipeline<object, object>(consumers, new IdentityAdapter<object>(),
                 CancellationToken.None, 1);
             await instance.TearDown().ConfigureAwait(false);
-            Assert.Throws<ObjectDisposedException>(() => instance.Accept(new object()));
+            Assert.Throws<ObjectDisposedException>(() => instance.Add(new object()));
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                     await consumer.Received(0).ConsumeAsync(Arg.Any<object>(), Arg.Any<CancellationToken>())
                         .ConfigureAwait(false);
                 }
-                Assert.Throws<OperationCanceledException>(() => instance.Accept(new object()));
+                Assert.Throws<OperationCanceledException>(() => instance.Add(new object()));
 
                 using (instance)
                 {
@@ -102,7 +102,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             using (var instance = new ConcurrentPipeline<object, List<object>>(consumers,
                 new AwaitableListAdapter<object>(2, 0), CancellationToken.None, 1))
             {
-                instance.Accept(new object());
+                instance.Add(new object());
             }
 
             //we check all the counts after dispose! as per documented algo... dispose waits for all
