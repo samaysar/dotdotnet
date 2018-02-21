@@ -68,6 +68,7 @@
     <Compile Include="Extensions\CreateExtsTest.cs" />
     <Compile Include="Extensions\Internals\PpcAssets\ConcurrentPipelineTest.cs" />
     <Compile Include="Extensions\Internals\PpcAssets\PpcWrappersTest.cs" />
+    <Compile Include="Extensions\Ppc\ConcurrentPipelineExtsTest.cs" />
     <Compile Include="Extensions\Ppc\IdentityAdapterTest.cs" />
     <Compile Include="Extensions\Internals\OthersTest.cs" />
     <Compile Include="Extensions\Ppc\AwaitableListAdapterTest.cs" />
@@ -79,7 +80,7 @@
     <Compile Include="Extensions\Internals\JsonBasedTest.cs" />
     <Compile Include="Extensions\JsonExt\JsonTxtExtTest.cs" />
     <Compile Include="Etc\ConcurrentBufferTest.cs" />
-    <Compile Include="Extensions\Ppc\PpcExtsTest.cs" />
+    <Compile Include="Extensions\Ppc\ProducerConsumerExtsTest.cs" />
     <Compile Include="Extensions\StreamExt\Base64ExtTest.cs" />
     <Compile Include="Extensions\StreamExt\CryptoStreamExtTest.cs" />
     <Compile Include="Extensions\Internals\WrappedStreamTest.cs" />

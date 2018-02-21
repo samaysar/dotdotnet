@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace Dot.Net.DevFast.Tests.Extensions.Ppc
 {
     [TestFixture]
-    public class PpcExtsTest
+    public class ProducerConsumerExtsTest
     {
         //These tests are ONLY for coverge as ACTUAL implementation is already tested
         //inside PpcPipeline implementation!
@@ -275,66 +275,66 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
                 .ConfigureAwait(false);
         }
 
-        private static IProducer<object> Producer()
+        internal static IProducer<object> Producer()
         {
             return Substitute.For<IProducer<object>>();
         }
 
-        private static IProducer<object>[] Producer(int count)
+        internal static IProducer<object>[] Producer(int count)
         {
             var producers = new IProducer<object>[count];
             for (var i = 0; i < count; i++) producers[i] = Producer();
             return producers;
         }
 
-        private static Func<IConsumerFeed<object>, CancellationToken, Task> ProducerFunc(IProducer<object> p)
+        internal static Func<IConsumerFeed<object>, CancellationToken, Task> ProducerFunc(IProducer<object> p)
         {
             return p.ProduceAsync;
         }
 
-        private static Action<IConsumerFeed<object>, CancellationToken> ProducerAction(IProducer<object> p)
+        internal static Action<IConsumerFeed<object>, CancellationToken> ProducerAction(IProducer<object> p)
         {
             return (f, t) => p.ProduceAsync(f, t).Wait(t);
         }
 
-        private static Func<IConsumerFeed<object>, CancellationToken, Task>[] ProducerFunc(IEnumerable<IProducer<object>> p)
+        internal static Func<IConsumerFeed<object>, CancellationToken, Task>[] ProducerFunc(IEnumerable<IProducer<object>> p)
         {
             return p.Select(ProducerFunc).ToArray();
         }
 
-        private static Action<IConsumerFeed<object>, CancellationToken>[] ProducerAction(IEnumerable<IProducer<object>> p)
+        internal static Action<IConsumerFeed<object>, CancellationToken>[] ProducerAction(IEnumerable<IProducer<object>> p)
         {
             return p.Select(ProducerAction).ToArray();
         }
 
-        private static IConsumer<T> Consumer<T>()
+        internal static IConsumer<T> Consumer<T>()
         {
             return Substitute.For<IConsumer<T>>();
         }
 
-        private static IConsumer<T>[] Consumer<T>(int count)
+        internal static IConsumer<T>[] Consumer<T>(int count)
         {
             var consumers = new IConsumer<T>[count];
             for (var i = 0; i < count; i++) consumers[i] = Consumer<T>();
             return consumers;
         }
 
-        private static Func<T, CancellationToken, Task> ConsumerFunc<T>(IConsumer<T> c)
+        internal static Func<T, CancellationToken, Task> ConsumerFunc<T>(IConsumer<T> c)
         {
             return c.ConsumeAsync;
         }
 
-        private static Action<T, CancellationToken> ConsumerAction<T>(IConsumer<T> c)
+        internal static Action<T, CancellationToken> ConsumerAction<T>(IConsumer<T> c)
         {
             return (o, t) => c.ConsumeAsync(o, t).Wait(t);
         }
 
-        private static Func<T, CancellationToken, Task>[] ConsumerFunc<T>(IEnumerable<IConsumer<T>> c)
+        internal static Func<T, CancellationToken, Task>[] ConsumerFunc<T>(IEnumerable<IConsumer<T>> c)
         {
             return c.Select(ConsumerFunc).ToArray();
         }
 
-        private static Action<T, CancellationToken>[] ConsumerAction<T>(IEnumerable<IConsumer<T>> c)
+        internal static Action<T, CancellationToken>[] ConsumerAction<T>(IEnumerable<IConsumer<T>> c)
         {
             return c.Select(ConsumerAction).ToArray();
         }
