@@ -16,7 +16,7 @@
     <copyright>Copyright © Divya Sarthi MAHESHWARI 2017</copyright>
     <tags>devfast fastdev dot.net stream-processing productivity-booster extension-methods fastdevelopement</tags>
     <dependencies>
-      <dependency id="Newtonsoft.Json" version="10.0.3" />
+      <dependency id="Newtonsoft.Json" version="11.0.1" />
     </dependencies>
   </metadata>
   <files>
