@@ -19,7 +19,8 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals
                 Assert.True(jsonReader.Read());
                 Assert.True(jsonReader.FromJsonGetNext<double>(CustomJson.Serializer()).Equals(20.45));
             }
-            data = @"{""Name"":""Testing""}";
+
+            data = JsonConvert.SerializeObject(new TestClass {Name = "Testing"});
             using (var jsonReader = data.CreateJsonReader())
             {
                 Assert.True(jsonReader.Read());

@@ -45,8 +45,8 @@
     <AssemblyOriginatorKeyFile>Dot.Net.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -62,11 +62,14 @@
     <Compile Include="Etc\StdLookUps.cs" />
     <Compile Include="Extensions\CompressionExts.cs" />
     <Compile Include="Extensions\CreateExts.cs" />
+    <Compile Include="Extensions\Internals\PpcAssets\ConcurrentPipeline.cs" />
+    <Compile Include="Extensions\Internals\PpcAssets\AwaitableListAdapter.cs" />
+    <Compile Include="Extensions\Ppc\IConcurrentPipeline.cs" />
     <Compile Include="Extensions\Internals\PpcAssets\IdentityAdapter.cs" />
-    <Compile Include="Extensions\Internals\PpcAssets\ListAdapter.cs" />
     <Compile Include="Extensions\Internals\Others.cs" />
     <Compile Include="Extensions\Internals\PpcAssets\PpcBuffer.cs" />
     <Compile Include="Extensions\Internals\PpcAssets\PpcPipeline.cs" />
+    <Compile Include="Extensions\Internals\PpcAssets\PpcWrappers.cs" />
     <Compile Include="Extensions\Ppc\IDataAdapter.cs" />
     <Compile Include="Etc\ConcurrentBuffer.cs" />
     <Compile Include="Extensions\Internals\SbReader.cs" />
@@ -76,7 +79,8 @@
     <Compile Include="Extensions\Ppc\IPpcFeed.cs" />
     <Compile Include="Extensions\Ppc\IConsumer.cs" />
     <Compile Include="Extensions\Ppc\IProducer.cs" />
-    <Compile Include="Extensions\Ppc\PpcExts.cs" />
+    <Compile Include="Extensions\Ppc\ConcurrentPipelineExts.cs" />
+    <Compile Include="Extensions\Ppc\ProducerConsumerExts.cs" />
     <Compile Include="Extensions\StreamExt\Base64Ext.cs" />
     <Compile Include="Extensions\StreamExt\CryptoStreamExt.cs" />
     <Compile Include="Extensions\Internals\StreamBased.cs" />
@@ -84,6 +88,8 @@
     <Compile Include="Extensions\StringExt\StringSafe.cs" />
     <Compile Include="Extensions\StringExt\StringTryTo.cs" />
     <Compile Include="Extensions\StringExt\StringUnsafe.cs" />
+    <Compile Include="Extensions\SyncAsync.cs" />
+    <Compile Include="Extensions\TaskExts.cs" />
     <Compile Include="Extensions\ThrowIfPredicate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

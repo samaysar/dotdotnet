@@ -3,20 +3,20 @@
   <metadata minClientVersion="2.12">
     <id>Dot.Net.DevFast</id>
     <version>$version$</version>
-	<title>DevFast</title>
+    <title>DevFast</title>
     <authors>Divya Sarthi MAHESHWARI</authors>
     <owners>samaysar</owners>
     <licenseUrl>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/nuspecs/pkgdt/LICENSE</licenseUrl>
     <projectUrl>https://github.com/samaysar/dotdotnet/wiki</projectUrl>
     <repository type="git" url="https://github.com/samaysar/dotdotnet"/>
-	<iconUrl>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/nuspecs/pkgdt/ddn.ico</iconUrl>
-	<requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>DevFast is a powerful pack of extension methods. Increased productivity and code efficiency are out of the box features. See also https://www.codeproject.com/Articles/samaysar#Tip for DevFast related Articles and Tips.</description>
-	<releaseNotes>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/ReleaseNotes.txt</releaseNotes>
+    <iconUrl>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/nuspecs/pkgdt/ddn.ico</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>DevFast is a powerful pack of extension methods. Increased productivity and code efficiency are out of the box features. See also https://rawgit.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/articles/SimplyDevFast.html for DevFast related Articles and Tips.</description>
+    <releaseNotes>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/ReleaseNotes.txt</releaseNotes>
     <copyright>Copyright © Divya Sarthi MAHESHWARI 2017</copyright>
-    <tags>devfast fastdev extension dot.net .net dot string stream tryto transform compression stream-processing productivity-booster extension-methods fastdevelopement</tags>
+    <tags>devfast fastdev dot.net stream-processing productivity-booster extension-methods fastdevelopement</tags>
     <dependencies>
-	  <dependency id="Newtonsoft.Json" version="10.0.3" />
+      <dependency id="Newtonsoft.Json" version="10.0.3" />
     </dependencies>
   </metadata>
   <files>

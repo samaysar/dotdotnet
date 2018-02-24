@@ -1,4 +1,5 @@
-﻿using Dot.Net.DevFast.Extensions.Internals.PpcAssets;
+﻿using System.Threading;
+using Dot.Net.DevFast.Extensions.Internals.PpcAssets;
 using Dot.Net.DevFast.Extensions.Ppc;
 using NSubstitute;
 using NUnit.Framework;
@@ -13,8 +14,8 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         {
             var feed = Substitute.For<IProducerFeed<object>>();
             var instance = new IdentityAdapter<object>();
-            instance.TryGet(feed, out object outobj);
-            feed.Received(1).TryGet(out outobj);
+            instance.TryGet(feed, CancellationToken.None, out var _);
+            feed.Received(1).TryGet(Arg.Any<int>(), CancellationToken.None, out _);
         }
 
         [Test]
@@ -24,13 +25,13 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         {
             var obj = new object();
             var feed = Substitute.For<IProducerFeed<object>>();
-            feed.TryGet(out object outObj).Returns(x =>
+            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).Returns(x =>
             {
-                x[0] = obj;
+                x[2] = obj;
                 return feedValue;
             });
             var instance = new IdentityAdapter<object>();
-            Assert.True(instance.TryGet(feed, out object newobj).Equals(feedValue) && ReferenceEquals(newobj, obj));
+            Assert.True(instance.TryGet(feed, CancellationToken.None, out var newobj).Equals(feedValue) && ReferenceEquals(newobj, obj));
         }
     }
 }

@@ -81,8 +81,10 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals
             sb.Append("Test1");
             using (var sbreader = new SbReader(sb))
             {
-                Assert.True(sbreader.ReadLine().Equals("Test"));
-                Assert.True(sbreader.ReadLine().Equals("Test1"));
+                var current = sbreader.ReadLine();
+                Assert.True(current != null && current.Equals("Test"));
+                current = sbreader.ReadLine();
+                Assert.True(current != null && current.Equals("Test1"));
                 Assert.Null(sbreader.ReadLine());
             }
             Assert.True(sb.ToString().StartsWith("Test"));

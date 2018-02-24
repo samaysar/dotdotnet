@@ -11,20 +11,27 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
     public class PpcBufferTest
     {
         [Test]
-        public void TryGet_Throws_Error_When_Cancellation_Is_Demanded()
+        public void Add_Throws_Error_When_Called_After_Close()
         {
-            using (var cts = new CancellationTokenSource())
+            using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
             {
-                cts.Cancel();
-                using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, cts.Token))
-                {
-                    Assert.Throws<OperationCanceledException>(() => instance.TryGet(out object data));
-                }
+                instance.Close();
+                Assert.Throws<InvalidOperationException>(() => instance.Add(new object()));
             }
         }
 
         [Test]
-        public void Add_Throws_Error_When_Cancellation_Is_Demanded()
+        public void Add_Throws_Error_When_Called_After_Dispose()
+        {
+            using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
+            {
+                instance.Dispose();
+                Assert.Throws<NullReferenceException>(() => instance.Add(new object()));
+            }
+        }
+
+        [Test]
+        public void Add_Throws_Error_When_Cancellation_Is_Demanded_Through_Ctor_Token()
         {
             using (var cts = new CancellationTokenSource())
             {
@@ -37,53 +44,14 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         }
 
         [Test]
-        public void TryGet_Returns_False_After_Close()
-        {
-            using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
-            {
-                instance.Close();
-                Assert.False(instance.TryGet(out object data));
-            }
-        }
-
-        [Test]
-        public void Add_Throws_Error_When_After_Close()
-        {
-            using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
-            {
-                instance.Close();
-                Assert.Throws<InvalidOperationException>(() => instance.Add(new object()));
-            }
-        }
-
-        [Test]
-        public void TryGet_Throws_Error_After_Dispose()
-        {
-            using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
-            {
-                instance.Dispose();
-                Assert.Throws<NullReferenceException>(() => instance.TryGet(out object obj));
-            }
-        }
-
-        [Test]
-        public void Add_Throws_Error_When_After_Dispose()
-        {
-            using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
-            {
-                instance.Dispose();
-                Assert.Throws<NullReferenceException>(() => instance.Add(new object()));
-            }
-        }
-
-        [Test]
         public void TryGet_And_Add_Harmonize()
         {
             using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
             {
                 var obj = new object();
                 instance.Add(obj);
-                Assert.True(instance.TryGet(out object newObj) && ReferenceEquals(newObj, obj));
+                Assert.True(instance.TryGet(Timeout.Infinite, CancellationToken.None, out var newObj) &&
+                            ReferenceEquals(newObj, obj));
                 instance.Close();
             }
         }
@@ -94,17 +62,53 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
             var obj = new object();
             object outObj = null;
-            var tryGetTask = Task.Run(() => instance.TryGet(out outObj));
+            var tryGetTask = Task.Run(() => instance.TryGet(Timeout.Infinite, CancellationToken.None, out outObj));
             Assert.True(tryGetTask.Status != TaskStatus.RanToCompletion);
             instance.Add(obj);
             Assert.True(await tryGetTask.ConfigureAwait(false) && ReferenceEquals(outObj, obj));
-            tryGetTask = Task.Run(() => instance.TryGet(out outObj));
+            tryGetTask = Task.Run(() => instance.TryGet(Timeout.Infinite, CancellationToken.None, out outObj));
             Assert.True(tryGetTask.Status != TaskStatus.RanToCompletion);
             instance.Close();
             Assert.False(await tryGetTask.ConfigureAwait(false));
+            Assert.True(instance.Finished);
             using (instance)
             {
                 //to dispose.
+            }
+        }
+
+        [Test]
+        public void TryGet_Returns_False_After_Close()
+        {
+            using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
+            {
+                instance.Close();
+                Assert.False(instance.TryGet(Timeout.Infinite, CancellationToken.None, out var _));
+            }
+        }
+
+        [Test]
+        public void TryGet_Throws_Error_After_Dispose()
+        {
+            using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
+            {
+                instance.Dispose();
+                Assert.Throws<NullReferenceException>(() =>
+                    instance.TryGet(Timeout.Infinite, CancellationToken.None, out var _));
+            }
+        }
+
+        [Test]
+        public void TryGet_Throws_Error_When_Cancellation_Is_Demanded_Through_Method_Token()
+        {
+            using (var cts = new CancellationTokenSource())
+            {
+                cts.Cancel();
+                using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
+                {
+                    Assert.Throws<OperationCanceledException>(() =>
+                        instance.TryGet(Timeout.Infinite, cts.Token, out var _));
+                }
             }
         }
     }

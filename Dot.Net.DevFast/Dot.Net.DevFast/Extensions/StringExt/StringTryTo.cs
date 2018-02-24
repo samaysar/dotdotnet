@@ -29,8 +29,8 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static bool TryTo(this string input, out Type value, bool ignoreCase = true)
         {
             value = default(Type);
-            return !ReferenceEquals(null, input) &&
-                   !ReferenceEquals((value = Type.GetType(input, false, ignoreCase)), null);
+            return !(input is null) &&
+                   !((value = Type.GetType(input, false, ignoreCase)) is null);
         }
 
         /// <summary>
@@ -292,7 +292,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         public static bool TryTo(this string input, out bool? value)
         {
             value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
+            if (input.IsNows()) return true;
             if (!input.TryTo(out bool parsedValue)) return false;
             value = parsedValue;
             return true;
@@ -319,7 +319,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             IFormatProvider formatProvider = null)
         {
             value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
+            if (input.IsNows()) return true;
             if (!input.TryTo(out int parsedValue, style, formatProvider)) return false;
             value = parsedValue;
             return true;
@@ -346,7 +346,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             IFormatProvider formatProvider = null)
         {
             value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
+            if (input.IsNows()) return true;
             if (!input.TryTo(out long parsedValue, style, formatProvider)) return false;
             value = parsedValue;
             return true;
@@ -373,7 +373,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             IFormatProvider formatProvider = null)
         {
             value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
+            if (input.IsNows()) return true;
             if (!input.TryTo(out byte parsedValue, style, formatProvider)) return false;
             value = parsedValue;
             return true;
@@ -400,7 +400,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             IFormatProvider formatProvider = null)
         {
             value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
+            if (input.IsNows()) return true;
             if (!input.TryTo(out sbyte parsedValue, style, formatProvider)) return false;
             value = parsedValue;
             return true;
@@ -427,7 +427,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             IFormatProvider formatProvider = null)
         {
             value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
+            if (input.IsNows()) return true;
             if (!input.TryTo(out short parsedValue, style, formatProvider)) return false;
             value = parsedValue;
             return true;
@@ -454,7 +454,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             IFormatProvider formatProvider = null)
         {
             value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
+            if (input.IsNows()) return true;
             if (!input.TryTo(out ushort parsedValue, style, formatProvider)) return false;
             value = parsedValue;
             return true;
@@ -481,7 +481,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             IFormatProvider formatProvider = null)
         {
             value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
+            if (input.IsNows()) return true;
             if (!input.TryTo(out uint parsedValue, style, formatProvider)) return false;
             value = parsedValue;
             return true;
@@ -508,7 +508,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             IFormatProvider formatProvider = null)
         {
             value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
+            if (input.IsNows()) return true;
             if (!input.TryTo(out ulong parsedValue, style, formatProvider)) return false;
             value = parsedValue;
             return true;
@@ -535,7 +535,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             IFormatProvider formatProvider = null)
         {
             value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
+            if (input.IsNows()) return true;
             if (!input.TryTo(out float parsedValue, style, formatProvider)) return false;
             value = parsedValue;
             return true;
@@ -562,7 +562,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             IFormatProvider formatProvider = null)
         {
             value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
+            if (input.IsNows()) return true;
             if (!input.TryTo(out double parsedValue, style, formatProvider)) return false;
             value = parsedValue;
             return true;
@@ -589,7 +589,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             IFormatProvider formatProvider = null)
         {
             value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
+            if (input.IsNows()) return true;
             if (!input.TryTo(out decimal parsedValue, style, formatProvider)) return false;
             value = parsedValue;
             return true;
@@ -617,7 +617,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             DateTimeStyles style = DateTimeStyles.AssumeLocal, IFormatProvider formatProvider = null)
         {
             value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
+            if (input.IsNows()) return true;
             if (!input.TryTo(out DateTime parsedValue, format, style, formatProvider)) return false;
             value = parsedValue;
             return true;
@@ -646,7 +646,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             DateTimeStyles style = DateTimeStyles.AssumeLocal, IFormatProvider formatProvider = null)
         {
             value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
+            if (input.IsNows()) return true;
             if (!input.TryTo(out DateTime parsedValue, formats, style, formatProvider)) return false;
             value = parsedValue;
             return true;
@@ -673,7 +673,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             DateTimeStyles style = DateTimeStyles.AssumeLocal, IFormatProvider formatProvider = null)
         {
             value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
+            if (input.IsNows()) return true;
             if (!input.TryTo(out DateTime parsedValue, style, formatProvider)) return false;
             value = parsedValue;
             return true;
@@ -706,7 +706,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             where T : struct
         {
             value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
+            if (input.IsNows()) return true;
             if (!input.TryToEnumUnchecked(out T parsedValue, ignoreCase)) return false;
             value = parsedValue;
             return true;
@@ -740,7 +740,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             where T : struct
         {
             value = null;
-            if (string.IsNullOrWhiteSpace(input)) return true;
+            if (input.IsNows()) return true;
             if (!input.TryToEnum(out T parsedValue, ignoreCase)) return false;
             value = parsedValue;
             return true;

@@ -9,6 +9,52 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
     public class StringSafeTest
     {
         [Test]
+        [TestCase(null, true)]
+        [TestCase("", true)]
+        [TestCase("           ", true)]
+        [TestCase("     a      ", false)]
+        [TestCase("anything", false)]
+        public void IsNows_And_IsNotNows_Works_As_Expected(string input, bool isnows)
+        {
+            Assert.True(input.IsNows() == isnows);
+            Assert.True(input.IsNotNows() == !isnows);
+        }
+
+        [Test]
+        [TestCase(null, "", "")]
+        [TestCase("", "a", "")]
+        [TestCase("      ", "a", "")]
+        [TestCase(null, "a", "a")]
+        [TestCase(null, "A", "A")]
+        [TestCase("", "a", "")]
+        [TestCase("      ", "a", "")]
+        [TestCase(null, null, null)]
+        [TestCase("", null, "")]
+        [TestCase("   abc   ", null, "ABC")]
+        public void ToTrimmedUpperSafe_Safely_Converts_String_To_Upper(string input, string defaultVal, string expected)
+        {
+            var english = new CultureInfo("en-US");
+            Assert.True(input.ToTrimmedUpperSafe(defaultVal, english) == expected);
+        }
+
+        [Test]
+        [TestCase(null, "", "")]
+        [TestCase("", "A", "")]
+        [TestCase("      ", "A", "")]
+        [TestCase(null, "A", "A")]
+        [TestCase(null, "a", "a")]
+        [TestCase("", "A", "")]
+        [TestCase("      ", "A", "")]
+        [TestCase(null, null, null)]
+        [TestCase("", null, "")]
+        [TestCase("   A B C   ", null, "a b c")]
+        public void ToTrimmedLowerSafe_Safely_Converts_String_To_Lower(string input, string defaultVal, string expected)
+        {
+            var english = new CultureInfo("en-US");
+            Assert.True(input.ToTrimmedLowerSafe(defaultVal, english) == expected);
+        }
+
+        [Test]
         [TestCase(null, "")]
         [TestCase("", "")]
         [TestCase("           ", "")]

@@ -160,10 +160,7 @@ namespace Dot.Net.DevFast.Extensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool ThrowIfNullPredicate<T>(T obj) where T : class
-        {
-            return ReferenceEquals(obj, null);
-        }
+        private static bool ThrowIfNullPredicate<T>(T obj) where T : class => obj is null;
 
         #endregion
 
@@ -288,7 +285,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
         public static TV ThrowOnMiss<TK, TV>(this Dictionary<TK, TV> dictionary, TK key)
         {
-            return ThrowOnMissPredicate(dictionary, key, out TV value).ThrowIfNot(DdnDfErrorCode.KeyNotFound, value);
+            return ThrowOnMissPredicate(dictionary, key, out var value).ThrowIfNot(DdnDfErrorCode.KeyNotFound, value);
         }
 
         /// <summary>
@@ -303,7 +300,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
         public static TV ThrowOnMiss<TK, TV>(this Dictionary<TK, TV> dictionary, TK key, string errorMessage)
         {
-            return ThrowOnMissPredicate(dictionary, key, out TV value)
+            return ThrowOnMissPredicate(dictionary, key, out var value)
                 .ThrowIfNot(DdnDfErrorCode.KeyNotFound, errorMessage, value);
         }
 
@@ -320,7 +317,7 @@ namespace Dot.Net.DevFast.Extensions
         public static TV ThrowOnMiss<TK, TV>(this Dictionary<TK, TV> dictionary, TK key,
             Func<string> errorMessageDelegate)
         {
-            return ThrowOnMissPredicate(dictionary, key, out TV value)
+            return ThrowOnMissPredicate(dictionary, key, out var value)
                 .ThrowIfNot(DdnDfErrorCode.KeyNotFound, errorMessageDelegate, value);
         }
 
@@ -335,7 +332,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
         public static TV ThrowOnMiss<TK, TV>(this ConcurrentDictionary<TK, TV> dictionary, TK key)
         {
-            return ThrowOnMissPredicate(dictionary, key, out TV value).ThrowIfNot(DdnDfErrorCode.KeyNotFound, value);
+            return ThrowOnMissPredicate(dictionary, key, out var value).ThrowIfNot(DdnDfErrorCode.KeyNotFound, value);
         }
 
         /// <summary>
@@ -350,7 +347,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
         public static TV ThrowOnMiss<TK, TV>(this ConcurrentDictionary<TK, TV> dictionary, TK key, string errorMessage)
         {
-            return ThrowOnMissPredicate(dictionary, key, out TV value)
+            return ThrowOnMissPredicate(dictionary, key, out var value)
                 .ThrowIfNot(DdnDfErrorCode.KeyNotFound, errorMessage, value);
         }
 
@@ -367,7 +364,7 @@ namespace Dot.Net.DevFast.Extensions
         public static TV ThrowOnMiss<TK, TV>(this ConcurrentDictionary<TK, TV> dictionary, TK key,
             Func<string> errorMessageDelegate)
         {
-            return ThrowOnMissPredicate(dictionary, key, out TV value)
+            return ThrowOnMissPredicate(dictionary, key, out var value)
                 .ThrowIfNot(DdnDfErrorCode.KeyNotFound, errorMessageDelegate, value);
         }
 
@@ -382,7 +379,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
         public static TV ThrowOnMiss<TK, TV>(this IDictionary<TK, TV> dictionary, TK key)
         {
-            return ThrowOnMissPredicateIDict(dictionary, key, out TV value).ThrowIfNot(DdnDfErrorCode.KeyNotFound, value);
+            return ThrowOnMissPredicateIDict(dictionary, key, out var value).ThrowIfNot(DdnDfErrorCode.KeyNotFound, value);
         }
 
         /// <summary>
@@ -397,7 +394,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
         public static TV ThrowOnMiss<TK, TV>(this IDictionary<TK, TV> dictionary, TK key, string errorMessage)
         {
-            return ThrowOnMissPredicateIDict(dictionary, key, out TV value)
+            return ThrowOnMissPredicateIDict(dictionary, key, out var value)
                 .ThrowIfNot(DdnDfErrorCode.KeyNotFound, errorMessage, value);
         }
 
@@ -414,7 +411,7 @@ namespace Dot.Net.DevFast.Extensions
         public static TV ThrowOnMiss<TK, TV>(this IDictionary<TK, TV> dictionary, TK key,
             Func<string> errorMessageDelegate)
         {
-            return ThrowOnMissPredicateIDict(dictionary, key, out TV value)
+            return ThrowOnMissPredicateIDict(dictionary, key, out var value)
                 .ThrowIfNot(DdnDfErrorCode.KeyNotFound, errorMessageDelegate, value);
         }
 
@@ -429,7 +426,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
         public static TV ThrowOnMiss<TK, TV>(this IReadOnlyDictionary<TK, TV> dictionary, TK key)
         {
-            return ThrowOnMissPredicate(dictionary, key, out TV value).ThrowIfNot(DdnDfErrorCode.KeyNotFound, value);
+            return ThrowOnMissPredicate(dictionary, key, out var value).ThrowIfNot(DdnDfErrorCode.KeyNotFound, value);
         }
 
         /// <summary>
@@ -444,7 +441,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
         public static TV ThrowOnMiss<TK, TV>(this IReadOnlyDictionary<TK, TV> dictionary, TK key, string errorMessage)
         {
-            return ThrowOnMissPredicate(dictionary, key, out TV value)
+            return ThrowOnMissPredicate(dictionary, key, out var value)
                 .ThrowIfNot(DdnDfErrorCode.KeyNotFound, errorMessage, value);
         }
 
@@ -461,7 +458,7 @@ namespace Dot.Net.DevFast.Extensions
         public static TV ThrowOnMiss<TK, TV>(this IReadOnlyDictionary<TK, TV> dictionary, TK key,
             Func<string> errorMessageDelegate)
         {
-            return ThrowOnMissPredicate(dictionary, key, out TV value)
+            return ThrowOnMissPredicate(dictionary, key, out var value)
                 .ThrowIfNot(DdnDfErrorCode.KeyNotFound, errorMessageDelegate, value);
         }
 

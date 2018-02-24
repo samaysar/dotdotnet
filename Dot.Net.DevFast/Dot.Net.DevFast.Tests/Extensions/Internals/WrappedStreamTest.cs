@@ -77,17 +77,17 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals
             var strm = Substitute.For<Stream>();
             using (var wrprstrm = new WrappedStream(strm, false))
             {
-                var code = wrprstrm.ReadByte();
-                code = strm.Received(1).ReadByte();
+                var _ = wrprstrm.ReadByte();
+                var __ = strm.Received(1).ReadByte();
 
                 wrprstrm.Flush();
                 strm.Received(1).Flush();
 
-                code = wrprstrm.GetHashCode();
-                code = strm.Received(1).GetHashCode();
+                var ___ = wrprstrm.GetHashCode();
+                var ____ = strm.Received(1).GetHashCode();
 
-                var str = wrprstrm.ToString();
-                str = strm.Received(1).ToString();
+                var _____ = wrprstrm.ToString();
+                var ______ = strm.Received(1).ToString();
             }
         }
 
@@ -155,8 +155,8 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals
                 wrprstrm.WriteByte(20);
                 strm.Received(1).WriteByte(20);
 
-                wrprstrm.Equals(null);
-                strm.Received(1).Equals(null);
+                var _ = wrprstrm.Equals(null);
+                var __ = strm.Received(1).Equals(null);
             }
         }
     }

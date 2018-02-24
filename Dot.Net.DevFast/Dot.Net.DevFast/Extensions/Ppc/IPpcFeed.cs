@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace Dot.Net.DevFast.Extensions.Ppc
 {
@@ -10,10 +11,21 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     {
         /// <summary>
         /// Provides the data instances generatd by Producer(s) and returns true. 
-        /// False is returned when no more data is available and never be available in future.
+        /// False is returned when no more data is available OR timeout is reached.
+        /// <para>NOTE: It is possible that more data will be available in future,
+        /// thus, check <see cref="Finished"/> before giving up looping.</para>
         /// </summary>
+        /// <param name="millisecTimeout">Timeout in milliseconds. use <seealso cref="Timeout.Infinite"/> 
+        /// to wait inifinitely.</param>
+        /// <param name="token">Cancellation token to observer while extracting data</param>
         /// <param name="data">Produced data instance, if any</param>
-        bool TryGet(out T data);
+        bool TryGet(int millisecTimeout, CancellationToken token, out T data);
+
+        /// <summary>
+        /// Returns true if the data collection would never return an item when calling
+        /// <see cref="TryGet"/> even with <seealso cref="Timeout.Infinite"/> timeout.
+        /// </summary>
+        bool Finished { get; }
     }
 
     /// <summary>
@@ -23,9 +35,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     public interface IConsumerFeed<in T>
     {
         /// <summary>
-        /// Adds an item in the feed to be consumer by consumers observing the feed.
+        /// Adds an item in the feed to be consumed by consumers observing the feed.
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">item to add</param>
         void Add(T item);
     }
 

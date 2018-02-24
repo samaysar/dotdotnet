@@ -1,4 +1,49 @@
+Changes to Dot.Net.DevFast 1.2.0
+
+ 1. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on producer Action delegates accepting Consumer Action/Func delegate
+ 2. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on producer Action delegates accepting IConsumer<T> instance
+ 3. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on producer Func delegates accepting Consumer Action/Func delegate
+ 4. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on producer Func delegates accepting IConsumer<T> instance
+ 5. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on IProducer<T> instance accepting Consumer Action/Func delegate
+ 6. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on IProducer<T> instance accepting IConsumer<T> instance
+ 7. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on producer Action delegates accepting IReadOnlyList of Consumer Action/Func delegate
+ 8. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on producer Action delegates accepting IReadOnlyList of IConsumer<T> instance
+ 9. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on producer Func delegates accepting IReadOnlyList of Consumer Action/Func delegate
+10. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on producer Func delegates accepting IReadOnlyList of IConsumer<T> instance
+11. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on IProducer<T> instance accepting IReadOnlyList of Consumer Action/Func delegate
+12. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on IProducer<T> instance accepting IReadOnlyList of IConsumer<T> instance
+13. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on IReadOnlyList of producer Action delegates accepting Consumer Action/Func delegate
+14. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on IReadOnlyList of producer Action delegates accepting IConsumer<T> instance
+15. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on IReadOnlyList of producer Func delegates accepting Consumer Action/Func delegate
+16. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on IReadOnlyList of producer Func delegates accepting IConsumer<T> instance
+17. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on IReadOnlyList of IProducer<T> instance accepting Consumer Action/Func delegate
+18. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on IReadOnlyList of IProducer<T> instance accepting IConsumer<T> instance
+19. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on IReadOnlyList of producer Action delegates accepting IReadOnlyList of Consumer Action/Func delegate
+20. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on IReadOnlyList of producer Action delegates accepting IReadOnlyList of IConsumer<T> instance
+21. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on IReadOnlyList of producer Func delegates accepting IReadOnlyList of Consumer Action/Func delegate
+22. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on IReadOnlyList of producer Func delegates accepting IReadOnlyList of IConsumer<T> instance
+23. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on IReadOnlyList of IProducer<T> instance accepting IReadOnlyList of Consumer Action/Func delegate
+24. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on IReadOnlyList of IProducer<T> instance accepting IReadOnlyList of IConsumer<T> instance
+25. New feature - Added overridden extension methods (all 24 implementations, same as 1-24) to accept Action/Func consumer delegates that consumes List<T> (either as fixed size chunks or as variable sized chunks with producer await timeout)
+26. New feature - Added overridden extension methods (all 24 implementations, same as 1-24) to accept IConsumer<List<T>> (consumes data either as fixed size chunks or as variable sized chunks with producer await timeout)
+27. New feature - Added overridden extension methods (all 24 implementations, same as 1-24) to accept user-defined data adapter (IDataAdapter<T, TC>) and Action/Func consumer delegates that consumes TC
+28. New feature - Added overridden extension methods (all 24 implementations, same as 1-24) to accept user-defined data adapter (IDataAdapter<T, TC>) and IConsumer<TC>
+29. New feature - Added generic Concurrent Pipeline extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ConcurrentPipeline<T>(...), on Consumer Action/Func delegate that returns an instance of IConcurrentPipeline<T> capable of accepting items during its life-cycle.
+30. New feature - Added generic Concurrent Pipeline extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ConcurrentPipeline<T>(...), on IConsumer<T> that returns an instance of IConcurrentPipeline<T> capable of accepting items during its life-cycle.
+31. New feature - Added generic Concurrent Pipeline extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ConcurrentPipeline<T>(...), on IReadOnlyList of Consumer Action/Func delegate that returns an instance of IConcurrentPipeline<T> capable of accepting items during its life-cycle.
+32. New feature - Added generic Concurrent Pipeline extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ConcurrentPipeline<T>(...), on IReadOnlyList of IConsumer<T> that returns an instance of IConcurrentPipeline<T> capable of accepting items during its life-cycle.
+33. New feature - Added overridden extension methods (all 4 implementations, same as 29-32) on Action/Func consumer delegates that consumes List<T> (either as fixed size chunks or as variable sized chunks with producer await timeout) that returns an instance of IConcurrentPipeline<T> capable of accepting items during its life-cycle.
+34. New feature - Added overridden extension methods (all 4 implementations, same as 29-32) on IConsumer<List<T>> (consumes data either as fixed size chunks or as variable sized chunks with producer await timeout) that returns an instance of IConcurrentPipeline<T> capable of accepting items during its life-cycle.
+35. New feature - Added overridden extension methods (all 4 implementations, same as 29-32) on Action/Func consumer delegates that accepts user-defined data adapter (IDataAdapter<T, TC>) and returns an instance of IConcurrentPipeline<T> capable of accepting items during its life-cycle.
+36. New feature - Added overridden extension methods (all 4 implementations, same as 29-32) on IConsumer<TC> that accepts user-defined data adapter (IDataAdapter<T, TC>) and returns an instance of IConcurrentPipeline<T> capable of accepting items during its life-cycle.
+37. New feature - Added WhenAll(repeatCount, ...) extension methods on repeatable Action/Func delegates
+38. New feature - Added WhenAll(maxConcurrency, ...) extension methods on IEnumerable on Action/Func delegates
+39. New feature - Added IsNows/IsNotNows (Null or white-spaces) boolean extension on string
+40. New feature - Added ToTrimmedUpperSafe/ToTrimmedLowerSafe extension on string
+41. New feature - Added ToAsync extension methods on Action/Func delegates
+
 Changes to Dot.Net.DevFast 1.1.2
+
  1. Change/Fix - Performance related transperant changes.
 
 Changes to Dot.Net.DevFast 1.1.1
