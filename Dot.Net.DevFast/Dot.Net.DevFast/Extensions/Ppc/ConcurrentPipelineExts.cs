@@ -400,7 +400,6 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// Be careful with <seealso cref="Timeout.Infinite" /> timeouts as items in the list will get processed
         /// only when the list reaches its capacity. In effect, if for long time, no item was added to the pipeline
         /// item processing will get delayed. On the other hand, 0 as timeout value is very well accepted.
-        /// (see <seealso cref="AwaitableListAdapter{T}"/> for more info)
         /// </description>
         /// </item>
         /// <item>
@@ -456,7 +455,6 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// Maximum time to await on produced items. Be careful with <seealso cref="Timeout.Infinite" /> timeouts as
         /// items in the list will get processed only when the list reaches its capacity. In effect, if for long time,
         /// no item was added to the pipeline item processing will get delayed. On the other hand, 0 as timeout value is very well accepted.
-        /// (see <seealso cref="AwaitableListAdapter{T}"/> for more info)
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
@@ -481,7 +479,6 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// Be careful with <seealso cref="Timeout.Infinite" /> timeouts as items in the list will get processed
         /// only when the list reaches its capacity. In effect, if for long time, no item was added to the pipeline
         /// item processing will get delayed. On the other hand, 0 as timeout value is very well accepted.
-        /// (see <seealso cref="AwaitableListAdapter{T}"/> for more info)
         /// </description>
         /// </item>
         /// <item>
@@ -537,7 +534,6 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// Maximum time to await on produced items. Be careful with <seealso cref="Timeout.Infinite" /> timeouts as
         /// items in the list will get processed only when the list reaches its capacity. In effect, if for long time,
         /// no item was added to the pipeline item processing will get delayed. On the other hand, 0 as timeout value is very well accepted.
-        /// (see <seealso cref="AwaitableListAdapter{T}"/> for more info)
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
@@ -562,7 +558,6 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// Be careful with <seealso cref="Timeout.Infinite" /> timeouts as items in the list will get processed
         /// only when the list reaches its capacity. In effect, if for long time, no item was added to the pipeline
         /// item processing will get delayed. On the other hand, 0 as timeout value is very well accepted.
-        /// (see <seealso cref="AwaitableListAdapter{T}"/> for more info)
         /// </description>
         /// </item>
         /// <item>
@@ -618,7 +613,6 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// Maximum time to await on produced items. Be careful with <seealso cref="Timeout.Infinite" /> timeouts as
         /// items in the list will get processed only when the list reaches its capacity. In effect, if for long time,
         /// no item was added to the pipeline item processing will get delayed. On the other hand, 0 as timeout value is very well accepted.
-        /// (see <seealso cref="AwaitableListAdapter{T}"/> for more info)
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
@@ -645,7 +639,6 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// Be careful with <seealso cref="Timeout.Infinite" /> timeouts as items in the list will get processed
         /// only when the list reaches its capacity. In effect, if for long time, no item was added to the pipeline
         /// item processing will get delayed. On the other hand, 0 as timeout value is very well accepted.
-        /// (see <seealso cref="AwaitableListAdapter{T}"/> for more info)
         /// </description>
         /// </item>
         /// <item>
@@ -701,7 +694,6 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// Maximum time to await on produced items. Be careful with <seealso cref="Timeout.Infinite" /> timeouts as
         /// items in the list will get processed only when the list reaches its capacity. In effect, if for long time,
         /// no item was added to the pipeline item processing will get delayed. On the other hand, 0 as timeout value is very well accepted.
-        /// (see <seealso cref="AwaitableListAdapter{T}"/> for more info)
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
@@ -727,7 +719,6 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// Be careful with <seealso cref="Timeout.Infinite" /> timeouts as items in the list will get processed
         /// only when the list reaches its capacity. In effect, if for long time, no item was added to the pipeline
         /// item processing will get delayed. On the other hand, 0 as timeout value is very well accepted.
-        /// (see <seealso cref="AwaitableListAdapter{T}"/> for more info)
         /// </description>
         /// </item>
         /// <item>
@@ -783,7 +774,6 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// Maximum time to await on produced items. Be careful with <seealso cref="Timeout.Infinite" /> timeouts as
         /// items in the list will get processed only when the list reaches its capacity. In effect, if for long time,
         /// no item was added to the pipeline item processing will get delayed. On the other hand, 0 as timeout value is very well accepted.
-        /// (see <seealso cref="AwaitableListAdapter{T}"/> for more info)
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
@@ -809,7 +799,6 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// Be careful with <seealso cref="Timeout.Infinite" /> timeouts as items in the list will get processed
         /// only when the list reaches its capacity. In effect, if for long time, no item was added to the pipeline
         /// item processing will get delayed. On the other hand, 0 as timeout value is very well accepted.
-        /// (see <seealso cref="AwaitableListAdapter{T}"/> for more info)
         /// </description>
         /// </item>
         /// <item>
@@ -865,7 +854,6 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// Maximum time to await on produced items. Be careful with <seealso cref="Timeout.Infinite" /> timeouts as
         /// items in the list will get processed only when the list reaches its capacity. In effect, if for long time,
         /// no item was added to the pipeline item processing will get delayed. On the other hand, 0 as timeout value is very well accepted.
-        /// (see <seealso cref="AwaitableListAdapter{T}"/> for more info)
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>

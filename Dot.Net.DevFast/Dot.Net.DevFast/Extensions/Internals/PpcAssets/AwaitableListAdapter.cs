@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using Dot.Net.DevFast.Extensions.Ppc;
 
-namespace Dot.Net.DevFast.Extensions.Ppc
+namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
 {
     /// <summary>
     /// Adapter to pack individual items to list of items.
@@ -19,7 +20,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     /// <para>5. List max size would be respected as provided in Ctor..</para>
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class AwaitableListAdapter<T> : IDataAdapter<T, List<T>>
+    public sealed class AwaitableListAdapter<T> : IDataAdapter<T, List<T>>
     {
         private readonly int _millisecTimeout;
         private readonly int _maxListSize;

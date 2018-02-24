@@ -1,13 +1,14 @@
 ﻿using System.Threading;
+using Dot.Net.DevFast.Extensions.Ppc;
 
-namespace Dot.Net.DevFast.Extensions.Ppc
+namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
 {
     /// <summary>
     /// This class is just a wrapper to recover the consumable item from
     /// the <seealso cref="IProducerFeed{T}"/> with <seealso cref="Timeout.Infinite"/> timeout.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class IdentityAdapter<T> : IDataAdapter<T, T>
+    public sealed class IdentityAdapter<T> : IDataAdapter<T, T>
     {
         /// <summary>
         /// This method is just a wrapper to recover the consumable item from

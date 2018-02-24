@@ -1,9 +1,10 @@
 ﻿using System.Threading;
+using Dot.Net.DevFast.Extensions.Internals.PpcAssets;
 using Dot.Net.DevFast.Extensions.Ppc;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace Dot.Net.DevFast.Tests.Extensions.Ppc
+namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
 {
     [TestFixture]
     public class IdentityAdapterTest

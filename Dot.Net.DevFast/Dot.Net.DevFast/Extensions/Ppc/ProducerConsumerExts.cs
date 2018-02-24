@@ -859,7 +859,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer action and a consumer action instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -889,7 +889,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer function and a consumer action instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -919,7 +919,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer and a consumer action instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -949,7 +949,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer action and a consumer function instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -979,7 +979,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer function and a consumer function instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1009,7 +1009,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer and a consumer function instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1039,7 +1039,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer action and a consumer instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1069,7 +1069,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer function and a consumer instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1099,7 +1099,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer and a consumer instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1130,7 +1130,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer action and a consumer action instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1160,7 +1160,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer function and a consumer action instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1190,7 +1190,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer and a consumer action instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1220,7 +1220,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer action and a consumer function instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1250,7 +1250,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer function and a consumer function instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1280,7 +1280,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer and a consumer function instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1310,7 +1310,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer action and a consumer instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1340,7 +1340,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer function and a consumer instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1370,7 +1370,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer instance and collection of consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1402,7 +1402,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer action and a consumer action instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1432,7 +1432,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer function and a consumer action instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1463,7 +1463,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer and a consumer action instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1493,7 +1493,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer action and a consumer function instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1523,7 +1523,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer function and a consumer function instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1554,7 +1554,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer and a consumer function instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1584,7 +1584,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer action and a consumer instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1614,7 +1614,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer function and a consumer instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1645,7 +1645,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and a consumer instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1677,7 +1677,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer action and a consumer action instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1707,7 +1707,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer function and a consumer action instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1738,7 +1738,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer and a consumer action instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1768,7 +1768,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer action and a consumer function instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1798,7 +1798,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer function and a consumer function instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1829,7 +1829,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer and a consumer function instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1859,7 +1859,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer action and a consumer instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1889,7 +1889,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer function and a consumer instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1920,7 +1920,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1956,7 +1956,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -1991,7 +1991,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2026,7 +2026,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2061,7 +2061,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2096,7 +2096,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2131,7 +2131,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2166,7 +2166,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2201,7 +2201,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2236,7 +2236,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer and a consumer instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2273,7 +2273,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2308,7 +2308,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2343,7 +2343,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2378,7 +2378,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2413,7 +2413,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2448,7 +2448,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2483,7 +2483,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2518,7 +2518,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2553,7 +2553,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a producer instance and collection of consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producer and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2590,7 +2590,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2626,7 +2626,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2662,7 +2662,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2697,7 +2697,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2733,7 +2733,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2769,7 +2769,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2804,7 +2804,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2840,7 +2840,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2876,7 +2876,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and a consumer instance, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumer concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2913,7 +2913,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2949,7 +2949,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -2985,7 +2985,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -3020,7 +3020,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -3056,7 +3056,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -3092,7 +3092,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -3127,7 +3127,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -3163,7 +3163,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
@@ -3199,7 +3199,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         /// <summary>
         /// Accepts a collection of producers and consumers, while using an internal
-        /// list adapter (with given list max size) along to transforms the produced data into consumable list.
+        /// list adapter (with given <paramref name="listMaxSize"/> and <paramref name="millisecondTimeout"/>) along to transforms the produced data into consumable list.
         /// Executes producers and consumers concurrently (parallel producer-consumer pattern) while mediating
         /// data transfer using a buffer of given size (refer <seealso cref="ConcurrentBuffer" /> properties
         /// for available standard buffer size); at the same time, observing given cancellation token.
