@@ -13,7 +13,7 @@
 	<p><strong><a href="https://www.nuget.org/packages/Dot.Net.DevFast">Nuget Page</a></strong></p>
 	</li>
 	<li>
-	<p><strong><a href="https://github.com/samaysar/dotdotnet/wiki/DevFast">GitHub Wiki</a></strong></p>
+	<p><strong><a href="https://github.com/samaysar/dotdotnet/wiki">GitHub Wiki</a></strong></p>
 	</li>
 	<li>
 	<p><strong><a href="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/ReleaseNotes.txt">Release Notes</a></strong></p>
