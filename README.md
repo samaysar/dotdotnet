@@ -20,11 +20,11 @@
 	</li>
 </ul>
 
-An easy to use, yet powerful, set of extension methods to increase developement productivity and allows you to write efficient code faster and with confidence.
+The most declarative way to program .Net solutions. DevFast as a library contains, simplest to use yet powerful, set of extension methods to increase dev productivity. Use it with confidence, write robust and efficient codes.
 
 Features:
-* Methods are carefully named to bring code readability
-* Turns most of the quotidian codes in one-liner
-* Method chaining is all the way
+* Expressive method naming
+* declarative one-liners
+* Method chaining all the way
 * Minimal boilerplate code
 * Extensively test covered
