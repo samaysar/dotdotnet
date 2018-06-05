@@ -25,7 +25,12 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
 
         public void Add(T item)
         {
-            _collection.Add(item, _token);
+            TryAdd(item, Timeout.Infinite);
+        }
+
+        public bool TryAdd(T item, int millisecTimeout)
+        {
+            return _collection.TryAdd(item, millisecTimeout, _token);
         }
 
         public void Close()

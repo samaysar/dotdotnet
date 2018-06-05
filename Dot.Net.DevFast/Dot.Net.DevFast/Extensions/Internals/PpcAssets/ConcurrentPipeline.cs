@@ -35,11 +35,16 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
 
         public void Add(TP item)
         {
+            TryAdd(item, Timeout.Infinite);
+        }
+
+        public bool TryAdd(TP item, int millisecTimeout)
+        {
             if (_localCts == null)
             {
                 throw new ObjectDisposedException(nameof(ConcurrentPipeline<TP, TC>), "instance is disposed");
             }
-            _feed.Add(item);
+            return _feed.TryAdd(item, millisecTimeout);
         }
 
         public Task TearDown()

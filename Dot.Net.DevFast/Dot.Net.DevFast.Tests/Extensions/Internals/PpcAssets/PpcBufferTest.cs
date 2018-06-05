@@ -44,6 +44,16 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         }
 
         [Test]
+        public void TryAdd_Returns_False_After_Timeout_When_Buffer_Is_Full()
+        {
+            using (var instance = new PpcBuffer<object>(ConcurrentBuffer.MinSize, CancellationToken.None))
+            {
+                instance.Add(new object());
+                Assert.False(instance.TryAdd(new object(), 0));
+            }
+        }
+
+        [Test]
         public void TryGet_And_Add_Harmonize()
         {
             using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
