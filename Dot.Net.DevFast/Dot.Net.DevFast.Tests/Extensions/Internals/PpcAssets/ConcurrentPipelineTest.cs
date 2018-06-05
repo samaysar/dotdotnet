@@ -32,6 +32,36 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         }
 
         [Test]
+        public void TryAdd_Returns_False_On_Timeout_When_Unable_To_Add_Item()
+        {
+            using (var handle = new ManualResetEventSlim(false))
+            {
+                using (var consumerhandle = new ManualResetEventSlim(false))
+                {
+                    var consumers = new IConsumer<object>[1];
+                    consumers[0] = Substitute.For<IConsumer<object>>();
+                    consumers[0].ConsumeAsync(Arg.Any<object>(), Arg.Any<CancellationToken>())
+                        .Returns(x =>
+                        {
+                            consumerhandle.Set();
+                            handle.Wait();
+                            return Task.CompletedTask;
+                        });
+
+                    using (var instance = new ConcurrentPipeline<object, object>(consumers,
+                        new IdentityAdapter<object>(), CancellationToken.None, 1))
+                    {
+                        instance.Add(new object()); //this one will reach consumer
+                        consumerhandle.Wait();
+                        instance.Add(new object()); //this one will stay in buffer
+                        Assert.False(instance.TryAdd(new object(), 0)); //this one we wont be able to add
+                        handle.Set();
+                    }
+                }
+            }
+        }
+
+        [Test]
         [TestCase(1)]
         [TestCase(2)]
         public async Task TearDown_Returns_Normally_When_No_Data_Is_Produced_N_Consumers_Are_Disposed(int cc)

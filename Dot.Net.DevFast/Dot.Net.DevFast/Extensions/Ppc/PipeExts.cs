@@ -33,12 +33,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer action</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
+        public static Task Pipe<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
             Action<T, CancellationToken> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -57,12 +56,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer action</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
+        public static Task Pipe<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
             Action<T, CancellationToken> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -81,11 +79,10 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer action</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IProducer<T> producer, Action<T, CancellationToken> consumer,
+        public static Task Pipe<T>(this IProducer<T> producer, Action<T, CancellationToken> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ProducerConsumer(consumer.ToConsumer(), token, bufferSize);
+            return producer.Pipe(consumer.ToConsumer(), token, bufferSize);
         }
 
         /// <summary>
@@ -104,12 +101,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer function</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
+        public static Task Pipe<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
             Func<T, CancellationToken, Task> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -128,12 +124,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer function</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
+        public static Task Pipe<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
             Func<T, CancellationToken, Task> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -152,11 +147,10 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer function</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IProducer<T> producer, Func<T, CancellationToken, Task> consumer,
+        public static Task Pipe<T>(this IProducer<T> producer, Func<T, CancellationToken, Task> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ProducerConsumer(consumer.ToConsumer(), token, bufferSize);
+            return producer.Pipe(consumer.ToConsumer(), token, bufferSize);
         }
 
         /// <summary>
@@ -175,12 +169,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer instance</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
+        public static Task Pipe<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
             IConsumer<T> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -199,12 +192,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer instance</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
+        public static Task Pipe<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
             IConsumer<T> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -223,11 +215,10 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer instance</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IProducer<T> producer, IConsumer<T> consumer,
+        public static Task Pipe<T>(this IProducer<T> producer, IConsumer<T> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new[] {producer}.ProducerConsumer(new[] {consumer}, token, bufferSize);
+            return new[] { producer }.Pipe(new[] { consumer }, token, bufferSize);
         }
 
         //<<<<<<<<<<< SINGLE PRODUCER MULTIPLE CONSUMER
@@ -248,12 +239,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer action collection</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
+        public static Task Pipe<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
             IReadOnlyList<Action<T, CancellationToken>> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -272,12 +262,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer action collection</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
+        public static Task Pipe<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
             IReadOnlyList<Action<T, CancellationToken>> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -296,12 +285,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer action collection</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IProducer<T> producer,
+        public static Task Pipe<T>(this IProducer<T> producer,
             IReadOnlyList<Action<T, CancellationToken>> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ProducerConsumer(consumer.ToConsumer(), token, bufferSize);
+            return producer.Pipe(consumer.ToConsumer(), token, bufferSize);
         }
 
         /// <summary>
@@ -320,12 +308,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer function collection</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
+        public static Task Pipe<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
             IReadOnlyList<Func<T, CancellationToken, Task>> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -344,12 +331,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer function collection</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
+        public static Task Pipe<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
             IReadOnlyList<Func<T, CancellationToken, Task>> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -368,12 +354,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer function collection</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IProducer<T> producer,
+        public static Task Pipe<T>(this IProducer<T> producer,
             IReadOnlyList<Func<T, CancellationToken, Task>> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ProducerConsumer(consumer.ToConsumer(), token, bufferSize);
+            return producer.Pipe(consumer.ToConsumer(), token, bufferSize);
         }
 
         /// <summary>
@@ -392,12 +377,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer instance collection</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
+        public static Task Pipe<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
             IReadOnlyList<IConsumer<T>> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -416,12 +400,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer instance collection</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
+        public static Task Pipe<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
             IReadOnlyList<IConsumer<T>> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -440,11 +423,10 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IProducer<T> producer, IReadOnlyList<IConsumer<T>> consumers,
+        public static Task Pipe<T>(this IProducer<T> producer, IReadOnlyList<IConsumer<T>> consumers,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new[] {producer}.ProducerConsumer(consumers, token, bufferSize);
+            return new[] { producer }.Pipe(consumers, token, bufferSize);
         }
 
         //<<<<<<<<<<< MULTIPLE PRODUCER SINGLE CONSUMER
@@ -465,12 +447,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer action</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
             Action<T, CancellationToken> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -489,13 +470,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer action</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producer,
             Action<T, CancellationToken> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -514,12 +494,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer action</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<IProducer<T>> producer,
             Action<T, CancellationToken> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ProducerConsumer(consumer.ToConsumer(), token, bufferSize);
+            return producer.Pipe(consumer.ToConsumer(), token, bufferSize);
         }
 
         /// <summary>
@@ -538,12 +517,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer function</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
             Func<T, CancellationToken, Task> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -562,13 +540,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer function</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producer,
             Func<T, CancellationToken, Task> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -587,12 +564,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer function</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<IProducer<T>> producer,
             Func<T, CancellationToken, Task> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ProducerConsumer(consumer.ToConsumer(), token, bufferSize);
+            return producer.Pipe(consumer.ToConsumer(), token, bufferSize);
         }
 
         /// <summary>
@@ -611,12 +587,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer instance</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
             IConsumer<T> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -635,12 +610,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer instance</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producer, IConsumer<T> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -659,11 +633,10 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer instance</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producers, IConsumer<T> consumer,
+        public static Task Pipe<T>(this IReadOnlyList<IProducer<T>> producers, IConsumer<T> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(new[] {consumer}, token, bufferSize);
+            return producers.Pipe(new[] { consumer }, token, bufferSize);
         }
 
         //<<<<<<<<<<< MULTIPLE PRODUCER MULTIPLE CONSUMER
@@ -684,12 +657,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer action collection</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
             IReadOnlyList<Action<T, CancellationToken>> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -708,13 +680,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer action collection</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producer,
             IReadOnlyList<Action<T, CancellationToken>> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -733,12 +704,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer action collection</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<IProducer<T>> producer,
             IReadOnlyList<Action<T, CancellationToken>> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ProducerConsumer(consumer.ToConsumer(), token, bufferSize);
+            return producer.Pipe(consumer.ToConsumer(), token, bufferSize);
         }
 
         /// <summary>
@@ -757,12 +727,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer function collection</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
             IReadOnlyList<Func<T, CancellationToken, Task>> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -781,13 +750,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer function collection</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producer,
             IReadOnlyList<Func<T, CancellationToken, Task>> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -806,12 +774,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer function collection</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<IProducer<T>> producer,
             IReadOnlyList<Func<T, CancellationToken, Task>> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ProducerConsumer(consumer.ToConsumer(), token, bufferSize);
+            return producer.Pipe(consumer.ToConsumer(), token, bufferSize);
         }
 
         /// <summary>
@@ -830,12 +797,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer instance collection</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
             IReadOnlyList<IConsumer<T>> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -854,13 +820,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer instance collection</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producer,
             IReadOnlyList<IConsumer<T>> consumer, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, token, bufferSize);
         }
 
         /// <summary>
@@ -879,12 +844,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumers">Collection of consumers</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producers,
+        public static Task Pipe<T>(this IReadOnlyList<IProducer<T>> producers,
             IReadOnlyList<IConsumer<T>> consumers, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers, new IdentityAdapter<T>(), token, bufferSize);
+            return producers.Pipe(consumers, new IdentityAdapter<T>(), token, bufferSize);
         }
 
         #endregion
@@ -916,12 +880,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
+        public static Task Pipe<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
             Action<List<T>, CancellationToken> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -947,12 +910,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
+        public static Task Pipe<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
             Action<List<T>, CancellationToken> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -978,12 +940,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IProducer<T> producer, Action<List<T>, CancellationToken> consumer,
+        public static Task Pipe<T>(this IProducer<T> producer, Action<List<T>, CancellationToken> consumer,
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ProducerConsumer(consumer.ToConsumer(), listMaxSize, token, bufferSize);
+            return producer.Pipe(consumer.ToConsumer(), listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1009,12 +970,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
+        public static Task Pipe<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
             Func<List<T>, CancellationToken, Task> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1040,12 +1000,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
+        public static Task Pipe<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
             Func<List<T>, CancellationToken, Task> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1071,12 +1030,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IProducer<T> producer,
+        public static Task Pipe<T>(this IProducer<T> producer,
             Func<List<T>, CancellationToken, Task> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ProducerConsumer(consumer.ToConsumer(), listMaxSize, token, bufferSize);
+            return producer.Pipe(consumer.ToConsumer(), listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1102,12 +1060,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
+        public static Task Pipe<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
             IConsumer<List<T>> consumer, int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1133,12 +1090,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
+        public static Task Pipe<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
             IConsumer<List<T>> consumer, int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1164,11 +1120,10 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IProducer<T> producer, IConsumer<List<T>> consumer, int listMaxSize,
+        public static Task Pipe<T>(this IProducer<T> producer, IConsumer<List<T>> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ProducerConsumer(consumer, listMaxSize, Timeout.Infinite, token, bufferSize);
+            return producer.Pipe(consumer, listMaxSize, Timeout.Infinite, token, bufferSize);
         }
 
         //<<<<<<<<<<< SINGLE PRODUCER MULTIPLE LIST CONSUMER
@@ -1196,12 +1151,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
+        public static Task Pipe<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
             IReadOnlyList<Action<List<T>, CancellationToken>> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1227,12 +1181,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
+        public static Task Pipe<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
             IReadOnlyList<Action<List<T>, CancellationToken>> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1258,12 +1211,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IProducer<T> producer,
+        public static Task Pipe<T>(this IProducer<T> producer,
             IReadOnlyList<Action<List<T>, CancellationToken>> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ProducerConsumer(consumer.ToConsumer(), listMaxSize, token, bufferSize);
+            return producer.Pipe(consumer.ToConsumer(), listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1289,12 +1241,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
+        public static Task Pipe<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
             IReadOnlyList<Func<List<T>, CancellationToken, Task>> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1320,12 +1271,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
+        public static Task Pipe<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
             IReadOnlyList<Func<List<T>, CancellationToken, Task>> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1351,12 +1301,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IProducer<T> producer,
+        public static Task Pipe<T>(this IProducer<T> producer,
             IReadOnlyList<Func<List<T>, CancellationToken, Task>> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ProducerConsumer(consumer.ToConsumer(), listMaxSize, token, bufferSize);
+            return producer.Pipe(consumer.ToConsumer(), listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1382,12 +1331,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
+        public static Task Pipe<T>(this Action<IConsumerFeed<T>, CancellationToken> producer,
             IReadOnlyList<IConsumer<List<T>>> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1413,12 +1361,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
+        public static Task Pipe<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer,
             IReadOnlyList<IConsumer<List<T>>> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1444,12 +1391,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IProducer<T> producer, IReadOnlyList<IConsumer<List<T>>> consumers,
+        public static Task Pipe<T>(this IProducer<T> producer, IReadOnlyList<IConsumer<List<T>>> consumers,
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ProducerConsumer(consumers, listMaxSize, Timeout.Infinite, token, bufferSize);
+            return producer.Pipe(consumers, listMaxSize, Timeout.Infinite, token, bufferSize);
         }
 
         //<<<<<<<<<<< MULTIPLE PRODUCER SINGLE LIST CONSUMER
@@ -1477,12 +1423,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
             Action<List<T>, CancellationToken> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1508,13 +1453,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producer,
             Action<List<T>, CancellationToken> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1540,12 +1484,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<IProducer<T>> producer,
             Action<List<T>, CancellationToken> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ProducerConsumer(consumer.ToConsumer(), listMaxSize, token, bufferSize);
+            return producer.Pipe(consumer.ToConsumer(), listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1571,12 +1514,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
             Func<List<T>, CancellationToken, Task> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1602,13 +1544,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producer,
             Func<List<T>, CancellationToken, Task> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1634,12 +1575,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<IProducer<T>> producer,
             Func<List<T>, CancellationToken, Task> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ProducerConsumer(consumer.ToConsumer(), listMaxSize, token, bufferSize);
+            return producer.Pipe(consumer.ToConsumer(), listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1665,12 +1605,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
             IConsumer<List<T>> consumer, int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1696,13 +1635,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producer, IConsumer<List<T>> consumer,
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1728,12 +1666,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producers, IConsumer<List<T>> consumer,
+        public static Task Pipe<T>(this IReadOnlyList<IProducer<T>> producers, IConsumer<List<T>> consumer,
             int listMaxSize, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumer, listMaxSize, Timeout.Infinite, token, bufferSize);
+            return producers.Pipe(consumer, listMaxSize, Timeout.Infinite, token, bufferSize);
         }
 
         //<<<<<<<<<<< MULTIPLE PRODUCER MULTIPLE LIST CONSUMER
@@ -1761,12 +1698,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
             IReadOnlyList<Action<List<T>, CancellationToken>> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1792,13 +1728,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producer,
             IReadOnlyList<Action<List<T>, CancellationToken>> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1824,12 +1759,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<IProducer<T>> producer,
             IReadOnlyList<Action<List<T>, CancellationToken>> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ProducerConsumer(consumer.ToConsumer(), listMaxSize, token, bufferSize);
+            return producer.Pipe(consumer.ToConsumer(), listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1855,12 +1789,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
             IReadOnlyList<Func<List<T>, CancellationToken, Task>> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1886,13 +1819,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producer,
             IReadOnlyList<Func<List<T>, CancellationToken, Task>> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1918,12 +1850,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<IProducer<T>> producer,
             IReadOnlyList<Func<List<T>, CancellationToken, Task>> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ProducerConsumer(consumer.ToConsumer(), listMaxSize, token, bufferSize);
+            return producer.Pipe(consumer.ToConsumer(), listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1949,12 +1880,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
+        public static Task Pipe<T>(this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producer,
             IReadOnlyList<IConsumer<List<T>>> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -1980,13 +1910,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producer,
             IReadOnlyList<IConsumer<List<T>>> consumer, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producer.ToProducer().ProducerConsumer(consumer, listMaxSize, token, bufferSize);
+            return producer.ToProducer().Pipe(consumer, listMaxSize, token, bufferSize);
         }
 
         /// <summary>
@@ -2012,12 +1941,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producers,
+        public static Task Pipe<T>(this IReadOnlyList<IProducer<T>> producers,
             IReadOnlyList<IConsumer<List<T>>> consumers, int listMaxSize,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers, listMaxSize, Timeout.Infinite, token, bufferSize);
+            return producers.Pipe(consumers, listMaxSize, Timeout.Infinite, token, bufferSize);
         }
 
         #endregion
@@ -2053,13 +1981,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producers,
+        public static Task Pipe<T>(this Action<IConsumerFeed<T>, CancellationToken> producers,
             Action<List<T>, CancellationToken> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -2089,13 +2016,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
+        public static Task Pipe<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
             Action<List<T>, CancellationToken> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -2125,12 +2051,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IProducer<T> producers,
+        public static Task Pipe<T>(this IProducer<T> producers,
             Action<List<T>, CancellationToken> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
+            return producers.Pipe(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
                 bufferSize);
         }
 
@@ -2161,13 +2086,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producers,
+        public static Task Pipe<T>(this Action<IConsumerFeed<T>, CancellationToken> producers,
             Func<List<T>, CancellationToken, Task> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -2197,13 +2121,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
+        public static Task Pipe<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
             Func<List<T>, CancellationToken, Task> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -2233,12 +2156,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IProducer<T> producers,
+        public static Task Pipe<T>(this IProducer<T> producers,
             Func<List<T>, CancellationToken, Task> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
+            return producers.Pipe(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
                 bufferSize);
         }
 
@@ -2269,13 +2191,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producers,
+        public static Task Pipe<T>(this Action<IConsumerFeed<T>, CancellationToken> producers,
             IConsumer<List<T>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -2305,13 +2226,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
+        public static Task Pipe<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
             IConsumer<List<T>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -2341,12 +2261,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IProducer<T> producer, IConsumer<List<T>> consumer, int listMaxSize,
+        public static Task Pipe<T>(this IProducer<T> producer, IConsumer<List<T>> consumer, int listMaxSize,
             int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new[] {producer}.ProducerConsumer(new[] {consumer}, listMaxSize, millisecondTimeout, token,
+            return new[] { producer }.Pipe(new[] { consumer }, listMaxSize, millisecondTimeout, token,
                 bufferSize);
         }
 
@@ -2379,13 +2298,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producers,
+        public static Task Pipe<T>(this Action<IConsumerFeed<T>, CancellationToken> producers,
             IReadOnlyList<Action<List<T>, CancellationToken>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -2415,13 +2333,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
+        public static Task Pipe<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
             IReadOnlyList<Action<List<T>, CancellationToken>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -2451,12 +2368,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IProducer<T> producers,
+        public static Task Pipe<T>(this IProducer<T> producers,
             IReadOnlyList<Action<List<T>, CancellationToken>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
+            return producers.Pipe(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
                 bufferSize);
         }
 
@@ -2487,13 +2403,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producers,
+        public static Task Pipe<T>(this Action<IConsumerFeed<T>, CancellationToken> producers,
             IReadOnlyList<Func<List<T>, CancellationToken, Task>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -2523,13 +2438,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
+        public static Task Pipe<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
             IReadOnlyList<Func<List<T>, CancellationToken, Task>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -2559,12 +2473,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IProducer<T> producers,
+        public static Task Pipe<T>(this IProducer<T> producers,
             IReadOnlyList<Func<List<T>, CancellationToken, Task>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
+            return producers.Pipe(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
                 bufferSize);
         }
 
@@ -2595,13 +2508,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Action<IConsumerFeed<T>, CancellationToken> producers,
+        public static Task Pipe<T>(this Action<IConsumerFeed<T>, CancellationToken> producers,
             IReadOnlyList<IConsumer<List<T>>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -2631,13 +2543,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
+        public static Task Pipe<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producers,
             IReadOnlyList<IConsumer<List<T>>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -2667,12 +2578,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IProducer<T> producer, IReadOnlyList<IConsumer<List<T>>> consumers,
+        public static Task Pipe<T>(this IProducer<T> producer, IReadOnlyList<IConsumer<List<T>>> consumers,
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new[] {producer}.ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token,
+            return new[] { producer }.Pipe(consumers, listMaxSize, millisecondTimeout, token,
                 bufferSize);
         }
 
@@ -2705,14 +2615,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producers,
             Action<List<T>, CancellationToken> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -2742,14 +2651,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producers,
             Action<List<T>, CancellationToken> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -2779,12 +2687,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producers,
+        public static Task Pipe<T>(this IReadOnlyList<IProducer<T>> producers,
             Action<List<T>, CancellationToken> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
+            return producers.Pipe(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
                 bufferSize);
         }
 
@@ -2815,14 +2722,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producers,
             Func<List<T>, CancellationToken, Task> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -2852,14 +2758,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producers,
             Func<List<T>, CancellationToken, Task> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -2889,12 +2794,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producers,
+        public static Task Pipe<T>(this IReadOnlyList<IProducer<T>> producers,
             Func<List<T>, CancellationToken, Task> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
+            return producers.Pipe(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
                 bufferSize);
         }
 
@@ -2925,14 +2829,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producers, IConsumer<List<T>> consumers,
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -2962,14 +2865,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producers, IConsumer<List<T>> consumers,
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -2999,12 +2901,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producers, IConsumer<List<T>> consumer,
+        public static Task Pipe<T>(this IReadOnlyList<IProducer<T>> producers, IConsumer<List<T>> consumer,
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(new[] {consumer}, listMaxSize, millisecondTimeout, token,
+            return producers.Pipe(new[] { consumer }, listMaxSize, millisecondTimeout, token,
                 bufferSize);
         }
 
@@ -3037,14 +2938,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producers,
             IReadOnlyList<Action<List<T>, CancellationToken>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -3074,14 +2974,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producers,
             IReadOnlyList<Action<List<T>, CancellationToken>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -3111,12 +3010,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producers,
+        public static Task Pipe<T>(this IReadOnlyList<IProducer<T>> producers,
             IReadOnlyList<Action<List<T>, CancellationToken>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
+            return producers.Pipe(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
                 bufferSize);
         }
 
@@ -3147,14 +3045,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producers,
             IReadOnlyList<Func<List<T>, CancellationToken, Task>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -3184,14 +3081,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producers,
             IReadOnlyList<Func<List<T>, CancellationToken, Task>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -3221,12 +3117,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producers,
+        public static Task Pipe<T>(this IReadOnlyList<IProducer<T>> producers,
             IReadOnlyList<Func<List<T>, CancellationToken, Task>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
+            return producers.Pipe(consumers.ToConsumer(), listMaxSize, millisecondTimeout, token,
                 bufferSize);
         }
 
@@ -3257,14 +3152,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Action<IConsumerFeed<T>, CancellationToken>> producers,
             IReadOnlyList<IConsumer<List<T>>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -3294,14 +3188,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(
+        public static Task Pipe<T>(
             this IReadOnlyList<Func<IConsumerFeed<T>, CancellationToken, Task>> producers,
             IReadOnlyList<IConsumer<List<T>>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ToProducer()
-                .ProducerConsumer(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
+                .Pipe(consumers, listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -3331,12 +3224,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">Cancellation token</param>
         /// <param name="bufferSize">buffer size</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<T>(this IReadOnlyList<IProducer<T>> producers,
+        public static Task Pipe<T>(this IReadOnlyList<IProducer<T>> producers,
             IReadOnlyList<IConsumer<List<T>>> consumers, int listMaxSize, int millisecondTimeout,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers,
+            return producers.Pipe(consumers,
                 new AwaitableListAdapter<T>(listMaxSize, millisecondTimeout),
                 token, bufferSize);
         }
@@ -3366,13 +3258,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this Action<IConsumerFeed<TP>, CancellationToken> producers,
             Action<TC, CancellationToken> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3394,13 +3285,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this Func<IConsumerFeed<TP>, CancellationToken, Task> producers,
             Action<TC, CancellationToken> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3422,12 +3312,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(this IProducer<TP> producers,
+        public static Task Pipe<TP, TC>(this IProducer<TP> producers,
             Action<TC, CancellationToken> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers.ToConsumer(), adapter, token, bufferSize);
+            return producers.Pipe(consumers.ToConsumer(), adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3449,13 +3338,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this Action<IConsumerFeed<TP>, CancellationToken> producers,
             Func<TC, CancellationToken, Task> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3477,13 +3365,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this Func<IConsumerFeed<TP>, CancellationToken, Task> producers,
             Func<TC, CancellationToken, Task> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3505,12 +3392,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(this IProducer<TP> producers,
+        public static Task Pipe<TP, TC>(this IProducer<TP> producers,
             Func<TC, CancellationToken, Task> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers.ToConsumer(), adapter, token, bufferSize);
+            return producers.Pipe(consumers.ToConsumer(), adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3532,13 +3418,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this Action<IConsumerFeed<TP>, CancellationToken> producers, IConsumer<TC> consumers,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3560,13 +3445,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this Func<IConsumerFeed<TP>, CancellationToken, Task> producers, IConsumer<TC> consumers,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3588,12 +3472,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(this IProducer<TP> producer,
+        public static Task Pipe<TP, TC>(this IProducer<TP> producer,
             IConsumer<TC> consumer, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new[] {producer}.ProducerConsumer(new[] {consumer}, adapter, token, bufferSize);
+            return new[] { producer }.Pipe(new[] { consumer }, adapter, token, bufferSize);
         }
 
         //<<<<<<<<<<< SINGLE PRODUCER MULTIPLE ADAPTER CONSUMER
@@ -3617,13 +3500,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this Action<IConsumerFeed<TP>, CancellationToken> producers,
             IReadOnlyList<Action<TC, CancellationToken>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3645,13 +3527,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this Func<IConsumerFeed<TP>, CancellationToken, Task> producers,
             IReadOnlyList<Action<TC, CancellationToken>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3673,12 +3554,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(this IProducer<TP> producers,
+        public static Task Pipe<TP, TC>(this IProducer<TP> producers,
             IReadOnlyList<Action<TC, CancellationToken>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers.ToConsumer(), adapter, token, bufferSize);
+            return producers.Pipe(consumers.ToConsumer(), adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3700,14 +3580,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this Action<IConsumerFeed<TP>, CancellationToken> producers,
             IReadOnlyList<Func<TC, CancellationToken, Task>> consumers,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3729,14 +3608,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this Func<IConsumerFeed<TP>, CancellationToken, Task> producers,
             IReadOnlyList<Func<TC, CancellationToken, Task>> consumers,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3758,13 +3636,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(this IProducer<TP> producers,
+        public static Task Pipe<TP, TC>(this IProducer<TP> producers,
             IReadOnlyList<Func<TC, CancellationToken, Task>> consumers,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers.ToConsumer(), adapter, token, bufferSize);
+            return producers.Pipe(consumers.ToConsumer(), adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3786,13 +3663,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this Action<IConsumerFeed<TP>, CancellationToken> producers,
             IReadOnlyList<IConsumer<TC>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3814,13 +3690,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this Func<IConsumerFeed<TP>, CancellationToken, Task> producers,
             IReadOnlyList<IConsumer<TC>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3842,12 +3717,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(this IProducer<TP> producer,
+        public static Task Pipe<TP, TC>(this IProducer<TP> producer,
             IReadOnlyList<IConsumer<TC>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new[] {producer}.ProducerConsumer(consumers, adapter, token, bufferSize);
+            return new[] { producer }.Pipe(consumers, adapter, token, bufferSize);
         }
 
         //<<<<<<<<<<< MULTIPLE PRODUCER SINGLE ADAPTER CONSUMER
@@ -3871,13 +3745,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this IReadOnlyList<Action<IConsumerFeed<TP>, CancellationToken>> producers,
             Action<TC, CancellationToken> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3899,13 +3772,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this IReadOnlyList<Func<IConsumerFeed<TP>, CancellationToken, Task>> producers,
             Action<TC, CancellationToken> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3927,12 +3799,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(this IReadOnlyList<IProducer<TP>> producers,
+        public static Task Pipe<TP, TC>(this IReadOnlyList<IProducer<TP>> producers,
             Action<TC, CancellationToken> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers.ToConsumer(), adapter, token, bufferSize);
+            return producers.Pipe(consumers.ToConsumer(), adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3954,13 +3825,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this IReadOnlyList<Action<IConsumerFeed<TP>, CancellationToken>> producers,
             Func<TC, CancellationToken, Task> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -3982,13 +3852,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this IReadOnlyList<Func<IConsumerFeed<TP>, CancellationToken, Task>> producers,
             Func<TC, CancellationToken, Task> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -4010,12 +3879,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(this IReadOnlyList<IProducer<TP>> producers,
+        public static Task Pipe<TP, TC>(this IReadOnlyList<IProducer<TP>> producers,
             Func<TC, CancellationToken, Task> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers.ToConsumer(), adapter, token, bufferSize);
+            return producers.Pipe(consumers.ToConsumer(), adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -4037,13 +3905,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this IReadOnlyList<Action<IConsumerFeed<TP>, CancellationToken>> producers,
             IConsumer<TC> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -4065,13 +3932,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this IReadOnlyList<Func<IConsumerFeed<TP>, CancellationToken, Task>> producers,
             IConsumer<TC> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -4093,12 +3959,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(this IReadOnlyList<IProducer<TP>> producers,
+        public static Task Pipe<TP, TC>(this IReadOnlyList<IProducer<TP>> producers,
             IConsumer<TC> consumer, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(new[] {consumer}, adapter, token, bufferSize);
+            return producers.Pipe(new[] { consumer }, adapter, token, bufferSize);
         }
         //<<<<<<<<<<< MULTIPLE PRODUCER MULTIPLE ADAPTER CONSUMER
 
@@ -4121,13 +3986,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this IReadOnlyList<Action<IConsumerFeed<TP>, CancellationToken>> producers,
             IReadOnlyList<Action<TC, CancellationToken>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -4149,13 +4013,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this IReadOnlyList<Func<IConsumerFeed<TP>, CancellationToken, Task>> producers,
             IReadOnlyList<Action<TC, CancellationToken>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -4177,12 +4040,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(this IReadOnlyList<IProducer<TP>> producers,
+        public static Task Pipe<TP, TC>(this IReadOnlyList<IProducer<TP>> producers,
             IReadOnlyList<Action<TC, CancellationToken>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers.ToConsumer(), adapter, token, bufferSize);
+            return producers.Pipe(consumers.ToConsumer(), adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -4204,14 +4066,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this IReadOnlyList<Action<IConsumerFeed<TP>, CancellationToken>> producers,
             IReadOnlyList<Func<TC, CancellationToken, Task>> consumers,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -4233,14 +4094,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this IReadOnlyList<Func<IConsumerFeed<TP>, CancellationToken, Task>> producers,
             IReadOnlyList<Func<TC, CancellationToken, Task>> consumers,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -4262,13 +4122,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(this IReadOnlyList<IProducer<TP>> producers,
+        public static Task Pipe<TP, TC>(this IReadOnlyList<IProducer<TP>> producers,
             IReadOnlyList<Func<TC, CancellationToken, Task>> consumers,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers.ToConsumer(), adapter, token, bufferSize);
+            return producers.Pipe(consumers.ToConsumer(), adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -4290,13 +4149,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this IReadOnlyList<Action<IConsumerFeed<TP>, CancellationToken>> producers,
             IReadOnlyList<IConsumer<TC>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -4318,13 +4176,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(
+        public static Task Pipe<TP, TC>(
             this IReadOnlyList<Func<IConsumerFeed<TP>, CancellationToken, Task>> producers,
             IReadOnlyList<IConsumer<TC>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ToProducer().ProducerConsumer(consumers, adapter, token, bufferSize);
+            return producers.ToProducer().Pipe(consumers, adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -4346,12 +4203,59 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="adapter">data adapter</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">size of data buffer</param>
-        [Obsolete("Use .Pipe extension instead")]
-        public static Task ProducerConsumer<TP, TC>(this IReadOnlyList<IProducer<TP>> producers,
+        public static Task Pipe<TP, TC>(this IReadOnlyList<IProducer<TP>> producers,
             IReadOnlyList<IConsumer<TC>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return PpcPipeline<TP, TC>.Execute(token, bufferSize, adapter, producers, consumers);
+        }
+
+        #endregion
+
+        #region Convertors
+
+        private static IProducer<T> ToProducer<T>(this Func<IConsumerFeed<T>, CancellationToken, Task> producer)
+        {
+            return new AsyncProducer<T>(producer);
+        }
+
+        private static IProducer<T> ToProducer<T>(this Action<IConsumerFeed<T>, CancellationToken> producer)
+        {
+            return producer.ToAsync(false).ToProducer();
+        }
+
+        private static IReadOnlyList<IProducer<T>> ToProducer<T>(
+            this IEnumerable<Func<IConsumerFeed<T>, CancellationToken, Task>> producers)
+        {
+            return producers.Select(x => x.ToProducer()).ToList();
+        }
+
+        private static IReadOnlyList<IProducer<T>> ToProducer<T>(
+            this IEnumerable<Action<IConsumerFeed<T>, CancellationToken>> producers)
+        {
+            return producers.Select(x => x.ToProducer()).ToList();
+        }
+
+        private static IConsumer<T> ToConsumer<T>(this Func<T, CancellationToken, Task> consumer)
+        {
+            return new AsyncConsumer<T>(consumer);
+        }
+
+        private static IConsumer<T> ToConsumer<T>(this Action<T, CancellationToken> consumer)
+        {
+            return consumer.ToAsync(false).ToConsumer();
+        }
+
+        private static IReadOnlyList<IConsumer<T>> ToConsumer<T>(
+            this IEnumerable<Func<T, CancellationToken, Task>> consumers)
+        {
+            return consumers.Select(x => x.ToConsumer()).ToList();
+        }
+
+        private static IReadOnlyList<IConsumer<T>> ToConsumer<T>(
+            this IEnumerable<Action<T, CancellationToken>> consumers)
+        {
+            return consumers.Select(x => x.ToConsumer()).ToList();
         }
 
         #endregion

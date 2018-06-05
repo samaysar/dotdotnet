@@ -39,6 +39,14 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </summary>
         /// <param name="item">item to add</param>
         void Add(T item);
+
+        /// <summary>
+        /// Tries adding an item in the feed to be consumed by consumers observing the feed.
+        /// Returns true if the item was added before the timeout else false.
+        /// </summary>
+        /// <param name="item">item to add</param>
+        /// <param name="millisecTimeout">timeout in milliseconds</param>
+        bool TryAdd(T item, int millisecTimeout);
     }
 
     internal interface IPpcFeed<T> : IConsumerFeed<T>, IProducerFeed<T>, IDisposable
