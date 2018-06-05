@@ -20,7 +20,7 @@
 	</li>
 </ul>
 
-The most declarative way to program .Net solutions. DevFast as a library contains, simplest to use yet powerful, set of extension methods to increase dev productivity. Use it with confidence, write robust and efficient codes.
+Library to program .Net solutions in most declarative way. DevFast as a library contains, simplest to use yet powerful, set of extensions to increase dev productivity. Use it with confidence, write robust and efficient codes.
 
 Features:
 * Expressive method naming
