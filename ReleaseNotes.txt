@@ -1,3 +1,9 @@
+Changes to Dot.Net.DevFast 1.2.1
+
+ 1. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.Pipe<T>(...), in all existing forms of Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...)
+ 2. Change/Fix  - All Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...) extension methods are now marked as [Obsolete] in preference to .Pipe
+ 3. Change/Fix  - Added TryAdd method with milliseconds Timeout to IConcurrentPipeline<T>, IConsumerFeed<T> and IPpcFeed<T> interfaces to support loosy-bounded-buffer pipeline
+
 Changes to Dot.Net.DevFast 1.2.0
 
  1. New feature - Added generic Concurrent Producer-Consumer extension methods, as Dot.Net.DevFast.Extensions.Ppc.PpcExts.ProducerConsumer<T>(...), on producer Action delegates accepting Consumer Action/Func delegate

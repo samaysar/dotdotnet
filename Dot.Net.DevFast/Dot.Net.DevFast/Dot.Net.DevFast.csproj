@@ -80,6 +80,7 @@
     <Compile Include="Extensions\Ppc\IConsumer.cs" />
     <Compile Include="Extensions\Ppc\IProducer.cs" />
     <Compile Include="Extensions\Ppc\ConcurrentPipelineExts.cs" />
+    <Compile Include="Extensions\Ppc\PipeExts.cs" />
     <Compile Include="Extensions\Ppc\ProducerConsumerExts.cs" />
     <Compile Include="Extensions\StreamExt\Base64Ext.cs" />
     <Compile Include="Extensions\StreamExt\CryptoStreamExt.cs" />

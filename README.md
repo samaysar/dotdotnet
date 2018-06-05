@@ -13,18 +13,18 @@
 	<p><strong><a href="https://www.nuget.org/packages/Dot.Net.DevFast">Nuget Page</a></strong></p>
 	</li>
 	<li>
-	<p><strong><a href="https://github.com/samaysar/dotdotnet/wiki/DevFast">GitHub Wiki</a></strong></p>
+	<p><strong><a href="https://github.com/samaysar/dotdotnet/wiki">GitHub Wiki</a></strong></p>
 	</li>
 	<li>
 	<p><strong><a href="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/ReleaseNotes.txt">Release Notes</a></strong></p>
 	</li>
 </ul>
 
-An easy to use, yet powerful, set of extension methods to increase developement productivity and allows you to write efficient code faster and with confidence.
+Library to program .Net solutions in most declarative way. DevFast as a library contains, simplest to use yet powerful, set of extensions to increase dev productivity. Use it with confidence, write robust and efficient codes.
 
 Features:
-* Methods are carefully named to bring code readability
-* Turns most of the quotidian codes in one-liner
-* Method chaining is all the way
+* Expressive method naming
+* declarative one-liners
+* Method chaining all the way
 * Minimal boilerplate code
 * Extensively test covered
