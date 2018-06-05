@@ -80,6 +80,7 @@
     <Compile Include="Extensions\Internals\JsonBasedTest.cs" />
     <Compile Include="Extensions\JsonExt\JsonTxtExtTest.cs" />
     <Compile Include="Etc\ConcurrentBufferTest.cs" />
+    <Compile Include="Extensions\Ppc\PipeExtsTest.cs" />
     <Compile Include="Extensions\Ppc\ProducerConsumerExtsTest.cs" />
     <Compile Include="Extensions\StreamExt\Base64ExtTest.cs" />
     <Compile Include="Extensions\StreamExt\CryptoStreamExtTest.cs" />

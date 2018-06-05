@@ -14,44 +14,44 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         [Test]
         public void Single_Consumer_Based_Pipeline_Harmonizes()
         {
-            using (ProducerConsumerExtsTest.Consumer<object>().ConcurrentPipeline())
+            using (PipeExtsTest.Consumer<object>().ConcurrentPipeline())
             {
             }
 
-            using (ProducerConsumerExtsTest.Consumer<List<object>>().ConcurrentPipeline(2, 0))
+            using (PipeExtsTest.Consumer<List<object>>().ConcurrentPipeline(2, 0))
             {
             }
 
-            using (ProducerConsumerExtsTest.Consumer<object>().ConcurrentPipeline(new IdentityAdapter<object>()))
+            using (PipeExtsTest.Consumer<object>().ConcurrentPipeline(new IdentityAdapter<object>()))
             {
             }
 
-            using (ProducerConsumerExtsTest.ConsumerFunc(ProducerConsumerExtsTest.Consumer<object>())
+            using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>())
                 .ConcurrentPipeline())
             {
             }
 
-            using (ProducerConsumerExtsTest.ConsumerFunc(ProducerConsumerExtsTest.Consumer<List<object>>())
+            using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<List<object>>())
                 .ConcurrentPipeline(2, 0))
             {
             }
 
-            using (ProducerConsumerExtsTest.ConsumerFunc(ProducerConsumerExtsTest.Consumer<object>())
+            using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>())
                 .ConcurrentPipeline(new IdentityAdapter<object>()))
             {
             }
 
-            using (ProducerConsumerExtsTest.ConsumerAction(ProducerConsumerExtsTest.Consumer<object>())
+            using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>())
                 .ConcurrentPipeline())
             {
             }
 
-            using (ProducerConsumerExtsTest.ConsumerAction(ProducerConsumerExtsTest.Consumer<List<object>>())
+            using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<List<object>>())
                 .ConcurrentPipeline(2, 0))
             {
             }
 
-            using (ProducerConsumerExtsTest.ConsumerAction(ProducerConsumerExtsTest.Consumer<object>())
+            using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>())
                 .ConcurrentPipeline(new IdentityAdapter<object>()))
             {
             }
@@ -60,44 +60,44 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         [Test]
         public void Multiple_Consumer_Based_Pipeline_Harmonizes()
         {
-            using (ProducerConsumerExtsTest.Consumer<object>(2).ConcurrentPipeline())
+            using (PipeExtsTest.Consumer<object>(2).ConcurrentPipeline())
             {
             }
 
-            using (ProducerConsumerExtsTest.Consumer<List<object>>(2).ConcurrentPipeline(2, 0))
+            using (PipeExtsTest.Consumer<List<object>>(2).ConcurrentPipeline(2, 0))
             {
             }
 
-            using (ProducerConsumerExtsTest.Consumer<object>(2).ConcurrentPipeline(new IdentityAdapter<object>()))
+            using (PipeExtsTest.Consumer<object>(2).ConcurrentPipeline(new IdentityAdapter<object>()))
             {
             }
 
-            using (ProducerConsumerExtsTest.ConsumerFunc(ProducerConsumerExtsTest.Consumer<object>(2))
+            using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>(2))
                 .ConcurrentPipeline())
             {
             }
 
-            using (ProducerConsumerExtsTest.ConsumerFunc(ProducerConsumerExtsTest.Consumer<List<object>>(2))
+            using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<List<object>>(2))
                 .ConcurrentPipeline(2, 0))
             {
             }
 
-            using (ProducerConsumerExtsTest.ConsumerFunc(ProducerConsumerExtsTest.Consumer<object>(2))
+            using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>(2))
                 .ConcurrentPipeline(new IdentityAdapter<object>()))
             {
             }
 
-            using (ProducerConsumerExtsTest.ConsumerAction(ProducerConsumerExtsTest.Consumer<object>(2))
+            using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>(2))
                 .ConcurrentPipeline())
             {
             }
 
-            using (ProducerConsumerExtsTest.ConsumerAction(ProducerConsumerExtsTest.Consumer<List<object>>(2))
+            using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<List<object>>(2))
                 .ConcurrentPipeline(2, 0))
             {
             }
 
-            using (ProducerConsumerExtsTest.ConsumerAction(ProducerConsumerExtsTest.Consumer<object>(2))
+            using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>(2))
                 .ConcurrentPipeline(new IdentityAdapter<object>()))
             {
             }
