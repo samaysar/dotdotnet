@@ -11,8 +11,7 @@
 <body>
 <h1 class="ttlpl">DevFast - Meet Parallel Producers/Consumers</h1>
 
-<p>DevFast version 1.3.0 will contain parallel producer consumer implementation with other parallel programing design patterns.</p>
-<p>Working on it... soon be available!</p>
+<p>Running Concurrent producers-consumers in most declarative way!</p>
 
 <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tbody>
@@ -23,7 +22,160 @@
 	</tbody>
 </table>
 
-<p>Let us know your thoughts.</p>
+<h2>Introduction</h2>
+
+<p>The context of Producer-consumer is long known; one can find information of&nbsp;its generic case in <a href="https://en.wikipedia.org/wiki/Producer%E2%80%93consumer_problem">this Wikipedia article</a>. However, to quickly set the stage, we consider following statements:</p>
+
+<ul>
+	<li><strong>Producer</strong>: A piece of code (method/function) that generates data of given <code>datatype</code></li>
+	<li><strong>Consumer</strong>: A piece of code (method/function)&nbsp;that accepts/process/consumes those produced items</li>
+</ul>
+
+<p>Most of the times, we encounter following similar kind of statements (psuedo code):</p>
+
+<pre lang="cs">
+&nbsp;&nbsp;&nbsp;List&lt;T&gt; data = CreateData(...) 
+&nbsp;&nbsp;&nbsp;//where T is some known datatype, 
+&nbsp;&nbsp;&nbsp;//     CreateData is some function which returns a collection of instances of T
+&nbsp;  //  Thus, our PRODUCER
+   
+&nbsp;&nbsp;&nbsp;ProcessList(data)
+&nbsp;&nbsp;&nbsp;//where ProcessList performs required processing on the generated data
+   //  Thus, our CONSUMER</pre>
+
+<p>As per above example, &quot;<strong>CreateData</strong>&quot; is our <strong>Producer</strong> and &quot;<strong>ProcessList</strong>&quot; is our <strong>Consumer</strong>. <u>It is important to note here</u>&nbsp;that our interest is immediately lost if produced data is <strong>NOT a collection</strong> (list, array etc), as of course, it makes no sense to create such a mechanism just to exchange a datum. During our discussion, we will go through, step-by-step, a possible <code>CONCURRENT</code> implementation of it, i.e. to have our <code>producer(s)</code> running&nbsp;independently, yet in harmony, of our <code>consumer(s)</code>. We will see how to create such a concert while satisfying following design requirements:</p>
+
+<ul>
+	<li>Buffer Size:
+	<ul>
+		<li>fixed-sized</li>
+		<li>unbounded</li>
+	</ul>
+	</li>
+	<li>Chain characteristics:
+	<ul>
+		<li>lossless (every item that is produced is consumed)&nbsp;Vs lossy (produced items are discarded when buffer is full)</li>
+		<li>uninterrupted (once started chain continues until the last item is consumed) Vs interruptible&nbsp;(ability to destroy the chain at anytime during its life-cycle)</li>
+		<li>attached (all producers are known at <code>compile-time</code> and bound to the chain) Vs detached (producers, perhaps ephemeral, appear, possibly in parallel, at run-time)</li>
+		<li>concordant (producer/consumer shares exactly same&nbsp;<code>datatype</code>) Vs discordant (produced items requires some sort of possible data transformation to match consumable item&#39;s&nbsp;<code>datatype</code>)</li>
+	</ul>
+	</li>
+</ul>
+
+<p>Although the original producer-consumer problem considered only the CONCORDANT case (last point among above characteristics). Nevertheless, thanks to GoF&#39;s famous&nbsp;<a href="https://en.wikipedia.org/wiki/Adapter_pattern"><code>Adapter design pattern</code></a>&nbsp;(see <a href="https://www.oreilly.com/library/view/design-patterns-elements/0201633612/">GoF design patterns</a>), we would like to extend the idea, while exploiting the original philosophy of the design pattern to create a data-adapter (here onwards simply calling it adapter unless specified otherwise), in order to create such a chain among given discordant producer/consumers (given a condition we identify an adapter). The point of interest in doing so is to maintain separation of concerns, and, thus, to achieve&nbsp;simplified producer&#39;s/consumer&#39;s with detached data transformation logic.</p>
+
+<p>For a moment, just let your imagination flow and think of a simplistic view of data originating at producer&nbsp;and absorbed by consumer. Think of,&nbsp;as if there are two person (P and C) and P is handing over whatever he got to C. With this, I think of <code>UNIX.</code> As, with&nbsp;<code>UNIX</code>&nbsp;terminal when we want to create such a chain of actions (passing data between commands); it exactly lets us do that, thanks to famous <code>&quot;|&quot; (a.k.a. pipe)</code> syntax (see some <a href="https://en.wikipedia.org/wiki/Pipeline_(Unix)">examples here</a>), and, <strong>so I thought of this&nbsp;name</strong>.</p>
+
+<h2>The Why?</h2>
+
+<p>When we talk about why we need such an implementation, we need to consider several factors:</p>
+
+<ul>
+	<li>along with order of complexity (<a href="https://en.wikipedia.org/wiki/Big_O_notation">the big O notation</a>), latency is also an important factor in production quality code</li>
+	<li><a href="https://en.wikipedia.org/wiki/Parallel_computing">parallel computing</a> has become a norm in industry and in several scenario&nbsp;can help reduce latencies</li>
+	<li>with the advancement in technology, newer frameworks/libraries/packages provide better tools for <a href="https://en.wikipedia.org/wiki/Concurrent_computing">concurrent programming</a>&nbsp;such as better thread-pool management, lighter substitutes to threads&nbsp;(e.g. task, fiber, coroutines) to&nbsp;lower waste cycles due to <a href="https://en.wikipedia.org/wiki/Context_switch">thread context switching</a></li>
+</ul>
+
+<p>Now, talking about producer-consumer, lets consider a task at&nbsp;hand (perhaps trivial):</p>
+
+<blockquote class="quote">
+<div class="op">&nbsp;</div>
+
+<p>Assume, we need to parse a file, lets say CSV for simplicity sake, that contains some considerable number of records (i.e. rows). Further assume that we need to store these records to some database; without any additional computation on the data.</p>
+</blockquote>
+
+<p>Here we observe two (2) <strong>distinct&nbsp;and uncorrelated</strong> sub-tasks: read the file (data producer) &amp; save data in database (data consumer). Now, consider two(2) classic (non-concurrent) implementation approaches:</p>
+
+<ol>
+	<li>Read full file -&gt; make objects&#39; list&nbsp;-&gt; push the list to db (lets call it <strong>Approach1</strong>)
+
+	<ul>
+		<li>approach looks good but ignores the memory requirements to hold the list</li>
+		<li>bigger the list size, higher the latency due to the fact that consumer will wait longer to receive the list</li>
+		<li>total latency would be : file_handling_time + db_transaction_time&nbsp; =&gt; assuming data transfer time between producer and consumer is negligible</li>
+	</ul>
+	</li>
+	<li>read single line -&gt; push the object to db -&gt; repeat until end of file&nbsp;(lets call it <strong>Approach2</strong>)
+	<ul>
+		<li>improves on memory but performs multiple db transaction that can push latency off the charts =&gt; normally, bulk inserts are cheaper</li>
+		<li>at a given point in time either producer is working or consumer is working</li>
+		<li>total latency would be : <strong>n</strong> x (single_record_handling_time + db_transaction_time) =&gt; where <strong>n</strong> is total number of records in file and assuming data transfer time between producer and consumer is negligible)</li>
+	</ul>
+	</li>
+</ol>
+
+<p><strong>Most importantly, both approaches ignore&nbsp;the fact that both, file and database operations, are I/O operations, and, given even a single core processor concurrency can be achieved through thread-interleaving thanks to <a href="https://en.wikipedia.org/wiki/Asynchronous_I/O">non-blocking I/O</a>.</strong> It is also possible to design yet another balance approach where instead of pushing single record to db, we will push some fixed-size (chunk) lists to database. However, as we describe about our pipeline approach next (below), one can see that it remains less attractive in term of performance.</p>
+
+<p>Assuming that we have our&nbsp;<code>.Pipe</code>&nbsp;implementation available. We can design a producer method (reading the file) and consumer method (making db transaction), we can simple write above code as: <code>producer.Pipe(consumer<u><strong>s</strong></u>)&nbsp;</code>(lets call it <strong>Approach3</strong>)</p>
+
+<ul>
+	<li>producer will create several lists (pre-defined size)&nbsp;while reading the file =&gt; several list of smaller size (i.e. chunks)</li>
+	<li>consumer will take each list (chunk) and push it to DB =&gt; we can span many consumers as each push is independent</li>
+	<li>our glue code of <code>.Pipe</code>&nbsp;will facilitate the channeling of chunks (lists) from producer to consumer<u><strong>s</strong></u>&nbsp;=&gt; assuming this data transfer time is negligible and buffer is unbounded</li>
+	<li>total latency would be : file_handling_time + <strong>k</strong> x chunk_db_transaction_time&nbsp; =&gt; where k = 1/c x (total_chunk_count - chunk_pushed_during_file_operation)&nbsp;and c = total_consumer_count (assuming degradation in db performance due to parallel push is negligible)</li>
+</ul>
+
+<p>In general, as total number of records increases, we would notice (left-most is lowest and right-most is highest):&nbsp;<strong>(lower the better)</strong></p>
+
+<ul>
+	<li>memory(<strong>Approach2</strong>) &lt;&nbsp;memory(<strong>Approach3</strong>) &lt;&nbsp;memory(<strong>Approach1</strong>)&nbsp;</li>
+	<li>latency(<strong>Approach3</strong>) &lt;&nbsp;latency(<strong>Approach1</strong>) &lt;&nbsp;latency(<strong>Approach2</strong>)</li>
+</ul>
+
+<p>Thus, perhaps, it might be safe to say that our concurrent Producer-Consumer approach, which is also the subject of this discussion, is a balanced approach. <strong>Thus, the why.</strong></p>
+
+<p>However, before we discuss implementation, we need to consider/make following limitations/assumptions:</p>
+
+<ul>
+	<li>Presence of more than 1 consumer is to achieve concurrency benefits. This assumption is important as our design is different that <code>broadcasting</code>&nbsp;(<a href="https://en.wikipedia.org/wiki/Broadcasting_(networking)">see here</a>). In our approach, each produced item will be consumed (accepted/treated/processed) by <strong>one and only one</strong>&nbsp;consumer among all available consumers.</li>
+	<li>Although producers can take a different approach to create an item (e.g. one producer fetching records from DB, another from file, yet another receiving web-requests etc);&nbsp;yet, those are obliged to produce&nbsp;item of same datatype to be part of the pipeline. This assumption is very important as pipeline design must remain open to disparate producer channels as long as produced items are of same type.</li>
+	<li>Consumers cannot be added or removed from pipeline once it is constructed.</li>
+	<li>Implementation must remain generic, i.e. it should not make any assumption about the behavior of producer/consumer.</li>
+	<li>In both fixed-size and unbounded buffer case, pipeline should support infinite number of producers and consumers,&nbsp;theoretically.</li>
+	<li>In interruptible mode, pipeline will be destroyed once interrupted, thus, all unprocessed data with it.</li>
+	<li>In attached mode, producers cannot be added or removed from pipeline once it is constructed.</li>
+	<li>In detached mode, pipeline should not make any assumption about the life-cycle or count of producers. It must be open to accept items (pre-defined type) from any producer (ephemeral or long-running) during its life-cycle.</li>
+	<li>In discordant mode, given an adapter, pipeline construction must be possible.</li>
+</ul>
+
+<p>To achieve our goal, we opt to implement it in C# <a href="https://docs.microsoft.com/en-us/dotnet/framework/whats-new/#v461">.Net Framework 4.6.1</a> while leveraging several <a href="https://docs.microsoft.com/en-us/dotnet/standard/parallel-programming/">TPL features</a>&nbsp;and inherent language capability to create <a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods">extension methods</a>.</p>
+
+<ul>
+</ul>
+
+<h2>There are no Dinosaurs!</h2>
+
+<p>During my college days, I always asked myself, every time I took the operating system book in my hand, why the dinosaurs? (unfortunately, I cannot find the original cover but <a href="https://images-na.ssl-images-amazon.com/images/I/51spVw9pGKL._SX348_BO1,204,203,200_.jpg">this picture should do for the moment</a>)&nbsp;And, I used to cajole myself that the book is not as terrifying as <a href="https://www.imdb.com/title/tt0107290/">Jurassic Park of Steven Spielberg</a>. I still wonder, sometimes, was it to symbolize operating system as gigantic/complex/stupefying/formidable as dinosaur or was it just to overwhelm a sophomore. Nonetheless, whatever the case, in this discussion there are no dinosaurs and we will try to keep things as simple as possible. And to begin with, lets have a lok at following picture to understand a few of our design choices:</p>
+
+<h3>Our Producer</h3>
+
+<p>&nbsp;</p>
+
+<h2>Limitations</h2>
+
+<p>A brief description of how to use the article or code. The class names, the methods and properties, any tricks or tips.</p>
+
+<p>Blocks of code should be set as style &quot;Formatted&quot; like this:</p>
+
+<pre lang="C++">
+//
+// Any source code blocks look like this
+//</pre>
+
+<p>&nbsp;</p>
+
+<p>Remember to set the Language of your code snippet using the Language dropdown.</p>
+
+<p>Use the &quot;var&quot; button to to wrap Variable or class names in &lt;code&gt; tags like <code>this</code>.</p>
+
+<h2>Points of Interest</h2>
+
+<p>Did you learn anything interesting/fun/annoying while writing the code? Did you do anything particularly clever or wild or zany?</p>
+
+<h2>History</h2>
+
+<p>This is the v1 of the present idea.</p>
+
 
 <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tbody>
