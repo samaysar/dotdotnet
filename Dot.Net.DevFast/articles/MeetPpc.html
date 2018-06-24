@@ -54,14 +54,14 @@
 	<li>Chain characteristics:
 	<ul>
 		<li>lossless (every item that is produced is consumed)&nbsp;Vs lossy (produced items are discarded when buffer is full)</li>
-		<li>uninterrupted (once started chain continues until the last item is consumed) Vs interruptible&nbsp;(ability to destroy the chain at anytime during its life-cycle)</li>
-		<li>attached (all producers are known at <code>compile-time</code> and bound to the chain) Vs detached (producers, perhaps ephemeral, appear, possibly in parallel, at run-time)</li>
+		<li>uninterrupted (once started, pipeline continues until the last item is consumed) Vs interruptible&nbsp;(ability to destroy the pipeline at anytime during its life-cycle)</li>
 		<li>concordant (producer/consumer shares exactly same&nbsp;<code>datatype</code>) Vs discordant (produced items requires some sort of possible data transformation to match consumable item&#39;s&nbsp;<code>datatype</code>)</li>
+		<li>attached (all producers are known at <code>compile-time</code> and bound to the chain) Vs detached (producers, perhaps ephemeral, appear, possibly in parallel, at run-time) : <strong>Implementation of these two cases we will discuss separately</strong></li>
 	</ul>
 	</li>
 </ul>
 
-<p>Although the original producer-consumer problem considered only the CONCORDANT case (last point among above characteristics). Nevertheless, thanks to GoF&#39;s famous&nbsp;<a href="https://en.wikipedia.org/wiki/Adapter_pattern"><code>Adapter design pattern</code></a>&nbsp;(see <a href="https://www.oreilly.com/library/view/design-patterns-elements/0201633612/">GoF design patterns</a>), we would like to extend the idea, while exploiting the original philosophy of the design pattern to create a data-adapter (here onwards simply calling it adapter unless specified otherwise), in order to create such a pipeline among given discordant producer/consumers (given a condition we identify an adapter). The point of interest in doing so is to maintain separation of concerns, and, thus, to achieve&nbsp;simplified pipeline with detached data transformation logic.</p>
+<p>Although the original producer-consumer problem considered only the CONCORDANT case (third (3<sup>rd</sup>) point among above characteristics). Nevertheless, thanks to GoF&#39;s famous&nbsp;<a href="https://en.wikipedia.org/wiki/Adapter_pattern"><code>Adapter design pattern</code></a>&nbsp;(see <a href="https://www.oreilly.com/library/view/design-patterns-elements/0201633612/">GoF design patterns</a>), we would like to extend the idea, while exploiting the original philosophy of the design pattern to create a data-adapter (here onwards simply calling it adapter unless specified otherwise), in order to create such a pipeline among given discordant producer/consumers (given a condition we identify an adapter). The point of interest in doing so is to maintain separation of concerns, and, thus, to achieve&nbsp;simplified pipeline with detached data transformation logic.</p>
 
 <p>Why <code>&quot;.Pipe&quot;</code>? To understand it, for a moment, imagine the date-flow and think of a simplistic view of data originating at producer&nbsp;and absorbed by consumer. Think of,&nbsp;as if there are two person (P and C) and P is handing over whatever he got to C. With this, I think of <code>UNIX.</code> As, with&nbsp;<code>UNIX</code>&nbsp;terminal when we want to create such a chain of actions (passing data between commands); it exactly lets us do that, thanks to famous <code>&quot;|&quot; (a.k.a. pipe)</code> syntax (see some <a href="https://en.wikipedia.org/wiki/Pipeline_(Unix)">examples here</a>), and, <strong>so I thought of this&nbsp;name</strong>.</p>
 
@@ -83,7 +83,7 @@
 <p>Assume, we need to parse a file, lets say CSV for simplicity sake, that contains some considerable number of records (i.e. rows). Further assume that we need to store these records to some database; without any additional computation on the data.</p>
 </blockquote>
 
-<p>Here we observe two (2) <strong>distinct&nbsp;and uncorrelated</strong> sub-tasks: read the file (data producer) &amp; save data in database (data consumer). Now, consider two(2) classic (non-concurrent) implementation approaches:</p>
+<p>Here we observe two (2) <strong>distinct&nbsp;and uncorrelated</strong> sub-tasks: read the file (producer) &amp; save data in database (consumer). Now, consider two(2) classic (non-concurrent) implementation approaches:</p>
 
 <ol>
 	<li>Read full file -&gt; make objects&#39; list&nbsp;-&gt; push the list to db (lets call it <strong>Approach1</strong>)
@@ -110,7 +110,7 @@
 <ul>
 	<li>producer will create several lists (pre-defined size)&nbsp;while reading the file =&gt; several list of smaller size (i.e. chunks). Chunk size can be adjusted to have optimal bulk insert, let say.</li>
 	<li>consumer will take each list (chunk) and push it to DB =&gt; we can span many consumers as each push is independent</li>
-	<li>our glue code of <code>.Pipe</code>&nbsp;will facilitate the channeling of chunks (lists) from producer to consumer<u><strong>s</strong></u>&nbsp;=&gt; assuming this data transfer time is negligible and buffer is unbounded</li>
+	<li>our glue code of <code>.Pipe</code>&nbsp;will facilitate the channeling of chunks (lists) from producer to consumers&nbsp;=&gt; assuming this data transfer time is negligible and buffer is unbounded</li>
 	<li>total latency would be : file_handling_time + <strong>k</strong> x chunk_db_transaction_time&nbsp; =&gt; where k = 1/c x (total_chunk_count - chunk_pushed_during_file_operation)&nbsp;and c = total_consumer_count (assuming degradation in db performance due to parallel push is negligible)</li>
 </ul>
 
@@ -119,7 +119,7 @@
 <ol>
 	<li>As a benefit of concurrency between producer and consumer: we are able to consume data (in this case, push it to db) while producer hasn&#39;t finished his work (in this case, reading file)</li>
 	<li>As a benefit of concurrency among consumers: we are able to reduce the end-to-end latency (in this case, by a factor of 1/c where c is count of consumers)</li>
-	<li>Thus, speaking theoritically, we can add total of n (where n ~ total_reco7rds / chunck_size) consumers in our pipeline to obtain minimal latency = file_handling_time + chunk_db_transaction_time</li>
+	<li>Thus, speaking theoritically, we can add total of n (where n ~ total_records / chunck_size) consumers in our pipeline to obtain minimal latency ~ file_handling_time + chunk_db_transaction_time</li>
 </ol>
 
 <p>In general, as total number of records increases, we would notice (left-most is lowest and right-most is highest):&nbsp;<strong>(lower the better)</strong></p>
@@ -151,7 +151,7 @@
 
 <p>During my college days, I always asked myself, every time I took the operating system book in my hand, why the dinosaurs? (unfortunately, I cannot find the original cover but <a href="https://images-na.ssl-images-amazon.com/images/I/51spVw9pGKL._SX348_BO1,204,203,200_.jpg">this picture should do for the moment</a>)&nbsp;And, I used to cajole myself that the book is not as terrifying as <a href="https://www.imdb.com/title/tt0107290/">Jurassic Park of Steven Spielberg</a>. I still wonder, sometimes, was it to symbolize operating system as gigantic/fascinating/stupefying as dinosaur or was it just to overwhelm a sophomore. Nonetheless, it is NEITHER the right time NOR the subject of our discussion, thus, whatever the case, during this discussion there are no dinosaurs and we will try our best to keep things simple.</p>
 
-<h4>Creating Interfaces</h4>
+<h3>Creating Interfaces</h3>
 
 <p>To begin with, lets have a look at following simple picture to understand a few of our design choices and more importantly what we are actually trying to build:</p>
 
@@ -167,12 +167,12 @@
 
 <p>In order to design our solution, we would like to focus on the <code>buffer</code>&nbsp;as it is going to be the central piece of our solution; and, its implementation is going to be impacted by the producer side requirements as well as of consumer, plus we should not forget that we need to diffuse all the features to our design. Thus, in order <strong>NOT</strong> to complicate the discussion with everything explained in a single silo based proposed solution, we further sub-divide the discussion into several smaller pieces as follow:</p>
 
-<h3>1. Our Producer and Buffer</h3>
+<h4>1. Our Producer and Buffer</h4>
 
-<p>As our solution is producer agnostic, i.e. we do not know how exactly the producer would produce an item, we can only define a generic signature of it and thus our producer can be defined as simple as following <code>delegate</code>:</p>
+<p>As our solution is producer agnostic, i.e. we do not know how exactly the producer would produce an item (i.e. the actual producer implementation). In this case,&nbsp;we can only define a generic signature of it and thus our producer can be defined as simple as following <code>delegate</code>:</p>
 
 <pre lang="cs">
-<strong>//NOTE: Some explanations are provided as comments</strong>
+<strong>//NOTE: Some explanation are provided as comments</strong>
 
 public delegate Task&nbsp;ProduceAsync&lt;TP&gt;(IProducerBuffer&lt;TP&gt; buffer, CancellationToken token);
 
@@ -202,7 +202,7 @@ public interface IProducer&lt;TP&gt; : IDisposable
 <p>Now actual producer implementation can simply inherit&nbsp;<code>IProducer&lt;TP&gt;</code>&nbsp;interface. Though, we have designed how to provide buffer access to our producer, however, we haven&#39;t yet know how&nbsp;to populate the buffer. Thus, our first requirement at buffer side, i.e. to have some method for population. Lets look at it:</p>
 
 <pre lang="cs">
-<strong>//NOTE: Some explanations are provided as comments</strong>
+<strong>//NOTE: Some explanation are provided as comments</strong>
 
 public interface IProducerBuffer&lt;T&gt;
 {
@@ -222,9 +222,9 @@ public interface IProducerBuffer&lt;T&gt;
 
 <p>Thus, till now, we have producer and it&#39;s buffer interfaces, and so, the means to add produced items to buffer. Now, lets look at the consumer side requirements next.</p>
 
-<h3>2. Our Consumer and Buffer</h3>
+<h4>2. Our Consumer and Buffer</h4>
 
-<p>Similar to producer, our solution is also consumer agnostic, thus, in a similar way we can define following&nbsp;consumer interface:</p>
+<p>Similar to producer, our solution is also consumer agnostic (i.e. unaware of the the actual consumer implementation), thus, in a similar way we can define following&nbsp;consumer interface:</p>
 
 <pre lang="cs">
 //IDisposable to avail Dispose method to perform resource clean-up
@@ -266,27 +266,23 @@ public interface IConsumerBuffer&lt;T&gt;
     //to retrieve an item
 &nbsp;   //returns true when item was available within given millisecond timeout
     bool TryGet(int millisecTimeout, CancellationToken token, out T data);
-&nbsp;   //we add millisecond timout to support our <strong>discordant pipeline</strong> feature
-&nbsp;   //     millisecTimeout=-1 means wait infinitely
+&nbsp;   //we add millisecond timout to support a special case of our <strong>discordant pipeline</strong> feature
+&nbsp;   //     anyway we can always pass millisecTimeout=<strong>Timeout.Infinite</strong> i.e. wait infinitely
 }
 </pre>
 
-<h3>3. Keeping Both Shards</h3>
+<h4>3. Keeping Both Shards</h4>
 
-<p>Until this point, we are trying to fulfill all the requirements, and following list quickly covers those points:</p>
+<p>Until this point, we are trying to fulfill all the requirements, and following item list quickly covers those points:</p>
 
 <ul>
 	<li>Buffer Size: We will control using&nbsp;a <code>Ctor</code>&nbsp;parameter.</li>
 	<li>Losslessness: controlled based on millisecondTimeout parameter of <code>TryAdd</code> method. (Note: <code>Add</code> method is similar to <code>TryAdd(item, Timeout.Infinite)</code>)</li>
 	<li>Interruptibility: controlled using <code>CancellationToken</code></li>
-	<li>Attachability: end-user controlled</li>
+	<li>Attachability: end-user controlled (we will see use-cases separately)</li>
 </ul>
 
-<p>Now, the only remaining point is <strong>Concordance</strong>. In fact, the way we have defined our interfaces above, we have intentionally kept <code>TP</code>&nbsp;as producer type parameter and <code>TC</code> as consumer type parameter. Although, such different symbols (type placeholders) hardly matters in <code>generics</code>, nonetheless, it is to impose the idea that we will inject same <code>&lt;data-type&gt;</code>&nbsp;for both <code>TP</code> and <code>TC</code>&nbsp;during concordant pipeline construction and different <code>&lt;data-types&gt;</code>&nbsp;for discordant pipeline.&nbsp;With this idea in mind, we keep both shards of our <code>*Buffer interface</code>. Even&nbsp;from abstraction point of view, we would be wise to <strong>NOT</strong> to expose <code>TryGet</code>&nbsp;method to producer whose only interest is to fill the buffer.</p>
-
-<h3>4. Plugging Adapter</h3>
-
-<p>To fulfill our last requirement, we need to review our <strong>Image 1</strong> as shown above; as having different <code>datatype</code>s will create conflict. Such conflict&nbsp;can be shown in following image:</p>
+<p>Now, the only remaining point is <strong>Concordance</strong>. In fact, the way we have defined our interfaces above, we have intentionally kept <code>TP</code>&nbsp;as producer type parameter and <code>TC</code> as consumer type parameter. Although, such different symbols (type placeholders) hardly matters in <code>generics</code>, nonetheless, it is to impose the idea that we will inject <strong>IDENTICAL</strong>&nbsp;<code>&lt;data-type&gt;</code>&nbsp;for both <code>TP</code> and <code>TC</code>&nbsp;during concordant pipeline construction and different <code>&lt;data-types&gt;</code>&nbsp;for discordant pipeline.&nbsp;Furthermore, for a rapid understanding&nbsp;of such a conflict, we offer following illustration:</p>
 
 <p><img align="middle" alt="dicordant-shared-buffer" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Discordent-PPC-Simple-Buffer-Sharing.PNG" /></p>
 
@@ -298,13 +294,17 @@ public interface IConsumerBuffer&lt;T&gt;
 	<li>only for a special case, that we call concordant pipeline, when all the three (3) datatypes are same i.e. <code>&lt;TP&gt; = &lt;TC&gt; = &lt;T&gt;</code>&nbsp;our current pipeline can work</li>
 </ul>
 
-<p>Before we talk about how to overcome this limitation, let&#39;s visualize what our adapter does logically based on below picture:</p>
+<p>Thus, above design will not work in case of discordant pipeline. With this idea in mind, we keep both shards of our <code>*Buffer interface</code>, for the moment. Even&nbsp;from the point of view of &quot;<code>abstraction</code>&quot;, we would be wise to <strong>NOT</strong> to expose <code>TryGet</code>&nbsp;method to producer whose only interest is to fill the buffer.</p>
+
+<h4>4. Plugging Adapter</h4>
+
+<p>To fulfill our last requirement, we need to review our <strong>Image 2</strong>&nbsp;as shown above; as having different <code>datatype</code>s will create conflict. But, before we talk about how to overcome this limitation using adapter, let&#39;s visualize what adapter must do logically based on below picture:</p>
 
 <p><img align="middle" alt="ppc-adapter" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Adapter-PPC.PNG" /></p>
 
-<p>Thus, if we consider our adapter as a black box, we expect that by passing an item of <code>type &lt;TI&gt;</code>&nbsp;it will output an object of <code>type &lt;TO&gt;</code>. As per our requirements, thus, if we pass produced items of type <code>&lt;TP&gt;</code> and convert those into consumer&#39;s type <code>&lt;TC&gt;</code>&nbsp;it should work.</p>
+<p>Thus, if we consider provided adapter as a black box, we expect that by passing an object of <code>type &lt;TI&gt;</code>&nbsp;it will output an object of <code>type &lt;TO&gt;</code>. As per our requirements, thus, if we pass produced items of type <code>&lt;TP&gt;</code> and convert those into consumer&#39;s type <code>&lt;TC&gt;</code>;&nbsp;our pipeline should work.</p>
 
-<p><strong>IMPORTANT:</strong>&nbsp;In order to remain generic, for the concordant case, when <code>TC = TP = T</code> (thus, <code>TI = TO</code>), we prepare a default <strong>IDENTITY</strong>&nbsp;adapter that does <strong>NOTHING</strong>&nbsp;i.e. it returns us back&nbsp;the same item that we provided as input without making any change in it. Following C# .Net code snippet represent this idea:</p>
+<p><strong>IMPORTANT:</strong>&nbsp;In order to remain generic, for the concordant case, when <code>TC = TP = T</code> (thus, <code>TI = TO</code>), we prepare a default <strong>IDENTITY</strong>&nbsp;adapter that does <strong>NOTHING</strong>&nbsp;i.e. it returns us back&nbsp;the same item that we provided as input without making any change in it. Following C# .Net code snippet roughly represents this idea:</p>
 
 <pre lang="cs">
 public static TI IdentityAdapter&lt;TI&gt;(TI input)
@@ -328,6 +328,104 @@ public static TI IdentityAdapter&lt;TI&gt;(TI input)
 	<br />
 	<img align="middle" alt="after-consumer" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Adapter-PPC-before-consumer.PNG" /></li>
 </ol>
+
+<p>Among given implementation choices, we opt to choose the third (3<sup>rd</sup>) option, i.e. injecting adapter between buffer and consumer, because:</p>
+
+<ul>
+	<li>By injecting&nbsp;adapter between producer and buffer,&nbsp;we complicate the producer implementation:
+	<ul>
+		<li>by demanding producer to make adapter call</li>
+		<li>by futher increasing the risk of mal-implementation for delicate corner-case object transformations (we will see one example of such a transformation)</li>
+		<li><strong>ProduceAsync</strong>&nbsp;method signature will be burdened with third (3<sup>rd</sup>) parameter&nbsp;(adapter instance)</li>
+	</ul>
+	</li>
+	<li>By injecting adapter between two buffers, we complicate our Pipeline implementation:
+	<ul>
+		<li>we need to maintain two (2) buffers</li>
+		<li>we need to synchronize two (2) buffer loops (buffer drainage)</li>
+	</ul>
+	</li>
+</ul>
+
+<p>By injecting&nbsp;adapter between buffer and consumer, we only&nbsp;need to maintain a single buffer (thus, single drainage loop), but also, we make a transperant call to adapter just at right time (before feeding data to consumer). And, by doing so we hide all these intricated implementation details behind our <code>.Pipe</code>&nbsp;call and offer&nbsp;complete seperation of concerns among producer, consumer and adapter so that all these three (3) pieces of code can evolve independently.</p>
+
+<h4>5. Vicious cycle of Agnosticism</h4>
+
+<p>Up until now, we kept our design both producer and consumer agnostic, however, in order to keep the complexity out of our discussion we assumed a naive approach to the Adapter. As shown above, we provided an object instance, of some given type, to our adapter and receive back an object instance of a well defined type. However, as we are close to finalize our interface design, we would like to get rid of this give-n-take assumption about our adapter. In fact, we desire to finalize the <strong>design as Adapter agnostic too!&nbsp;</strong>And, this is the only way we are sure that we have provided full liberty to the end-user to achieve the desired end result from such pipeline without hacking/patching business logic. End-user can then focus on actual logic and associated data-model without worrying about mundane technical plumbing between producer, consumer, and adapter.</p>
+
+<p>To achieve such Adapter agnostic design, we propose following interfacing:</p>
+
+<pre lang="cs">
+<strong>//NOTE: Some explanation are provided as comments</strong> 
+
+public interface IDataAdapter&lt;TP, TC&gt;
+{
+&nbsp;   //accept the buffer and cancellation token and outs consumable object
+&nbsp;   //   returns true until buffer is <strong>NOT</strong> empty! else false.
+&nbsp;   bool TryGet(IConsumerBuffer&lt;TP&gt; buffer, CancellationToken token, out TC consumable);
+
+&nbsp;   //we notice that we provide buffer containing produced object instances
+&nbsp;   //   with <strong>IConsumerBuffer </strong>interface, <b>thus exposing TryGet method!</b>
+&nbsp;   //Actual adapter implementation can then recover produced item (or several items)
+&nbsp;   //    to construct an item of type <strong>TC</strong>
+}
+</pre>
+
+<p>Now as we have defined all the three (3) key parts of the pipeline, given any task and assuming that our pipeline can be implemented, we can achieve an optimal solution by thinking in terms of these sub-components as shown below:</p>
+
+<p><img align="middle" alt="thinker" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Adapter-PPC-thoughts.PNG" /></p>
+
+<p>Following itemized list summarizes the above idea:</p>
+
+<ul>
+	<li>First we work on optimal strategy to produce items</li>
+	<li>Second we finalize an optimal strategy to consume those produced items</li>
+	<li>If an adapter is required, we separately write the adapter otherwise we use IDENTITY adapter</li>
+	<li>We plug all the three (3) pieces to the pipeline</li>
+</ul>
+
+<h3>Implementing Interfaces</h3>
+
+<p>As we are aware that our solution is producer/consumer/adapter agnostic, thus, their respective concrete implementation is not our concern; once we have exposed our interfaces, end-user will inherit those to use in the pipeline. However, it would be nice to implement some default Adapters in order to cover some mundane use cases. Thus, in this section we will propose following implementations:</p>
+
+<ol>
+	<li>Adapters:
+	<ul>
+		<li>Identity Adapter</li>
+		<li>Awaitable List Adapter</li>
+	</ul>
+	</li>
+	<li>Attached pipeline</li>
+	<li>Detached&nbsp;pipeline</li>
+</ol>
+
+<h4>1. Identity Adapter</h4>
+
+<p>To start simple, we choose to implement identity adapter first and if we remember from above, it should just return the produced item as it is. we achieve it in following manner:</p>
+
+<pre lang="cs">
+<strong>//NOTE: Some explanation are provided as comments
+
+</strong>//single type generic satisfying TP = TC = T
+public class IdentityAdapter&lt;T&gt; : IDataAdapter&lt;T, T&gt;
+{
+    public bool TryGet(IConsumerBuffer&lt;T&gt; buffer, CancellationToken token, out T consumable)
+&nbsp; &nbsp; {
+&nbsp;       //we just transfer the call on the buffer and return boolean
+&nbsp;       //   status and also the object as it.
+&nbsp; &nbsp; &nbsp; &nbsp; return buffer.TryGet(<strong>Timeout.Infinite</strong>, token, out consumable);
+
+&nbsp;       //NOTE that we pass INFINITE timeout on buffer, thus:
+&nbsp;       //if all buffered items are processed <strong>AND</strong>&nbsp;producers are done...
+&nbsp;       //   buffer will return false. Thus satisfying adapter boolean status.
+&nbsp;       //else buffer will return True and out an instance of the produced object
+&nbsp;       //   this again fulfils adapter behaviour.
+&nbsp; &nbsp; }
+}
+</pre>
+
+<p>&nbsp;</p>
+
 
 <p>MORE TO COMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE....</p>
 
