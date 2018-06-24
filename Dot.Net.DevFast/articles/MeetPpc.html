@@ -401,21 +401,22 @@ public interface IDataAdapter&lt;TP, TC&gt;
 
 <h4>1. Identity Adapter</h4>
 
-<p>To start simple, we choose to implement identity adapter first and if we remember from above, it should just return the produced item as it is. we achieve it in following manner:</p>
+<p>To start simple, we choose to implement identity adapter first and if we remember from above, it should just return the produced item as it is. We achieve it in following manner:</p>
 
 <pre lang="cs">
 <strong>//NOTE: Some explanation are provided as comments
 
-</strong>//single type generic satisfying TP = TC = T
+</strong>//generic adapter satisfying <strong>TP = TC = T</strong>
 public class IdentityAdapter&lt;T&gt; : IDataAdapter&lt;T, T&gt;
 {
     public bool TryGet(IConsumerBuffer&lt;T&gt; buffer, CancellationToken token, out T consumable)
 &nbsp; &nbsp; {
 &nbsp;       //we just transfer the call on the buffer and return boolean
 &nbsp;       //   status and also the object as it.
-&nbsp; &nbsp; &nbsp; &nbsp; return buffer.TryGet(<strong>Timeout.Infinite</strong>, token, out consumable);
 
-&nbsp;       //NOTE that we pass INFINITE timeout on buffer, thus:
+&nbsp; &nbsp; &nbsp; &nbsp; return buffer.TryGet(Timeout.Infinite, token, out consumable);
+
+&nbsp;       //<strong>NOTE:</strong> we pass INFINITE timeout on buffer, thus:
 &nbsp;       //if all buffered items are processed <strong>AND</strong>&nbsp;producers are done...
 &nbsp;       //   buffer will return false. Thus satisfying adapter boolean status.
 &nbsp;       //else buffer will return True and out an instance of the produced object
@@ -424,8 +425,60 @@ public class IdentityAdapter&lt;T&gt; : IDataAdapter&lt;T, T&gt;
 }
 </pre>
 
-<p>&nbsp;</p>
+<h4>2. Awaitable List Adapter</h4>
 
+<h5>A word before implementation</h5>
+
+<p>Sometimes we encounter a case when consuming single item&nbsp;leads to a suboptimal solution; and processing those in group&nbsp;(chunks) is technically cost-effective. A few of such examples are:</p>
+
+<ul>
+	<li>Database&nbsp;bulk inserts are cheaper</li>
+	<li>Batch processing</li>
+	<li>Object array streaming ... so on and so forth...</li>
+</ul>
+
+<p>In order to handle such use cases, we have decided to implement awaitable list&nbsp;adapter, so that end-user is relieved and use it out of the box. The idea is to recover <code>List&lt;TC&gt;</code>&nbsp;on each&nbsp;<code>TryGet</code> call on the adapter as shown below in image 7.</p>
+
+<p><strong>NOTE:</strong>&nbsp;Now onwards, we will use words &quot;chunk&quot; and &quot;list&quot; interchangeably, i.e., unless and until specified otherwise, list would mean a subset (a part of) of whole data.</p>
+
+<p><img align="middle" alt="awaitable-list-adapter" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Adapter-PPC-AwaitableList.PNG" /></p>
+
+<p>As soon as we think about list, following design related options comes to mind related to <code>TryGet</code> method:</p>
+
+<ul>
+	<li>Should we always return identically&nbsp;sized&nbsp;lists?</li>
+	<li>Should we return variable size list, <strong>with</strong> some cap on size?</li>
+	<li>Should we return list&nbsp;<strong>without</strong> any cap on size?</li>
+</ul>
+
+<p>For the first (1<sup>st</sup>) option, given the fact that it might <strong>NOT</strong> be possible to generate identically sized list (consider if we have total of 103 items and we fixed the list size to be 10, then the last list will contain ONLY 3 items instead of 10); yet, <strong>we choose to implement it</strong>&nbsp;based on belief that consumer logic is indifferent to the size of the chunk (and <strong>it should!</strong>) and the whole idea behind consuming chunks (instead of single instance) is to reduce associated technical latency.</p>
+
+<p>The second (2<sup>nd</sup>) option&nbsp;is a generalized case of the first option, so we will implemented it.</p>
+
+<p>We choose to <strong>opt out</strong> the third (3<sup>rd</sup>) option because it again questions the usefulness of spanning multiple consumers. Lets rethink that if we are able to supply unbounded lists to consumers then perhaps we are able to supply available items to a single consumer alone irrespective of the fact whether consumer has a&nbsp;capacity to handle such a list or not; then why to span other consumers concurrently? Thus, we observe that our design is going astray (based on our pre-decided goal).</p>
+
+<p><strong>IMPORTANT:</strong>&nbsp;Perhaps due to our myopic vision, we dropped implementing third (3<sup>rd</sup>) option. Still, not to forget that our pipeline is Adapter agnostic, thus, end-user can always construct their own version of Adapter and plug in it.</p>
+
+<h5>What&#39;s the BIG idea;&nbsp;ain&#39;t it simply List Adapter?</h5>
+
+<p>The short answer is: No.&nbsp;it isn&#39;t!</p>
+
+<p>If you have followed us till now, perhaps you might got an impression that this adapter is all about creating a list, then why we call it &quot;<strong>Awaitable</strong>&quot; list adapter? Why so much noise behind list creation? Ain&#39;t it as simple as spanning a loop? If you have got similar thoughts, then we assure you that its more than that. In fact, to elaborate let&#39;s consider following below listed arguments, but before, we reiterate that our whole work is to reduce latency:</p>
+
+<ul>
+	<li>assume, the moment adapter&#39;s <code>TryGet</code> method was called, the&nbsp;buffer was empty and producers were busy creating object instance, thus, soon we there will be some items in the buffer but for the moment we need to wait (sleep)</li>
+	<li>the actual questions are:
+	<ul>
+		<li>how much should our thread sleep?</li>
+		<li>what if after the wait&nbsp;buffer is still empty, i.e. producers not yet finished populating the buffer? Should we sleep again, then how much?</li>
+		<li>lets say even if we came up with a very clever waiting algorithm, what about the case when producer populates&nbsp;the buffer just after we decided to sleep? (remember everything is running concurrently, so we have no control over the timings of those events!)</li>
+		<li>should we also design thread wake-up mechanism?</li>
+	</ul>
+	</li>
+	<li>even if we decided not to wait and come out of the <code>TryGet</code> call, we do <strong>NOT</strong>&nbsp;escape from this conundrum. And,&nbsp;all above listed wait&nbsp;related questions fall back at <code>caller</code>&nbsp;level (i.e. the code which called <code>TryGet</code> at the first place).</li>
+</ul>
+
+<p>&nbsp;</p>
 
 <p>MORE TO COMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE....</p>
 
