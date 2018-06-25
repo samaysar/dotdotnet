@@ -395,6 +395,7 @@ public interface IDataAdapter&lt;TP, TC&gt;
 		<li>Awaitable List Adapter</li>
 	</ul>
 	</li>
+	<li>Buffer</li>
 	<li>Attached pipeline</li>
 	<li>Detached&nbsp;pipeline</li>
 </ol>
@@ -453,20 +454,20 @@ public class IdentityAdapter&lt;T&gt; : IDataAdapter&lt;T, T&gt;
 
 <p>For the first (1<sup>st</sup>) option, given the fact that it might <strong>NOT</strong> be possible to generate identically sized list (consider if we have total of 103 items and we fixed the list size to be 10, then the last list will contain ONLY 3 items instead of 10); yet, <strong>we choose to implement it</strong>&nbsp;based on belief that consumer logic is indifferent to the size of the chunk (and <strong>it should!</strong>) and the whole idea behind consuming chunks (instead of single instance) is to reduce associated technical latency.</p>
 
-<p>The second (2<sup>nd</sup>) option&nbsp;is a generalized case of the first option, so we will implemented it.</p>
+<p>The second (2<sup>nd</sup>) option&nbsp;is a generalized case of the first option, so we will implemented it but with some assumptions. These assumptions we will underline when we describe our implementation details.</p>
 
 <p>We choose to <strong>opt out</strong> the third (3<sup>rd</sup>) option because it again questions the usefulness of spanning multiple consumers. Lets rethink that if we are able to supply unbounded lists to consumers then perhaps we are able to supply available items to a single consumer alone irrespective of the fact whether consumer has a&nbsp;capacity to handle such a list or not; then why to span other consumers concurrently? Thus, we observe that our design is going astray (based on our pre-decided goal).</p>
 
-<p><strong>IMPORTANT:</strong>&nbsp;Perhaps due to our myopic vision, we dropped implementing third (3<sup>rd</sup>) option. Still, not to forget that our pipeline is Adapter agnostic, thus, end-user can always construct their own version of Adapter and plug in it.</p>
+<p><strong>IMPORTANT:</strong>&nbsp;Perhaps due to our myopic vision, we dropped implementing third (3<sup>rd</sup>) option. Still, not to forget that our pipeline is Adapter agnostic, thus, end-user can always construct their own version of Adapter and plug it&nbsp;in.</p>
 
 <h5>What&#39;s the BIG idea;&nbsp;ain&#39;t it simply List Adapter?</h5>
 
 <p>The short answer is: No.&nbsp;it isn&#39;t!</p>
 
-<p>If you have followed us till now, perhaps you might got an impression that this adapter is all about creating a list, then why we call it &quot;<strong>Awaitable</strong>&quot; list adapter? Why so much noise behind list creation? Ain&#39;t it as simple as spanning a loop? If you have got similar thoughts, then we assure you that its more than that. In fact, to elaborate let&#39;s consider following below listed arguments, but before, we reiterate that our whole work is to reduce latency:</p>
+<p>If you have followed us till now, perhaps you might got an impression that this adapter is all about creating a list, then why we call it &quot;<strong>Awaitable</strong>&quot; list adapter? Ain&#39;t it as simple as spanning a loop? If you have got similar thoughts, then we assure you that its more than that. In fact, to elaborate let&#39;s consider following below listed arguments:</p>
 
 <ul>
-	<li>assume, the moment adapter&#39;s <code>TryGet</code> method was called, the&nbsp;buffer was empty and producers were busy creating object instance, thus, soon we there will be some items in the buffer but for the moment we need to wait (sleep)</li>
+	<li>let&#39;s assume, the moment adapter&#39;s <code>TryGet</code> method was called, the&nbsp;buffer was empty and producers were busy creating object instance, thus, soon we there will be some items in the buffer but for the moment we need to wait (sleep)</li>
 	<li>the actual questions are:
 	<ul>
 		<li>how much should our thread sleep?</li>
@@ -475,10 +476,49 @@ public class IdentityAdapter&lt;T&gt; : IDataAdapter&lt;T, T&gt;
 		<li>should we also design thread wake-up mechanism?</li>
 	</ul>
 	</li>
-	<li>even if we decided not to wait and come out of the <code>TryGet</code> call, we do <strong>NOT</strong>&nbsp;escape from this conundrum. And,&nbsp;all above listed wait&nbsp;related questions fall back at <code>caller</code>&nbsp;level (i.e. the code which called <code>TryGet</code> at the first place).</li>
+	<li>even if we decided not to wait and come out of the <code>TryGet</code> call, we do <strong>NOT</strong>&nbsp;escape from this conundrum. And,&nbsp;all above listed questions fall back at <code>caller</code>&nbsp;level (i.e. the code which called <code>TryGet</code> at the first place).</li>
 </ul>
 
-<p>&nbsp;</p>
+<p>One thing is certain that if we want to reduce on latency (as a part of our goal) we need to have a some kind of notification when the items arrives in the buffer, while our thread is asleep. Similar&nbsp;suggestion can also be found&nbsp;in the <a href="https://en.wikipedia.org/wiki/Producer%E2%80%93consumer_problem">original producer-consumer problem</a>. Now, of course we do not want to build such a mechanism inside the adapter else it would fail the whole purpose (imagine, everytime end-user/we write an adapter we need to write a separate notification mechanism). Nonetheless, if we look into the literature of producer-consumer, we already know that producer is capable of providing such a signal (at the time of adding item in the buffer). Thus, considering both the perspectives, for the moment we assume that buffer is capable of such notification.</p>
+
+<p>Based on&nbsp;above discussion, we got following insights on buffer behaviour (we would use it during buffer&#39;s <code>TryGet</code> implementation):</p>
+
+<ul>
+	<li>If buffer is empty, then within a given timeout period, if an element get populated, it shall come out of sleep as soon as possible (without waiting for the whole duration of sleep) and <code>out</code> the element (with <code>true</code> as boolean return value)</li>
+	<li>If buffer has elements, then irrespective of timeout value, it should immediately <code>out</code> an element (and <code>true</code> as boolean return value)</li>
+	<li>Buffer must be able to capture the <strong>production_finished</strong> signal, in this case, once all the buffered items are consumed, every subsequent <code>TryGet</code> call would result in <code>false</code> boolean return value (<code>out</code> as null/default of type).</li>
+</ul>
+
+<p>For the moment, we can safely assume that if we pass <strong>INFINITE</strong> timeout to <code>buffer.TryGet</code>&nbsp;method, then buffer we return us an item as soon as it gets added. This resolves one of our concerns,&nbsp;but, we still need to work on both fixed-size list&nbsp;and variable-size list preparation.</p>
+
+<h5>Constraints/Assumptions</h5>
+
+<p>While implementing Awaitable List Adapter, we keep following important points in mind:</p>
+
+<ol>
+	<li>We can ALWAYS wait on buffer with INFINITE timeout. If it has elements, it should promptly return one else it should return one as soon as possible.</li>
+	<li>No end-user is interested in consuming empty lists, i.e. list without any item&nbsp;in it. Thus, we only need to supply lists when it has <strong>AT LEAST</strong>&nbsp;one (1)&nbsp;element in it.</li>
+	<li>When end-user&nbsp;runs the pipeline to have FIXED size lists:
+	<ul>
+		<li>One is aware that we&nbsp;might need to wait longer to populate the list if some/every&nbsp;buffer.TryGet ends up waiting for an item.&nbsp;Thus, one is <strong>INDIFFERENT</strong> to time taken to prepare such a list.</li>
+		<li>One is more interested in getting full sized list as it is advantageous based on his pipeline strategy.</li>
+		<li>One is aware that the last chunk might be partial (as discussed above). But his consumer can handle it (1 &lt;= last_chunk_length &lt;= length_of_full_size_list).</li>
+		<li>Thus, we can say he has Infinite timeout but a preference for the size of the list.</li>
+	</ul>
+	</li>
+	<li>When end-user runs the pipeline to have VARIABLE size lists:
+	<ul>
+		<li>One prefers to consume something within given time limit than to wait longer to have the list fully populated.&nbsp;Thus, one is time-bounded.</li>
+		<li>One is aware that every chunk might be of different size and&nbsp;his consumer can handle it (1 &lt;= chunk_size &lt;= max_length)</li>
+		<li>One is aware that he might need to wait longer to have the first (1<sup>st</sup>) item of the list if&nbsp;buffer.TryGet ends up waiting for the first (1<sup>st</sup>) item</li>
+		<li>Thus, we can say he has preferences for timeout duration and for maximum size of the list.</li>
+	</ul>
+	</li>
+</ol>
+
+<p><strong>NOTE: We discuss some possible use-cases&nbsp;of these adapters separately (below) in the article.</strong></p>
+
+<h5>Implementation</h5>
 
 <p>MORE TO COMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE....</p>
 
