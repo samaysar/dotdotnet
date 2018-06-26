@@ -26,30 +26,30 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             await producer.Pipe(consumer).ConfigureAwait(false);
             await producer.Pipe(listConsumer, 3).ConfigureAwait(false);
             await producer.Pipe(listConsumer, 3, 10).ConfigureAwait(false);
-            await producer.Pipe(consumer, new IdentityAdapter<object>()).ConfigureAwait(false);
+            await producer.Pipe(consumer, IdentityAwaitableAdapter<object>.Default).ConfigureAwait(false);
 
             await ProducerFunc(producer).Pipe(consumer).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(listConsumer, 3).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(listConsumer, 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).Pipe(consumer, new IdentityAdapter<object>())
+            await ProducerFunc(producer).Pipe(consumer, IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerAction(producer).Pipe(consumer).ConfigureAwait(false);
             await ProducerAction(producer).Pipe(listConsumer, 3).ConfigureAwait(false);
             await ProducerAction(producer).Pipe(listConsumer, 3, 10).ConfigureAwait(false);
-            await ProducerAction(producer).Pipe(consumer, new IdentityAdapter<object>())
+            await ProducerAction(producer).Pipe(consumer, IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await producer.Pipe(ConsumerFunc(consumer)).ConfigureAwait(false);
             await producer.Pipe(ConsumerFunc(consumer), 3).ConfigureAwait(false);
             await producer.Pipe(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
-            await producer.Pipe(ConsumerFunc(consumer), new IdentityAdapter<object>())
+            await producer.Pipe(ConsumerFunc(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerFunc(producer).Pipe(ConsumerFunc(consumer)).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(ConsumerFunc(consumer), 3).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).Pipe(ConsumerFunc(consumer), new IdentityAdapter<object>())
+            await ProducerFunc(producer).Pipe(ConsumerFunc(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerAction(producer).Pipe(ConsumerFunc(consumer)).ConfigureAwait(false);
@@ -57,19 +57,19 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             await ProducerAction(producer).Pipe(ConsumerFunc(consumer), 3, 10)
                 .ConfigureAwait(false);
             await ProducerAction(producer)
-                .Pipe(ConsumerFunc(consumer), new IdentityAdapter<object>())
+                .Pipe(ConsumerFunc(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await producer.Pipe(ConsumerAction(consumer)).ConfigureAwait(false);
             await producer.Pipe(ConsumerAction(consumer), 3).ConfigureAwait(false);
             await producer.Pipe(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
-            await producer.Pipe(ConsumerAction(consumer), new IdentityAdapter<object>())
+            await producer.Pipe(ConsumerAction(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerFunc(producer).Pipe(ConsumerAction(consumer)).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(ConsumerAction(consumer), 3).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).Pipe(ConsumerAction(consumer), new IdentityAdapter<object>())
+            await ProducerFunc(producer).Pipe(ConsumerAction(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerAction(producer).Pipe(ConsumerAction(consumer)).ConfigureAwait(false);
@@ -77,7 +77,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             await ProducerAction(producer).Pipe(ConsumerAction(consumer), 3, 10)
                 .ConfigureAwait(false);
             await ProducerAction(producer)
-                .Pipe(ConsumerAction(consumer), new IdentityAdapter<object>())
+                .Pipe(ConsumerAction(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
         }
 
@@ -91,30 +91,30 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             await producer.Pipe(consumer).ConfigureAwait(false);
             await producer.Pipe(listConsumer, 3).ConfigureAwait(false);
             await producer.Pipe(listConsumer, 3, 10).ConfigureAwait(false);
-            await producer.Pipe(consumer, new IdentityAdapter<object>()).ConfigureAwait(false);
+            await producer.Pipe(consumer, IdentityAwaitableAdapter<object>.Default).ConfigureAwait(false);
 
             await ProducerFunc(producer).Pipe(consumer).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(listConsumer, 3).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(listConsumer, 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).Pipe(consumer, new IdentityAdapter<object>())
+            await ProducerFunc(producer).Pipe(consumer, IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerAction(producer).Pipe(consumer).ConfigureAwait(false);
             await ProducerAction(producer).Pipe(listConsumer, 3).ConfigureAwait(false);
             await ProducerAction(producer).Pipe(listConsumer, 3, 10).ConfigureAwait(false);
-            await ProducerAction(producer).Pipe(consumer, new IdentityAdapter<object>())
+            await ProducerAction(producer).Pipe(consumer, IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await producer.Pipe(ConsumerFunc(consumer)).ConfigureAwait(false);
             await producer.Pipe(ConsumerFunc(consumer), 3).ConfigureAwait(false);
             await producer.Pipe(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
-            await producer.Pipe(ConsumerFunc(consumer), new IdentityAdapter<object>())
+            await producer.Pipe(ConsumerFunc(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerFunc(producer).Pipe(ConsumerFunc(consumer)).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(ConsumerFunc(consumer), 3).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).Pipe(ConsumerFunc(consumer), new IdentityAdapter<object>())
+            await ProducerFunc(producer).Pipe(ConsumerFunc(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerAction(producer).Pipe(ConsumerFunc(consumer)).ConfigureAwait(false);
@@ -122,19 +122,19 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             await ProducerAction(producer).Pipe(ConsumerFunc(consumer), 3, 10)
                 .ConfigureAwait(false);
             await ProducerAction(producer)
-                .Pipe(ConsumerFunc(consumer), new IdentityAdapter<object>())
+                .Pipe(ConsumerFunc(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await producer.Pipe(ConsumerAction(consumer)).ConfigureAwait(false);
             await producer.Pipe(ConsumerAction(consumer), 3).ConfigureAwait(false);
             await producer.Pipe(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
-            await producer.Pipe(ConsumerAction(consumer), new IdentityAdapter<object>())
+            await producer.Pipe(ConsumerAction(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerFunc(producer).Pipe(ConsumerAction(consumer)).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(ConsumerAction(consumer), 3).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).Pipe(ConsumerAction(consumer), new IdentityAdapter<object>())
+            await ProducerFunc(producer).Pipe(ConsumerAction(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerAction(producer).Pipe(ConsumerAction(consumer)).ConfigureAwait(false);
@@ -142,7 +142,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             await ProducerAction(producer).Pipe(ConsumerAction(consumer), 3, 10)
                 .ConfigureAwait(false);
             await ProducerAction(producer)
-                .Pipe(ConsumerAction(consumer), new IdentityAdapter<object>())
+                .Pipe(ConsumerAction(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
         }
 
@@ -156,30 +156,30 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             await producer.Pipe(consumer).ConfigureAwait(false);
             await producer.Pipe(listConsumer, 3).ConfigureAwait(false);
             await producer.Pipe(listConsumer, 3, 10).ConfigureAwait(false);
-            await producer.Pipe(consumer, new IdentityAdapter<object>()).ConfigureAwait(false);
+            await producer.Pipe(consumer, IdentityAwaitableAdapter<object>.Default).ConfigureAwait(false);
 
             await ProducerFunc(producer).Pipe(consumer).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(listConsumer, 3).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(listConsumer, 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).Pipe(consumer, new IdentityAdapter<object>())
+            await ProducerFunc(producer).Pipe(consumer, IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerAction(producer).Pipe(consumer).ConfigureAwait(false);
             await ProducerAction(producer).Pipe(listConsumer, 3).ConfigureAwait(false);
             await ProducerAction(producer).Pipe(listConsumer, 3, 10).ConfigureAwait(false);
-            await ProducerAction(producer).Pipe(consumer, new IdentityAdapter<object>())
+            await ProducerAction(producer).Pipe(consumer, IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await producer.Pipe(ConsumerFunc(consumer)).ConfigureAwait(false);
             await producer.Pipe(ConsumerFunc(consumer), 3).ConfigureAwait(false);
             await producer.Pipe(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
-            await producer.Pipe(ConsumerFunc(consumer), new IdentityAdapter<object>())
+            await producer.Pipe(ConsumerFunc(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerFunc(producer).Pipe(ConsumerFunc(consumer)).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(ConsumerFunc(consumer), 3).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).Pipe(ConsumerFunc(consumer), new IdentityAdapter<object>())
+            await ProducerFunc(producer).Pipe(ConsumerFunc(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerAction(producer).Pipe(ConsumerFunc(consumer)).ConfigureAwait(false);
@@ -187,19 +187,19 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             await ProducerAction(producer).Pipe(ConsumerFunc(consumer), 3, 10)
                 .ConfigureAwait(false);
             await ProducerAction(producer)
-                .Pipe(ConsumerFunc(consumer), new IdentityAdapter<object>())
+                .Pipe(ConsumerFunc(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await producer.Pipe(ConsumerAction(consumer)).ConfigureAwait(false);
             await producer.Pipe(ConsumerAction(consumer), 3).ConfigureAwait(false);
             await producer.Pipe(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
-            await producer.Pipe(ConsumerAction(consumer), new IdentityAdapter<object>())
+            await producer.Pipe(ConsumerAction(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerFunc(producer).Pipe(ConsumerAction(consumer)).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(ConsumerAction(consumer), 3).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).Pipe(ConsumerAction(consumer), new IdentityAdapter<object>())
+            await ProducerFunc(producer).Pipe(ConsumerAction(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerAction(producer).Pipe(ConsumerAction(consumer)).ConfigureAwait(false);
@@ -207,7 +207,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             await ProducerAction(producer).Pipe(ConsumerAction(consumer), 3, 10)
                 .ConfigureAwait(false);
             await ProducerAction(producer)
-                .Pipe(ConsumerAction(consumer), new IdentityAdapter<object>())
+                .Pipe(ConsumerAction(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
         }
 
@@ -221,30 +221,30 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             await producer.Pipe(consumer).ConfigureAwait(false);
             await producer.Pipe(listConsumer, 3).ConfigureAwait(false);
             await producer.Pipe(listConsumer, 3, 10).ConfigureAwait(false);
-            await producer.Pipe(consumer, new IdentityAdapter<object>()).ConfigureAwait(false);
+            await producer.Pipe(consumer, IdentityAwaitableAdapter<object>.Default).ConfigureAwait(false);
 
             await ProducerFunc(producer).Pipe(consumer).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(listConsumer, 3).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(listConsumer, 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).Pipe(consumer, new IdentityAdapter<object>())
+            await ProducerFunc(producer).Pipe(consumer, IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerAction(producer).Pipe(consumer).ConfigureAwait(false);
             await ProducerAction(producer).Pipe(listConsumer, 3).ConfigureAwait(false);
             await ProducerAction(producer).Pipe(listConsumer, 3, 10).ConfigureAwait(false);
-            await ProducerAction(producer).Pipe(consumer, new IdentityAdapter<object>())
+            await ProducerAction(producer).Pipe(consumer, IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await producer.Pipe(ConsumerFunc(consumer)).ConfigureAwait(false);
             await producer.Pipe(ConsumerFunc(consumer), 3).ConfigureAwait(false);
             await producer.Pipe(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
-            await producer.Pipe(ConsumerFunc(consumer), new IdentityAdapter<object>())
+            await producer.Pipe(ConsumerFunc(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerFunc(producer).Pipe(ConsumerFunc(consumer)).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(ConsumerFunc(consumer), 3).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(ConsumerFunc(consumer), 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).Pipe(ConsumerFunc(consumer), new IdentityAdapter<object>())
+            await ProducerFunc(producer).Pipe(ConsumerFunc(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerAction(producer).Pipe(ConsumerFunc(consumer)).ConfigureAwait(false);
@@ -252,19 +252,19 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             await ProducerAction(producer).Pipe(ConsumerFunc(consumer), 3, 10)
                 .ConfigureAwait(false);
             await ProducerAction(producer)
-                .Pipe(ConsumerFunc(consumer), new IdentityAdapter<object>())
+                .Pipe(ConsumerFunc(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await producer.Pipe(ConsumerAction(consumer)).ConfigureAwait(false);
             await producer.Pipe(ConsumerAction(consumer), 3).ConfigureAwait(false);
             await producer.Pipe(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
-            await producer.Pipe(ConsumerAction(consumer), new IdentityAdapter<object>())
+            await producer.Pipe(ConsumerAction(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerFunc(producer).Pipe(ConsumerAction(consumer)).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(ConsumerAction(consumer), 3).ConfigureAwait(false);
             await ProducerFunc(producer).Pipe(ConsumerAction(consumer), 3, 10).ConfigureAwait(false);
-            await ProducerFunc(producer).Pipe(ConsumerAction(consumer), new IdentityAdapter<object>())
+            await ProducerFunc(producer).Pipe(ConsumerAction(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
 
             await ProducerAction(producer).Pipe(ConsumerAction(consumer)).ConfigureAwait(false);
@@ -272,7 +272,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             await ProducerAction(producer).Pipe(ConsumerAction(consumer), 3, 10)
                 .ConfigureAwait(false);
             await ProducerAction(producer)
-                .Pipe(ConsumerAction(consumer), new IdentityAdapter<object>())
+                .Pipe(ConsumerAction(consumer), IdentityAwaitableAdapter<object>.Default)
                 .ConfigureAwait(false);
         }
 

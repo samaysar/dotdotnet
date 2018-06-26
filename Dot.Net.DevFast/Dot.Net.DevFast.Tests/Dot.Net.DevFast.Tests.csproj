@@ -70,9 +70,9 @@
     <Compile Include="Extensions\Internals\PpcAssets\ConcurrentPipelineTest.cs" />
     <Compile Include="Extensions\Internals\PpcAssets\PpcWrappersTest.cs" />
     <Compile Include="Extensions\Ppc\ConcurrentPipelineExtsTest.cs" />
-    <Compile Include="Extensions\Internals\PpcAssets\IdentityAdapterTest.cs" />
+    <Compile Include="Extensions\Ppc\AwaitableAdapterTest.cs" />
     <Compile Include="Extensions\Internals\OthersTest.cs" />
-    <Compile Include="Extensions\Internals\PpcAssets\AwaitableListAdapterTest.cs" />
+    <Compile Include="Extensions\Ppc\AwaitableListAdapterTest.cs" />
     <Compile Include="Extensions\Internals\PpcAssets\PpcBufferTest.cs" />
     <Compile Include="Extensions\Internals\PpcAssets\PpcPipelineTest.cs" />
     <Compile Include="Extensions\Internals\SbReaderTest.cs" />

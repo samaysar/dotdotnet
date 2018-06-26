@@ -377,7 +377,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         public static IConcurrentPipeline<T> ConcurrentPipeline<T>(this IReadOnlyList<IConsumer<T>> consumers,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return consumers.ConcurrentPipeline(new IdentityAdapter<T>(), token, bufferSize);
+            return consumers.ConcurrentPipeline(IdentityAwaitableAdapter<T>.Default, token, bufferSize);
         }
 
         #endregion
@@ -861,7 +861,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return consumers.ConcurrentPipeline(new AwaitableListAdapter<T>(listMaxSize, millisecondTimeout), token,
+            return consumers.ConcurrentPipeline(new IdentityAwaitableListAdapter<T>(listMaxSize, millisecondTimeout), token,
                 bufferSize);
         }
 

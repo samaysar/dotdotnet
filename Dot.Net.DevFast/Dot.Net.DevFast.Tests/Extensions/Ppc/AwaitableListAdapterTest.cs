@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using Dot.Net.DevFast.Etc;
-using Dot.Net.DevFast.Extensions.Internals.PpcAssets;
 using Dot.Net.DevFast.Extensions.Ppc;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
+namespace Dot.Net.DevFast.Tests.Extensions.Ppc
 {
     [TestFixture]
     public class AwaitableListAdapterTest
@@ -19,16 +19,18 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         [TestCase(1)]
         public void Ctor_Throws_Error_When_List_Size_Less_Than_2(int size)
         {
-            var ex = Assert.Throws<DdnDfException>(() =>
-                Assert.Null(new AwaitableListAdapter<object>(size, Timeout.Infinite)));
-            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueLessThanThreshold);
+            var ex = Assert.Throws<TargetInvocationException>(() =>
+                Assert.Null(Substitute.For<AwaitableListAdapter<object, object>>(size, Timeout.Infinite))).InnerException;
+            Assert.True(ex is DdnDfException);
+            Assert.True(((DdnDfException)ex).ErrorCode == DdnDfErrorCode.ValueLessThanThreshold);
         }
 
         [Test]
         public void Ctor_Throws_Error_When_Timeout_Is_Negative_And_Not_Equal_To_Infinite()
         {
-            var ex = Assert.Throws<DdnDfException>(() => Assert.Null(new AwaitableListAdapter<object>(2, -10)));
-            Assert.True(ex.ErrorCode == DdnDfErrorCode.ValueLessThanThreshold);
+            var ex = Assert.Throws<TargetInvocationException>(() => Assert.Null(Substitute.For<AwaitableListAdapter<object, object>>(2, -10))).InnerException;
+            Assert.True(ex is DdnDfException);
+            Assert.True(((DdnDfException)ex).ErrorCode == DdnDfErrorCode.ValueLessThanThreshold);
         }
 
         [Test]
@@ -38,16 +40,38 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         [TestCase(int.MaxValue)]
         public void Ctor_Accepts_All_Positive_Values_For_Timeout_Including_Zero(int timeout)
         {
-            Assert.NotNull(new AwaitableListAdapter<object>(2, timeout));
+            Assert.NotNull(Substitute.For<AwaitableListAdapter<object, object>>(2, timeout));
         }
 
         [Test]
         public void TryGet_Hits_TryGet_Of_ProducerFeed()
         {
             var feed = Substitute.For<IProducerFeed<object>>();
-            var instance = new AwaitableListAdapter<object>(2, Timeout.Infinite);
+            var instance = Substitute.For<AwaitableListAdapter<object, object>>(2, Timeout.Infinite);
             instance.TryGet(feed, CancellationToken.None, out var _);
             feed.Received(1).TryGet(Arg.Any<int>(), CancellationToken.None, out var _);
+        }
+
+        [Test]
+        [TestCase(2)]
+        [TestCase(10)]
+        public void TryGet_Calls_Adapt_When_Feed_Outputs_True(int listSize)
+        {
+            var feed = Substitute.For<IProducerFeed<object>>();
+            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).Returns(x => true);
+            var instance = Substitute.For<AwaitableListAdapter<object, object>>(listSize, Timeout.Infinite);
+            instance.TryGet(feed, CancellationToken.None, out var _);
+            instance.Received(listSize).Adapt(Arg.Any<object>());
+        }
+
+        [Test]
+        public void TryGet_Does_Not_Call_Adapt_When_Feed_Outputs_False()
+        {
+            var feed = Substitute.For<IProducerFeed<object>>();
+            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).Returns(x => false);
+            var instance = Substitute.For<AwaitableListAdapter<object, object>>(2, Timeout.Infinite);
+            instance.TryGet(feed, CancellationToken.None, out var _);
+            instance.Received(0).Adapt(Arg.Any<object>());
         }
 
         [Test]
@@ -69,7 +93,8 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 Interlocked.Decrement(ref localFeedSize);
                 return true;
             });
-            var instance = new AwaitableListAdapter<object>(listSize, Timeout.Infinite);
+            var instance = Substitute.For<AwaitableListAdapter<object, object>>(listSize, Timeout.Infinite);
+            instance.Adapt(Arg.Any<object>()).Returns(x => x[0]);
             Assert.True(instance.TryGet(feed, CancellationToken.None, out var newList));
             Assert.NotNull(newList);
             Assert.True(newList.Count.Equals(Math.Min(listSize, feedSize)));
@@ -79,13 +104,14 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         [Test]
         [TestCase(20)]
         [TestCase(2)]
-        public void TryGet_With_Infinite_Timeout_Returns_Empty_List_When_Feed_Is_Empty(int listSize)
+        public void TryGet_With_Infinite_Timeout_Returns_Default_Of_List_When_Feed_Is_Empty(int listSize)
         {
             var feed = Substitute.For<IProducerFeed<object>>();
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).ReturnsForAnyArgs(x => false);
-            var instance = new AwaitableListAdapter<object>(listSize, Timeout.Infinite);
+            var instance = Substitute.For<AwaitableListAdapter<object, object>>(listSize, Timeout.Infinite);
+            instance.Adapt(Arg.Any<object>()).Returns(x => x[0]);
             Assert.False(instance.TryGet(feed, CancellationToken.None, out var newList));
-            Assert.True(newList == null || newList.Count.Equals(0));
+            Assert.Null(newList);
         }
 
         [Test]
@@ -112,7 +138,8 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 Interlocked.Decrement(ref localFeedSize);
                 return true;
             });
-            var instance = new AwaitableListAdapter<object>(listSize, timeout);
+            var instance = Substitute.For<AwaitableListAdapter<object, object>>(listSize, timeout);
+            instance.Adapt(Arg.Any<object>()).Returns(x => x[0]);
             Assert.True(instance.TryGet(feed, CancellationToken.None, out var newList));
             Assert.NotNull(newList);
             Assert.True(newList.Count.Equals(Math.Min(listSize, feedSize)));
@@ -128,9 +155,29 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         {
             var feed = Substitute.For<IProducerFeed<object>>();
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).ReturnsForAnyArgs(x => false);
-            var instance = new AwaitableListAdapter<object>(listSize, 0);
+            var instance = Substitute.For<AwaitableListAdapter<object, object>>(listSize, 0);
+            instance.Adapt(Arg.Any<object>()).Returns(x => x[0]);
             Assert.False(instance.TryGet(feed, CancellationToken.None, out var newList));
             Assert.True(newList == null || newList.Count.Equals(0));
+        }
+    }
+
+    [TestFixture]
+    public class IdentityAwaitableListAdapterTest
+    {
+        [Test]
+        public void Adapt_Returns_The_Object_As_It_Is()
+        {
+            var obj = new object();
+            var feed = Substitute.For<IProducerFeed<object>>();
+            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).ReturnsForAnyArgs(x =>
+            {
+                x[2] = obj;
+                return true;
+            }); var instance = new IdentityAwaitableListAdapter<object>(2, Timeout.Infinite);
+            instance.TryGet(feed, CancellationToken.None, out var chunk);
+            Assert.True(chunk.Count.Equals(2));
+            Assert.True(chunk.All(x => ReferenceEquals(x, obj)));
         }
     }
 }

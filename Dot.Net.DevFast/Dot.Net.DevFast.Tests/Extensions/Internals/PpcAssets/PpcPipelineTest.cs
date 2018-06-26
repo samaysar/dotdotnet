@@ -30,7 +30,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 consumers[i] = Substitute.For<IConsumer<object>>();
             }
             await PpcPipeline<object, object>.Execute(CancellationToken.None, ConcurrentBuffer.MinSize,
-                new IdentityAdapter<object>(), producers, consumers).ConfigureAwait(false);
+                IdentityAwaitableAdapter<object>.Default, producers, consumers).ConfigureAwait(false);
             foreach (var consumer in consumers)
             {
                 consumer.Received(1).Dispose();
@@ -62,7 +62,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             var cts = new CancellationTokenSource();
             cts.Cancel();
             Assert.ThrowsAsync<TaskCanceledException>(() => PpcPipeline<object, object>.Execute(cts.Token,
-                ConcurrentBuffer.MinSize, new IdentityAdapter<object>(), producers, consumers));
+                ConcurrentBuffer.MinSize, IdentityAwaitableAdapter<object>.Default, producers, consumers));
         }
 
         [Test]
@@ -87,7 +87,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             }
 
             var ppcTask = Task.Run(() => PpcPipeline<object, object>.Execute(CancellationToken.None,
-                ConcurrentBuffer.MinSize, new IdentityAdapter<object>(), producers, consumers));
+                ConcurrentBuffer.MinSize, IdentityAwaitableAdapter<object>.Default, producers, consumers));
             Assert.True(Assert.ThrowsAsync<Exception>(() => ppcTask).Message.Equals("Testing"));
         }
 
@@ -113,7 +113,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             }
 
             var ppcTask = Task.Run(() => PpcPipeline<object, object>.Execute(CancellationToken.None,
-                ConcurrentBuffer.MinSize, new IdentityAdapter<object>(), producers, consumers));
+                ConcurrentBuffer.MinSize, IdentityAwaitableAdapter<object>.Default, producers, consumers));
             Assert.True(Assert.ThrowsAsync<Exception>(() => ppcTask).Message.Equals("Testing"));
         }
 
@@ -153,7 +153,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             }
 
             var ppcTask = Task.Run(() => PpcPipeline<object, object>.Execute(CancellationToken.None,
-                ConcurrentBuffer.MinSize, new IdentityAdapter<object>(), producers, consumers));
+                ConcurrentBuffer.MinSize, IdentityAwaitableAdapter<object>.Default, producers, consumers));
             countHandle.Wait();
             waitHandle.Set();
             await ppcTask.ConfigureAwait(false);

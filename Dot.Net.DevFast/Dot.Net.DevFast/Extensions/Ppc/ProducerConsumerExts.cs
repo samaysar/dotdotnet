@@ -883,7 +883,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             IReadOnlyList<IConsumer<T>> consumers, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return producers.ProducerConsumer(consumers, new IdentityAdapter<T>(), token, bufferSize);
+            return producers.ProducerConsumer(consumers, IdentityAwaitableAdapter<T>.Default, token, bufferSize);
         }
 
         #endregion
@@ -3336,7 +3336,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return producers.ProducerConsumer(consumers,
-                new AwaitableListAdapter<T>(listMaxSize, millisecondTimeout),
+                new IdentityAwaitableListAdapter<T>(listMaxSize, millisecondTimeout),
                 token, bufferSize);
         }
 
