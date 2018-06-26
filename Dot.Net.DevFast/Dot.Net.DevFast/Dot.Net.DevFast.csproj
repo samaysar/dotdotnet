@@ -42,7 +42,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Dot.Net.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -63,9 +64,9 @@
     <Compile Include="Extensions\CompressionExts.cs" />
     <Compile Include="Extensions\CreateExts.cs" />
     <Compile Include="Extensions\Internals\PpcAssets\ConcurrentPipeline.cs" />
-    <Compile Include="Extensions\Internals\PpcAssets\AwaitableListAdapter.cs" />
+    <Compile Include="Extensions\Ppc\AwaitableListAdapter.cs" />
     <Compile Include="Extensions\Ppc\IConcurrentPipeline.cs" />
-    <Compile Include="Extensions\Internals\PpcAssets\IdentityAdapter.cs" />
+    <Compile Include="Extensions\Ppc\AwaitableAdapter.cs" />
     <Compile Include="Extensions\Internals\Others.cs" />
     <Compile Include="Extensions\Internals\PpcAssets\PpcBuffer.cs" />
     <Compile Include="Extensions\Internals\PpcAssets\PpcPipeline.cs" />
@@ -95,7 +96,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Dot.Net.snk" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

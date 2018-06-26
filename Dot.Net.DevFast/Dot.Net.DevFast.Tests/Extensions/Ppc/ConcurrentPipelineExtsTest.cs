@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Dot.Net.DevFast.Extensions.Internals.PpcAssets;
 using Dot.Net.DevFast.Extensions.Ppc;
 using NUnit.Framework;
 
@@ -22,7 +21,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             {
             }
 
-            using (PipeExtsTest.Consumer<object>().ConcurrentPipeline(new IdentityAdapter<object>()))
+            using (PipeExtsTest.Consumer<object>().ConcurrentPipeline(IdentityAwaitableAdapter<object>.Default))
             {
             }
 
@@ -37,7 +36,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             }
 
             using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>())
-                .ConcurrentPipeline(new IdentityAdapter<object>()))
+                .ConcurrentPipeline(IdentityAwaitableAdapter<object>.Default))
             {
             }
 
@@ -52,7 +51,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             }
 
             using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>())
-                .ConcurrentPipeline(new IdentityAdapter<object>()))
+                .ConcurrentPipeline(IdentityAwaitableAdapter<object>.Default))
             {
             }
         }
@@ -68,7 +67,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             {
             }
 
-            using (PipeExtsTest.Consumer<object>(2).ConcurrentPipeline(new IdentityAdapter<object>()))
+            using (PipeExtsTest.Consumer<object>(2).ConcurrentPipeline(IdentityAwaitableAdapter<object>.Default))
             {
             }
 
@@ -83,7 +82,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             }
 
             using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>(2))
-                .ConcurrentPipeline(new IdentityAdapter<object>()))
+                .ConcurrentPipeline(IdentityAwaitableAdapter<object>.Default))
             {
             }
 
@@ -98,7 +97,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             }
 
             using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>(2))
-                .ConcurrentPipeline(new IdentityAdapter<object>()))
+                .ConcurrentPipeline(IdentityAwaitableAdapter<object>.Default))
             {
             }
         }

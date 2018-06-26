@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using Dot.Net.DevFast.Extensions.Ppc;
 
-namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
+namespace Dot.Net.DevFast.Extensions.Ppc
 {
     /// <summary>
     /// Adapter to pack individual items to list of items.
@@ -17,10 +16,12 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
     /// any wait. Then the list if finalized and returned. Step 2 and 3 are same when inifinite timeout 
     /// is suplied.</para>
     /// <para>4. If <see cref="TryGet"/> returns true, then the list would contains at least 1 item.</para>
-    /// <para>5. List max size would be respected as provided in Ctor..</para>
+    /// <para>5. List max size would be respected as provided in Ctor.</para>
+    /// <para>6. A call to <see cref="Adapt"/> will be made to perform the instance transformation</para>
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public sealed class AwaitableListAdapter<T> : IDataAdapter<T, List<T>>
+    /// <typeparam name="TP"></typeparam>
+    /// <typeparam name="TC"></typeparam>
+    public abstract class AwaitableListAdapter<TP, TC> : IDataAdapter<TP, List<TC>>
     {
         private readonly int _millisecTimeout;
         private readonly int _maxListSize;
@@ -37,10 +38,11 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
         /// is suplied.</para>
         /// <para>4. If <see cref="TryGet"/> returns true, then the list would contains at least 1 item.</para>
         /// <para>5. List max size would be respected as provided in Ctor..</para>
+        /// <para>6. A call to <see cref="Adapt"/> will be made to perform the instance transformation.</para>
         /// </summary>
         /// <param name="maxListSize">Max item to be sent in single list instance</param>
         /// <param name="millisecTimeout">Milliseconds time to observe before finalizing the list</param>
-        public AwaitableListAdapter(int maxListSize, int millisecTimeout)
+        protected AwaitableListAdapter(int maxListSize, int millisecTimeout)
         {
             if (millisecTimeout != Timeout.Infinite)
             {
@@ -72,26 +74,26 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
         /// <param name="producerDataFeed">Data feed</param>
         /// <param name="token">token to observe</param>
         /// <param name="consumable">consumable data instance</param>
-        public bool TryGet(IProducerFeed<T> producerDataFeed, CancellationToken token, out List<T> consumable)
+        public bool TryGet(IProducerFeed<TP> producerDataFeed, CancellationToken token, out List<TC> consumable)
         {
+            consumable = default(List<TC>);
+            if (!producerDataFeed.TryGet(Timeout.Infinite, token, out var value)) return false;
+            consumable = new List<TC>(_maxListSize) {Adapt(value)};
             return _millisecTimeout == Timeout.Infinite
-                ? TryGetWithInfiniteTo(producerDataFeed, token, out consumable)
-                : TryGetWithFiniteTo(producerDataFeed, token, out consumable);
+                ? TryGetWithInfiniteTo(producerDataFeed, token, consumable)
+                : TryGetWithFiniteTo(producerDataFeed, token, consumable);
         }
 
-        private bool TryGetWithFiniteTo(IProducerFeed<T> producerDataFeed, CancellationToken token,
-            out List<T> consumable)
+        private bool TryGetWithFiniteTo(IProducerFeed<TP> producerDataFeed, CancellationToken token,
+            ICollection<TC> consumable)
         {
-            consumable = null;
+            var timeRemains = _millisecTimeout;
             var sw = Stopwatch.StartNew();
-            if (!producerDataFeed.TryGet(Timeout.Infinite, token, out var value)) return false;
-            consumable = new List<T>(_maxListSize) {value};
-            var timeRemains = (int) Math.Max(0, _millisecTimeout - sw.ElapsedMilliseconds);
             while (consumable.Count < _maxListSize)
             {
-                if (producerDataFeed.TryGet(timeRemains, token, out value))
+                if (producerDataFeed.TryGet(timeRemains, token, out var value))
                 {
-                    consumable.Add(value);
+                    consumable.Add(Adapt(value));
                     if (timeRemains != 0)
                     {
                         timeRemains = (int) Math.Max(0, _millisecTimeout - sw.ElapsedMilliseconds);
@@ -103,22 +105,37 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             return true;
         }
 
-        private bool TryGetWithInfiniteTo(IProducerFeed<T> producerDataFeed, CancellationToken token,
-            out List<T> consumable)
+        private bool TryGetWithInfiniteTo(IProducerFeed<TP> producerDataFeed, CancellationToken token,
+            ICollection<TC> consumable)
         {
-            consumable = null;
-            if (!producerDataFeed.TryGet(Timeout.Infinite, token, out var value)) return false;
-            consumable = new List<T>(_maxListSize) {value};
             while (consumable.Count < _maxListSize)
             {
-                if (producerDataFeed.TryGet(Timeout.Infinite, token, out value))
+                if (producerDataFeed.TryGet(Timeout.Infinite, token, out var value))
                 {
-                    consumable.Add(value);
+                    consumable.Add(Adapt(value));
                 }
                 else return true;
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Will be called to perform the required transformation on all the produced instances.
+        /// </summary>
+        /// <param name="produced">produced item</param>
+        public abstract TC Adapt(TP produced);
+    }
+
+    internal sealed class IdentityAwaitableListAdapter<T> : AwaitableListAdapter<T, T>
+    {
+        internal IdentityAwaitableListAdapter(int maxListSize, int millisecTimeout) : base(maxListSize, millisecTimeout)
+        {
+        }
+
+        public override T Adapt(T produced)
+        {
+            return produced;
         }
     }
 }

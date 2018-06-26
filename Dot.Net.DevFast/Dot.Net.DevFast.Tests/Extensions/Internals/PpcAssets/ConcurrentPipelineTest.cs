@@ -17,7 +17,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         {
             var consumers = new IConsumer<object>[1];
             consumers[0] = Substitute.For<IConsumer<object>>();
-            var instance = new ConcurrentPipeline<object, object>(consumers, new IdentityAdapter<object>(),
+            var instance = new ConcurrentPipeline<object, object>(consumers, IdentityAwaitableAdapter<object>.Default,
                 CancellationToken.None, 1);
             using (instance)
             {
@@ -25,7 +25,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
 
             Assert.Throws<ObjectDisposedException>(() => instance.Add(new object()));
 
-            instance = new ConcurrentPipeline<object, object>(consumers, new IdentityAdapter<object>(),
+            instance = new ConcurrentPipeline<object, object>(consumers, IdentityAwaitableAdapter<object>.Default,
                 CancellationToken.None, 1);
             await instance.TearDown().ConfigureAwait(false);
             Assert.Throws<ObjectDisposedException>(() => instance.Add(new object()));
@@ -49,7 +49,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                         });
 
                     using (var instance = new ConcurrentPipeline<object, object>(consumers,
-                        new IdentityAdapter<object>(), CancellationToken.None, 1))
+                        IdentityAwaitableAdapter<object>.Default, CancellationToken.None, 1))
                     {
                         instance.Add(new object()); //this one will reach consumer
                         consumerhandle.Wait();
@@ -72,7 +72,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 consumers[i] = Substitute.For<IConsumer<object>>();
             }
 
-            using (var instance = new ConcurrentPipeline<object, object>(consumers, new IdentityAdapter<object>(),
+            using (var instance = new ConcurrentPipeline<object, object>(consumers, IdentityAwaitableAdapter<object>.Default,
                 CancellationToken.None, 1))
             {
                 await instance.TearDown().ConfigureAwait(false);
@@ -102,7 +102,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 }
 
                 var cts = new CancellationTokenSource();
-                var instance = new ConcurrentPipeline<object, object>(consumers, new IdentityAdapter<object>(),
+                var instance = new ConcurrentPipeline<object, object>(consumers, IdentityAwaitableAdapter<object>.Default,
                     cts.Token, 1);
                 cts.Cancel();
                 //we wait before checking received calls...! it means our dispose counts are correct!
@@ -130,7 +130,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             consumers[0] = Substitute.For<IConsumer<List<object>>>();
 
             using (var instance = new ConcurrentPipeline<object, List<object>>(consumers,
-                new AwaitableListAdapter<object>(2, 0), CancellationToken.None, 1))
+                new IdentityAwaitableListAdapter<object>(2, 0), CancellationToken.None, 1))
             {
                 instance.Add(new object());
             }
