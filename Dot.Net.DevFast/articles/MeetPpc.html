@@ -400,7 +400,7 @@ public interface IDataAdapter&lt;TP, TC&gt;
 	<li>Detached&nbsp;pipeline</li>
 </ol>
 
-<h4>1.a&nbsp;Identity Adapter</h4>
+<h4>1.a Identity Adapter</h4>
 
 <p>To start simple, we choose to implement identity adapter first and if we remember from above, it should just return the produced item as it is. We achieve it in following manner:</p>
 
@@ -426,7 +426,7 @@ public class IdentityAdapter&lt;T&gt; : IDataAdapter&lt;T, T&gt;
 }
 </pre>
 
-<h4>1.b&nbsp;Awaitable List Adapter</h4>
+<h4>1.b Awaitable List Adapter</h4>
 
 <h5>A word before implementation</h5>
 
@@ -498,20 +498,27 @@ public class IdentityAdapter&lt;T&gt; : IDataAdapter&lt;T, T&gt;
 <ol>
 	<li>We can ALWAYS wait on buffer with INFINITE timeout. If it has elements, it should promptly return one else it should return one as soon as possible.</li>
 	<li>No end-user is interested in consuming empty lists, i.e. list without any item&nbsp;in it. Thus, we only need to supply lists when it has <strong>AT LEAST</strong>&nbsp;one (1)&nbsp;element in it.</li>
-	<li>When end-user&nbsp;runs the pipeline to have FIXED size lists:
+	<li>End-user decides the size of the list as he is aware of system capabilities and his requirements.</li>
+	<li>When end-user can run&nbsp;the pipeline to have FIXED size lists (as shown in <strong>Image 8</strong>):
 	<ul>
 		<li>One is aware that we&nbsp;might need to wait longer to populate the list if some/every&nbsp;<code>buffer.TryGet</code> ends up waiting for an item.&nbsp;Thus, one is <strong>INDIFFERENT</strong> to time taken to prepare such a list.</li>
 		<li>One is more interested in getting full sized list as it is advantageous based on his pipeline strategy.</li>
 		<li>One is aware that the last chunk might be partial (as discussed above). But his consumer can handle it (<code>1 &lt;= last_chunk_length &lt;= length_of_full_size_list</code>).</li>
-		<li>Thus, we can say he has infinite timeout but a preference for the size of the list.</li>
+		<li>Thus, we can say he has infinite timeout but a preference for the size of the list.<br />
+		<br />
+		<img align="middle" alt="fixedsizelist" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Adapter-PPC-AwaitableList-FixedSize.PNG" /><br />
+		&nbsp;</li>
 	</ul>
 	</li>
-	<li>When end-user runs the pipeline to have VARIABLE size lists:
+	<li>When end-user can run&nbsp;the pipeline to have Fixed duration&nbsp;lists (or variable sized)&nbsp;(as shown in <strong>Image 9</strong>):
 	<ul>
 		<li>One prefers to consume something within given time limit than to wait longer to have the list fully populated.&nbsp;Thus, one is time-bounded.</li>
 		<li>One is aware that every chunk might be of different size and&nbsp;his consumer can handle it (<code>1 &lt;= chunk_size &lt;= max_length</code>)</li>
 		<li>One is aware that he might need to wait longer to have the first (1<sup>st</sup>) item of the list if&nbsp;<code>buffer.TryGet</code> ends up waiting for the first (1<sup>st</sup>) item</li>
-		<li>Thus, we can say he has preferences for timeout duration and for maximum size of the list.</li>
+		<li>Thus, we can say he has preferences for timeout duration (once the first item is received)&nbsp;and for maximum size of the list.<br />
+		<br />
+		<img align="middle" alt="fixeddurationlist" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Adapter-PPC-AwaitableList-FixedDuration.PNG" /><br />
+		&nbsp;</li>
 	</ul>
 	</li>
 </ol>
@@ -549,7 +556,7 @@ public class AwaitableListAdapter&lt;T&gt; : IDataAdapter&lt;T, List&lt;T&gt;&gt
 		
 <strong>&nbsp;       //NOTE:&nbsp;From our discussion, no user wants to consume 0-length list
 &nbsp;       //      so we wait with INFINITE timeout, i.e.
-&nbsp;       //      if item is already in buffer, we prompty receive it
+&nbsp;       //      if item is already in buffer, we promptly receive it
 &nbsp;       //      else we wait until an item is available... so we are good!
 
 </strong>&nbsp;       if (!buffer.TryGet(Timeout.Infinite, token, out var value)) return false;
@@ -560,18 +567,20 @@ public class AwaitableListAdapter&lt;T&gt; : IDataAdapter&lt;T, List&lt;T&gt;&gt
 &nbsp;       //we choose what kind of list is required based on timeout.		
         return _millisecTimeout == Timeout.Infinite
 			? TryFillFixedSize(buffer, token, consumable)
-			: TryFillVariableSizeChunk(buffer, token, consumable);
+			: TryFillFixedDurationChunk(buffer, token, consumable);
 	}
 
 	private bool TryFillFixedSize(IConsumerBuffer&lt;T&gt; buffer, CancellationToken token,
 		List&lt;T&gt; consumable)
 	{
 &nbsp;       <strong>//We loop until we fill the list</strong>
+
 		while (consumable.Count &lt; _maxListSize)
 		{
 <strong>&nbsp;           //we always wait for INFINITE time to be sure of having an item
 &nbsp;           //     except
 &nbsp;           // we are left with no item and production is over!</strong>
+
 			if (buffer.TryGet(Timeout.Infinite, token, out var value))
 			{
 				consumable.Add(value);
@@ -583,21 +592,24 @@ public class AwaitableListAdapter&lt;T&gt; : IDataAdapter&lt;T, List&lt;T&gt;&gt
 <strong>&nbsp;       //our list already has at least 1 item, so we return TRUE!</strong>
 	}
 
-	private bool TryFillVariableSizeChunk(IConsumerBuffer&lt;T&gt; buffer, CancellationToken token,
+	private bool TryFillFixedDurationChunk(IConsumerBuffer&lt;T&gt; buffer, CancellationToken token,
 		List&lt;T&gt; consumable)
 	{
 		var timeRemains = _millisecTimeout;
 		var sw = Stopwatch.StartNew();
 
 <strong>&nbsp;       //using stopwatch we can measure elapsed time
-</strong>		while (consumable.Count &lt; _maxListSize)
+</strong>
+		while (consumable.Count &lt; _maxListSize)
 		{
 <strong>          &nbsp; //and we loop until 
 &nbsp;           //     1. chunk is not full
 &nbsp;           //     2. we receive item with-in remaining time</strong>
+
 			if (buffer.TryGet(timeRemains, token, out var value))
 			{
 				consumable.Add(value);
+
 				if (timeRemains != 0)
 				{
 <strong>&nbsp;                   //IMPORTANT:
@@ -609,8 +621,9 @@ public class AwaitableListAdapter&lt;T&gt; : IDataAdapter&lt;T, List&lt;T&gt;&gt
 &nbsp;                   //      or buffer returns FALSE.
 &nbsp;                   //      this way we can always be able to provide larger chunk
 &nbsp;                   //      when possible
-&nbsp;                   //      </strong>hence the <strong>IF</strong> does NOT has <strong>ELSE</strong>&nbsp;with break/return
-&nbsp;                   <strong>//</strong>&nbsp;     but the OUTER IF does has!
+&nbsp;                   //      hence the IF does NOT has ELSE&nbsp;with break/return
+&nbsp;                   //&nbsp;     but the OUTER IF does has!
+</strong>
 					timeRemains = (int) Math.Max(0, _millisecTimeout - sw.ElapsedMilliseconds);
 				}
 			}
