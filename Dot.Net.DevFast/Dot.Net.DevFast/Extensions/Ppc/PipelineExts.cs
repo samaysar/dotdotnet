@@ -70,10 +70,10 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IPipeline<T> ConcurrentPipeline<T>(this Action<T, CancellationToken> consumer,
+        public static IPipeline<T> Pipeline<T>(this Action<T, CancellationToken> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return consumer.ToConsumer().ConcurrentPipeline(token, bufferSize);
+            return consumer.ToConsumer().Pipeline(token, bufferSize);
         }
 
         /// <summary>
@@ -130,10 +130,10 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IPipeline<T> ConcurrentPipeline<T>(this Func<T, CancellationToken, Task> consumer,
+        public static IPipeline<T> Pipeline<T>(this Func<T, CancellationToken, Task> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return consumer.ToConsumer().ConcurrentPipeline(token, bufferSize);
+            return consumer.ToConsumer().Pipeline(token, bufferSize);
         }
 
         /// <summary>
@@ -190,10 +190,10 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumer">consumer</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IPipeline<T> ConcurrentPipeline<T>(this IConsumer<T> consumer,
+        public static IPipeline<T> Pipeline<T>(this IConsumer<T> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new[] {consumer}.ConcurrentPipeline(token, bufferSize);
+            return new[] {consumer}.Pipeline(token, bufferSize);
         }
 
         //<<<<<<<<<<< MULTIPLE CONSUMER
@@ -252,11 +252,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumers">consumers</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IPipeline<T> ConcurrentPipeline<T>(
+        public static IPipeline<T> Pipeline<T>(
             this IReadOnlyList<Action<T, CancellationToken>> consumers,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return consumers.ToConsumer().ConcurrentPipeline(token, bufferSize);
+            return consumers.ToConsumer().Pipeline(token, bufferSize);
         }
 
         /// <summary>
@@ -313,11 +313,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumers">consumers</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IPipeline<T> ConcurrentPipeline<T>(
+        public static IPipeline<T> Pipeline<T>(
             this IReadOnlyList<Func<T, CancellationToken, Task>> consumers,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return consumers.ToConsumer().ConcurrentPipeline(token, bufferSize);
+            return consumers.ToConsumer().Pipeline(token, bufferSize);
         }
 
         /// <summary>
@@ -374,10 +374,10 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumers">consumers</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IPipeline<T> ConcurrentPipeline<T>(this IReadOnlyList<IConsumer<T>> consumers,
+        public static IPipeline<T> Pipeline<T>(this IReadOnlyList<IConsumer<T>> consumers,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return consumers.ConcurrentPipeline(IdentityAwaitableAdapter<T>.Default, token, bufferSize);
+            return consumers.Pipeline(IdentityAwaitableAdapter<T>.Default, token, bufferSize);
         }
 
         #endregion
@@ -458,11 +458,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IPipeline<T> ConcurrentPipeline<T>(this Action<List<T>, CancellationToken> consumer,
+        public static IPipeline<T> Pipeline<T>(this Action<List<T>, CancellationToken> consumer,
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return consumer.ToConsumer().ConcurrentPipeline(listMaxSize, millisecondTimeout, token, bufferSize);
+            return consumer.ToConsumer().Pipeline(listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -537,11 +537,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IPipeline<T> ConcurrentPipeline<T>(this Func<List<T>, CancellationToken, Task> consumer,
+        public static IPipeline<T> Pipeline<T>(this Func<List<T>, CancellationToken, Task> consumer,
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return consumer.ToConsumer().ConcurrentPipeline(listMaxSize, millisecondTimeout, token, bufferSize);
+            return consumer.ToConsumer().Pipeline(listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -616,11 +616,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IPipeline<T> ConcurrentPipeline<T>(this IConsumer<List<T>> consumer,
+        public static IPipeline<T> Pipeline<T>(this IConsumer<List<T>> consumer,
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new[] {consumer}.ConcurrentPipeline(listMaxSize, millisecondTimeout, token, bufferSize);
+            return new[] {consumer}.Pipeline(listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         //<<<<<<<<<<< MULTIPLE CONSUMER
@@ -697,12 +697,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IPipeline<T> ConcurrentPipeline<T>(
+        public static IPipeline<T> Pipeline<T>(
             this IReadOnlyList<Action<List<T>, CancellationToken>> consumers,
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return consumers.ToConsumer().ConcurrentPipeline(listMaxSize, millisecondTimeout, token, bufferSize);
+            return consumers.ToConsumer().Pipeline(listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -777,12 +777,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IPipeline<T> ConcurrentPipeline<T>(
+        public static IPipeline<T> Pipeline<T>(
             this IReadOnlyList<Func<List<T>, CancellationToken, Task>> consumers,
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return consumers.ToConsumer().ConcurrentPipeline(listMaxSize, millisecondTimeout, token, bufferSize);
+            return consumers.ToConsumer().Pipeline(listMaxSize, millisecondTimeout, token, bufferSize);
         }
 
         /// <summary>
@@ -857,11 +857,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IPipeline<T> ConcurrentPipeline<T>(this IReadOnlyList<IConsumer<List<T>>> consumers,
+        public static IPipeline<T> Pipeline<T>(this IReadOnlyList<IConsumer<List<T>>> consumers,
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return consumers.ConcurrentPipeline(new IdentityAwaitableListAdapter<T>(listMaxSize, millisecondTimeout), token,
+            return consumers.Pipeline(new IdentityAwaitableListAdapter<T>(listMaxSize, millisecondTimeout), token,
                 bufferSize);
         }
 
@@ -927,11 +927,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IPipeline<TP> ConcurrentPipeline<TP, TC>(this Action<TC, CancellationToken> consumer,
+        public static IPipeline<TP> Pipeline<TP, TC>(this Action<TC, CancellationToken> consumer,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return consumer.ToConsumer().ConcurrentPipeline(adapter, token, bufferSize);
+            return consumer.ToConsumer().Pipeline(adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -990,12 +990,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IPipeline<TP> ConcurrentPipeline<TP, TC>(
+        public static IPipeline<TP> Pipeline<TP, TC>(
             this Func<TC, CancellationToken, Task> consumer,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return consumer.ToConsumer().ConcurrentPipeline(adapter, token, bufferSize);
+            return consumer.ToConsumer().Pipeline(adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -1054,11 +1054,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IPipeline<TP> ConcurrentPipeline<TP, TC>(this IConsumer<TC> consumer,
+        public static IPipeline<TP> Pipeline<TP, TC>(this IConsumer<TC> consumer,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new[] {consumer}.ConcurrentPipeline(adapter, token, bufferSize);
+            return new[] {consumer}.Pipeline(adapter, token, bufferSize);
         }
 
         //<<<<<<<<<<< MULTIPLE CONSUMER
@@ -1119,12 +1119,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IPipeline<TP> ConcurrentPipeline<TP, TC>(
+        public static IPipeline<TP> Pipeline<TP, TC>(
             this IReadOnlyList<Action<TC, CancellationToken>> consumers,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return consumers.ToConsumer().ConcurrentPipeline(adapter, token, bufferSize);
+            return consumers.ToConsumer().Pipeline(adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -1183,12 +1183,12 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IPipeline<TP> ConcurrentPipeline<TP, TC>(
+        public static IPipeline<TP> Pipeline<TP, TC>(
             this IReadOnlyList<Func<TC, CancellationToken, Task>> consumers,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return consumers.ToConsumer().ConcurrentPipeline(adapter, token, bufferSize);
+            return consumers.ToConsumer().Pipeline(adapter, token, bufferSize);
         }
 
         /// <summary>
@@ -1247,7 +1247,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IPipeline<TP> ConcurrentPipeline<TP, TC>(this IReadOnlyList<IConsumer<TC>> consumers,
+        public static IPipeline<TP> Pipeline<TP, TC>(this IReadOnlyList<IConsumer<TC>> consumers,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
