@@ -21,10 +21,10 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             //we pass "_mergedCts.Token" so that it starts throwing error when either consumer is in error
             //or tear-down is called or the Ctor token is cancelled.
             _feed = new PpcBuffer<TP>(bufferSize, _mergedCts.Token);
-            //we give original token to consumers to listen to... so we can cancel "_token" in dispose
+            //we give original token to consumers to listen to... so we can cancel "_localCts" in dispose
             //and still let consumer run to finish remaining objects.
             //However, if something goes wrong with consumers, we need to cancel "_localCts"
-            //so that Accept() method also start throwing error
+            //so that Add/TryAdd method also start throwing error
             _consumerTask = Pipe<TP, TC>.RunConsumers(consumers, _feed, adapter, token, _localCts);
         }
 
@@ -44,11 +44,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             {
                 throw new ObjectDisposedException(nameof(Pipeline<TP, TC>), "instance is disposed");
             }
-
-            using (var mergeToken = CancellationTokenSource.CreateLinkedTokenSource(token, _mergedCts.Token))
-            {
-                return _feed.TryAdd(item, millisecTimeout, mergeToken.Token);
-            }
+            return _feed.TryAdd(item, millisecTimeout, token);
         }
 
         public Task TearDown()
