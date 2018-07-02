@@ -133,7 +133,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             {
                 for (var i = 0; i < ccount; i++)
                 {
-                    ((IConsumerFeed<object>) x[0]).Add(obj);
+                    ((IConsumerFeed<object>) x[0]).Add(obj, CancellationToken.None);
                 }
                 return Task.CompletedTask;
             });

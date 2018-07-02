@@ -17,7 +17,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< SINGLE CONSUMER
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumer" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />).
         /// <para>Ideally, this instance one would like to use as a singleton for the application life time.</para>
@@ -30,9 +30,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IConcurrentPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -43,7 +43,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -77,7 +77,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumer" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />).
         /// <para>Ideally, this instance one would like to use as a singleton for the application life time.</para>
@@ -90,9 +90,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IConcurrentPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -103,7 +103,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -137,7 +137,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumer" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />).
         /// <para>Ideally, this instance one would like to use as a singleton for the application life time.</para>
@@ -150,9 +150,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IConcurrentPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -163,7 +163,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -199,7 +199,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< MULTIPLE CONSUMER
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumers" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />).
         /// <para>Ideally, this instance one would like to use as a singleton for the application life time.</para>
@@ -212,9 +212,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IConcurrentPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -225,7 +225,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -260,7 +260,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumers" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />).
         /// <para>Ideally, this instance one would like to use as a singleton for the application life time.</para>
@@ -275,7 +275,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -286,7 +286,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -321,7 +321,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumers" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />).
         /// <para>Ideally, this instance one would like to use as a singleton for the application life time.</para>
@@ -334,9 +334,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IConcurrentPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -347,7 +347,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -387,7 +387,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< SINGLE CONSUMER
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumer" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />) and list-adapter (with given
         /// <paramref name="listMaxSize" /> and
@@ -409,9 +409,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IConcurrentPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -422,7 +422,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -466,7 +466,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumer" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />) and list-adapter (with given
         /// <paramref name="listMaxSize" /> and
@@ -488,9 +488,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IConcurrentPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -501,7 +501,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -545,7 +545,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumer" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />) and list-adapter (with given
         /// <paramref name="listMaxSize" /> and
@@ -567,9 +567,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IConcurrentPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -580,7 +580,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -626,7 +626,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< MULTIPLE CONSUMER
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumers" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />) and list-adapter (with given
         /// <paramref name="listMaxSize" /> and
@@ -648,9 +648,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IConcurrentPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -661,7 +661,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -706,7 +706,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumers" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />) and list-adapter (with given
         /// <paramref name="listMaxSize" /> and
@@ -728,9 +728,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IConcurrentPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -741,7 +741,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -786,7 +786,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumers" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />) and list-adapter (with given
         /// <paramref name="listMaxSize" /> and
@@ -808,9 +808,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IConcurrentPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -821,7 +821,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -887,7 +887,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{TP}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -898,7 +898,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{TP}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -908,7 +908,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IConcurrentPipeline{TP}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -950,7 +950,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{TP}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -961,7 +961,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{TP}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -971,7 +971,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IConcurrentPipeline{TP}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -1014,7 +1014,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{TP}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -1025,7 +1025,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{TP}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -1035,7 +1035,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IConcurrentPipeline{TP}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -1079,7 +1079,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{TP}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -1090,7 +1090,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{TP}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -1100,7 +1100,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IConcurrentPipeline{TP}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -1143,7 +1143,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{TP}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -1154,7 +1154,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{TP}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -1164,7 +1164,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IConcurrentPipeline{TP}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -1207,7 +1207,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{TP}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -1218,7 +1218,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{TP}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -1228,7 +1228,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IConcurrentPipeline{TP}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>

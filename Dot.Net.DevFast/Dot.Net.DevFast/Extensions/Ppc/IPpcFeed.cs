@@ -19,6 +19,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// to wait inifinitely.</param>
         /// <param name="token">Cancellation token to observer while extracting data</param>
         /// <param name="data">Produced data instance, if any</param>
+        /// <exception cref="OperationCanceledException">If token is canceled</exception>
         bool TryGet(int millisecTimeout, CancellationToken token, out T data);
 
         /// <summary>
@@ -38,7 +39,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// Adds an item in the feed to be consumed by consumers observing the feed.
         /// </summary>
         /// <param name="item">item to add</param>
-        void Add(T item);
+        /// <param name="token">Cancellation token to observer while adding data</param>
+        /// <exception cref="OperationCanceledException">If token is canceled</exception>
+        void Add(T item, CancellationToken token);
 
         /// <summary>
         /// Tries adding an item in the feed to be consumed by consumers observing the feed.
@@ -46,7 +49,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </summary>
         /// <param name="item">item to add</param>
         /// <param name="millisecTimeout">timeout in milliseconds</param>
-        bool TryAdd(T item, int millisecTimeout);
+        /// <param name="token">Cancellation token to observer while adding data</param>
+        /// <exception cref="OperationCanceledException">If token is canceled</exception>
+        bool TryAdd(T item, int millisecTimeout, CancellationToken token);
     }
 
     internal interface IPpcFeed<T> : IConsumerFeed<T>, IProducerFeed<T>, IDisposable

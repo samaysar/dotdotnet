@@ -33,18 +33,22 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             TearDown().Wait(CancellationToken.None);
         }
 
-        public void Add(TP item)
+        public void Add(TP item, CancellationToken token)
         {
-            TryAdd(item, Timeout.Infinite);
+            TryAdd(item, Timeout.Infinite, token);
         }
 
-        public bool TryAdd(TP item, int millisecTimeout)
+        public bool TryAdd(TP item, int millisecTimeout, CancellationToken token)
         {
             if (_localCts == null)
             {
                 throw new ObjectDisposedException(nameof(ConcurrentPipeline<TP, TC>), "instance is disposed");
             }
-            return _feed.TryAdd(item, millisecTimeout);
+
+            using (var mergeToken = CancellationTokenSource.CreateLinkedTokenSource(token, _mergedCts.Token))
+            {
+                return _feed.TryAdd(item, millisecTimeout, mergeToken.Token);
+            }
         }
 
         public Task TearDown()
