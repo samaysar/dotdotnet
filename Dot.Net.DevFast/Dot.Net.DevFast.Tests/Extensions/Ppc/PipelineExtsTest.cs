@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Dot.Net.DevFast.Tests.Extensions.Ppc
 {
     [TestFixture]
-    public class ConcurrentPipelineExtsTest
+    public class PipelineExtsTest
     {
         //These tests are ONLY for coverge as ACTUAL implementation is already tested
         //inside ConcurrentPipeline implementation!

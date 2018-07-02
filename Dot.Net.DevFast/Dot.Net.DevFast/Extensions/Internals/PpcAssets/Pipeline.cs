@@ -6,14 +6,14 @@ using Dot.Net.DevFast.Extensions.Ppc;
 
 namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
 {
-    internal sealed class ConcurrentPipeline<TP,TC> : IConcurrentPipeline<TP>
+    internal sealed class Pipeline<TP,TC> : IPipeline<TP>
     {
         private readonly CancellationTokenSource _mergedCts;
         private readonly PpcBuffer<TP> _feed;
         private readonly Task _consumerTask;
         private CancellationTokenSource _localCts;
 
-        public ConcurrentPipeline(IReadOnlyList<IConsumer<TC>> consumers, IDataAdapter<TP, TC> adapter, CancellationToken token, int bufferSize)
+        public Pipeline(IReadOnlyList<IConsumer<TC>> consumers, IDataAdapter<TP, TC> adapter, CancellationToken token, int bufferSize)
         {
             _localCts = new CancellationTokenSource();
             _mergedCts = CancellationTokenSource.CreateLinkedTokenSource(token, _localCts.Token);
@@ -25,7 +25,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             //and still let consumer run to finish remaining objects.
             //However, if something goes wrong with consumers, we need to cancel "_localCts"
             //so that Accept() method also start throwing error
-            _consumerTask = PpcPipeline<TP, TC>.RunConsumers(consumers, _feed, adapter, token, _localCts);
+            _consumerTask = Pipe<TP, TC>.RunConsumers(consumers, _feed, adapter, token, _localCts);
         }
 
         public void Dispose()
@@ -42,7 +42,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
         {
             if (_localCts == null)
             {
-                throw new ObjectDisposedException(nameof(ConcurrentPipeline<TP, TC>), "instance is disposed");
+                throw new ObjectDisposedException(nameof(Pipeline<TP, TC>), "instance is disposed");
             }
 
             using (var mergeToken = CancellationTokenSource.CreateLinkedTokenSource(token, _mergedCts.Token))

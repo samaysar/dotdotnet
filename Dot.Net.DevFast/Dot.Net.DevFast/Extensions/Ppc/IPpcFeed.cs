@@ -37,6 +37,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     {
         /// <summary>
         /// Adds an item in the feed to be consumed by consumers observing the feed.
+        /// <para>This method is THREAD-SAFE.</para>
         /// </summary>
         /// <param name="item">item to add</param>
         /// <param name="token">Cancellation token to observer while adding data</param>
@@ -46,6 +47,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Tries adding an item in the feed to be consumed by consumers observing the feed.
         /// Returns true if the item was added before the timeout else false.
+        /// <para>This method is THREAD-SAFE.</para>
         /// </summary>
         /// <param name="item">item to add</param>
         /// <param name="millisecTimeout">timeout in milliseconds</param>

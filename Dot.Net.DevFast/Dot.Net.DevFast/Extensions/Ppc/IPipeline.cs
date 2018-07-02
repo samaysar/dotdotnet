@@ -6,7 +6,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     /// <summary>
     /// Interface to expose concurrent producer-consumer pipeline operations.
     /// </summary>
-    public interface IConcurrentPipeline<in T> : IConsumerFeed<T>, IDisposable
+    public interface IPipeline<in T> : IConsumerFeed<T>, IDisposable
     {
         /// <summary>
         /// Retruns a running task that performs following operations:
