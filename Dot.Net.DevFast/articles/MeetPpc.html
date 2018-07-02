@@ -61,7 +61,7 @@
 	</li>
 </ul>
 
-<p>Although the original producer-consumer problem considered only the CONCORDANT case (third (3<sup>rd</sup>) point among above characteristics). Nevertheless, thanks to GoF&#39;s famous&nbsp;<a href="https://en.wikipedia.org/wiki/Adapter_pattern"><code>Adapter design pattern</code></a>&nbsp;(see <a href="https://www.oreilly.com/library/view/design-patterns-elements/0201633612/">GoF design patterns</a>), we would like to extend the idea, while exploiting the original philosophy of the design pattern to create a data-adapter (here onwards simply calling it adapter unless specified otherwise), in order to create such a pipeline among given discordant producer/consumers (given a condition we identify an adapter). The point of interest in doing so is to maintain separation of concerns, and, thus, to achieve&nbsp;simplified pipeline with detached data transformation logic.</p>
+<p>Although the original producer-consumer problem considered only the CONCORDANT case (third (3<sup>rd</sup>) point among above characteristics). Nevertheless, thanks to GoF&#39;s famous&nbsp;<a href="https://en.wikipedia.org/wiki/Adapter_pattern"><code>Adapter design pattern</code></a>&nbsp;(see <a href="https://www.oreilly.com/library/view/design-patterns-elements/0201633612/">GoF design patterns</a>), we would like to extend the idea, while stretching the original philosophy of the design pattern, in order&nbsp;to create a&nbsp;data oriented adapter (here onwards simply calling it adapter unless specified otherwise), in order to create such a pipeline among given discordant producer/consumers (given a condition we identify an adapter). The point of interest in doing so is to maintain separation of concerns, and, thus, to achieve&nbsp;simplified pipeline with detached data transformation logic.</p>
 
 <p>Why <code>&quot;.Pipe&quot;</code>? To understand it, for a moment, imagine the date-flow and think of a simplistic view of data originating at producer&nbsp;and absorbed by consumer. Think of,&nbsp;as if there are two person (P and C) and P is handing over whatever he got to C. With this, I think of <code>UNIX.</code> As, with&nbsp;<code>UNIX</code>&nbsp;terminal when we want to create such a chain of actions (passing data between commands); it exactly lets us do that, thanks to famous <code>&quot;|&quot; (a.k.a. pipe)</code> syntax (see some <a href="https://en.wikipedia.org/wiki/Pipeline_(Unix)">examples here</a>), and, <strong>so I thought of this&nbsp;name</strong>.</p>
 
@@ -208,15 +208,20 @@ public interface IProducerBuffer&lt;T&gt;
 {
     //adds an item to the buffer
 &nbsp;   //it blocks, if buffer is full, until the item can be added
-    void Add(T item);
+    void Add(T item, CancellationToken token);
 
 &nbsp;   //adds an item to the buffer with given millisecond timeout
 &nbsp;   //if the item was added with in timeout period returns true else false
-    bool TryAdd(T item, int millisecTimeout)
+    bool TryAdd(T item, int millisecTimeout, CancellationToken token)
+
 &nbsp;   //we add this second method to support our <strong>lossy pipeline</strong> feature
 &nbsp;   //     millisecTimeout=0 means immediately add or discard
 &nbsp;   //based on boolean outcome, the actual producer implementation can 
 &nbsp;   //  decide the fate of produced yet discarded item
+
+&nbsp;   //we also add <strong>CancellationToken</strong>&nbsp;to support cancellation based on
+&nbsp;   //transient method token (we will see an example when we talk about
+&nbsp;   //                        detached pipeline)
 }
 </pre>
 
@@ -402,13 +407,13 @@ public interface IDataAdapter&lt;TP, TC&gt;
 
 <h4>1.a Identity Adapter</h4>
 
-<p>To start simple, we choose to implement identity adapter first and if we remember from above, it should just return the produced item as it is. We achieve it in following manner:</p>
+<p>To start simple, we choose to implement identity adapter first and if we remember from above, it should just return the produced item as it is. We achieve this as follows:</p>
 
 <pre lang="cs">
 <strong>//NOTE: Some explanation are provided as comments
 
 </strong>//generic adapter satisfying <strong>TP = TC = T, buffer type:&lt;T&gt;</strong>
-public class IdentityAdapter&lt;T&gt; : IDataAdapter&lt;T, T&gt;
+7public class IdentityAdapter&lt;T&gt; : IDataAdapter&lt;T, T&gt;
 {
     public bool TryGet(IConsumerBuffer&lt;T&gt; buffer, CancellationToken token, out T consumable)
 &nbsp; &nbsp; {
@@ -464,7 +469,7 @@ public class IdentityAdapter&lt;T&gt; : IDataAdapter&lt;T, T&gt;
 
 <p>The short answer is: No.&nbsp;it isn&#39;t!</p>
 
-<p>If you have followed us till now, perhaps you might got an impression that this adapter is all about creating a list, then why we call it &quot;<strong>Awaitable</strong>&quot; list adapter? Ain&#39;t it as simple as spanning a loop? If you have got similar thoughts, then we assure you that its more than that; for the simplest fact that items we want to iterate are not promptly awailable. In fact, to elaborate further let&#39;s consider following below listed arguments:</p>
+<p>If you have followed us till now, perhaps you might got an impression that this adapter is all about creating a list, then why we call it &quot;<strong>Awaitable</strong>&quot; list adapter? Ain&#39;t it as simple as spanning a loop to producea list? If you have got similar thoughts, then we assure you that its more than that; for the simplest fact that items we want to iterate might not be promptly awailable. In fact, to elaborate further let&#39;s consider following below listed arguments:</p>
 
 <ul>
 	<li>let&#39;s assume, the moment adapter&#39;s <code>TryGet</code> method was called, the&nbsp;buffer was empty and producers were busy creating object instance, thus, soon there will be some items in the buffer but for the moment we need to wait (sleep)</li>
@@ -477,6 +482,7 @@ public class IdentityAdapter&lt;T&gt; : IDataAdapter&lt;T, T&gt;
 	</ul>
 	</li>
 	<li>even if we decided not to wait and come out of the <code>TryGet</code> call, we do <strong>NOT</strong>&nbsp;escape from this conundrum. And,&nbsp;all above listed questions fall back at <code>caller</code>&nbsp;level (i.e. the code which called <code>TryGet</code> at the first place).</li>
+	<li>another question that comes to mind is what if user does NOT want to wait too much before he can consume the chunk, i.e., what if user wants to consume available items without waiting for the future items to be accumulated. (perhaps his goals are&nbsp;time-sensitive, e.g. writing logs to files, pushing rows to DB, processing batch items etc...)</li>
 </ul>
 
 <p>One thing is certain that if we want to reduce on latency (as a part of our goal) we need to have a some kind of notification when the items arrives in the buffer, while our thread is asleep. Similar&nbsp;suggestion can also be found&nbsp;in the <a href="https://en.wikipedia.org/wiki/Producer%E2%80%93consumer_problem">original producer-consumer problem</a>. Now, of course we do not want to build such a mechanism inside the adapter else it would fail the whole purpose (imagine, everytime end-user/we write an adapter we need to write a separate notification mechanism). Nonetheless, if we look into the literature of producer-consumer, we already know that producer is capable of providing such a signal (at the time of adding item in the buffer). Thus, considering both the perspectives, for the moment we assume that buffer is capable of such notification.</p>
@@ -499,7 +505,7 @@ public class IdentityAdapter&lt;T&gt; : IDataAdapter&lt;T, T&gt;
 	<li>We can ALWAYS wait on buffer with INFINITE timeout. If it has elements, it should promptly return one else it should return one as soon as possible.</li>
 	<li>No end-user is interested in consuming empty lists, i.e. list without any item&nbsp;in it. Thus, we only need to supply lists when it has <strong>AT LEAST</strong>&nbsp;one (1)&nbsp;element in it.</li>
 	<li>End-user decides the size of the list as he is aware of system capabilities and his requirements.</li>
-	<li>When end-user can run&nbsp;the pipeline to have FIXED size lists (as shown in <strong>Image 8</strong>):
+	<li>When end-user&nbsp;runs the pipeline to have FIXED size lists (as shown in <strong>Image 8</strong>):
 	<ul>
 		<li>One is aware that we&nbsp;might need to wait longer to populate the list if some/every&nbsp;<code>buffer.TryGet</code> ends up waiting for an item.&nbsp;Thus, one is <strong>INDIFFERENT</strong> to time taken to prepare such a list.</li>
 		<li>One is more interested in getting full sized list as it is advantageous based on his pipeline strategy.</li>
@@ -510,7 +516,7 @@ public class IdentityAdapter&lt;T&gt; : IDataAdapter&lt;T, T&gt;
 		&nbsp;</li>
 	</ul>
 	</li>
-	<li>When end-user can run&nbsp;the pipeline to have Fixed duration&nbsp;lists (or variable sized)&nbsp;(as shown in <strong>Image 9</strong>):
+	<li>When end-user runs the pipeline to have Fixed duration&nbsp;lists (or variable sized)&nbsp;(as shown in <strong>Image 9</strong>):
 	<ul>
 		<li>One prefers to consume something within given time limit than to wait longer to have the list fully populated.&nbsp;Thus, one is time-bounded.</li>
 		<li>One is aware that every chunk might be of different size and&nbsp;his consumer can handle it (<code>1 &lt;= chunk_size &lt;= max_length</code>)</li>
@@ -638,7 +644,76 @@ public class AwaitableListAdapter&lt;T&gt; : IDataAdapter&lt;T, List&lt;T&gt;&gt
 
 <h4>2. Implementing Buffer</h4>
 
-<p>MORE TO COMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE....</p>
+<p>At this point, we already have buffer interface and behavior based implementation requirements. Using below code written snippet we achieve&nbsp;these requirements:</p>
+
+<pre lang="cs">
+<strong>//NOTE: Some explanation are provided as comments
+
+//we implement both interface
+</strong>public class PpcBuffer&lt;T&gt; : IConsumerBuffer&lt;T&gt;, IProducerBuffer&lt;T&gt;
+{
+&nbsp;&nbsp; &nbsp;private readonly CancellationToken _token;
+&nbsp;&nbsp; &nbsp;private BlockingCollection&lt;T&gt; _collection;
+
+&nbsp;&nbsp; &nbsp;public PpcBuffer(int bufferSize, CancellationToken token)
+&nbsp;&nbsp; &nbsp;{
+&nbsp;       <strong>//we say 0 represents unbounded buffer</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;_collection = bufferSize.Equals(0) ? new BlockingCollection&lt;T&gt;()
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; : new BlockingCollection&lt;T&gt;(bufferSize);
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;_token = token;
+&nbsp;&nbsp; &nbsp;}
+
+<strong>&nbsp;   //IProducerBuffer&lt;T&gt; IMPLEMENTATION &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+</strong>
+&nbsp;&nbsp; &nbsp;public void Add(T item, CancellationToken token)
+&nbsp;&nbsp; &nbsp;{
+&nbsp;       <strong>//Add should wait even if buffer is FULL, so we
+&nbsp;       //simply call TryAdd with INFINITE timeout
+</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;TryAdd(item, Timeout.Infinite, token);
+&nbsp;&nbsp; &nbsp;}
+
+&nbsp;&nbsp; &nbsp;public bool TryAdd(T item, int millisecTimeout, CancellationToken token)
+&nbsp;&nbsp; &nbsp;{
+<strong>&nbsp;       //either blocking collection will add it with in timeout
+&nbsp;       //   or return false... so our requirement is satisfied
+&nbsp;       //when timeout is INFINITE this method would either
+&nbsp;       //   finish with item being added or in an exception
+      &nbsp; //         1. when either of cancellation token is canceled</strong>
+<strong>      &nbsp; //         2. buffer is closed</strong>
+<strong>&nbsp;       //   so again we satisfy our requirements.
+</strong>
+        using (var mergeToken = CancellationTokenSource.CreateLinkedTokenSource(token, _token))
+&nbsp;       {
+           return _collection.TryAdd(item, millisecTimeout, mergeToken.token);
+&nbsp;       }<strong> </strong>
+&nbsp;&nbsp; &nbsp;}
+
+<strong>  &nbsp; //IConsumerBuffer&lt;T&gt; IMPLEMENTATION &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</strong>
+
+&nbsp;&nbsp; &nbsp;public bool TryGet(int millisecTimeout, CancellationToken token, out T data)
+&nbsp;&nbsp; &nbsp;{
+<strong>        //we do not create merge token, as user should be able to
+        //extract queued items once pipeline is closed for addition.
+</strong>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;return _collection.TryTake(out data, millisecTimeout, token);
+&nbsp;&nbsp; &nbsp;}
+
+&nbsp;   <strong>//shows together both... closed for adding and empty... so we are good.</strong>
+&nbsp;&nbsp; &nbsp;public bool Finished =&gt; _collection.IsCompleted;
+
+<strong>&nbsp;   //we implement CloseForAdding&nbsp;method to support implementation of 
+&nbsp;   //  detached mode &gt;&gt;&gt;&gt;&gt;&gt;&gt;</strong>
+
+&nbsp;&nbsp; &nbsp;public void CloseForAdding()
+&nbsp;&nbsp; &nbsp;{
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;_collection.CompleteAdding();
+&nbsp;&nbsp; &nbsp;}
+}
+</pre>
+
+<p>With such an implementation we are able to cover all the requirements as discussed above. Now, all that remains is the&nbsp;plumbing of these individual artifacts. And, so we do separately for both attached and detached pipeline below.</p>
+
+<p>&nbsp;</p>
 
 <h2>Limitations</h2>
 
