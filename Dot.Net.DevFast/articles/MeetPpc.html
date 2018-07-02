@@ -413,7 +413,7 @@ public interface IDataAdapter&lt;TP, TC&gt;
 <strong>//NOTE: Some explanation are provided as comments
 
 </strong>//generic adapter satisfying <strong>TP = TC = T, buffer type:&lt;T&gt;</strong>
-7public class IdentityAdapter&lt;T&gt; : IDataAdapter&lt;T, T&gt;
+public class IdentityAdapter&lt;T&gt; : IDataAdapter&lt;T, T&gt;
 {
     public bool TryGet(IConsumerBuffer&lt;T&gt; buffer, CancellationToken token, out T consumable)
 &nbsp; &nbsp; {
@@ -650,7 +650,7 @@ public class AwaitableListAdapter&lt;T&gt; : IDataAdapter&lt;T, List&lt;T&gt;&gt
 <strong>//NOTE: Some explanation are provided as comments
 
 //we implement both interface
-</strong>public class PpcBuffer&lt;T&gt; : IConsumerBuffer&lt;T&gt;, IProducerBuffer&lt;T&gt;
+</strong>public class PpcBuffer&lt;T&gt; : IProducerBuffer&lt;T&gt;, IConsumerBuffer&lt;T&gt;
 {
 &nbsp;&nbsp; &nbsp;private readonly CancellationToken _token;
 &nbsp;&nbsp; &nbsp;private BlockingCollection&lt;T&gt; _collection;
@@ -685,7 +685,7 @@ public class AwaitableListAdapter&lt;T&gt; : IDataAdapter&lt;T, List&lt;T&gt;&gt
 </strong>
         using (var mergeToken = CancellationTokenSource.CreateLinkedTokenSource(token, _token))
 &nbsp;       {
-           return _collection.TryAdd(item, millisecTimeout, mergeToken.token);
+           return _collection.TryAdd(item, millisecTimeout, mergeToken.Token);
 &nbsp;       }<strong> </strong>
 &nbsp;&nbsp; &nbsp;}
 
@@ -713,15 +713,646 @@ public class AwaitableListAdapter&lt;T&gt; : IDataAdapter&lt;T, List&lt;T&gt;&gt
 
 <p>With such an implementation we are able to cover all the requirements as discussed above. Now, all that remains is the&nbsp;plumbing of these individual artifacts. And, so we do separately for both attached and detached pipeline below.</p>
 
-<p>&nbsp;</p>
+<h4>3. Attached Pipeline</h4>
 
-<h2>Limitations</h2>
+<p>As we have discussed, attached pipeline mode has following characteristics:</p>
 
-<p>PENDINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG.</p>
+<ul>
+	<li>Consumers cannot be added or removed from pipeline once it is constructed.</li>
+	<li>Producers cannot be added or removed from pipeline once it is constructed.</li>
+	<li>Pipeline can be formed in both way: Concordant and Discordant</li>
+</ul>
 
-<h2>Points of Interest</h2>
+<h5>Raw Implementation</h5>
 
-<p>PENDINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG.</p>
+<p>As our interest is to create the form <code>producers.Pipe(consumers)</code>, we first need to device a raw implementation as fabricating final form would be just a matter of creating an extension method. We will create this method separately. Approach of our raw implementation would revolve around following idea:</p>
+
+<ol>
+	<li>Run all producers indepedently as async methods</li>
+	<li>Run all consumers independently as async methods</li>
+	<li>Feed Adapter transformed items to consumers</li>
+	<li>Observer producers as they completes production</li>
+	<li>Signal buffer once all producers are done</li>
+	<li>Dispose producers as they finish their work</li>
+	<li>Let consumers consume finish all remaining items</li>
+	<li>Dispose consumers</li>
+</ol>
+
+<p><u><strong>NOTE</strong></u>: We have used one&nbsp;of home-made extension methods to span&nbsp;and await on tasks (for both producers/consumers) :</p>
+
+<ul>
+	<li>Signature:&nbsp;<code>static Task WhenAll(this Func&lt;int, CancellationToken, Task&gt; func, int repeatCount,&nbsp;CancellationToken token = default(CancellationToken))</code></li>
+	<li>Implementation details: <a href="https://github.com/samaysar/dotdotnet/blob/develop/Dot.Net.DevFast/Dot.Net.DevFast/Extensions/TaskExts.cs">please see here</a></li>
+</ul>
+
+<p>Following approach implements all above listed steps:</p>
+
+<pre lang="cs">
+<strong>//NOTE: Some explanation are provided as comments</strong>
+
+<b>//We hide the implementation inside INTERNAL class to
+//expose it through extension method</b>
+internal static class PipeImpl&lt;TP, TC&gt;
+{
+&nbsp;&nbsp; &nbsp;public static Task Execute(CancellationToken token, 
+&nbsp;       int bufferSize, 
+&nbsp;       IDataAdapter&lt;TP, TC&gt; adapter,
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;IReadOnlyList&lt;IProducer&lt;TP&gt;&gt; producers, 
+&nbsp;       IReadOnlyList&lt;IConsumer&lt;TC&gt;&gt; consumers)
+&nbsp;&nbsp; &nbsp;{
+&nbsp;       <strong>//instead of using await, we decided to create a new Task
+&nbsp;       //so that caller func can await as per its convenience
+</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;return Task.Run(async () =&gt;
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;using (var localCts = new CancellationTokenSource())
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;using (var combinedCts = CancellationTokenSource
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;.CreateLinkedTokenSource(token, localCts.Token))
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{
+&nbsp;                   <strong>//creating buffer as per required size</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;using (var ppcBuffer = new PpcBuffer&lt;TP&gt;(bufferSize, 
+&nbsp;                                                     combinedCts.Token))
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{
+                        <strong>//span consumers</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;var rc = RunConsumers(consumers, ppcBuffer, adapter, 
+&nbsp;                                             combinedCts.Token, localCts);
+&nbsp;                       <strong>//span producers</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;var rp = RunProducers(producers, ppcBuffer, 
+&nbsp;                                             combinedCts.Token, localCts);
+
+&nbsp;                       <strong>//wait until all consumers and producers finish</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;await Task.WhenAll(rc, rp).ConfigureAwait(false);
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;});
+&nbsp;&nbsp; &nbsp;}
+&nbsp;&nbsp; &nbsp;
+&nbsp;&nbsp; &nbsp;internal static Task RunConsumers(IReadOnlyList&lt;IConsumer&lt;TC&gt;&gt; consumers,
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;IConsumerBuffer&lt;TP&gt; feed, IDataAdapter&lt;TP, TC&gt; adapter,
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;CancellationToken token, CancellationTokenSource tokenSrc)
+&nbsp;&nbsp; &nbsp;{
+&nbsp;       <strong>//following line span all consumers (</strong>RunConsumer&nbsp;method<strong>) in the list
+&nbsp;       //as separate task
+</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;return new Func&lt;int, CancellationToken, Task&gt;(async (i, t) =&gt;
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;await RunConsumer(consumers[i], feed, adapter, t, tokenSrc)
+&nbsp;                               .ConfigureAwait(false))
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;.WhenAll(consumers.Count, token);
+      &nbsp; <strong>//our home-made WHENALL line waits on all created tasks
+      &nbsp; // (i.e. waits on all consumer to finish)
+</strong>&nbsp;&nbsp; &nbsp;}
+
+&nbsp;&nbsp; &nbsp;private static async Task RunConsumer(IConsumer&lt;TC&gt; parallelConsumer,
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;IConsumerBuffer&lt;TP&gt; feed, IDataAdapter&lt;TP, TC&gt; adapter,
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;CancellationToken token, CancellationTokenSource tokenSrc)
+&nbsp;&nbsp; &nbsp;{
+&nbsp;       try
+&nbsp;       {
+            <strong>//this would dispose the consumer once we have nothing left
+            //to consume</strong>
+&nbsp;&nbsp; &nbsp;    &nbsp;&nbsp; &nbsp;using (parallelConsumer)
+    &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{
+                <strong>//init consumers</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;    &nbsp;&nbsp; &nbsp;await parallelConsumer.InitAsync().ConfigureAwait(false);
+&nbsp;&nbsp; &nbsp;    &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;token.ThrowIfCancellationRequested();
+          
+&nbsp;               <strong>//we loop until adapter is capable to create a consumable
+                //   instance</strong>
+     &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;while (adapter.TryGet(feed, token, out var consumable))
+&nbsp;&nbsp; &nbsp;&nbsp;      &nbsp;&nbsp;&nbsp; &nbsp;{
+                    <strong>//we feed the item to consumer and wait before
+                    // supplying another item.</strong>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;              &nbsp;&nbsp;&nbsp; &nbsp;await parallelConsumer.ConsumeAsync(consumable, token)
+                                          .ConfigureAwait(false);
+&nbsp;&nbsp; &nbsp;    &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}
+    &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}
+&nbsp;       }
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;catch
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{
+&nbsp;           <strong>//in case producer ends up in error
+&nbsp;           // we cancel the token so that consumer can intercept it</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;if (!token.IsCancellationRequested) tokenSrc.Cancel();
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;throw;
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}
+&nbsp;&nbsp; &nbsp;}
+
+&nbsp;&nbsp; &nbsp;private static Task RunProducers(IReadOnlyList&lt;IProducer&lt;TP&gt;&gt; producers,
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;PpcBuffer&lt;TP&gt; buffer, CancellationToken token,
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;CancellationTokenSource tokenSrc)
+&nbsp;&nbsp; &nbsp;{
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;return Task.Run(async () =&gt;
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;try
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{
+             &nbsp;  <strong>//following line span all consumers (</strong>RunProducer method<strong>) in the list
+              &nbsp; //as separate task
+</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;await new Func&lt;int, CancellationToken, Task&gt;(async (i, t) =&gt;
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;await RunProducer(producers[i], buffer, t, tokenSrc)
+&nbsp;                                       .ConfigureAwait(false))
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;.WhenAll(producers.Count, token).ConfigureAwait(false);
+              &nbsp; <strong>//our home-made WHENALL line waits on all created tasks
+              &nbsp; // (i.e. waits on all producer to finish)
+</strong>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;finally
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{
+&nbsp;               <strong>//&gt;&gt;&gt;&gt;&gt; IMPORTANT: No matter whether producers finishes normally
+&nbsp;               //                 or ends-up in error
+&nbsp;               //                 we close the buffer</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;buffer.CloseForAdding();
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;});
+&nbsp;&nbsp; &nbsp;}
+
+&nbsp;&nbsp; &nbsp;private static async Task RunProducer(IProducer&lt;TP&gt; parallelProducer,
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;IProducerBuffer&lt;TP&gt; feed, CancellationToken token,
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;CancellationTokenSource tokenSrc)
+&nbsp;&nbsp; &nbsp;{
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;try
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{
+            <strong>//this would dispose the producer once we have nothing left
+            //to produce</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;using (parallelProducer)
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{
+&nbsp;               <strong>//initalize producer</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;await parallelProducer.InitAsync().ConfigureAwait(false);
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;token.ThrowIfCancellationRequested();
+&nbsp;               
+&nbsp;               <strong>//we provide our buffer to producer
+&nbsp;               //it will be producer responcibility to populate it
+&nbsp;               //    and return from it once there is nothing left
+&nbsp;               //    to produce.</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;await parallelProducer.ProduceAsync(feed, token)
+&nbsp;                                     .ConfigureAwait(false);
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;catch
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{
+          &nbsp; <strong>//in case producer ends up in error
+          &nbsp; // we cancel the token so that consumer can intercept it</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;if (!token.IsCancellationRequested) tokenSrc.Cancel();
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;throw;
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}
+&nbsp;&nbsp; &nbsp;}
+}
+</pre>
+
+<h5>Achieving .Pipe usage form</h5>
+
+<p>We have all the ingredients to cook our extension methods and we propose following four (4) such methods to achieve different pipelines as we had discussed above:</p>
+
+<ol>
+	<li>Concordant Pipeline: Producer&nbsp;type matches consumer type (i.e. <code>&lt;TP&gt; = &lt;TC&gt;</code>). Normally end-user need to inject IDENTITY adapter to it, but we can implicitly do it inside our method as shown below:
+
+	<pre lang="cs">
+<strong>//IMPLEMENTATION</strong>
+public static Task Pipe&lt;T&gt;(this IReadOnlyList&lt;IProducer&lt;T&gt;&gt; producers,
+                                IReadOnlyList&lt;IConsumer&lt;T&gt;&gt; consumers,
+                                CancellationToken token = default(CancellationToken),
+                                int bufferSize = 256)
+{
+&nbsp;&nbsp; &nbsp;return PipeImpl&lt;T, T&gt;.Execute(token, bufferSize,&nbsp;
+&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;    <strong>new IdentityAdapter&lt;T&gt;(),</strong>&nbsp;
+&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;    producers, consumers);
+}
+
+<strong>//=========================
+//========= USAGE==========
+//=========================
+</strong>//var producers = new IProducer&lt;T&gt;[]{ producer1, ..., producerN };
+//var consumers = new IConsumer&lt;T&gt;[]{ consumer1, ..., consumerM };<strong>
+</strong>//await producers.Pipe(consumers);
+
+//producer1, ..., producerN denotes comma separated N producer instances
+//consumer1, ..., consumerM denotes comma separated M consumer instances
+</pre>
+	</li>
+	<li>Discordent Pipeline with <strong>FIXED SIZE</strong> chunk: If Producer&nbsp;type is&nbsp;<code>&lt;T&gt;</code>&nbsp;then consumer type is <code>List&lt;T&gt;</code>&nbsp;and end-user seek fixed sized chunks. Normally, one needs to inject Awaitable List adapter to it, but we can implicitly do it inside our method as shown below:
+	<pre lang="cs">
+<strong>//IMPLEMENTATION</strong>
+public static Task Pipe&lt;T&gt;(this IReadOnlyList&lt;IProducer&lt;T&gt;&gt; producers,
+                                IReadOnlyList&lt;IConsumer&lt;List&lt;T&gt;&gt;&gt; consumers,
+                                int listSize,
+                                CancellationToken token = default(CancellationToken),
+                                int bufferSize = 256)
+{
+&nbsp;   //timeout is INFINITE, we will get FIXED-size chunks
+&nbsp;&nbsp; &nbsp;return PipeImpl&lt;T, List&lt;T&gt;&gt;.Execute(token, bufferSize,&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<strong>&nbsp;new AwaitableListAdapter&lt;T&gt;(listSize, Timeout.Infinite),</strong>
+&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;producers, consumers);
+}
+
+<strong>//=========================
+//========= USAGE==========
+//=========================
+</strong>//var producers = new IProducer&lt;T&gt;[]{ producer1, ..., producerN };
+//var consumers = new IConsumer&lt;List&lt;T&gt;&gt;[]{ consumer1, ..., consumerM };
+//await producers.Pipe(consumers, some_positive_int_for_chunk_size);
+
+//producer1, ..., producerN denotes comma separated N producer instances
+//consumer1, ..., consumerM denotes comma separated M consumer instances
+</pre>
+	</li>
+	<li>Discordent Pipeline with <strong>FIXED DURATION</strong> chunk: If Producer&nbsp;type is&nbsp;<code>&lt;T&gt;</code>&nbsp;then consumer type is <code>List&lt;T&gt;</code>&nbsp;and end-user seek variable sized chunks created using fixed duration. Normally, one needs to inject Awaitable List adapter to it, but we can implicitly do it inside our method as shown below:
+	<pre lang="cs">
+<strong>//IMPLEMENTATION</strong>
+public static Task Pipe&lt;T&gt;(this IReadOnlyList&lt;IProducer&lt;T&gt;&gt; producers,
+                                IReadOnlyList&lt;IConsumer&lt;List&lt;T&gt;&gt;&gt; consumers,
+                                int listMaxSize,
+&nbsp;                               int millisecondTimeout,
+                                CancellationToken token = default(CancellationToken),
+                                int bufferSize = 256)
+{
+&nbsp;   //timeout and MAX list size passed to adapter to avail chunks
+&nbsp;&nbsp; &nbsp;return PipeImpl&lt;T, List&lt;T&gt;&gt;.Execute(token, bufferSize,&nbsp;
+<strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;new AwaitableListAdapter&lt;T&gt;(listMaxSize, millisecondTimeout),</strong>
+&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;producers, consumers);
+}
+
+<strong>//=========================
+//========= USAGE==========
+//=========================
+</strong>//var producers = new IProducer&lt;T&gt;[]{ producer1, ..., producerN };
+//var consumers = new IConsumer&lt;List&lt;T&gt;&gt;[]{ consumer1, ..., consumerM }; 
+//await producers.Pipe(consumers, some_positive_int_for_max_chunk_size,
+//                                some_positive_int_for_timeout);
+
+//producer1, ..., producerN denotes comma separated N producer instances
+//consumer1, ..., consumerM denotes comma separated M consumer instances
+</pre>
+	</li>
+	<li>Generic Pipeline: Producer type is <code>&lt;TP&gt;</code> and consumer type is <code>&lt;TC&gt;</code> and <code>IDataAdapter&lt;TP, TC&gt;</code>&nbsp;implementation is available to end-user.
+	<pre lang="cs">
+<strong>//IMPLEMENTATION</strong>
+public static Task Pipe&lt;TP, TC&gt;(this IReadOnlyList&lt;IProducer&lt;TP&gt;&gt; producers,
+                                     IReadOnlyList&lt;IConsumer&lt;TC&gt;&gt; consumers,
+                                     <strong>IDataAdapter&lt;TP, TC&gt; adapter</strong>,
+                                     CancellationToken token = default(CancellationToken),
+                                     int bufferSize = 256)
+{
+&nbsp;   //timeout and MAX list size passed to adapter to avail chunks
+&nbsp;&nbsp; &nbsp;return PipeImpl&lt;TP, TC&gt;.Execute(token, bufferSize,&nbsp;
+<strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;      adapter,</strong>
+&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;      producers, consumers);
+}
+
+<strong>//=========================
+//========= USAGE==========
+//=========================
+</strong>//var producers = new IProducer&lt;TP&gt;[]{ producer1, ..., producerN };
+//var consumers = new IConsumer&lt;TC&gt;[]{ consumer1, ..., consumerM };
+//IDataAdapter&lt;TP, TC&gt; adapter = ...end-user-adapter-creation-call...
+//await producers.Pipe(consumers, adapter);
+
+//producer1, ..., producerN denotes comma separated N producer instances
+//consumer1, ..., consumerM denotes comma separated M consumer instances
+</pre>
+	</li>
+</ol>
+
+<h4>4. Detached Pipeline</h4>
+
+<p>Deatched pipeline differs a bit as we do not have producers instances available to us at pipeline construction time (i.e. while calling <code>PipeImpl&lt;TP,TC&gt;.Execute</code>) as we do have for attached mode. Due to the absence of these producers we are do not have any mechanism to populate our buffer. Also, we had discussed during our initial discussion, producers for such a pipeline may appear sporadically. Thus, unfortunately, we will&nbsp;NOT be able to achieve our desired <code>producers.Pipe(consumers)</code>&nbsp;usage form, however, we attempt to achieve a similar simplified usage form based on following information:</p>
+
+<ul>
+	<li>Actual producers are unknown and may appear sporadically to inject items in the pipeline</li>
+	<li>Consumers cannot be added or removed from pipeline once it is constructed</li>
+	<li>Pipeline can be formed in both way: Concordant and Discordant</li>
+</ul>
+
+<h5>Raw Implementation</h5>
+
+<p>As we do NOT have any single point in code to <code>await</code> on, we need to fabricate a way to keep our pipeline alive for the whole duration so that all produced items (by ephemeral sporadically appearing producers or long-running producers) can be added in it. For all pragmatic reasons, we measure such duration as: &quot;The time duration starting from the moment when such a pipeline is constructed until the moment when the call to <code>CloseForAdding</code> method is made.&quot;</p>
+
+<p>With some assumptions made and intentions declared, we proceed with detached Pipeline interfacing as follow:</p>
+
+<pre lang="cs">
+<strong>//we adopt this interface as this nearly mimic
+//all operations of RunProducers method of 
+//PipeImpl&lt;TP, TC&gt; static class we used for attached mode
+//i.e.
+//    Add and TryAdd method
+//    and Dispose method
+//    we have nothing to Init.
+</strong>public interface IPipeline&lt;T&gt; : IProducerBuffer&lt;T&gt;, IDisposable
+{
+}
+</pre>
+
+<p>Now, with IPipeline, we will be able to mimic all the producer related operations as we have done before (in <code>RunProducers</code> method of <code>PipeImpl&lt;TP, TC&gt; static class</code>). Lets look at the implementation:</p>
+
+<pre lang="cs">
+<strong>//NOTE: Some explanation are provided as comments</strong>
+
+internal sealed class PipelineImpl&lt;TP,TC&gt; : IPipeline&lt;TP&gt;
+{
+&nbsp;&nbsp; &nbsp;private readonly CancellationTokenSource _mergedCts;
+&nbsp;&nbsp; &nbsp;private readonly PpcBuffer&lt;TP&gt; _feed;
+&nbsp;&nbsp; &nbsp;private readonly Task _consumerTask;
+&nbsp;&nbsp; &nbsp;private CancellationTokenSource _localCts;
+
+&nbsp;&nbsp; &nbsp;public Pipeline(IReadOnlyList&lt;IConsumer&lt;TC&gt;&gt; consumers, 
+&nbsp;                   IDataAdapter&lt;TP, TC&gt; adapter, 
+&nbsp;                   CancellationToken token, 
+&nbsp;                   int bufferSize)
+&nbsp;&nbsp; &nbsp;{
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;_localCts = new CancellationTokenSource();
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;_mergedCts = CancellationTokenSource.CreateLinkedTokenSource(token, 
+&nbsp;                                                          _localCts.Token);
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;_feed = new PpcBuffer&lt;TP&gt;(bufferSize, _mergedCts.Token);
+
+&nbsp;       <strong>//in order to span and await on our consumer
+&nbsp;       //    we simply call the existing implementation
+&nbsp;       //        from PipeImpl class</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;_consumerTask = PipeImpl&lt;TP, TC&gt;.RunConsumers(consumers, _feed, 
+&nbsp;                                               adapter, token, _localCts);
+&nbsp;&nbsp; &nbsp;}
+
+&nbsp;&nbsp; &nbsp;public void Add(TP item, CancellationToken token)
+&nbsp;&nbsp; &nbsp;{
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;TryAdd(item, Timeout.Infinite, token);
+&nbsp;&nbsp; &nbsp;}
+
+&nbsp;&nbsp; &nbsp;public bool TryAdd(TP item, int millisecTimeout, CancellationToken token)
+&nbsp;&nbsp; &nbsp;{
+        <strong>//passing the item to buffer</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;return _feed.TryAdd(item, millisecTimeout, token);
+&nbsp;&nbsp; &nbsp;}
+
+&nbsp;&nbsp; &nbsp;public void Dispose()
+&nbsp;&nbsp; &nbsp;{
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;if (_localCts == null) return;
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;try
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;using (_localCts)
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;using (_mergedCts)
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;using (_feed)
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{
+&nbsp;                       <strong>//FIRST, we cancel our local token</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;_localCts.Cancel();
+&nbsp;                       
+&nbsp;                       <strong>//SECOND, we close the feed for addition</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;_feed.CloseForAdding();
+&nbsp;                       
+&nbsp;                       <strong>//Then, we wait for remaining items to be
+&nbsp;                       //      consumed</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;_consumerTask.Wait();
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;finally
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;_localCts = null;
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}
+&nbsp;&nbsp; &nbsp;}
+}
+</pre>
+
+<h5>Instance Management</h5>
+
+<p>Contrary to attached pipeline, where we had a single place in code to <code>await</code> on the whole pipeline workflow, in detached mode we do NOT have such a luxury. Thus, end-users need to maintain&nbsp;the instance of&nbsp;<code>IPipeline&lt;TP&gt;</code> somewhere after the construction and explicitly call the <code>Dispose</code> on it. This, of course, require some attentions, however, before rejecting the usage of this implementation we need to meditate over following thoughts:</p>
+
+<ul>
+	<li>Detached pipeline:
+	<ul>
+		<li>does not demand the complete knowledge of all possible producers at construction time</li>
+		<li>accepts items from both sporadic ephemeral producers and long-running producers</li>
+		<li>offers loose coupling between consumers and producers</li>
+		<li>facilitate concurrency</li>
+		<li>offers thread-safety</li>
+	</ul>
+	</li>
+	<li>Detached pipeline, by its nature:
+	<ul>
+		<li>useful in cases, where, consumers outlives producers by large (in most of the cases consumers might live for application life-time), examples:
+		<ul>
+			<li>Web based (<code>WCF</code> based, <code>ApiController</code> based etc) async data processing</li>
+			<li>Backend file processing</li>
+			<li>Background Database operations</li>
+			<li>Event based processing</li>
+			<li>Async batch processing, so on and so forth...</li>
+		</ul>
+		</li>
+		<li>demands management of single instance that too can be conveniently maintained as:
+		<ul>
+			<li>Singleton inside Dependency Injector container</li>
+			<li>Static field/property etc...</li>
+		</ul>
+		</li>
+		<li>can be disposed as needed: when application shuts-down, after closing Network interface etc...</li>
+	</ul>
+	</li>
+</ul>
+
+<h5>Achieving .Pipeline usage form</h5>
+
+<p>Above, we have already created <code>.Pipe</code> extension methods In similar manner, we can obtain following <code>.Pipeline</code> methods:</p>
+
+<ol>
+	<li>Concordant Pipeline: Producer&nbsp;type matches consumer type (i.e. <code>&lt;TP&gt; = &lt;TC&gt;</code>). Normally end-user need to inject IDENTITY adapter to it, but we can implicitly do it inside our method as shown below:
+
+	<pre lang="cs">
+<strong>//Implentation
+</strong>public static IPipeline&lt;T&gt; Pipeline&lt;T&gt;(this IReadOnlyList&lt;IConsumer&lt;T&gt;&gt; consumers,
+&nbsp;&nbsp; &nbsp;                           CancellationToken token = default(CancellationToken),&nbsp;
+&nbsp;&nbsp; &nbsp;                           int bufferSize = 256)
+{
+&nbsp;&nbsp; &nbsp;return new PipelineImpl&lt;T, T&gt;(consumers,&nbsp;
+&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<strong>new IdentityAdapter&lt;T&gt;(),</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;token, bufferSize);
+}
+
+<strong>//=========================
+//========= USAGE==========
+//========================= </strong>
+//var consumers = new IConsumer&lt;T&gt;[]{ consumer1, ..., consumerM };
+//var save_this_instance_somewhere = consumers.Pipeline();
+//consumer1, ..., consumerM denotes comma separated M consumer instances
+
+<strong>//===================================
+//=========Add/TryAdd USAGE==========
+//===================================</strong>
+<strong>//elsewhere (in API methods, Event Handlers etc)</strong>
+//saved_instance.Add(item, token) <strong>OR</strong>&nbsp;saved_instance.TryAdd(item, timeout, token)
+
+<strong>//===================================
+//=========Dispose USAGE=============
+//===================================</strong>
+//during App Shutdown Or after network close
+//saved_instace.Dispose();
+</pre>
+	</li>
+	<li>Discordent Pipeline with <strong>FIXED SIZE</strong> chunk: If Producer&nbsp;type is&nbsp;<code>&lt;T&gt;</code>&nbsp;then consumer type is <code>List&lt;T&gt;</code>&nbsp;and end-user seek fixed sized chunks. Normally, one needs to inject Awaitable List adapter to it, but we can implicitly do it inside our method as shown below&nbsp;(<u><strong>IMPORTANT</strong></u>: As producers are sporadic, one might like to avoid this adapter completely as unnecessary consumer side delays will be observed if no producer appears for long time... in detached mode, <strong>FIXED DURATION</strong> chunk is preferred):
+	<pre lang="cs">
+<strong>//Implentation
+</strong>public static IPipeline&lt;T&gt; Pipeline&lt;T&gt;(this IReadOnlyList&lt;IConsumer&lt;T&gt;&gt; consumers,
+&nbsp;                              int listSize,
+&nbsp;&nbsp; &nbsp;                           CancellationToken token = default(CancellationToken),&nbsp;
+&nbsp;&nbsp; &nbsp;                           int bufferSize = 256)
+{
+&nbsp;&nbsp; &nbsp;return new PipelineImpl&lt;T, T&gt;(consumers,&nbsp;
+&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<strong>new AwaitableListAdapter&lt;T&gt;(listSize, Timeout.Infinite),</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;token, bufferSize);
+}
+
+<strong>//=========================
+//========= USAGE==========
+//========================= </strong>
+//var consumers = new IConsumer&lt;T&gt;[]{ consumer1, ..., consumerM };
+//var save_this_instance_somewhere = consumers.Pipeline(some_positive_list_size);
+//consumer1, ..., consumerM denotes comma separated M consumer instances
+
+<strong>//===================================
+//=========Add/TryAdd USAGE==========
+//===================================</strong>
+<strong>//elsewhere (in API methods, Event Handlers etc)</strong>
+//saved_instance.Add(item, token) <strong>OR</strong>&nbsp;saved_instance.TryAdd(item, timeout, token)
+
+<strong>//===================================
+//=========Dispose USAGE=============
+//===================================</strong>
+//during App Shutdown Or after network close
+//saved_instace.Dispose();
+</pre>
+	</li>
+	<li>Discordent Pipeline with <strong>FIXED DURATION</strong> chunk: If Producer&nbsp;type is&nbsp;<code>&lt;T&gt;</code>&nbsp;then consumer type is <code>List&lt;T&gt;</code>&nbsp;and end-user seek variable sized chunks created using fixed duration. Normally, one needs to inject Awaitable List adapter to it, but we can implicitly do it inside our method as shown below:
+	<pre lang="cs">
+<strong>//Implentation
+</strong>public static IPipeline&lt;T&gt; Pipeline&lt;T&gt;(this IReadOnlyList&lt;IConsumer&lt;T&gt;&gt; consumers,
+                               int listMaxSize,
+&nbsp;                              int millisecondTimeout, 
+&nbsp;&nbsp; &nbsp;                           CancellationToken token = default(CancellationToken),&nbsp;
+&nbsp;&nbsp; &nbsp;                           int bufferSize = 256)
+{
+&nbsp;&nbsp; &nbsp;return new PipelineImpl&lt;T, T&gt;(consumers,&nbsp;
+&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<strong>new AwaitableListAdapter&lt;T&gt;(</strong>listMaxSize<strong>, </strong>millisecondTimeout<strong>),</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;token, bufferSize);
+}
+
+<strong>//=========================
+//========= USAGE==========
+//========================= </strong>
+//var consumers = new IConsumer&lt;T&gt;[]{ consumer1, ..., consumerM };
+//var save_this_instance_somewhere = consumers.Pipeline(some_positive_list_size,
+&nbsp;                                                       some_positive_timeout);
+//consumer1, ..., consumerM denotes comma separated M consumer instances
+
+<strong>//===================================
+//=========Add/TryAdd USAGE==========
+//===================================</strong>
+<strong>//elsewhere (in API methods, Event Handlers etc)</strong>
+//saved_instance.Add(item, token) <strong>OR</strong>&nbsp;saved_instance.TryAdd(item, timeout, token)
+
+<strong>//===================================
+//=========Dispose USAGE=============
+//===================================</strong>
+//during App Shutdown Or after network close
+//saved_instace.Dispose();
+</pre>
+	</li>
+	<li>Generic Pipeline: Producer type is <code>&lt;TP&gt;</code> and consumer type is <code>&lt;TC&gt;</code> and <code>IDataAdapter&lt;TP, TC&gt;</code>&nbsp;implementation is available to end-user.
+	<pre lang="cs">
+<strong>//Implentation
+</strong>public static IPipeline&lt;TP&gt; Pipeline&lt;TP, TC&gt;(this IReadOnlyList&lt;IConsumer&lt;TC&gt;&gt; consumers,
+                               <strong>IDataAdapter&lt;TP, TC&gt; adapter,</strong>
+&nbsp;&nbsp; &nbsp;                           CancellationToken token = default(CancellationToken),&nbsp;
+&nbsp;&nbsp; &nbsp;                           int bufferSize = 256)
+{
+&nbsp;&nbsp; &nbsp;return new PipelineImpl&lt;TP, TC&gt;(consumers,&nbsp;
+&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<strong>adapter,</strong>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;token, bufferSize);
+}
+
+<strong>//=========================
+//========= USAGE==========
+//========================= </strong>
+//var consumers = new IConsumer&lt;TC&gt;[]{ consumer1, ..., consumerM };
+//IDataAdapter&lt;TP, TC&gt; adapter = ...end-user-adapter-creation-call...
+//var save_this_instance_somewhere = consumers.Pipeline(adapter);
+//consumer1, ..., consumerM denotes comma separated M consumer instances
+
+<strong>//===================================
+//=========Add/TryAdd USAGE==========
+//===================================</strong>
+<strong>//elsewhere (in API methods, Event Handlers etc)</strong>
+//saved_instance.Add(item, token) <strong>OR</strong>&nbsp;saved_instance.TryAdd(item, timeout, token)
+
+<strong>//===================================
+//=========Dispose USAGE=============
+//===================================</strong>
+//during App Shutdown Or after network close
+//saved_instace.Dispose();
+</pre>
+	</li>
+</ol>
+
+<h2>Commentary</h2>
+
+<p>So far, we have implemented all the initially set requirements. Before we close this discussion technically, we would like to wrap our features:</p>
+
+<table align="center" border="2" cellpadding="5" cellspacing="5">
+	<caption style="background-color: #18bef2">Feature Implementation</caption>
+	<thead>
+		<tr style="background-color: #26ceff">
+			<th>Feature</th>
+			<th>Implementation</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr style="background-color: #c4f1ff">
+			<td style="text-align: center">Buffer Size</td>
+			<td style="text-align: center">Through method parameter (bufferSize); 0 is unbounded</td>
+		</tr>
+		<tr style="background-color: #c9f3ff">
+			<td style="text-align: center">Losslessness</td>
+			<td style="text-align: center">using millisecond Timeout during Add/TryAdd</td>
+		</tr>
+		<tr style="background-color: #c4f1ff">
+			<td style="text-align: center">Interruptibility</td>
+			<td style="text-align: center">Using CancelationToken</td>
+		</tr>
+		<tr style="background-color: #c4f1ff">
+			<td style="text-align: center">Concordance</td>
+			<td style="text-align: center">Use of Adapters</td>
+		</tr>
+		<tr style="background-color: #c4f1ff">
+			<td style="text-align: center">Attachability</td>
+			<td style="text-align: center">
+			<p>Attached mode implementation using .Pipe extension methods</p>
+
+			<p>Detached mode implementation using .Pipeline extension methods</p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<p>We have also noticed:</p>
+
+<ul>
+	<li>Attached mode can make use of both FIXED SIZE and FIXED DURATION chunk adapters</li>
+	<li>Detached mode should avoid FIXED SIZE chunk adapater to avoid unintentional latencies</li>
+</ul>
+
+<p>In our original work (<a href="https://github.com/samaysar/dotdotnet">Source Code</a>, <a href="https://www.nuget.org/packages/Dot.Net.DevFast">NuGet Package</a>), we have further eloborated our implementation as explained below:</p>
+
+<ul>
+	<li>Adapter interfaces are implemented as abstract classes, so that <code>&lt;TP&gt;</code> to <code>&lt;TC&gt;</code> data transformation can be done solely based on business logic without worrying about calls to <code>buffer.TryGet</code>&nbsp;(see <a href="https://github.com/samaysar/dotdotnet/blob/develop/Dot.Net.DevFast/Dot.Net.DevFast/Extensions/Ppc/AwaitableAdapter.cs">AwaitableAdapter</a><strong>&nbsp;</strong>and <a href="https://github.com/samaysar/dotdotnet/blob/develop/Dot.Net.DevFast/Dot.Net.DevFast/Extensions/Ppc/AwaitableListAdapter.cs">AwaitableListAdapter</a>)<br />
+	<br />
+	<img align="middle" alt="abstract-adapter-impl" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Adapter-GitHub-Implementation-Abstract.PNG" />
+	<p>Thus, it would be simpler, due to business logic oriented implementation of Adapt abstract method, to inherit from either <code>AwaitableAdapter&lt;TP, TC&gt;</code> abstract class (if consuming single instances at a time) or <code>AwaitableListAdapter&lt;TP, TC&gt;</code>&nbsp;abstract class (if consuming data in chunks).</p>
+	</li>
+	<li><code>.Pipe</code> and <code>.Pipeline</code> extension methods are available on <code>Action/Func delegates</code>&nbsp;too (we have covered both Sync and Async delegates), thus avoiding the need to inherit&nbsp;<code>IProducer</code> and <code>IConsumer</code> interfaces when <code>Init/Dispose</code>&nbsp;methods are&nbsp;not warranted. (see <a href="https://github.com/samaysar/dotdotnet/blob/develop/Dot.Net.DevFast/Dot.Net.DevFast/Extensions/Ppc/PipeExts.cs">PipeExts</a>&nbsp;and <a href="https://github.com/samaysar/dotdotnet/blob/develop/Dot.Net.DevFast/Dot.Net.DevFast/Extensions/Ppc/PipelineExts.cs">PipelineExts</a>)</li>
+	<li>Our current implementation is NOT capable of method chaining, i.e. somthing similar to UNIX pipes chaining multiple pipes:
+	<pre>
+ls -l | grep key | less      (3 operations with 2 pipes)</pre>
+	</li>
+	<li>Our current implementation suports only <code>void</code> consumers, i.e. consumers cannot have return values.</li>
+</ul>
 
 <h2>History</h2>
 
