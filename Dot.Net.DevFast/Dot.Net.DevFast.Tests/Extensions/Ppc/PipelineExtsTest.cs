@@ -13,45 +13,45 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         [Test]
         public void Single_Consumer_Based_Pipeline_Harmonizes()
         {
-            using (PipeExtsTest.Consumer<object>().ConcurrentPipeline())
+            using (PipeExtsTest.Consumer<object>().Pipeline())
             {
             }
 
-            using (PipeExtsTest.Consumer<List<object>>().ConcurrentPipeline(2, 0))
+            using (PipeExtsTest.Consumer<List<object>>().Pipeline(2, 0))
             {
             }
 
-            using (PipeExtsTest.Consumer<object>().ConcurrentPipeline(IdentityAwaitableAdapter<object>.Default))
+            using (PipeExtsTest.Consumer<object>().Pipeline(IdentityAwaitableAdapter<object>.Default))
             {
             }
 
             using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>())
-                .ConcurrentPipeline())
+                .Pipeline())
             {
             }
 
             using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<List<object>>())
-                .ConcurrentPipeline(2, 0))
+                .Pipeline(2, 0))
             {
             }
 
             using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>())
-                .ConcurrentPipeline(IdentityAwaitableAdapter<object>.Default))
+                .Pipeline(IdentityAwaitableAdapter<object>.Default))
             {
             }
 
             using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>())
-                .ConcurrentPipeline())
+                .Pipeline())
             {
             }
 
             using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<List<object>>())
-                .ConcurrentPipeline(2, 0))
+                .Pipeline(2, 0))
             {
             }
 
             using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>())
-                .ConcurrentPipeline(IdentityAwaitableAdapter<object>.Default))
+                .Pipeline(IdentityAwaitableAdapter<object>.Default))
             {
             }
         }
@@ -59,45 +59,45 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         [Test]
         public void Multiple_Consumer_Based_Pipeline_Harmonizes()
         {
-            using (PipeExtsTest.Consumer<object>(2).ConcurrentPipeline())
+            using (PipeExtsTest.Consumer<object>(2).Pipeline())
             {
             }
 
-            using (PipeExtsTest.Consumer<List<object>>(2).ConcurrentPipeline(2, 0))
+            using (PipeExtsTest.Consumer<List<object>>(2).Pipeline(2, 0))
             {
             }
 
-            using (PipeExtsTest.Consumer<object>(2).ConcurrentPipeline(IdentityAwaitableAdapter<object>.Default))
+            using (PipeExtsTest.Consumer<object>(2).Pipeline(IdentityAwaitableAdapter<object>.Default))
             {
             }
 
             using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>(2))
-                .ConcurrentPipeline())
+                .Pipeline())
             {
             }
 
             using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<List<object>>(2))
-                .ConcurrentPipeline(2, 0))
+                .Pipeline(2, 0))
             {
             }
 
             using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>(2))
-                .ConcurrentPipeline(IdentityAwaitableAdapter<object>.Default))
+                .Pipeline(IdentityAwaitableAdapter<object>.Default))
             {
             }
 
             using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>(2))
-                .ConcurrentPipeline())
+                .Pipeline())
             {
             }
 
             using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<List<object>>(2))
-                .ConcurrentPipeline(2, 0))
+                .Pipeline(2, 0))
             {
             }
 
             using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>(2))
-                .ConcurrentPipeline(IdentityAwaitableAdapter<object>.Default))
+                .Pipeline(IdentityAwaitableAdapter<object>.Default))
             {
             }
         }
