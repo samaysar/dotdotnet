@@ -6,7 +6,7 @@ using Dot.Net.DevFast.Extensions.Ppc;
 
 namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
 {
-    internal static class PpcPipeline<TP, TC>
+    internal static class Pipe<TP, TC>
     {
         public static Task Execute(CancellationToken token, int bufferSize, IDataAdapter<TP, TC> adapter,
             IReadOnlyList<IProducer<TP>> producers, IReadOnlyList<IConsumer<TC>> consumers)

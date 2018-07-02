@@ -16,7 +16,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
             {
                 instance.Close();
-                Assert.Throws<InvalidOperationException>(() => instance.Add(new object()));
+                Assert.Throws<InvalidOperationException>(() => instance.Add(new object(), CancellationToken.None));
             }
         }
 
@@ -26,7 +26,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
             {
                 instance.Dispose();
-                Assert.Throws<NullReferenceException>(() => instance.Add(new object()));
+                Assert.Throws<NullReferenceException>(() => instance.Add(new object(), CancellationToken.None));
             }
         }
 
@@ -38,7 +38,20 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 cts.Cancel();
                 using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, cts.Token))
                 {
-                    Assert.Throws<OperationCanceledException>(() => instance.Add(new object()));
+                    Assert.Throws<OperationCanceledException>(() => instance.Add(new object(), CancellationToken.None));
+                }
+            }
+        }
+
+        [Test]
+        public void Add_Throws_Error_When_Cancellation_Is_Demanded_Through_Param_Token()
+        {
+            using (var cts = new CancellationTokenSource())
+            {
+                cts.Cancel();
+                using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
+                {
+                    Assert.Throws<OperationCanceledException>(() => instance.Add(new object(), cts.Token));
                 }
             }
         }
@@ -48,8 +61,8 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         {
             using (var instance = new PpcBuffer<object>(ConcurrentBuffer.MinSize, CancellationToken.None))
             {
-                instance.Add(new object());
-                Assert.False(instance.TryAdd(new object(), 0));
+                instance.Add(new object(), CancellationToken.None);
+                Assert.False(instance.TryAdd(new object(), 0, CancellationToken.None));
             }
         }
 
@@ -59,7 +72,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
             {
                 var obj = new object();
-                instance.Add(obj);
+                instance.Add(obj, CancellationToken.None);
                 Assert.True(instance.TryGet(Timeout.Infinite, CancellationToken.None, out var newObj) &&
                             ReferenceEquals(newObj, obj));
                 instance.Close();
@@ -74,7 +87,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             object outObj = null;
             var tryGetTask = Task.Run(() => instance.TryGet(Timeout.Infinite, CancellationToken.None, out outObj));
             Assert.True(tryGetTask.Status != TaskStatus.RanToCompletion);
-            instance.Add(obj);
+            instance.Add(obj, CancellationToken.None);
             Assert.True(await tryGetTask.ConfigureAwait(false) && ReferenceEquals(outObj, obj));
             tryGetTask = Task.Run(() => instance.TryGet(Timeout.Infinite, CancellationToken.None, out outObj));
             Assert.True(tryGetTask.Status != TaskStatus.RanToCompletion);

@@ -4207,7 +4207,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             IReadOnlyList<IConsumer<TC>> consumers, IDataAdapter<TP, TC> adapter,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return PpcPipeline<TP, TC>.Execute(token, bufferSize, adapter, producers, consumers);
+            return Internals.PpcAssets.Pipe<TP, TC>.Execute(token, bufferSize, adapter, producers, consumers);
         }
 
         #endregion

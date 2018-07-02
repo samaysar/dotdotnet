@@ -61,7 +61,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).Returns(x => true);
             var instance = Substitute.For<AwaitableListAdapter<object, object>>(listSize, Timeout.Infinite);
             instance.TryGet(feed, CancellationToken.None, out var _);
-            instance.Received(listSize).Adapt(Arg.Any<object>());
+            instance.Received(listSize).Adapt(Arg.Any<object>(), Arg.Any<CancellationToken>());
         }
 
         [Test]
@@ -71,7 +71,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).Returns(x => false);
             var instance = Substitute.For<AwaitableListAdapter<object, object>>(2, Timeout.Infinite);
             instance.TryGet(feed, CancellationToken.None, out var _);
-            instance.Received(0).Adapt(Arg.Any<object>());
+            instance.Received(0).Adapt(Arg.Any<object>(), Arg.Any<CancellationToken>());
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
                 return true;
             });
             var instance = Substitute.For<AwaitableListAdapter<object, object>>(listSize, Timeout.Infinite);
-            instance.Adapt(Arg.Any<object>()).Returns(x => x[0]);
+            instance.Adapt(Arg.Any<object>(), Arg.Any<CancellationToken>()).Returns(x => x[0]);
             Assert.True(instance.TryGet(feed, CancellationToken.None, out var newList));
             Assert.NotNull(newList);
             Assert.True(newList.Count.Equals(Math.Min(listSize, feedSize)));
@@ -109,7 +109,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             var feed = Substitute.For<IProducerFeed<object>>();
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).ReturnsForAnyArgs(x => false);
             var instance = Substitute.For<AwaitableListAdapter<object, object>>(listSize, Timeout.Infinite);
-            instance.Adapt(Arg.Any<object>()).Returns(x => x[0]);
+            instance.Adapt(Arg.Any<object>(), Arg.Any<CancellationToken>()).Returns(x => x[0]);
             Assert.False(instance.TryGet(feed, CancellationToken.None, out var newList));
             Assert.Null(newList);
         }
@@ -139,7 +139,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
                 return true;
             });
             var instance = Substitute.For<AwaitableListAdapter<object, object>>(listSize, timeout);
-            instance.Adapt(Arg.Any<object>()).Returns(x => x[0]);
+            instance.Adapt(Arg.Any<object>(), Arg.Any<CancellationToken>()).Returns(x => x[0]);
             Assert.True(instance.TryGet(feed, CancellationToken.None, out var newList));
             Assert.NotNull(newList);
             Assert.True(newList.Count.Equals(Math.Min(listSize, feedSize)));
@@ -156,7 +156,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             var feed = Substitute.For<IProducerFeed<object>>();
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).ReturnsForAnyArgs(x => false);
             var instance = Substitute.For<AwaitableListAdapter<object, object>>(listSize, 0);
-            instance.Adapt(Arg.Any<object>()).Returns(x => x[0]);
+            instance.Adapt(Arg.Any<object>(), Arg.Any<CancellationToken>()).Returns(x => x[0]);
             Assert.False(instance.TryGet(feed, CancellationToken.None, out var newList));
             Assert.True(newList == null || newList.Count.Equals(0));
         }

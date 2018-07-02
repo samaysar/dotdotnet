@@ -18,19 +18,24 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
 
         public bool TryGet(int millisecTimeout, CancellationToken token, out T data)
         {
+            //we do not create merge token, as user should be able to
+            //extract queued items once pipeline is closed for addition.
             return _collection.TryTake(out data, millisecTimeout, token);
         }
 
         public bool Finished => _collection.IsCompleted;
 
-        public void Add(T item)
+        public void Add(T item, CancellationToken token)
         {
-            TryAdd(item, Timeout.Infinite);
+            TryAdd(item, Timeout.Infinite, token);
         }
 
-        public bool TryAdd(T item, int millisecTimeout)
+        public bool TryAdd(T item, int millisecTimeout, CancellationToken token)
         {
-            return _collection.TryAdd(item, millisecTimeout, _token);
+            using (var mergeToken = CancellationTokenSource.CreateLinkedTokenSource(token, _token))
+            {
+                return _collection.TryAdd(item, millisecTimeout, mergeToken.Token);
+            }
         }
 
         public void Close()

@@ -17,7 +17,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< SINGLE CONSUMER
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumer" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />).
         /// <para>Ideally, this instance one would like to use as a singleton for the application life time.</para>
@@ -30,9 +30,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -43,7 +43,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -53,7 +53,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IPipeline{T}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -64,20 +64,20 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </list>
         /// </summary>
         /// <typeparam name="T">
-        /// Type of items <seealso cref="IConcurrentPipeline{T}" /> will accept and <seealso cref="IConsumer{T}" />
+        /// Type of items <seealso cref="IPipeline{T}" /> will accept and <seealso cref="IConsumer{T}" />
         /// will consume
         /// </typeparam>
         /// <param name="consumer">consumer</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IConcurrentPipeline<T> ConcurrentPipeline<T>(this Action<T, CancellationToken> consumer,
+        public static IPipeline<T> ConcurrentPipeline<T>(this Action<T, CancellationToken> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return consumer.ToConsumer().ConcurrentPipeline(token, bufferSize);
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumer" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />).
         /// <para>Ideally, this instance one would like to use as a singleton for the application life time.</para>
@@ -90,9 +90,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -103,7 +103,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -113,7 +113,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IPipeline{T}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -124,20 +124,20 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </list>
         /// </summary>
         /// <typeparam name="T">
-        /// Type of items <seealso cref="IConcurrentPipeline{T}" /> will accept and <seealso cref="IConsumer{T}" />
+        /// Type of items <seealso cref="IPipeline{T}" /> will accept and <seealso cref="IConsumer{T}" />
         /// will consume
         /// </typeparam>
         /// <param name="consumer">consumer</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IConcurrentPipeline<T> ConcurrentPipeline<T>(this Func<T, CancellationToken, Task> consumer,
+        public static IPipeline<T> ConcurrentPipeline<T>(this Func<T, CancellationToken, Task> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return consumer.ToConsumer().ConcurrentPipeline(token, bufferSize);
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumer" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />).
         /// <para>Ideally, this instance one would like to use as a singleton for the application life time.</para>
@@ -150,9 +150,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -163,7 +163,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -173,7 +173,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IPipeline{T}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -184,13 +184,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </list>
         /// </summary>
         /// <typeparam name="T">
-        /// Type of items <seealso cref="IConcurrentPipeline{T}" /> will accept and <seealso cref="IConsumer{T}" />
+        /// Type of items <seealso cref="IPipeline{T}" /> will accept and <seealso cref="IConsumer{T}" />
         /// will consume
         /// </typeparam>
         /// <param name="consumer">consumer</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IConcurrentPipeline<T> ConcurrentPipeline<T>(this IConsumer<T> consumer,
+        public static IPipeline<T> ConcurrentPipeline<T>(this IConsumer<T> consumer,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return new[] {consumer}.ConcurrentPipeline(token, bufferSize);
@@ -199,7 +199,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< MULTIPLE CONSUMER
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumers" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />).
         /// <para>Ideally, this instance one would like to use as a singleton for the application life time.</para>
@@ -212,9 +212,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -225,7 +225,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -235,7 +235,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IPipeline{T}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -246,13 +246,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </list>
         /// </summary>
         /// <typeparam name="T">
-        /// Type of items <seealso cref="IConcurrentPipeline{T}" /> will accept and <seealso cref="IConsumer{T}" />
+        /// Type of items <seealso cref="IPipeline{T}" /> will accept and <seealso cref="IConsumer{T}" />
         /// will consume
         /// </typeparam>
         /// <param name="consumers">consumers</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IConcurrentPipeline<T> ConcurrentPipeline<T>(
+        public static IPipeline<T> ConcurrentPipeline<T>(
             this IReadOnlyList<Action<T, CancellationToken>> consumers,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
@@ -260,7 +260,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumers" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />).
         /// <para>Ideally, this instance one would like to use as a singleton for the application life time.</para>
@@ -273,9 +273,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -286,7 +286,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -296,7 +296,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IPipeline{T}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -307,13 +307,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </list>
         /// </summary>
         /// <typeparam name="T">
-        /// Type of items <seealso cref="IConcurrentPipeline{T}" /> will accept and <seealso cref="IConsumer{T}" />
+        /// Type of items <seealso cref="IPipeline{T}" /> will accept and <seealso cref="IConsumer{T}" />
         /// will consume
         /// </typeparam>
         /// <param name="consumers">consumers</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IConcurrentPipeline<T> ConcurrentPipeline<T>(
+        public static IPipeline<T> ConcurrentPipeline<T>(
             this IReadOnlyList<Func<T, CancellationToken, Task>> consumers,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
@@ -321,7 +321,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumers" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />).
         /// <para>Ideally, this instance one would like to use as a singleton for the application life time.</para>
@@ -334,9 +334,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -347,7 +347,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -357,7 +357,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IPipeline{T}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -368,13 +368,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </list>
         /// </summary>
         /// <typeparam name="T">
-        /// Type of items <seealso cref="IConcurrentPipeline{T}" /> will accept and <seealso cref="IConsumer{T}" />
+        /// Type of items <seealso cref="IPipeline{T}" /> will accept and <seealso cref="IConsumer{T}" />
         /// will consume
         /// </typeparam>
         /// <param name="consumers">consumers</param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IConcurrentPipeline<T> ConcurrentPipeline<T>(this IReadOnlyList<IConsumer<T>> consumers,
+        public static IPipeline<T> ConcurrentPipeline<T>(this IReadOnlyList<IConsumer<T>> consumers,
             CancellationToken token = default(CancellationToken), int bufferSize = ConcurrentBuffer.StandardSize)
         {
             return consumers.ConcurrentPipeline(IdentityAwaitableAdapter<T>.Default, token, bufferSize);
@@ -387,7 +387,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< SINGLE CONSUMER
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumer" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />) and list-adapter (with given
         /// <paramref name="listMaxSize" /> and
@@ -409,9 +409,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -422,7 +422,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -432,7 +432,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IPipeline{T}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -443,7 +443,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </list>
         /// </summary>
         /// <typeparam name="T">
-        /// Type of items <seealso cref="IConcurrentPipeline{T}" /> will accept and whose items list
+        /// Type of items <seealso cref="IPipeline{T}" /> will accept and whose items list
         /// <seealso cref="IConsumer{T}" /> will consume
         /// </typeparam>
         /// <param name="consumer">consumer</param>
@@ -458,7 +458,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IConcurrentPipeline<T> ConcurrentPipeline<T>(this Action<List<T>, CancellationToken> consumer,
+        public static IPipeline<T> ConcurrentPipeline<T>(this Action<List<T>, CancellationToken> consumer,
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
@@ -466,7 +466,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumer" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />) and list-adapter (with given
         /// <paramref name="listMaxSize" /> and
@@ -488,9 +488,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -501,7 +501,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -511,7 +511,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IPipeline{T}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -522,7 +522,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </list>
         /// </summary>
         /// <typeparam name="T">
-        /// Type of items <seealso cref="IConcurrentPipeline{T}" /> will accept and whose items list
+        /// Type of items <seealso cref="IPipeline{T}" /> will accept and whose items list
         /// <seealso cref="IConsumer{T}" /> will consume
         /// </typeparam>
         /// <param name="consumer">consumer</param>
@@ -537,7 +537,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IConcurrentPipeline<T> ConcurrentPipeline<T>(this Func<List<T>, CancellationToken, Task> consumer,
+        public static IPipeline<T> ConcurrentPipeline<T>(this Func<List<T>, CancellationToken, Task> consumer,
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
@@ -545,7 +545,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumer" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />) and list-adapter (with given
         /// <paramref name="listMaxSize" /> and
@@ -567,9 +567,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -580,7 +580,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -590,7 +590,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IPipeline{T}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -601,7 +601,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </list>
         /// </summary>
         /// <typeparam name="T">
-        /// Type of items <seealso cref="IConcurrentPipeline{T}" /> will accept and whose items list
+        /// Type of items <seealso cref="IPipeline{T}" /> will accept and whose items list
         /// <seealso cref="IConsumer{T}" /> will consume
         /// </typeparam>
         /// <param name="consumer">consumer</param>
@@ -616,7 +616,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IConcurrentPipeline<T> ConcurrentPipeline<T>(this IConsumer<List<T>> consumer,
+        public static IPipeline<T> ConcurrentPipeline<T>(this IConsumer<List<T>> consumer,
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
@@ -626,7 +626,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< MULTIPLE CONSUMER
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumers" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />) and list-adapter (with given
         /// <paramref name="listMaxSize" /> and
@@ -648,9 +648,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -661,7 +661,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -671,7 +671,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IPipeline{T}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -682,7 +682,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </list>
         /// </summary>
         /// <typeparam name="T">
-        /// Type of items <seealso cref="IConcurrentPipeline{T}" /> will accept and whose items list
+        /// Type of items <seealso cref="IPipeline{T}" /> will accept and whose items list
         /// <seealso cref="IConsumer{T}" /> will consume
         /// </typeparam>
         /// <param name="consumers">consumers</param>
@@ -697,7 +697,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IConcurrentPipeline<T> ConcurrentPipeline<T>(
+        public static IPipeline<T> ConcurrentPipeline<T>(
             this IReadOnlyList<Action<List<T>, CancellationToken>> consumers,
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
@@ -706,7 +706,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumers" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />) and list-adapter (with given
         /// <paramref name="listMaxSize" /> and
@@ -728,9 +728,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -741,7 +741,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -751,7 +751,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IPipeline{T}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -762,7 +762,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </list>
         /// </summary>
         /// <typeparam name="T">
-        /// Type of items <seealso cref="IConcurrentPipeline{T}" /> will accept and whose items list
+        /// Type of items <seealso cref="IPipeline{T}" /> will accept and whose items list
         /// <seealso cref="IConsumer{T}" /> will consume
         /// </typeparam>
         /// <param name="consumers">consumers</param>
@@ -777,7 +777,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IConcurrentPipeline<T> ConcurrentPipeline<T>(
+        public static IPipeline<T> ConcurrentPipeline<T>(
             this IReadOnlyList<Func<List<T>, CancellationToken, Task>> consumers,
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
@@ -786,7 +786,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IPipeline{T}" /> as an end-point to accept data while
         /// executing given <paramref name="consumers" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />) and list-adapter (with given
         /// <paramref name="listMaxSize" /> and
@@ -808,9 +808,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -821,7 +821,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -831,7 +831,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IPipeline{T}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -842,7 +842,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </list>
         /// </summary>
         /// <typeparam name="T">
-        /// Type of items <seealso cref="IConcurrentPipeline{T}" /> will accept and whose items list
+        /// Type of items <seealso cref="IPipeline{T}" /> will accept and whose items list
         /// <seealso cref="IConsumer{T}" /> will consume
         /// </typeparam>
         /// <param name="consumers">consumers</param>
@@ -857,7 +857,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IConcurrentPipeline<T> ConcurrentPipeline<T>(this IReadOnlyList<IConsumer<List<T>>> consumers,
+        public static IPipeline<T> ConcurrentPipeline<T>(this IReadOnlyList<IConsumer<List<T>>> consumers,
             int listMaxSize, int millisecondTimeout, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
@@ -872,7 +872,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< SINGLE CONSUMER
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IPipeline{TP}" /> as an end-point to accept data while
         /// executing given <paramref name="consumer" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />) and <paramref name="adapter" />.
         /// <para>Ideally, this instance one would like to use as a singleton for the application life time.</para>
@@ -885,9 +885,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{TP}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -898,7 +898,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{TP}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -908,7 +908,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IPipeline{TP}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -918,7 +918,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// </list>
         /// </summary>
-        /// <typeparam name="TP">Type of items <seealso cref="IConcurrentPipeline{TP}" /> will accept</typeparam>
+        /// <typeparam name="TP">Type of items <seealso cref="IPipeline{TP}" /> will accept</typeparam>
         /// <typeparam name="TC">Type of items <seealso cref="IConsumer{TC}" /> is able to consume</typeparam>
         /// <param name="consumer">consumer</param>
         /// <param name="adapter">
@@ -927,7 +927,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IConcurrentPipeline<TP> ConcurrentPipeline<TP, TC>(this Action<TC, CancellationToken> consumer,
+        public static IPipeline<TP> ConcurrentPipeline<TP, TC>(this Action<TC, CancellationToken> consumer,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
@@ -935,7 +935,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IPipeline{TP}" /> as an end-point to accept data while
         /// executing given <paramref name="consumer" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />) and <paramref name="adapter" />.
         /// <para>Ideally, this instance one would like to use as a singleton for the application life time.</para>
@@ -948,9 +948,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{TP}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -961,7 +961,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{TP}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -971,7 +971,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IPipeline{TP}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -981,7 +981,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// </list>
         /// </summary>
-        /// <typeparam name="TP">Type of items <seealso cref="IConcurrentPipeline{TP}" /> will accept</typeparam>
+        /// <typeparam name="TP">Type of items <seealso cref="IPipeline{TP}" /> will accept</typeparam>
         /// <typeparam name="TC">Type of items <seealso cref="IConsumer{TC}" /> is able to consume</typeparam>
         /// <param name="consumer">consumer</param>
         /// <param name="adapter">
@@ -990,7 +990,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IConcurrentPipeline<TP> ConcurrentPipeline<TP, TC>(
+        public static IPipeline<TP> ConcurrentPipeline<TP, TC>(
             this Func<TC, CancellationToken, Task> consumer,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
@@ -999,7 +999,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IPipeline{TP}" /> as an end-point to accept data while
         /// executing given <paramref name="consumer" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />) and <paramref name="adapter" />.
         /// <para>Ideally, this instance one would like to use as a singleton for the application life time.</para>
@@ -1012,9 +1012,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{TP}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -1025,7 +1025,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{TP}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -1035,7 +1035,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IPipeline{TP}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -1045,7 +1045,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// </list>
         /// </summary>
-        /// <typeparam name="TP">Type of items <seealso cref="IConcurrentPipeline{TP}" /> will accept</typeparam>
+        /// <typeparam name="TP">Type of items <seealso cref="IPipeline{TP}" /> will accept</typeparam>
         /// <typeparam name="TC">Type of items <seealso cref="IConsumer{TC}" /> is able to consume</typeparam>
         /// <param name="consumer">consumer</param>
         /// <param name="adapter">
@@ -1054,7 +1054,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IConcurrentPipeline<TP> ConcurrentPipeline<TP, TC>(this IConsumer<TC> consumer,
+        public static IPipeline<TP> ConcurrentPipeline<TP, TC>(this IConsumer<TC> consumer,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
@@ -1064,7 +1064,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         //<<<<<<<<<<< MULTIPLE CONSUMER
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IPipeline{TP}" /> as an end-point to accept data while
         /// executing given <paramref name="consumers" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />) and <paramref name="adapter" />.
         /// <para>Ideally, this instance one would like to use as a singleton for the application life time.</para>
@@ -1077,9 +1077,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{TP}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -1090,7 +1090,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{TP}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -1100,7 +1100,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IPipeline{TP}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -1110,7 +1110,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// </list>
         /// </summary>
-        /// <typeparam name="TP">Type of items <seealso cref="IConcurrentPipeline{TP}" /> will accept</typeparam>
+        /// <typeparam name="TP">Type of items <seealso cref="IPipeline{TP}" /> will accept</typeparam>
         /// <typeparam name="TC">Type of items <seealso cref="IConsumer{TC}" /> is able to consume</typeparam>
         /// <param name="consumers">consumers</param>
         /// <param name="adapter">
@@ -1119,7 +1119,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IConcurrentPipeline<TP> ConcurrentPipeline<TP, TC>(
+        public static IPipeline<TP> ConcurrentPipeline<TP, TC>(
             this IReadOnlyList<Action<TC, CancellationToken>> consumers,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
@@ -1128,7 +1128,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IPipeline{TP}" /> as an end-point to accept data while
         /// executing given <paramref name="consumers" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />) and <paramref name="adapter" />.
         /// <para>Ideally, this instance one would like to use as a singleton for the application life time.</para>
@@ -1141,9 +1141,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{TP}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -1154,7 +1154,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{TP}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -1164,7 +1164,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IPipeline{TP}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -1174,7 +1174,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// </list>
         /// </summary>
-        /// <typeparam name="TP">Type of items <seealso cref="IConcurrentPipeline{TP}" /> will accept</typeparam>
+        /// <typeparam name="TP">Type of items <seealso cref="IPipeline{TP}" /> will accept</typeparam>
         /// <typeparam name="TC">Type of items <seealso cref="IConsumer{TC}" /> is able to consume</typeparam>
         /// <param name="consumers">consumers</param>
         /// <param name="adapter">
@@ -1183,7 +1183,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IConcurrentPipeline<TP> ConcurrentPipeline<TP, TC>(
+        public static IPipeline<TP> ConcurrentPipeline<TP, TC>(
             this IReadOnlyList<Func<TC, CancellationToken, Task>> consumers,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
@@ -1192,7 +1192,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         }
 
         /// <summary>
-        /// Creates and returns an instance of <seealso cref="IConcurrentPipeline{TP}" /> as an end-point to accept data while
+        /// Creates and returns an instance of <seealso cref="IPipeline{TP}" /> as an end-point to accept data while
         /// executing given <paramref name="consumers" /> concurrently. Pipeline is responcible for data transfer with the help
         /// of a buffer (with size= <paramref name="bufferSize" />) and <paramref name="adapter" />.
         /// <para>Ideally, this instance one would like to use as a singleton for the application life time.</para>
@@ -1205,9 +1205,9 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{TP}.TearDown" /> (as documented) should be called only after it is
+        /// <seealso cref="IPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConcurrentPipeline{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IConsumerFeed{TP}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -1218,7 +1218,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConcurrentPipeline{T}.Add" /> method:
+        /// <seealso cref="IConsumerFeed{TP}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -1228,7 +1228,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// throws <seealso cref="OperationCanceledException" /> when either
         /// <paramref name="token" /> is cancelled or any of the consumers ends-up throwing an
         /// exception
-        /// (<seealso cref="IConcurrentPipeline{T}.TearDown" /> or
+        /// (<seealso cref="IPipeline{TP}.TearDown" /> or
         /// <seealso cref="IDisposable.Dispose" /> might not have been called at
         /// this moment, but, at least all the consumers are disposed)
         /// </description>
@@ -1238,7 +1238,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// </list>
         /// </summary>
-        /// <typeparam name="TP">Type of items <seealso cref="IConcurrentPipeline{TP}" /> will accept</typeparam>
+        /// <typeparam name="TP">Type of items <seealso cref="IPipeline{TP}" /> will accept</typeparam>
         /// <typeparam name="TC">Type of items <seealso cref="IConsumer{TC}" /> is able to consume</typeparam>
         /// <param name="consumers">consumers</param>
         /// <param name="adapter">
@@ -1247,11 +1247,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </param>
         /// <param name="token">cancellation token to observe</param>
         /// <param name="bufferSize">buffer size</param>
-        public static IConcurrentPipeline<TP> ConcurrentPipeline<TP, TC>(this IReadOnlyList<IConsumer<TC>> consumers,
+        public static IPipeline<TP> ConcurrentPipeline<TP, TC>(this IReadOnlyList<IConsumer<TC>> consumers,
             IDataAdapter<TP, TC> adapter, CancellationToken token = default(CancellationToken),
             int bufferSize = ConcurrentBuffer.StandardSize)
         {
-            return new ConcurrentPipeline<TP, TC>(consumers, adapter, token, bufferSize);
+            return new Pipeline<TP, TC>(consumers, adapter, token, bufferSize);
         }
 
         #endregion

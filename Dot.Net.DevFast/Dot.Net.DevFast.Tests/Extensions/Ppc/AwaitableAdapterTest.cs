@@ -24,7 +24,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).Returns(x => true);
             var instance = Substitute.For<AwaitableAdapter<object, object>>();
             instance.TryGet(feed, CancellationToken.None, out var _);
-            instance.Received(1).Adapt(Arg.Any<object>());
+            instance.Received(1).Adapt(Arg.Any<object>(), Arg.Any<CancellationToken>());
         }
 
         [Test]
@@ -34,7 +34,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).Returns(x => false);
             var instance = Substitute.For<AwaitableAdapter<object, object>>();
             instance.TryGet(feed, CancellationToken.None, out var _);
-            instance.Received(0).Adapt(Arg.Any<object>());
+            instance.Received(0).Adapt(Arg.Any<object>(), Arg.Any<CancellationToken>());
         }
     }
 
