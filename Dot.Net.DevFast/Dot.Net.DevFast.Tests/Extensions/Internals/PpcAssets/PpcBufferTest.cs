@@ -44,6 +44,19 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         }
 
         [Test]
+        public void Add_Throws_Error_When_Cancellation_Is_Demanded_Through_Param_Token()
+        {
+            using (var cts = new CancellationTokenSource())
+            {
+                cts.Cancel();
+                using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
+                {
+                    Assert.Throws<OperationCanceledException>(() => instance.Add(new object(), cts.Token));
+                }
+            }
+        }
+
+        [Test]
         public void TryAdd_Returns_False_After_Timeout_When_Buffer_Is_Full()
         {
             using (var instance = new PpcBuffer<object>(ConcurrentBuffer.MinSize, CancellationToken.None))

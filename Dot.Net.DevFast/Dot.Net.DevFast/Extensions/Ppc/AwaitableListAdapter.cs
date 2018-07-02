@@ -78,7 +78,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         {
             consumable = default(List<TC>);
             if (!producerDataFeed.TryGet(Timeout.Infinite, token, out var value)) return false;
-            consumable = new List<TC>(_maxListSize) {Adapt(value)};
+            consumable = new List<TC>(_maxListSize) {Adapt(value, token)};
             return _millisecTimeout == Timeout.Infinite
                 ? TryGetWithInfiniteTo(producerDataFeed, token, consumable)
                 : TryGetWithFiniteTo(producerDataFeed, token, consumable);
@@ -93,7 +93,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             {
                 if (producerDataFeed.TryGet(timeRemains, token, out var value))
                 {
-                    consumable.Add(Adapt(value));
+                    consumable.Add(Adapt(value, token));
                     if (timeRemains != 0)
                     {
                         timeRemains = (int) Math.Max(0, _millisecTimeout - sw.ElapsedMilliseconds);
@@ -112,7 +112,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             {
                 if (producerDataFeed.TryGet(Timeout.Infinite, token, out var value))
                 {
-                    consumable.Add(Adapt(value));
+                    consumable.Add(Adapt(value, token));
                 }
                 else return true;
             }
@@ -124,7 +124,8 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// Will be called to perform the required transformation on all the produced instances.
         /// </summary>
         /// <param name="produced">produced item</param>
-        public abstract TC Adapt(TP produced);
+        /// <param name="token">cancellation token to observe</param>
+        public abstract TC Adapt(TP produced, CancellationToken token);
     }
 
     internal sealed class IdentityAwaitableListAdapter<T> : AwaitableListAdapter<T, T>
@@ -133,7 +134,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         {
         }
 
-        public override T Adapt(T produced)
+        public override T Adapt(T produced, CancellationToken token)
         {
             return produced;
         }

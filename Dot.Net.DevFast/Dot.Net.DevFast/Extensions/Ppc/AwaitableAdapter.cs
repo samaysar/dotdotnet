@@ -24,7 +24,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         {
             if (producerDataFeed.TryGet(Timeout.Infinite, token, out var produced))
             {
-                consumable = Adapt(produced);
+                consumable = Adapt(produced, token);
                 return true;
             }
 
@@ -36,7 +36,8 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// Will be called to perform the required transformation on all the produced instances.
         /// </summary>
         /// <param name="produced">produced item</param>
-        public abstract TC Adapt(TP produced);
+        /// <param name="token">cancellation token to observe</param>
+        public abstract TC Adapt(TP produced, CancellationToken token);
     }
 
     internal sealed class IdentityAwaitableAdapter<T> : AwaitableAdapter<T, T>
@@ -48,7 +49,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             //singleton as methods are pure
         }
 
-        public override T Adapt(T produced)
+        public override T Adapt(T produced, CancellationToken token)
         {
             return produced;
         }

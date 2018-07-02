@@ -1,3 +1,10 @@
+Changes to Dot.Net.DevFast 1.3.1
+
+ 1. Change/Fix - Abstract Adapt method of AwaitableAdapter and AwaitableListAdapter singature changed to public abstract TC Adapt(TP produced, CancellationToken token) to have cancellation support.
+ 2. Change/Fix - IConcurrentPipeline interface name is changed to IPipeline.
+ 3. Change/Fix - Add and TryAdd methods of IPipeline and IConsumerFeed interfaces now support CancellationToken as method parameter.
+ 4. Removed    - All obsolete ProducerConsumer extension methods in support of Pipe extension methods.
+
 Changes to Dot.Net.DevFast 1.3.0
 
  1. New feature - Added Dot.Net.DevFast.Extensions.Ppc.AwaitableAdapter and Dot.Net.DevFast.Extensions.Ppc.AwaitableListAdapter as abstract classes exposing single Adapt abstract method. This method can provide the required business object transformation.
