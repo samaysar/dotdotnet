@@ -82,8 +82,7 @@ namespace Dot.Net.DevFast.Extensions.Internals
 
         public override bool Equals(object obj)
         {
-            var objAsWrapper = obj as WrappedStream;
-            return _stream.Equals(objAsWrapper != null ? objAsWrapper._stream : obj);
+            return _stream.Equals(obj is WrappedStream objAsWrapper ? objAsWrapper._stream : obj);
         }
 
         public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)

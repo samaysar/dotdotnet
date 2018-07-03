@@ -128,12 +128,12 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             var waitHandle = new ManualResetEventSlim(false);
             var producers = new IProducer<object>[1];
             producers[0] = Substitute.For<IProducer<object>>();
-            producers[0].ProduceAsync(Arg.Any<IConsumerFeed<object>>(),
+            producers[0].ProduceAsync(Arg.Any<IProducerBuffer<object>>(),
                 Arg.Any<CancellationToken>()).Returns(x =>
             {
                 for (var i = 0; i < ccount; i++)
                 {
-                    ((IConsumerFeed<object>) x[0]).Add(obj, CancellationToken.None);
+                    ((IProducerBuffer<object>) x[0]).Add(obj, CancellationToken.None);
                 }
                 return Task.CompletedTask;
             });

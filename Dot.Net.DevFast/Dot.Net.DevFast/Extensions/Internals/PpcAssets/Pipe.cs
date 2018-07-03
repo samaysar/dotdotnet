@@ -39,7 +39,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
         }
         
         internal static Task RunConsumers(IReadOnlyList<IConsumer<TC>> consumers,
-            IProducerFeed<TP> feed, IDataAdapter<TP, TC> adapter,
+            IConsumerBuffer<TP> feed, IDataAdapter<TP, TC> adapter,
             CancellationToken token, CancellationTokenSource tokenSrc)
         {
             return new Func<int, CancellationToken, Task>(async (i, t) =>
@@ -48,7 +48,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
         }
 
         private static async Task RunConsumer(IConsumer<TC> parallelConsumer,
-            IProducerFeed<TP> feed, IDataAdapter<TP, TC> adapter,
+            IConsumerBuffer<TP> feed, IDataAdapter<TP, TC> adapter,
             CancellationToken token, CancellationTokenSource tokenSrc)
         {
             try
@@ -90,7 +90,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
         }
 
         private static async Task RunProducer(IProducer<TP> parallelProducer,
-            IConsumerFeed<TP> feed, CancellationToken token,
+            IProducerBuffer<TP> feed, CancellationToken token,
             CancellationTokenSource tokenSrc)
         {
             try

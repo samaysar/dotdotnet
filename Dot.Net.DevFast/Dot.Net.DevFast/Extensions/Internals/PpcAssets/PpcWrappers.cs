@@ -7,9 +7,9 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
 {
     internal sealed class AsyncProducer<T> : IProducer<T>
     {
-        private readonly Func<IConsumerFeed<T>, CancellationToken, Task> _producerFunc;
+        private readonly Func<IProducerBuffer<T>, CancellationToken, Task> _producerFunc;
 
-        public AsyncProducer(Func<IConsumerFeed<T>, CancellationToken, Task> producerFunc)
+        public AsyncProducer(Func<IProducerBuffer<T>, CancellationToken, Task> producerFunc)
         {
             _producerFunc = producerFunc;
         }
@@ -19,7 +19,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             return Task.CompletedTask;
         }
 
-        public async Task ProduceAsync(IConsumerFeed<T> feedToPopulate, CancellationToken cancellationToken)
+        public async Task ProduceAsync(IProducerBuffer<T> feedToPopulate, CancellationToken cancellationToken)
         {
             await _producerFunc(feedToPopulate, cancellationToken).ConfigureAwait(false);
         }

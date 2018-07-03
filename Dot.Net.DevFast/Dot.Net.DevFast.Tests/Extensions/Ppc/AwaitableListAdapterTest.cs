@@ -46,7 +46,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         [Test]
         public void TryGet_Hits_TryGet_Of_ProducerFeed()
         {
-            var feed = Substitute.For<IProducerFeed<object>>();
+            var feed = Substitute.For<IConsumerBuffer<object>>();
             var instance = Substitute.For<AwaitableListAdapter<object, object>>(2, Timeout.Infinite);
             instance.TryGet(feed, CancellationToken.None, out var _);
             feed.Received(1).TryGet(Arg.Any<int>(), CancellationToken.None, out var _);
@@ -57,7 +57,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         [TestCase(10)]
         public void TryGet_Calls_Adapt_When_Feed_Outputs_True(int listSize)
         {
-            var feed = Substitute.For<IProducerFeed<object>>();
+            var feed = Substitute.For<IConsumerBuffer<object>>();
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).Returns(x => true);
             var instance = Substitute.For<AwaitableListAdapter<object, object>>(listSize, Timeout.Infinite);
             instance.TryGet(feed, CancellationToken.None, out var _);
@@ -67,7 +67,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         [Test]
         public void TryGet_Does_Not_Call_Adapt_When_Feed_Outputs_False()
         {
-            var feed = Substitute.For<IProducerFeed<object>>();
+            var feed = Substitute.For<IConsumerBuffer<object>>();
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).Returns(x => false);
             var instance = Substitute.For<AwaitableListAdapter<object, object>>(2, Timeout.Infinite);
             instance.TryGet(feed, CancellationToken.None, out var _);
@@ -85,7 +85,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         {
             var localFeedSize = feedSize;
             var obj = new object();
-            var feed = Substitute.For<IProducerFeed<object>>();
+            var feed = Substitute.For<IConsumerBuffer<object>>();
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).ReturnsForAnyArgs(x =>
             {
                 if (localFeedSize <= 0) return false;
@@ -106,7 +106,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         [TestCase(2)]
         public void TryGet_With_Infinite_Timeout_Returns_Default_Of_List_When_Feed_Is_Empty(int listSize)
         {
-            var feed = Substitute.For<IProducerFeed<object>>();
+            var feed = Substitute.For<IConsumerBuffer<object>>();
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).ReturnsForAnyArgs(x => false);
             var instance = Substitute.For<AwaitableListAdapter<object, object>>(listSize, Timeout.Infinite);
             instance.Adapt(Arg.Any<object>(), Arg.Any<CancellationToken>()).Returns(x => x[0]);
@@ -130,7 +130,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         {
             var localFeedSize = feedSize;
             var obj = new object();
-            var feed = Substitute.For<IProducerFeed<object>>();
+            var feed = Substitute.For<IConsumerBuffer<object>>();
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).ReturnsForAnyArgs(x =>
             {
                 if (localFeedSize <= 0) return false;
@@ -153,7 +153,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         [TestCase(2, 10)]
         public void TryGet_With_Finite_Timeout_Returns_Empty_List_When_Feed_Is_Empty(int listSize, int timeout)
         {
-            var feed = Substitute.For<IProducerFeed<object>>();
+            var feed = Substitute.For<IConsumerBuffer<object>>();
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).ReturnsForAnyArgs(x => false);
             var instance = Substitute.For<AwaitableListAdapter<object, object>>(listSize, 0);
             instance.Adapt(Arg.Any<object>(), Arg.Any<CancellationToken>()).Returns(x => x[0]);
@@ -169,7 +169,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         public void Adapt_Returns_The_Object_As_It_Is()
         {
             var obj = new object();
-            var feed = Substitute.For<IProducerFeed<object>>();
+            var feed = Substitute.For<IConsumerBuffer<object>>();
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).ReturnsForAnyArgs(x =>
             {
                 x[2] = obj;
