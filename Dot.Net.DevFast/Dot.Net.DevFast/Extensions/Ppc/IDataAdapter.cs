@@ -19,6 +19,6 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="producerDataFeed">Data feed</param>
         /// <param name="token">token to observe while adapting data</param>
         /// <param name="consumable">consumable data instance</param>
-        bool TryGet(IProducerFeed<TProducer> producerDataFeed, CancellationToken token, out TConsumer consumable);
+        bool TryGet(IConsumerBuffer<TProducer> producerDataFeed, CancellationToken token, out TConsumer consumable);
     }
 }

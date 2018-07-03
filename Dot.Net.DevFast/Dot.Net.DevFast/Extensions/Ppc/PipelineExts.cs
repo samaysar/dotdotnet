@@ -32,7 +32,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IProducerBuffer{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -43,7 +43,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
+        /// <seealso cref="IProducerBuffer{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -92,7 +92,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IProducerBuffer{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -103,7 +103,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
+        /// <seealso cref="IProducerBuffer{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -152,7 +152,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IProducerBuffer{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -163,7 +163,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
+        /// <seealso cref="IProducerBuffer{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -214,7 +214,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IProducerBuffer{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -225,7 +225,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
+        /// <seealso cref="IProducerBuffer{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -275,7 +275,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IProducerBuffer{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -286,7 +286,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
+        /// <seealso cref="IProducerBuffer{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -336,7 +336,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IProducerBuffer{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -347,7 +347,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
+        /// <seealso cref="IProducerBuffer{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -411,7 +411,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IProducerBuffer{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -422,7 +422,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
+        /// <seealso cref="IProducerBuffer{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -490,7 +490,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IProducerBuffer{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -501,7 +501,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
+        /// <seealso cref="IProducerBuffer{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -569,7 +569,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IProducerBuffer{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -580,7 +580,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
+        /// <seealso cref="IProducerBuffer{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -650,7 +650,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IProducerBuffer{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -661,7 +661,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
+        /// <seealso cref="IProducerBuffer{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -730,7 +730,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IProducerBuffer{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -741,7 +741,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
+        /// <seealso cref="IProducerBuffer{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -810,7 +810,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IPipeline{T}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConsumerFeed{T}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IProducerBuffer{T}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -821,7 +821,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConsumerFeed{T}.Add" /> method:
+        /// <seealso cref="IProducerBuffer{T}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -887,7 +887,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConsumerFeed{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IProducerBuffer{TP}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -898,7 +898,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConsumerFeed{TP}.Add" /> method:
+        /// <seealso cref="IProducerBuffer{TP}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -950,7 +950,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConsumerFeed{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IProducerBuffer{TP}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -961,7 +961,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConsumerFeed{TP}.Add" /> method:
+        /// <seealso cref="IProducerBuffer{TP}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -1014,7 +1014,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConsumerFeed{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IProducerBuffer{TP}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -1025,7 +1025,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConsumerFeed{TP}.Add" /> method:
+        /// <seealso cref="IProducerBuffer{TP}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -1079,7 +1079,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConsumerFeed{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IProducerBuffer{TP}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -1090,7 +1090,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConsumerFeed{TP}.Add" /> method:
+        /// <seealso cref="IProducerBuffer{TP}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -1143,7 +1143,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConsumerFeed{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IProducerBuffer{TP}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -1154,7 +1154,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConsumerFeed{TP}.Add" /> method:
+        /// <seealso cref="IProducerBuffer{TP}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>
@@ -1207,7 +1207,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <description>
         /// <seealso cref="IPipeline{TP}.TearDown" /> (as documented) should be called only after it is
         /// certain no
-        /// more calls to <seealso cref="IConsumerFeed{TP}.Add" /> will be made, to avoid unexpected errors.
+        /// more calls to <seealso cref="IProducerBuffer{TP}.Add" /> will be made, to avoid unexpected errors.
         /// </description>
         /// </item>
         /// <item>
@@ -1218,7 +1218,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </item>
         /// <item>
         /// <description>
-        /// <seealso cref="IConsumerFeed{TP}.Add" /> method:
+        /// <seealso cref="IProducerBuffer{TP}.Add" /> method:
         /// <list type="bullet">
         /// <item>
         /// <description>is Thread-safe and can be called concurrently.</description>

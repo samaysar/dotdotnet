@@ -4,7 +4,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 {
     /// <summary>
     /// This class is just a wrapper to recover the consumable item from
-    /// the <seealso cref="IProducerFeed{TP}"/> in standard way. Actual
+    /// the <seealso cref="IConsumerBuffer{TP}"/> in standard way. Actual
     /// tranformation can be implemented inside <see cref="Adapt"/>.
     /// </summary>
     /// <typeparam name="TP">Produced item type</typeparam>
@@ -20,7 +20,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="producerDataFeed">Feed that is getting populated by producers.</param>
         /// <param name="token">Cancellation token</param>
         /// <param name="consumable">transfomed item that can be passed to consumer</param>
-        public bool TryGet(IProducerFeed<TP> producerDataFeed, CancellationToken token, out TC consumable)
+        public bool TryGet(IConsumerBuffer<TP> producerDataFeed, CancellationToken token, out TC consumable)
         {
             if (producerDataFeed.TryGet(Timeout.Infinite, token, out var produced))
             {

@@ -11,7 +11,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         [Test]
         public void TryGet_Hits_TryGet_Of_ProducerFeed()
         {
-            var feed = Substitute.For<IProducerFeed<object>>();
+            var feed = Substitute.For<IConsumerBuffer<object>>();
             var instance = Substitute.For<AwaitableAdapter<object, object>>();
             instance.TryGet(feed, CancellationToken.None, out var _);
             feed.Received(1).TryGet(Arg.Any<int>(), CancellationToken.None, out _);
@@ -20,7 +20,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         [Test]
         public void TryGet_Calls_Adapt_When_Feed_Outputs_True()
         {
-            var feed = Substitute.For<IProducerFeed<object>>();
+            var feed = Substitute.For<IConsumerBuffer<object>>();
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).Returns(x => true);
             var instance = Substitute.For<AwaitableAdapter<object, object>>();
             instance.TryGet(feed, CancellationToken.None, out var _);
@@ -30,7 +30,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         [Test]
         public void TryGet_Does_Not_Call_Adapt_When_Feed_Outputs_False()
         {
-            var feed = Substitute.For<IProducerFeed<object>>();
+            var feed = Substitute.For<IConsumerBuffer<object>>();
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).Returns(x => false);
             var instance = Substitute.For<AwaitableAdapter<object, object>>();
             instance.TryGet(feed, CancellationToken.None, out var _);
@@ -44,7 +44,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         [Test]
         public void TryGet_Hits_TryGet_Of_ProducerFeed()
         {
-            var feed = Substitute.For<IProducerFeed<object>>();
+            var feed = Substitute.For<IConsumerBuffer<object>>();
             var instance = IdentityAwaitableAdapter<object>.Default;
             instance.TryGet(feed, CancellationToken.None, out var _);
             feed.Received(1).TryGet(Arg.Any<int>(), CancellationToken.None, out _);
@@ -54,7 +54,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         public void TryGet_Returns_The_Instance_Unaltered_With_True_TruthValue()
         {
             var obj = new object();
-            var feed = Substitute.For<IProducerFeed<object>>();
+            var feed = Substitute.For<IConsumerBuffer<object>>();
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).Returns(x =>
             {
                 x[2] = obj;
@@ -68,7 +68,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         public void TryGet_Returns_Default_Of_Type_With_False_TruthValue()
         {
             var obj = new object();
-            var feed = Substitute.For<IProducerFeed<object>>();
+            var feed = Substitute.For<IConsumerBuffer<object>>();
             feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).Returns(x =>
             {
                 x[2] = obj;

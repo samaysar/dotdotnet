@@ -32,6 +32,6 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="feedToPopulate">All produced data intances must be added to 
         /// <paramref name="feedToPopulate"/> instance, in order to pass on to associated consumers.</param>
         /// <param name="cancellationToken">Cancellation token</param>
-        Task ProduceAsync(IConsumerFeed<T> feedToPopulate, CancellationToken cancellationToken);
+        Task ProduceAsync(IProducerBuffer<T> feedToPopulate, CancellationToken cancellationToken);
     }
 }

@@ -287,22 +287,22 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
             return producers;
         }
 
-        internal static Func<IConsumerFeed<object>, CancellationToken, Task> ProducerFunc(IProducer<object> p)
+        internal static Func<IProducerBuffer<object>, CancellationToken, Task> ProducerFunc(IProducer<object> p)
         {
             return p.ProduceAsync;
         }
 
-        internal static Action<IConsumerFeed<object>, CancellationToken> ProducerAction(IProducer<object> p)
+        internal static Action<IProducerBuffer<object>, CancellationToken> ProducerAction(IProducer<object> p)
         {
             return (f, t) => p.ProduceAsync(f, t).Wait(t);
         }
 
-        internal static Func<IConsumerFeed<object>, CancellationToken, Task>[] ProducerFunc(IEnumerable<IProducer<object>> p)
+        internal static Func<IProducerBuffer<object>, CancellationToken, Task>[] ProducerFunc(IEnumerable<IProducer<object>> p)
         {
             return p.Select(ProducerFunc).ToArray();
         }
 
-        internal static Action<IConsumerFeed<object>, CancellationToken>[] ProducerAction(IEnumerable<IProducer<object>> p)
+        internal static Action<IProducerBuffer<object>, CancellationToken>[] ProducerAction(IEnumerable<IProducer<object>> p)
         {
             return p.Select(ProducerAction).ToArray();
         }

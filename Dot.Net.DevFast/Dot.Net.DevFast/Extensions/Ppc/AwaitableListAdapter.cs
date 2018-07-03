@@ -8,7 +8,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     /// <summary>
     /// Adapter to pack individual items to list of items.
     /// <para>NOTE:</para>
-    /// <para>1. It does NOT observes <seealso cref="IProducerFeed{T}.Finished"/> status</para>
+    /// <para>1. It does NOT observes <seealso cref="IConsumerBuffer{T}.Finished"/> status</para>
     /// <para>2. The first element is ALWAYS (irrespective of provided timeout value) waited for 
     /// <seealso cref="Timeout.Infinite"/>. Then items are added to list as long as they can be recovered
     /// before provided millisecond timeout is reached.</para>
@@ -29,7 +29,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <summary>
         /// Ctor.
         /// <para>NOTE:</para>
-        /// <para>1. It does NOT observes <seealso cref="IProducerFeed{T}.Finished"/> status</para>
+        /// <para>1. It does NOT observes <seealso cref="IConsumerBuffer{T}.Finished"/> status</para>
         /// <para>2. The first element is ALWAYS (irrespective of provided timeout value) waited for 
         /// <seealso cref="Timeout.Infinite"/>. Then items are added to list as long as they can be recovered
         /// before provided millisecond timeout is reached.</para>
@@ -61,7 +61,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// Return true when a consumable instance can be created from
         /// <paramref name="producerDataFeed"/> else returns false.
         /// <para>NOTE:</para>
-        /// <para>1. It does NOT observes <seealso cref="IProducerFeed{T}.Finished"/> status</para>
+        /// <para>1. It does NOT observes <seealso cref="IConsumerBuffer{T}.Finished"/> status</para>
         /// <para>2. The first element is ALWAYS (irrespective of provided timeout value) waited for 
         /// <seealso cref="Timeout.Infinite"/>. Then items are added to list as long as they can be recovered
         /// before provided millisecond timeout is reached.</para>
@@ -74,7 +74,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="producerDataFeed">Data feed</param>
         /// <param name="token">token to observe</param>
         /// <param name="consumable">consumable data instance</param>
-        public bool TryGet(IProducerFeed<TP> producerDataFeed, CancellationToken token, out List<TC> consumable)
+        public bool TryGet(IConsumerBuffer<TP> producerDataFeed, CancellationToken token, out List<TC> consumable)
         {
             consumable = default(List<TC>);
             if (!producerDataFeed.TryGet(Timeout.Infinite, token, out var value)) return false;
@@ -84,7 +84,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
                 : TryGetWithFiniteTo(producerDataFeed, token, consumable);
         }
 
-        private bool TryGetWithFiniteTo(IProducerFeed<TP> producerDataFeed, CancellationToken token,
+        private bool TryGetWithFiniteTo(IConsumerBuffer<TP> producerDataFeed, CancellationToken token,
             ICollection<TC> consumable)
         {
             var timeRemains = _millisecTimeout;
@@ -105,7 +105,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
             return true;
         }
 
-        private bool TryGetWithInfiniteTo(IProducerFeed<TP> producerDataFeed, CancellationToken token,
+        private bool TryGetWithInfiniteTo(IConsumerBuffer<TP> producerDataFeed, CancellationToken token,
             ICollection<TC> consumable)
         {
             while (consumable.Count < _maxListSize)

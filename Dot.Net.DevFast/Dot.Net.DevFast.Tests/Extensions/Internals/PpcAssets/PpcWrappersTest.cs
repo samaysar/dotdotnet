@@ -15,7 +15,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         public async Task AsyncProducer_SimplyCalls_Ctor_Supplied_Func()
         {
             var called = 0;
-            var funcSubstitute = new Func<IConsumerFeed<object>, CancellationToken, Task>((f, t) =>
+            var funcSubstitute = new Func<IProducerBuffer<object>, CancellationToken, Task>((f, t) =>
                 {
                     Interlocked.Increment(ref called);
                     return Task.CompletedTask;
@@ -23,7 +23,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             using (var producer = new AsyncProducer<object>(funcSubstitute))
             {
                 Assert.True(producer.InitAsync().Equals(Task.CompletedTask));
-                await producer.ProduceAsync(Substitute.For<IConsumerFeed<object>>(), CancellationToken.None);
+                await producer.ProduceAsync(Substitute.For<IProducerBuffer<object>>(), CancellationToken.None);
                 Assert.True(called == 1);
             }
         }
