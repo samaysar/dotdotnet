@@ -10,7 +10,7 @@ using Dot.Net.DevFast.Extensions.JsonExt;
 using Dot.Net.DevFast.Extensions.StringExt;
 using Newtonsoft.Json;
 
-namespace Dot.Net.DevFast.Extensions.StreamPipeExts
+namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 {
     internal sealed class JsonBcPipe<T> : JsonPipe
     {

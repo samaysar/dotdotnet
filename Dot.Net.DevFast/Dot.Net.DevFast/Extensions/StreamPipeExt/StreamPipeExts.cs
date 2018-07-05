@@ -2,7 +2,7 @@
 using Dot.Net.DevFast.Etc;
 using Newtonsoft.Json;
 
-namespace Dot.Net.DevFast.Extensions.StreamPipeExts
+namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 {
     /// <summary>
     /// Extensions methods on stream pipes.

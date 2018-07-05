@@ -85,6 +85,7 @@
     <Compile Include="Extensions\StreamExt\Base64ExtTest.cs" />
     <Compile Include="Extensions\StreamExt\CryptoStreamExtTest.cs" />
     <Compile Include="Extensions\Internals\WrappedStreamTest.cs" />
+    <Compile Include="Extensions\StreamPipeExt\StreamPipeExtsTest.cs" />
     <Compile Include="Extensions\StringExt\StringSafeTest.cs" />
     <Compile Include="Extensions\StringExt\StringTryToTest.cs" />
     <Compile Include="Extensions\StringExt\StringUnsafeTest.cs" />

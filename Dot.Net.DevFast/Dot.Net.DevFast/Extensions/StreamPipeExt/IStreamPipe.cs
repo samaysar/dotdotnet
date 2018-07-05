@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
 
-namespace Dot.Net.DevFast.Extensions.StreamPipeExts
+namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 {
     /// <summary>
     /// Base interface for all derived streaming implementations
