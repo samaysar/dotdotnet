@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace Dot.Net.DevFast.Extensions.StreamPipeExts
 {
-    internal sealed class JsonBcPipe<T> : FilePipe
+    internal sealed class JsonBcPipe<T> : JsonPipe
     {
         public JsonBcPipe(BlockingCollection<T> obj, JsonSerializer js, CancellationToken token,
             CancellationTokenSource pcts, Encoding enc, int wbuff) :
@@ -21,7 +21,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExts
         }
     }
 
-    internal sealed class JsonEnumeratorPipe<T> : FilePipe
+    internal sealed class JsonEnumeratorPipe<T> : JsonPipe
     {
         public JsonEnumeratorPipe(IEnumerable<T> obj, JsonSerializer js, CancellationToken token,
             Encoding enc, int wbuff) : base((s, d) => obj.ToJsonArray(s, js, token, enc, wbuff, d))
@@ -29,7 +29,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExts
         }
     }
 
-    internal sealed class JsonObjectPipe<T> : FilePipe
+    internal sealed class JsonObjectPipe<T> : JsonPipe
     {
         public JsonObjectPipe(T obj, JsonSerializer js, Encoding enc, int wbuff) :
             base((s, d) => obj.ToJson(s, js, enc, wbuff, d))
@@ -37,17 +37,20 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExts
         }
     }
 
-    internal abstract class FilePipe : IFilePipe
+    internal abstract class JsonPipe : FilePipe, IJsonPipe
     {
-        private readonly Func<Stream, bool, Task> _writerFunc;
-
-        protected FilePipe(Action<Stream, bool> writerAction) : this(writerAction.ToAsync())
+        protected JsonPipe(Action<Stream, bool> writerAction) : base(StdLookUps.JsonFileExt, writerAction)
         {
         }
+    }
 
-        protected FilePipe(Func<Stream, bool, Task> writerFunc)
+    internal abstract class FilePipe : StreamPipe, IFilePipe
+    {
+        private readonly string _fileExt;
+
+        protected FilePipe(string fileExt, Action<Stream, bool> writerAction) : base(writerAction)
         {
-            _writerFunc = writerFunc;
+            _fileExt = fileExt;
         }
 
         public Task RunAsync(string folder, string filename = null,
@@ -60,7 +63,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExts
         public Task RunAsync(DirectoryInfo folder, string filename = null,
             int fileStreamBuffer = StdLookUps.DefaultFileBufferSize, FileOptions options = FileOptions.Asynchronous)
         {
-            return RunAsync(folder.CreateFileInfo(filename ?? Guid.NewGuid().ToString("N"), StdLookUps.JsonFileExt),
+            return RunAsync(folder.CreateFileInfo(filename ?? Guid.NewGuid().ToString("N"), _fileExt),
                 fileStreamBuffer, options);
         }
 
@@ -69,6 +72,20 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExts
         {
             return RunAsync(fileinfo.CreateStream(FileMode.Create, FileAccess.ReadWrite, FileShare.Read,
                 fileStreamBuffer, options));
+        }
+    }
+
+    internal abstract class StreamPipe : IStreamPipe
+    {
+        private readonly Func<Stream, bool, Task> _writerFunc;
+
+        protected StreamPipe(Action<Stream, bool> writerAction) : this(writerAction.ToAsync())
+        {
+        }
+
+        protected StreamPipe(Func<Stream, bool, Task> writerFunc)
+        {
+            _writerFunc = writerFunc;
         }
 
         public Task RunAsync(Stream stream, bool dispose = true)

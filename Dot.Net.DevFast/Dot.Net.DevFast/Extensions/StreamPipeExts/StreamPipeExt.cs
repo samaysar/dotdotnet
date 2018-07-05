@@ -18,7 +18,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExts
         /// <param name="enc">Encoding to use while writing the file. If not supplied, by default <seealso cref="Encoding.UTF8"/>
         /// (WwithOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
         /// <param name="writerBuffer">Buffer size for the stream writer</param>
-        public static IFilePipe WriteJsonFile<T>(this T obj, JsonSerializer serializer = null,
+        public static IJsonPipe WriteJsonFile<T>(this T obj, JsonSerializer serializer = null,
             Encoding enc = null, int writerBuffer = StdLookUps.DefaultFileBufferSize)
         {
             return new JsonObjectPipe<T>(obj, serializer, enc ?? new UTF8Encoding(false), writerBuffer);
