@@ -19,5 +19,15 @@
         /// Default Buffer size for file stream related operations.
         /// </summary>
         public const int DefaultFileBufferSize = 4*1024;
+
+        /// <summary>
+        /// Extension for json file.
+        /// </summary>
+        public const string JsonFileExt = "json";
+
+        /// <summary>
+        /// Extension for zip file.
+        /// </summary>
+        public const string ZipFileExt = "zip";
     }
 }

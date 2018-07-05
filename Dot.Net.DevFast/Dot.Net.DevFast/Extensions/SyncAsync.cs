@@ -44,7 +44,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return () =>
             {
-                var tcs = new TaskCompletionSource<object>();
+                var tcs = new TaskCompletionSource<object>(options);
                 Task.Run(() =>
                 {
                     try
@@ -95,7 +95,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return () =>
             {
-                var tcs = new TaskCompletionSource<T0>();
+                var tcs = new TaskCompletionSource<T0>(options);
                 Task.Run(() =>
                 {
                     try
@@ -150,7 +150,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return t0 =>
             {
-                var tcs = new TaskCompletionSource<object>();
+                var tcs = new TaskCompletionSource<object>(options);
                 Task.Run(() =>
                 {
                     try
@@ -201,7 +201,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return t0 =>
             {
-                var tcs = new TaskCompletionSource<T1>();
+                var tcs = new TaskCompletionSource<T1>(options);
                 Task.Run(() =>
                 {
                     try
@@ -256,7 +256,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1) =>
             {
-                var tcs = new TaskCompletionSource<object>();
+                var tcs = new TaskCompletionSource<object>(options);
                 Task.Run(() =>
                 {
                     try
@@ -307,7 +307,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1) =>
             {
-                var tcs = new TaskCompletionSource<T2>();
+                var tcs = new TaskCompletionSource<T2>(options);
                 Task.Run(() =>
                 {
                     try
@@ -362,7 +362,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2) =>
             {
-                var tcs = new TaskCompletionSource<object>();
+                var tcs = new TaskCompletionSource<object>(options);
                 Task.Run(() =>
                 {
                     try
@@ -413,7 +413,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2) =>
             {
-                var tcs = new TaskCompletionSource<T3>();
+                var tcs = new TaskCompletionSource<T3>(options);
                 Task.Run(() =>
                 {
                     try
@@ -468,7 +468,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3) =>
             {
-                var tcs = new TaskCompletionSource<object>();
+                var tcs = new TaskCompletionSource<object>(options);
                 Task.Run(() =>
                 {
                     try
@@ -519,7 +519,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3) =>
             {
-                var tcs = new TaskCompletionSource<T4>();
+                var tcs = new TaskCompletionSource<T4>(options);
                 Task.Run(() =>
                 {
                     try
@@ -574,7 +574,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4) =>
             {
-                var tcs = new TaskCompletionSource<object>();
+                var tcs = new TaskCompletionSource<object>(options);
                 Task.Run(() =>
                 {
                     try
@@ -626,7 +626,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4) =>
             {
-                var tcs = new TaskCompletionSource<T5>();
+                var tcs = new TaskCompletionSource<T5>(options);
                 Task.Run(() =>
                 {
                     try
@@ -682,7 +682,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5) =>
             {
-                var tcs = new TaskCompletionSource<object>();
+                var tcs = new TaskCompletionSource<object>(options);
                 Task.Run(() =>
                 {
                     try
@@ -734,7 +734,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5) =>
             {
-                var tcs = new TaskCompletionSource<T6>();
+                var tcs = new TaskCompletionSource<T6>(options);
                 Task.Run(() =>
                 {
                     try
@@ -791,7 +791,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6) =>
             {
-                var tcs = new TaskCompletionSource<object>();
+                var tcs = new TaskCompletionSource<object>(options);
                 Task.Run(() =>
                 {
                     try
@@ -844,7 +844,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6) =>
             {
-                var tcs = new TaskCompletionSource<T7>();
+                var tcs = new TaskCompletionSource<T7>(options);
                 Task.Run(() =>
                 {
                     try
@@ -901,7 +901,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6, t7) =>
             {
-                var tcs = new TaskCompletionSource<object>();
+                var tcs = new TaskCompletionSource<object>(options);
                 Task.Run(() =>
                 {
                     try
@@ -954,7 +954,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6, t7) =>
             {
-                var tcs = new TaskCompletionSource<T8>();
+                var tcs = new TaskCompletionSource<T8>(options);
                 Task.Run(() =>
                 {
                     try
@@ -1011,7 +1011,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8) =>
             {
-                var tcs = new TaskCompletionSource<object>();
+                var tcs = new TaskCompletionSource<object>(options);
                 Task.Run(() =>
                 {
                     try
@@ -1065,7 +1065,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8) =>
             {
-                var tcs = new TaskCompletionSource<T9>();
+                var tcs = new TaskCompletionSource<T9>(options);
                 Task.Run(() =>
                 {
                     try
@@ -1123,7 +1123,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9) =>
             {
-                var tcs = new TaskCompletionSource<object>();
+                var tcs = new TaskCompletionSource<object>(options);
                 Task.Run(() =>
                 {
                     try
@@ -1178,7 +1178,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9) =>
             {
-                var tcs = new TaskCompletionSource<T10>();
+                var tcs = new TaskCompletionSource<T10>(options);
                 Task.Run(() =>
                 {
                     try
@@ -1236,7 +1236,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10) =>
             {
-                var tcs = new TaskCompletionSource<object>();
+                var tcs = new TaskCompletionSource<object>(options);
                 Task.Run(() =>
                 {
                     try
@@ -1291,7 +1291,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10) =>
             {
-                var tcs = new TaskCompletionSource<T11>();
+                var tcs = new TaskCompletionSource<T11>(options);
                 Task.Run(() =>
                 {
                     try
@@ -1349,7 +1349,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11) =>
             {
-                var tcs = new TaskCompletionSource<object>();
+                var tcs = new TaskCompletionSource<object>(options);
                 Task.Run(() =>
                 {
                     try
@@ -1404,7 +1404,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11) =>
             {
-                var tcs = new TaskCompletionSource<T12>();
+                var tcs = new TaskCompletionSource<T12>(options);
                 Task.Run(() =>
                 {
                     try
@@ -1462,7 +1462,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12) =>
             {
-                var tcs = new TaskCompletionSource<object>();
+                var tcs = new TaskCompletionSource<object>(options);
                 Task.Run(() =>
                 {
                     try
@@ -1517,7 +1517,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12) =>
             {
-                var tcs = new TaskCompletionSource<T13>();
+                var tcs = new TaskCompletionSource<T13>(options);
                 Task.Run(() =>
                 {
                     try
@@ -1575,7 +1575,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13) =>
             {
-                var tcs = new TaskCompletionSource<object>();
+                var tcs = new TaskCompletionSource<object>(options);
                 Task.Run(() =>
                 {
                     try
@@ -1631,7 +1631,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13) =>
             {
-                var tcs = new TaskCompletionSource<T14>();
+                var tcs = new TaskCompletionSource<T14>(options);
                 Task.Run(() =>
                 {
                     try
@@ -1691,7 +1691,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14) =>
             {
-                var tcs = new TaskCompletionSource<object>();
+                var tcs = new TaskCompletionSource<object>(options);
                 Task.Run(() =>
                 {
                     try
@@ -1748,7 +1748,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14) =>
             {
-                var tcs = new TaskCompletionSource<T15>();
+                var tcs = new TaskCompletionSource<T15>(options);
                 Task.Run(() =>
                 {
                     try
@@ -1808,7 +1808,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15) =>
             {
-                var tcs = new TaskCompletionSource<object>();
+                var tcs = new TaskCompletionSource<object>(options);
                 Task.Run(() =>
                 {
                     try
@@ -1865,7 +1865,7 @@ namespace Dot.Net.DevFast.Extensions
 
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15) =>
             {
-                var tcs = new TaskCompletionSource<T16>();
+                var tcs = new TaskCompletionSource<T16>(options);
                 Task.Run(() =>
                 {
                     try

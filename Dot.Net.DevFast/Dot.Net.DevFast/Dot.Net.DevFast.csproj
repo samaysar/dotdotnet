@@ -86,6 +86,9 @@
     <Compile Include="Extensions\StreamExt\CryptoStreamExt.cs" />
     <Compile Include="Extensions\Internals\StreamBased.cs" />
     <Compile Include="Extensions\Internals\WrapperStream.cs" />
+    <Compile Include="Extensions\StreamPipeExts\IStreamPipe.cs" />
+    <Compile Include="Extensions\StreamPipeExts\StreamPipeExt.cs" />
+    <Compile Include="Extensions\StreamPipeExts\StreamPipeImpl.cs" />
     <Compile Include="Extensions\StringExt\StringSafe.cs" />
     <Compile Include="Extensions\StringExt\StringTryTo.cs" />
     <Compile Include="Extensions\StringExt\StringUnsafe.cs" />
