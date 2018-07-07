@@ -20,6 +20,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Dot.Net.DevFast\Dot.Net.DevFast\bin\Release\Dot.Net.DevFast.*" target="lib\net461" />
+    <file src="..\Dot.Net.DevFast\src\framework461\Dot.Net.DevFast\bin\Release\Dot.Net.DevFast.*" target="lib\net461" />
   </files>
 </package>
