@@ -16,7 +16,15 @@
     <copyright>Copyright © Divya Sarthi MAHESHWARI 2017</copyright>
     <tags>devfast fastdev dot.net stream-processing declarative-programming extension-methods fastdevelopement</tags>
     <dependencies>
-      <dependency id="Newtonsoft.Json" version="11.0.1" />
+		<group targetFramework=".NETFramework4.6.1">
+			<dependency id="Newtonsoft.Json" version="11.0.1" />
+		</group>
+		<group targetFramework=".NETFramework4.7.2">
+			<dependency id="Newtonsoft.Json" version="11.0.1" />
+		</group>
+		<group targetFramework=".NETStandard2.0">
+			<dependency id="Newtonsoft.Json" version="11.0.1" />
+		</group>
     </dependencies>
   </metadata>
   <files>
