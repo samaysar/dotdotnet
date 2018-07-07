@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET461
+using System;
 using System.IO;
 using System.Runtime.Remoting;
 using System.Threading;
@@ -174,3 +175,4 @@ namespace Dot.Net.DevFast.Extensions.Internals
         }
     }
 }
+#endif
