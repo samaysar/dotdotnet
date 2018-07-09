@@ -1,13 +1,41 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks Condition="'$(LibraryFrameworks)'==''">net461;net472;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks Condition="'$(LibraryFrameworks)'!=''">$(LibraryFrameworks)</TargetFrameworks>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  <PropertyGroup>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
-    <DocumentationFile>bin\Debug\netstandard2.0\Dot.Net.DevFast.xml</DocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Dot.Net.DevFast.xml</DocumentationFile>
+    <Company>Divya Sarthi MAHESHWARI</Company>
+    <Description>Power set of extension methods</Description>
+    <Copyright>Copyright © Divya Sarthi MAHESHWARI 2017</Copyright>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/samaysar/dotdotnet</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/nuspecs/pkgdt/ddn.ico</PackageIconUrl>
+    <RepositoryUrl>https://github.com/samaysar/dotdotnet</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>devfast fastdev dot.net stream-processing declarative-programming extension-methods fastdevelopement</PackageTags>
+    <PackageReleaseNotes>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/ReleaseNotes.txt</PackageReleaseNotes>
+    <NeutralLanguage />
   </PropertyGroup>
-
+ 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <DefineConstants>NETSTANDARD2_0</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
+    <DefineConstants>NET461</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net472'">
+    <DefineConstants>NET472</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+  </ItemGroup>
+  
 </Project>
