@@ -143,13 +143,11 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals
 
                 wrprstrm.InitializeLifetimeService();
                 strm.Received(1).InitializeLifetimeService();
-#else
-#if !NETSTANDARD2_0 && !NETCOREAPP2_0
+#elif !NETSTANDARD2_0 && !NETCOREAPP2_0
                 Assert.True(Assert.Throws<RemotingException>(() => wrprstrm.CreateObjRef(null))
                     .Message.Equals(WrappedStream.RemotingErrorTxt));
                 Assert.True(Assert.Throws<RemotingException>(() => wrprstrm.InitializeLifetimeService())
                     .Message.Equals(WrappedStream.RemotingErrorTxt));
-#endif
 #endif
                 wrprstrm.EndRead(result);
                 strm.Received(1).EndRead(result);

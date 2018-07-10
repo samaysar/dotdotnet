@@ -394,9 +394,15 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         public static void ToJson<T>(this T source, JsonWriter target, JsonSerializer serializer = null,
             bool disposeTarget = true)
         {
-            (serializer ?? target.AdaptedJsonSerializer()).Serialize(target, source);
-            target.Flush();
-            target.DisposeIfRequired(disposeTarget);
+            try
+            {
+                (serializer ?? target.AdaptedJsonSerializer()).Serialize(target, source);
+                target.Flush();
+            }
+            finally
+            {
+                target.DisposeIfRequired(disposeTarget);
+            }
         }
 
         #endregion ToJson region

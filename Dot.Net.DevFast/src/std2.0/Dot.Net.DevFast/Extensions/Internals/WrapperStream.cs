@@ -132,8 +132,7 @@ namespace Dot.Net.DevFast.Extensions.Internals
             return _stream.InitializeLifetimeService();
         }
 
-#else
-#if !NETSTANDARD2_0 && !NETCOREAPP2_0
+#elif !NETSTANDARD2_0 && !NETCOREAPP2_0
 
         public override ObjRef CreateObjRef(Type requestedType)
         {
@@ -144,8 +143,6 @@ namespace Dot.Net.DevFast.Extensions.Internals
         {
             throw new RemotingException(RemotingErrorTxt);
         }
-#endif
-
 #endif
 
         public override int EndRead(IAsyncResult asyncResult)

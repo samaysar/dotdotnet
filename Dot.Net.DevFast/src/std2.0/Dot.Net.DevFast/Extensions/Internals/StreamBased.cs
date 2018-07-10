@@ -77,24 +77,36 @@ namespace Dot.Net.DevFast.Extensions.Internals
         internal static async Task CopyFromWithDisposeAsync(this Stream writable, Stream readable,
             int bufferSize, CancellationToken token, Stream writableInner, bool disposeReadable)
         {
-            using (writable)
+            try
             {
-                await readable.CopyToAsync(writable, bufferSize, token).ConfigureAwait(false);
-                await writable.FlushAsync(token).ConfigureAwait(false);
-                await writableInner.FlushAsync(token).ConfigureAwait(false);
+                using (writable)
+                {
+                    await readable.CopyToAsync(writable, bufferSize, token).ConfigureAwait(false);
+                    await writable.FlushAsync(token).ConfigureAwait(false);
+                    await writableInner.FlushAsync(token).ConfigureAwait(false);
+                }
             }
-            readable.DisposeIfRequired(disposeReadable);
+            finally
+            {
+                readable.DisposeIfRequired(disposeReadable);
+            }
         }
 
         internal static async Task CopyToWithDisposeAsync(this Stream from, Stream to,
             int bufferSize, CancellationToken token, bool disposeTo)
         {
-            using (from)
+            try
             {
-                await from.CopyToAsync(to, bufferSize, token).ConfigureAwait(false);
-                await to.FlushAsync(token).ConfigureAwait(false);
+                using (from)
+                {
+                    await from.CopyToAsync(to, bufferSize, token).ConfigureAwait(false);
+                    await to.FlushAsync(token).ConfigureAwait(false);
+                }
             }
-            to.DisposeIfRequired(disposeTo);
+            finally
+            {
+                to.DisposeIfRequired(disposeTo);
+            }
         }
 
         internal static async Task CopyFromWithDisposeAsync(this Stream writable, byte[] input,

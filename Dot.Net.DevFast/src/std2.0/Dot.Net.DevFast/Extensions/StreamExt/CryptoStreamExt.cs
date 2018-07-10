@@ -59,8 +59,8 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
             Stream output, CancellationToken token = default(CancellationToken), bool disposeInput = false,
             bool disposeOutput = false, int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            return output.CreateCryptoStream(transform, CryptoStreamMode.Write, disposeOutput)
-                .CopyFromWithDisposeAsync(input, bufferSize, token, output, disposeInput);
+            return input.CreateCryptoStream(transform, CryptoStreamMode.Read, disposeInput)
+                .CopyToWithDisposeAsync(output, bufferSize, token, disposeOutput);
         }
         
         /// <summary>
