@@ -1,9 +1,13 @@
+Changes to Dot.Net.DevFast 1.4.1
+
+ 1. New feature - Extending support for .Net Framework 4.6.1 and 4.7.2 and .Net Standard 2.0
+
 Changes to Dot.Net.DevFast 1.4.0
 
  1. Change/Fix - IProducerFeed interface renamed as IConsumerBuffer. This breaks previous releases.
  2. Change/Fix - IConsumerFeed interface renamed as IProducerBuffer. This breaks previous releases.
 
- Changes to Dot.Net.DevFast 1.3.3
+Changes to Dot.Net.DevFast 1.3.3
 
  1. Change/Fix - All ConcurrentPipeline extension methods are renamed to Pipeline.
 

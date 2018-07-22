@@ -145,7 +145,11 @@
 	<li>In discordant mode, given an adapter, pipeline construction must be possible.</li>
 </ul>
 
-<p>To achieve our goal, we opt to implement it in C# <a href="https://docs.microsoft.com/en-us/dotnet/framework/whats-new/#v461">.Net Framework 4.6.1</a> while leveraging several <a href="https://docs.microsoft.com/en-us/dotnet/standard/parallel-programming/">TPL features</a>&nbsp;(especially <a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/"><code>async-await</code></a>) and inherent language capability to create <a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods">extension methods</a>.</p>
+<h2>About Implementation</h2>
+
+<p>The idea of producer-consumer is actually language neutral and can be developed in several programming languages. However, to achieve our goal, we opt to implement it in C# <a href="https://docs.microsoft.com/en-us/dotnet/framework/whats-new/#v461">.Net Framework 4.6.1</a> while leveraging several <a href="https://docs.microsoft.com/en-us/dotnet/standard/parallel-programming/">TPL features</a>&nbsp;(especially <a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/"><code>async-await</code></a>) and inherent language capability to create <a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods">extension methods</a>. If you are interested to consume this implementation. Based on your choice of language you may achieve different usage forms.</p>
+
+<p>During our discussion, we have provided a lot of comments along with C#.Net code snippets and added some amusing images (showing conversation among entities).&nbsp;Even if you feel uncomfortable with .Net syntax, do NOT be worried, you would be able to get the essential while reading this article.</p>
 
 <h2>There are no Dinosaurs!</h2>
 
@@ -160,8 +164,8 @@
 <p>So based on above picture, we want:</p>
 
 <ol>
-	<li>to standarderized the way producer will procure the buffer and add items in it, in <strong>ISOLATION</strong>, i.e. unaware of the presence of other producers or consumers.</li>
-	<li>to standarderized the way consumer can retrieve those populated items from the buffer and perform required processing, in <strong>ISOLATION</strong>, i.e.&nbsp;unaware of the presence of other consumers or producers.</li>
+	<li>to standarderize&nbsp;the way producer will procure the buffer and add items in it, in <strong>ISOLATION</strong>, i.e. unaware of the presence of other producers or consumers.</li>
+	<li>to standarderize&nbsp;the way consumer can retrieve those populated items from the buffer and perform required processing, in <strong>ISOLATION</strong>, i.e.&nbsp;unaware of the presence of other consumers or producers.</li>
 	<li>have a buffer&nbsp;that can handle those concurrent operations.</li>
 </ol>
 
@@ -389,6 +393,12 @@ public interface IDataAdapter&lt;TP, TC&gt;
 	<li>We plug all the three (3) pieces to the pipeline</li>
 </ul>
 
+<h3>Before Getting Crazy with Code!</h3>
+
+<p>Until this point, we tried to use a lot of drawings to convey our ideas, but, unfortunately, now we are obliged to introduce the code, and, thus,&nbsp;below you will see some long code snippets. But do <strong>NOT</strong> be worried, we&nbsp;will add some amusing drawings to illustrate the same idea in psuedo manner;&nbsp;nonetheless, you must memorize below given pyramidical mind-map which is closely related to our concrete implementation:</p>
+
+<p><img align="middle" alt="pyramidical-mind-map" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Pyramidical-Mind-Map.PNG" /></p>
+
 <h3>Implementing Interfaces</h3>
 
 <p>As we are aware that our solution is producer/consumer/adapter agnostic, thus, their respective concrete implementation is not our concern; once we have exposed our interfaces, end-user will inherit those to use in the pipeline. However, it would be nice to implement some default Adapters in order to cover some mundane use cases. Thus, in this section we will propose following implementations:</p>
@@ -406,6 +416,8 @@ public interface IDataAdapter&lt;TP, TC&gt;
 </ol>
 
 <h4>1.a Identity Adapter</h4>
+
+<p><img align="middle" alt="identity-adapter-mind-map" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Mind-Map-Identity-Adapter.PNG" /></p>
 
 <p>To start simple, we choose to implement identity adapter first and if we remember from above, it should just return the produced item as it is. We achieve this as follows:</p>
 
@@ -532,6 +544,8 @@ public class IdentityAdapter&lt;T&gt; : IDataAdapter&lt;T, T&gt;
 <p><strong>NOTE:</strong> We discuss some possible use-cases&nbsp;of these adapters separately (below) in the article.</p>
 
 <h5>Implementation</h5>
+
+<p><img align="middle" alt="list-adapter-mind-map" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Mind-Map-List-Adapter.PNG" /></p>
 
 <p>Based on our constraints/assumptions, we have two (2) parameters to deal with: 1) List size and 2) Timeout period. And we already know if <code>timeout=Infinite</code>, then we are outputting fixed-size list else variable-sized list. Let&#39;s look at the code then:</p>
 
@@ -745,6 +759,8 @@ public class AwaitableListAdapter&lt;T&gt; : IDataAdapter&lt;T, List&lt;T&gt;&gt
 	<li>Implementation details: <a href="https://github.com/samaysar/dotdotnet/blob/develop/Dot.Net.DevFast/Dot.Net.DevFast/Extensions/TaskExts.cs">please see here</a></li>
 </ul>
 
+<p><img align="middle" alt="attached-pipeline-mind-map" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Mind-Map-Attached-Pipeline.PNG" /></p>
+
 <p>Following approach implements all above listed steps:</p>
 
 <pre lang="cs">
@@ -832,7 +848,7 @@ internal static class PipeImpl&lt;TP, TC&gt;
 &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;catch
 &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{
 &nbsp;           <strong>//in case producer ends up in error
-&nbsp;           // we cancel the token so that consumer can intercept it</strong>
+&nbsp;           // we cancel the token so that producer can intercept it</strong>
 &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;if (!token.IsCancellationRequested) tokenSrc.Cancel();
 &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;throw;
 &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}
@@ -899,7 +915,7 @@ internal static class PipeImpl&lt;TP, TC&gt;
 }
 </pre>
 
-<h5>Achieving .Pipe usage form</h5>
+<h5>Achieving .Pipe usage form (or Syntactic Sugar)</h5>
 
 <p>We have all the ingredients to cook our extension methods and we propose following four (4) such methods to achieve different pipelines as we had discussed above:</p>
 
@@ -1026,7 +1042,7 @@ public static Task Pipe&lt;TP, TC&gt;(this IReadOnlyList&lt;IProducer&lt;TP&gt;&
 
 <p>As we do NOT have any single point in code to <code>await</code> on, we need to fabricate a way to keep our pipeline alive for the whole duration so that all produced items (by ephemeral sporadically appearing producers or long-running producers) can be added in it. For all pragmatic reasons, we measure such duration as: &quot;The time duration starting from the moment when such a pipeline is constructed until the moment when the call to <code>CloseForAdding</code> method is made.&quot;</p>
 
-<p>With some assumptions made and intentions declared, we proceed with detached Pipeline interfacing as follow:</p>
+<p>With these assumptions made and intentions declared, we proceed with detached Pipeline interfacing as follow:</p>
 
 <pre lang="cs">
 <strong>//we adopt this interface as this nearly mimic
@@ -1040,6 +1056,8 @@ public static Task Pipe&lt;TP, TC&gt;(this IReadOnlyList&lt;IProducer&lt;TP&gt;&
 {
 }
 </pre>
+
+<p><img align="middle" alt="detached-pipeline-mind-map" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Mind-Map-Detached-Pipeline.PNG" /></p>
 
 <p>Now, with IPipeline, we will be able to mimic all the producer related operations as we have done before (in <code>RunProducers</code> method of <code>PipeImpl&lt;TP, TC&gt; static class</code>). Lets look at the implementation:</p>
 
@@ -1131,10 +1149,11 @@ internal sealed class PipelineImpl&lt;TP,TC&gt; : IPipeline&lt;TP&gt;
 	<ul>
 		<li>useful in cases, where, consumers outlives producers by large (in most of the cases consumers might live for application life-time), examples:
 		<ul>
-			<li>Web based (<code>WCF</code> based, <code>ApiController</code> based etc) async data processing</li>
-			<li>Backend file processing</li>
+			<li>Web based (<code>WCF</code> based, <code>ApiController</code> based etc) data processing</li>
+			<li>Background file processing</li>
 			<li>Background Database operations</li>
 			<li>Event based processing</li>
+			<li>Timer based processing</li>
 			<li>Async batch processing, so on and so forth...</li>
 		</ul>
 		</li>
@@ -1149,9 +1168,9 @@ internal sealed class PipelineImpl&lt;TP,TC&gt; : IPipeline&lt;TP&gt;
 	</li>
 </ul>
 
-<h5>Achieving .Pipeline usage form</h5>
+<h5>Achieving .Pipeline usage form (or Syntactic Sugar)</h5>
 
-<p>Above, we have already created <code>.Pipe</code> extension methods In similar manner, we can obtain following <code>.Pipeline</code> methods:</p>
+<p>Above, we have already created <code>.Pipe</code> extension methods. In similar manner, we can obtain following <code>.Pipeline</code> methods:</p>
 
 <ol>
 	<li>Concordant Pipeline: Producer&nbsp;type matches consumer type (i.e. <code>&lt;TP&gt; = &lt;TC&gt;</code>). Normally end-user need to inject IDENTITY adapter to it, but we can implicitly do it inside our method as shown below:
@@ -1293,7 +1312,9 @@ internal sealed class PipelineImpl&lt;TP,TC&gt; : IPipeline&lt;TP&gt;
 
 <h2>Commentary</h2>
 
-<p>So far, we have implemented all the initially set requirements. Before we close this discussion technically, we would like to wrap our features:</p>
+<h3>Feature Implementation</h3>
+
+<p>So far, we have implemented all the initially set requirements. Before we close this discussion, we would like to wrap our features:</p>
 
 <table align="center" border="2" cellpadding="5" cellspacing="5">
 	<caption style="background-color: #18bef2">Feature Implementation</caption>
@@ -1310,7 +1331,7 @@ internal sealed class PipelineImpl&lt;TP,TC&gt; : IPipeline&lt;TP&gt;
 		</tr>
 		<tr style="background-color: #c9f3ff">
 			<td style="text-align: center">Losslessness</td>
-			<td style="text-align: center">using millisecond Timeout during Add/TryAdd</td>
+			<td style="text-align: center">using millisecond Timeout during Add/TryAdd, Timeout.Infinite represents no-loss</td>
 		</tr>
 		<tr style="background-color: #c4f1ff">
 			<td style="text-align: center">Interruptibility</td>
@@ -1338,26 +1359,95 @@ internal sealed class PipelineImpl&lt;TP,TC&gt; : IPipeline&lt;TP&gt;
 	<li>Detached mode should avoid FIXED SIZE chunk adapater to avoid unintentional latencies</li>
 </ul>
 
-<p>In our original work (<a href="https://github.com/samaysar/dotdotnet">Source Code</a>, <a href="https://www.nuget.org/packages/Dot.Net.DevFast">NuGet Package</a>), we have further eloborated our implementation as explained below:</p>
+<h3>Original Work and Nuget Package</h3>
+
+<p>In our original work (<strong><a href="https://github.com/samaysar/dotdotnet">Source Code Link</a></strong>,&nbsp;<strong><a href="https://www.nuget.org/packages/Dot.Net.DevFast">NuGet Package Link</a></strong>), we have further elaborated our implementation as explained below:</p>
 
 <ul>
 	<li>Adapter interfaces are implemented as abstract classes, so that <code>&lt;TP&gt;</code> to <code>&lt;TC&gt;</code> data transformation can be done solely based on business logic without worrying about calls to <code>buffer.TryGet</code>&nbsp;(see <a href="https://github.com/samaysar/dotdotnet/blob/develop/Dot.Net.DevFast/Dot.Net.DevFast/Extensions/Ppc/AwaitableAdapter.cs">AwaitableAdapter</a><strong>&nbsp;</strong>and <a href="https://github.com/samaysar/dotdotnet/blob/develop/Dot.Net.DevFast/Dot.Net.DevFast/Extensions/Ppc/AwaitableListAdapter.cs">AwaitableListAdapter</a>)<br />
 	<br />
 	<img align="middle" alt="abstract-adapter-impl" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/Adapter-GitHub-Implementation-Abstract.PNG" />
-	<p>Thus, it would be simpler, due to business logic oriented implementation of Adapt abstract method, to inherit from either <code>AwaitableAdapter&lt;TP, TC&gt;</code> abstract class (if consuming single instances at a time) or <code>AwaitableListAdapter&lt;TP, TC&gt;</code>&nbsp;abstract class (if consuming data in chunks).</p>
+	<p>Thus, it would be simple&nbsp;to inherit from either <code>AwaitableAdapter&lt;TP, TC&gt;</code> abstract class (if consuming single instances at a time) or <code>AwaitableListAdapter&lt;TP, TC&gt;</code>&nbsp;abstract class (if consuming data in chunks) instead of implementing <code>IDataAdapter&lt;TP, TC&gt;</code> interface. Such <code>abstract class</code> based inheritance would remain&nbsp;business-oriented as we purely write the data transformation logic inside <code>Adapt</code>&nbsp;method without worrying about buffer handling, and thus, further reducing boiler-plate code.</p>
 	</li>
-	<li><code>.Pipe</code> and <code>.Pipeline</code> extension methods are available on <code>Action/Func delegates</code>&nbsp;too (we have covered both Sync and Async delegates), thus avoiding the need to inherit&nbsp;<code>IProducer</code> and <code>IConsumer</code> interfaces when <code>Init/Dispose</code>&nbsp;methods are&nbsp;not warranted. (see <a href="https://github.com/samaysar/dotdotnet/blob/develop/Dot.Net.DevFast/Dot.Net.DevFast/Extensions/Ppc/PipeExts.cs">PipeExts</a>&nbsp;and <a href="https://github.com/samaysar/dotdotnet/blob/develop/Dot.Net.DevFast/Dot.Net.DevFast/Extensions/Ppc/PipelineExts.cs">PipelineExts</a>)</li>
-	<li>Our current implementation is NOT capable of method chaining, i.e. somthing similar to UNIX pipes chaining multiple pipes:
+	<li><code>.Pipe</code> and <code>.Pipeline</code> extension methods are also available on <code>Action</code>&nbsp;(synchronous delegates)<font color="#111111" face="Segoe UI, Arial, sans-serif"><span style="font-size: 14px;">&nbsp;and&nbsp;</span></font><code>Func</code>&nbsp;(task returning asynchronous delegates).&nbsp;Thus, avoiding the need to inherit&nbsp;<code>IProducer</code> and <code>IConsumer</code> interfaces when <code>Init/Dispose</code>&nbsp;methods are&nbsp;not warranted. (see <a href="https://github.com/samaysar/dotdotnet/blob/develop/Dot.Net.DevFast/Dot.Net.DevFast/Extensions/Ppc/PipeExts.cs">PipeExts</a>&nbsp;and <a href="https://github.com/samaysar/dotdotnet/blob/develop/Dot.Net.DevFast/Dot.Net.DevFast/Extensions/Ppc/PipelineExts.cs">PipelineExts</a>)</li>
+	<li>Our current implementation is NOT capable of method chaining as we find in&nbsp;UNIX where we can chain&nbsp;multiple pipes as shown in following example:
 	<pre>
 ls -l | grep key | less      (3 operations with 2 pipes)</pre>
 	</li>
 	<li>Our current implementation suports only <code>void</code> consumers, i.e. consumers cannot have return values.</li>
 </ul>
 
+<h3>Usage</h3>
+
+<p><strong>IMPORTANT</strong>: We suggest you to use <strong>v1.4.0</strong> or higher;&nbsp;as it contains some breaking changes compared to previous versions. This library also contains some other interesting extension methods which we might cover in future articles on code-project itself. However, if you are interested in usage of those methods, <a href="https://rawgit.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/articles/SimplyDevFast.html"><strong>you can find information </strong></a><strong><a href="https://rawgit.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/articles/SimplyDevFast.html">here</a></strong>.</p>
+
+<ul>
+	<li>If one wants to use <code>.Pipe</code> implementation, instead of thinking about whole sln in a go, one must organise ones thoughts as follows:
+
+	<ul>
+		<li>Create Producer(s) (in isolation):
+		<ul>
+			<li>either implement<code> IProducer&lt;TP&gt;</code> interface to populate the buffer <strong>IF</strong>&nbsp;<code>Init</code>/<code>Dispose</code>&nbsp;methods are required</li>
+			<li>or contstruct a lambda:
+			<ul>
+				<li>Synchronous lambda signature:&nbsp;<code>Action&lt;IProducerBuffer&lt;TP&gt;, CancellationToken&gt;</code></li>
+				<li>Async lambda signature:&nbsp;<code>Func&lt;IProducerBuffer&lt;TP&gt;, CancellationToken, Task&gt;</code></li>
+			</ul>
+			</li>
+		</ul>
+		</li>
+		<li>Create Consumer(s) (in Isolation):
+		<ul>
+			<li>either implement<code> IConsumer&lt;TC&gt;</code> interface to populate the buffer <strong>IF</strong>&nbsp;<code>Init</code>/<code>Dispose</code>&nbsp;methods are required</li>
+			<li>or contstruct a lambda:
+			<ul>
+				<li>Synchronous lambda signature:&nbsp;<code>Action&lt;TC, CancellationToken&gt;</code></li>
+				<li>Async lambda signature:&nbsp;<code>Func&lt;TC, CancellationToken, Task&gt;</code></li>
+			</ul>
+			</li>
+		</ul>
+		</li>
+		<li>Create Adapter (if an existing adapter does not fit the requirement):
+		<ul>
+			<li>Either inherit from <code>AwaitableAdapter&lt;TP, TC&gt;</code>&nbsp;or <code>AwaitableListAdapter&lt;TP, TC&gt;</code> if requirements fits and implement abstract method: <code>abstract TC Adapt(TP produced, CancellationToken token)</code></li>
+			<li>Or implement <code>IAdapter&lt;TP, TC&gt;</code> interface</li>
+		</ul>
+		</li>
+		<li>Choose one of the exiting producers.Pipe(consumers) extension method and inject values as necessary.</li>
+	</ul>
+	</li>
+	<li>If one wants to use <code>.Pipeline</code> implementation, one must organise ones thoughts as follows:
+	<ul>
+		<li>Create Consumer(s) and Adapter as explained above for<code> .Pipe</code> usage</li>
+		<li>Maintain <code>IPipeline&lt;TP&gt;</code> instance as deemed fit:
+		<ul>
+			<li>Inside Dependency Injector as Singleton</li>
+			<li>As static field/property etc</li>
+		</ul>
+		</li>
+		<li>Call <code>Dispose</code> on the instance as deemed fit:
+		<ul>
+			<li>Inside App shutdown method</li>
+			<li>After closing network connection</li>
+			<li>After unregistering event handler so and so forth...</li>
+		</ul>
+		</li>
+		<li>Use the&nbsp;<code>IPipeline&lt;TP&gt;</code> instance as required:
+		<ul>
+			<li>Inside <code>ApiController</code></li>
+			<li>Inside <code>WCF</code> endpoints</li>
+			<li>Inside <code>EventHandler</code></li>
+			<li>In batch method calls</li>
+			<li>Inside&nbsp;<code>Timer</code> based callbacks... so on and so forth</li>
+		</ul>
+		</li>
+	</ul>
+	</li>
+</ul>
+
 <h2>History</h2>
 
 <p>This is the v1 of the present idea.</p>
-
 
 <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tbody>
