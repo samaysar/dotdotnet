@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,17 +15,17 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 {
     internal sealed class JsonBcPipe<T> : JsonPipe
     {
-        public JsonBcPipe(BlockingCollection<T> obj, JsonSerializer js, CancellationToken token,
-            CancellationTokenSource pcts, Encoding enc, int wbuff) :
-            base((s, d) => obj.ToJsonArrayParallely(s, js, token, pcts, enc, wbuff, d))
+        public JsonBcPipe(BlockingCollection<T> obj, JsonSerializer js, CancellationTokenSource pcts,
+            Encoding enc, int wbuff) :
+            base((s, d, t) => obj.ToJsonArrayParallely(s, js, t, pcts, enc, wbuff, d))
         {
         }
     }
 
     internal sealed class JsonEnumeratorPipe<T> : JsonPipe
     {
-        public JsonEnumeratorPipe(IEnumerable<T> obj, JsonSerializer js, CancellationToken token,
-            Encoding enc, int wbuff) : base((s, d) => obj.ToJsonArray(s, js, token, enc, wbuff, d))
+        public JsonEnumeratorPipe(IEnumerable<T> obj, JsonSerializer js,
+            Encoding enc, int wbuff) : base((s, d, t) => obj.ToJsonArray(s, js, t, enc, wbuff, d))
         {
         }
     }
@@ -32,14 +33,23 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
     internal sealed class JsonObjectPipe<T> : JsonPipe
     {
         public JsonObjectPipe(T obj, JsonSerializer js, Encoding enc, int wbuff) :
-            base((s, d) => obj.ToJson(s, js, enc, wbuff, d))
+            base((s, d, t) => obj.ToJson(s, js, enc, wbuff, d))
+        {
+        }
+    }
+
+    internal sealed class CompressedPipe : FilePipe, ICompressedPipe
+    {
+        public CompressedPipe(IStreamPipe src, bool gzip, CompressionLevel level) :
+            base(StdLookUps.ZipFileExt, src.AddCompression(gzip, level))
         {
         }
     }
 
     internal abstract class JsonPipe : FilePipe, IJsonPipe
     {
-        protected JsonPipe(Action<Stream, bool> writerAction) : base(StdLookUps.JsonFileExt, writerAction)
+        protected JsonPipe(Action<Stream, bool, CancellationToken> writerAction) : base(StdLookUps.JsonFileExt,
+            writerAction)
         {
         }
     }
@@ -48,49 +58,61 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
     {
         private readonly string _fileExt;
 
-        protected FilePipe(string fileExt, Action<Stream, bool> writerAction) : base(writerAction)
+        protected FilePipe(string fileExt, Action<Stream, bool, CancellationToken> writerAction) : base(writerAction)
         {
             _fileExt = fileExt;
         }
 
-        public Task RunAsync(string folder, string filename = null,
+        protected FilePipe(string fileExt, Func<Stream, bool, CancellationToken, Task> writerFunc) : base(writerFunc)
+        {
+            _fileExt = fileExt;
+        }
+
+        public Task<FileInfo> SaveAsFileAsync(string folder, string filename = null,
             int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
-            FileOptions options = FileOptions.Asynchronous)
+            FileOptions options = FileOptions.Asynchronous, CancellationToken token = default(CancellationToken))
         {
-            return RunAsync(folder.ToDirectoryInfo(), filename, fileStreamBuffer, options);
+            return SaveAsFileAsync(folder.ToDirectoryInfo(), filename, fileStreamBuffer, options, token);
         }
 
-        public Task RunAsync(DirectoryInfo folder, string filename = null,
-            int fileStreamBuffer = StdLookUps.DefaultFileBufferSize, FileOptions options = FileOptions.Asynchronous)
+        public async Task<FileInfo> SaveAsFileAsync(DirectoryInfo folder, string filename = null,
+            int fileStreamBuffer = StdLookUps.DefaultFileBufferSize, FileOptions options = FileOptions.Asynchronous,
+            CancellationToken token = default(CancellationToken))
         {
-            return RunAsync(folder.CreateFileInfo(filename ?? Guid.NewGuid().ToString("N"), _fileExt),
-                fileStreamBuffer, options);
+            var targetFile = folder.CreateFileInfo(filename ?? Guid.NewGuid().ToString("N"), _fileExt);
+            await SaveAsFileAsync(targetFile, fileStreamBuffer, options, token).ConfigureAwait(false);
+            return targetFile;
         }
 
-        public Task RunAsync(FileInfo fileinfo, int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
-            FileOptions options = FileOptions.Asynchronous)
+        public async Task SaveAsFileAsync(FileInfo fileinfo, int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
+            FileOptions options = FileOptions.Asynchronous, CancellationToken token = default(CancellationToken))
         {
-            return RunAsync(fileinfo.CreateStream(FileMode.Create, FileAccess.ReadWrite, FileShare.Read,
-                fileStreamBuffer, options));
+            using (var strm = fileinfo.CreateStream(FileMode.Create, FileAccess.ReadWrite, FileShare.Read,
+                fileStreamBuffer, options))
+            {
+                await StreamAsync(strm, false, token).ConfigureAwait(false);
+                await strm.FlushAsync(token).ConfigureAwait(false);
+            }
         }
     }
 
     internal abstract class StreamPipe : IStreamPipe
     {
-        private readonly Func<Stream, bool, Task> _writerFunc;
+        private readonly Func<Stream, bool, CancellationToken, Task> _writerFunc;
 
-        protected StreamPipe(Action<Stream, bool> writerAction) : this(writerAction.ToAsync())
+        protected StreamPipe(Action<Stream, bool, CancellationToken> writerAction) : this(writerAction.ToAsync())
         {
         }
 
-        protected StreamPipe(Func<Stream, bool, Task> writerFunc)
+        protected StreamPipe(Func<Stream, bool, CancellationToken, Task> writerFunc)
         {
             _writerFunc = writerFunc;
         }
 
-        public Task RunAsync(Stream stream, bool dispose = true)
+        public Task StreamAsync(Stream stream, bool dispose = true,
+            CancellationToken token = default(CancellationToken))
         {
-            return _writerFunc(stream, dispose);
+            return _writerFunc(stream, dispose, token);
         }
     }
 }
