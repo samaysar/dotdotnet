@@ -26,13 +26,13 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             };
         }
 
-        internal static Func<Stream, bool, CancellationToken, Task> ComputeHash(
+        internal static Func<Stream, bool, CancellationToken, Task> ApplyTransform(
             this Func<Stream, bool, CancellationToken, Task> pipe,
-            HashAlgorithm ha)
+            ICryptoTransform ct)
         {
             return async (s, d, t) =>
             {
-                using (var cs = s.CreateCryptoStream(ha, CryptoStreamMode.Write, d))
+                using (var cs = s.CreateCryptoStream(ct, CryptoStreamMode.Write, d))
                 {
                     await pipe(cs, false, t).ConfigureAwait(false);
                     cs.FlushFinalBlock();

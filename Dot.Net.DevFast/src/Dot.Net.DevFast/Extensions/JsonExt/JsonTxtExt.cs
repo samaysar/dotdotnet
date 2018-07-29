@@ -39,7 +39,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             JsonSerializer serializer = null, CancellationToken token = default(CancellationToken),
             CancellationTokenSource producerTokenSource = null, IFormatProvider formatProvider = null)
         {
-            var stringBuilder = new StringBuilder(256);
+            var stringBuilder = new StringBuilder(StdLookUps.DefaultStringBuilderSize);
             source.ToJsonArrayParallely(stringBuilder, serializer, token, producerTokenSource,
                 formatProvider);
             return stringBuilder.ToString();
@@ -197,7 +197,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         public static string ToJsonArray<T>(this IEnumerable<T> source, JsonSerializer serializer = null,
             CancellationToken token = default(CancellationToken), IFormatProvider formatProvider = null)
         {
-            var stringBuilder = new StringBuilder(256);
+            var stringBuilder = new StringBuilder(StdLookUps.DefaultStringBuilderSize);
             source.ToJsonArray(stringBuilder, serializer, token, formatProvider);
             return stringBuilder.ToString();
         }
@@ -320,7 +320,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         public static string ToJson<T>(this T source, JsonSerializer serializer = null,
             IFormatProvider formatProvider = null)
         {
-            var stringBuilder = new StringBuilder(256);
+            var stringBuilder = new StringBuilder(StdLookUps.DefaultStringBuilderSize);
             source.ToJson(stringBuilder, serializer, formatProvider);
             return stringBuilder.ToString();
         }

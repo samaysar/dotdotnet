@@ -107,10 +107,32 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="ha">Instance of crypto hash algorithm</param>
-        public static Func<Stream, bool, CancellationToken, Task> AndComputeHash(
+        public static Func<Stream, bool, CancellationToken, Task> ThenComputeHash(
             this Func<Stream, bool, CancellationToken, Task> src, HashAlgorithm ha)
         {
-            return src.Mutate(pipe => pipe.ComputeHash(ha));
+            return src.ThenCryptoTransform(ha);
+        }
+
+        /// <summary>
+        /// Converts the data, of the given stream pipe as source, to equivalent Base64.
+        /// </summary>
+        /// <param name="src">Current pipe of the pipeline</param>
+        public static Func<Stream, bool, CancellationToken, Task> ThenToBase64(
+            this Func<Stream, bool, CancellationToken, Task> src)
+        {
+            return src.ThenCryptoTransform(new ToBase64Transform());
+        }
+
+        /// <summary>
+        /// Applies the given crypto transformation to the data of the given stream pipe as source.
+        /// </summary>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="transformation">Crypto Transformation to apply</param>
+        public static Func<Stream, bool, CancellationToken, Task> ThenCryptoTransform(
+            this Func<Stream, bool, CancellationToken, Task> src,
+            ICryptoTransform transformation)
+        {
+            return src.Mutate(pipe => pipe.ApplyTransform(transformation));
         }
 
         #region SaveAsFileAsync
@@ -189,9 +211,58 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 
         #endregion SaveAsFileAsync
 
+        #region Finalization
+
+        /// <summary>
+        /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
+        /// returns the contents as byte array.
+        /// </summary>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="token">Cancellation token to observe</param>
+        public static async Task<byte[]> ToBytesAsync(this Func<Stream, bool, CancellationToken, Task> src,
+            CancellationToken token = default(CancellationToken))
+        {
+            return (await src.ToBufferAsync(token).ConfigureAwait(false)).ToArray();
+        }
+
+        /// <summary>
+        /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
+        /// returns the contents as newly created <seealso cref="MemoryStream"/>.
+        /// </summary>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="seekToOrigin">If true, Seek with <seealso cref="SeekOrigin.Begin"/> is performed else not.</param>
+        public static async Task<MemoryStream> ToBufferAsync(this Func<Stream, bool, CancellationToken, Task> src,
+            CancellationToken token = default(CancellationToken), bool seekToOrigin = false)
+        {
+            var ms = new MemoryStream(StdLookUps.DefaultBufferSize);
+            await src.AppendAsync(ms, false, token).ConfigureAwait(false);
+            if (seekToOrigin) ms.Seek(0, SeekOrigin.Begin);
+            return ms;
+        }
+
+        /// <summary>
+        /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
+        /// appends the contents to the given <seealso cref="Stream"/>.
+        /// </summary>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="target">Target stream</param>
+        /// <param name="disposeTarget">If true, target stream is disposed else left open.</param>
+        /// <param name="token">Cancellation token to observe</param>
+        public static async Task AppendAsync(this Func<Stream, bool, CancellationToken, Task> src,
+            Stream target,
+            bool disposeTarget,
+            CancellationToken token = default(CancellationToken))
+        {
+            await src(target, disposeTarget, token).ConfigureAwait(false);
+        }
+
+        #endregion String Finalization
+
         internal static Func<Stream, bool, CancellationToken, Task> Mutate(
             this Func<Stream, bool, CancellationToken, Task> mutable,
-            Func<Func<Stream, bool, CancellationToken, Task>, Func<Stream, bool, CancellationToken, Task>> mutation)
+            Func<Func<Stream, bool, CancellationToken, Task>,
+                Func<Stream, bool, CancellationToken, Task>> mutation)
         {
             return mutation(mutable);
         }

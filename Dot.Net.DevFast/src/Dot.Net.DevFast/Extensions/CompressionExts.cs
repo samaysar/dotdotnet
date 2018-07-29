@@ -134,7 +134,7 @@ namespace Dot.Net.DevFast.Extensions
             CancellationToken token = default(CancellationToken), Encoding enc = null, 
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeSource = false)
         {
-            var strBuilder = new StringBuilder(256);
+            var strBuilder = new StringBuilder(StdLookUps.DefaultStringBuilderSize);
             await source.DecompressAsync(strBuilder, gzip, token, enc, bufferSize, disposeSource).ConfigureAwait(false);
             return strBuilder.ToString();
         }

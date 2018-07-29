@@ -10,7 +10,7 @@ namespace Dot.Net.DevFast.Tests.Etc
         public void Properties_Are_Consistent()
         {
             Assert.True(ConcurrentBuffer.MinSize.Equals(1));
-            Assert.True(ConcurrentBuffer.StandardSize.Equals(256));
+            Assert.True(ConcurrentBuffer.StandardSize.Equals(StdLookUps.DefaultStringBuilderSize));
             Assert.True(ConcurrentBuffer.Unbounded.Equals(0));
         }
 
