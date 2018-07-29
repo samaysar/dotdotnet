@@ -20,7 +20,39 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
     /// </summary>
     public static partial class StreamPipeExts
     {
-        #region Various Bootstrapping
+        #region Various Load
+
+        /// <summary>
+        /// Loads the string content and returns a new pipe for functional stream chaining.
+        /// <para>NOTE: If you already have a string builder, then use the overloaded method instead
+        /// of doing yourStringBuilder.ToString().LoadString(...), as overloaded method is optimized.</para>
+        /// </summary>
+        /// <param name="s">source string</param>
+        /// <param name="enc">Encoding to use while writing the file. 
+        /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
+        /// (WwithOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
+        /// <param name="bufferSize">Buffer size (as number of char instead of bytes)</param>
+        public static Func<Stream, bool, CancellationToken, Task> LoadString(this string s,
+            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize)
+        {
+            return new Action<int, char[], int, int>(s.CopyTo).ApplyLoad(s.Length, enc ?? new UTF8Encoding(false),
+                bufferSize);
+        }
+
+        /// <summary>
+        /// Loads the string content of the builder and returns a new pipe for functional stream chaining.
+        /// </summary>
+        /// <param name="sb">source string builder</param>
+        /// <param name="enc">Encoding to use while writing the file. 
+        /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
+        /// (WwithOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
+        /// <param name="bufferSize">Buffer size (as number of char instead of bytes)</param>
+        public static Func<Stream, bool, CancellationToken, Task> LoadString(this StringBuilder sb,
+            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize)
+        {
+            return new Action<int, char[], int, int>(sb.CopyTo).ApplyLoad(sb.Length, enc ?? new UTF8Encoding(false),
+                bufferSize);
+        }
 
         /// <summary>
         /// Loads the data of the given file as byte stream and returns a new pipe for functional stream chaining.
@@ -52,6 +84,28 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         /// <summary>
+        /// Loads bytes from given array and returns a new pipe for functional stream chaining.
+        /// </summary>
+        /// <param name="source">Source data stream</param>
+        /// <param name="streamBuffer">Buffer size to use during data loading</param>
+        public static Func<Stream, bool, CancellationToken, Task> LoadBytes(this byte[] source,
+            int streamBuffer = StdLookUps.DefaultFileBufferSize)
+        {
+            return new ArraySegment<byte>(source, 0, source.Length).LoadBytes(streamBuffer);
+        }
+
+        /// <summary>
+        /// Loads bytes from given byte segment and returns a new pipe for functional stream chaining.
+        /// </summary>
+        /// <param name="source">Source data stream</param>
+        /// <param name="streamBuffer">Buffer size to use during data loading</param>
+        public static Func<Stream, bool, CancellationToken, Task> LoadBytes(this ArraySegment<byte> source,
+            int streamBuffer = StdLookUps.DefaultFileBufferSize)
+        {
+            return new MemoryStream(source.Array, source.Offset, source.Count, false).LoadBytes(streamBuffer);
+        }
+
+        /// <summary>
         /// Loads bytes from given source stream and returns a new pipe for functional stream chaining.
         /// </summary>
         /// <param name="source">Source data stream</param>
@@ -73,10 +127,6 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             };
         }
 
-        #endregion
-
-        #region SerializeAsJson
-
         /// <summary>
         /// Creates the equivalent json representation of the object and returns a new pipe for functional stream chaining.
         /// </summary>
@@ -87,7 +137,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
         /// (WwithOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
         /// <param name="writerBuffer">Buffer size for the stream writer</param>
-        public static Func<Stream, bool, CancellationToken, Task> SerializeAsJson<T>(this T obj,
+        public static Func<Stream, bool, CancellationToken, Task> LoadJson<T>(this T obj,
             JsonSerializer serializer = null,
             Encoding enc = null,
             int writerBuffer = StdLookUps.DefaultFileBufferSize)
@@ -106,7 +156,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
         /// (WwithOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
         /// <param name="writerBuffer">Buffer size for the stream writer</param>
-        public static Func<Stream, bool, CancellationToken, Task> SerializeAsJson<T>(this IEnumerable<T> obj,
+        public static Func<Stream, bool, CancellationToken, Task> LoadJson<T>(this IEnumerable<T> obj,
             JsonSerializer serializer = null,
             Encoding enc = null,
             int writerBuffer = StdLookUps.DefaultFileBufferSize)
@@ -128,7 +178,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="writerBuffer">Buffer size for the stream writer</param>
         /// <param name="pcts">source to cancel in case some error is encountered. Normally,
         /// this source token is observed at data producer side.</param>
-        public static Func<Stream, bool, CancellationToken, Task> SerializeAsJson<T>(this BlockingCollection<T> obj,
+        public static Func<Stream, bool, CancellationToken, Task> LoadJson<T>(this BlockingCollection<T> obj,
             JsonSerializer serializer = null,
             Encoding enc = null,
             int writerBuffer = StdLookUps.DefaultFileBufferSize,
@@ -138,7 +188,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
                 obj.ToJsonArrayParallely(s, serializer, t, pcts, enc, writerBuffer, d)).ToAsync();
         }
 
-        #endregion SerializeAsJson
+        #endregion Various Load
 
         #region Then Clauses
 
@@ -154,7 +204,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             bool gzip = true,
             CompressionLevel level = CompressionLevel.Optimal)
         {
-            return src.AddCompression(true, level);
+            return src.ApplyCompression(true, level);
         }
 
         /// <summary>
@@ -169,7 +219,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         public static Func<Stream, bool, CancellationToken, Task> ThenComputeHash(
             this Func<Stream, bool, CancellationToken, Task> src, HashAlgorithm ha)
         {
-            return src.ThenCryptoTransform(ha);
+            return src.ThenApplyTransform(ha);
         }
 
         /// <summary>
@@ -180,7 +230,20 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         public static Func<Stream, bool, CancellationToken, Task> ThenToBase64(
             this Func<Stream, bool, CancellationToken, Task> src)
         {
-            return src.ThenCryptoTransform(new ToBase64Transform());
+            return src.ThenApplyTransform(new ToBase64Transform());
+        }
+
+        /// <summary>
+        /// Decodes the Base64 data, of the given stream pipe as source, 
+        /// and returns a new pipe for functional stream chaining.
+        /// </summary>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="mode">Base64 transform mode</param>
+        public static Func<Stream, bool, CancellationToken, Task> ThenFromBase64(
+            this Func<Stream, bool, CancellationToken, Task> src,
+            FromBase64TransformMode mode = FromBase64TransformMode.IgnoreWhiteSpaces)
+        {
+            return src.ThenApplyTransform(new FromBase64Transform(mode));
         }
 
         /// <summary>
@@ -189,7 +252,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="transformation">Crypto Transformation to apply</param>
-        public static Func<Stream, bool, CancellationToken, Task> ThenCryptoTransform(
+        public static Func<Stream, bool, CancellationToken, Task> ThenApplyTransform(
             this Func<Stream, bool, CancellationToken, Task> src,
             ICryptoTransform transformation)
         {
@@ -198,7 +261,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 
         #endregion Then Clauses
 
-        #region SaveAsFileAsync
+        #region Finalization
 
         /// <summary>
         /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
@@ -213,14 +276,14 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="fileStreamBuffer">Buffer size of the file stream</param>
         /// <param name="options">File options</param>
         /// <param name="token">Cancellation token to observe</param>
-        public static async Task<FileInfo> SaveAsFileAsync(this Func<Stream, bool, CancellationToken, Task> src,
+        public static async Task<FileInfo> FinallyToFileAsync(this Func<Stream, bool, CancellationToken, Task> src,
             string folder,
             string filename = null,
             int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
             FileOptions options = FileOptions.SequentialScan,
             CancellationToken token = default(CancellationToken))
         {
-            return await src.SaveAsFileAsync(folder.ToDirectoryInfo(), filename, fileStreamBuffer, options, token)
+            return await src.FinallyToFileAsync(folder.ToDirectoryInfo(), filename, fileStreamBuffer, options, token)
                 .ConfigureAwait(false);
         }
 
@@ -237,7 +300,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="fileStreamBuffer">Buffer size of the file stream</param>
         /// <param name="options">File options</param>
         /// <param name="token">Cancellation token to observe</param>
-        public static async Task<FileInfo> SaveAsFileAsync(this Func<Stream, bool, CancellationToken, Task> src,
+        public static async Task<FileInfo> FinallyToFileAsync(this Func<Stream, bool, CancellationToken, Task> src,
             DirectoryInfo folder,
             string filename = null,
             int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
@@ -245,7 +308,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             CancellationToken token = default(CancellationToken))
         {
             var targetFile = folder.CreateFileInfo(filename ?? Guid.NewGuid().ToString("N"));
-            await src.SaveAsFileAsync(targetFile, fileStreamBuffer, options, token).ConfigureAwait(false);
+            await src.FinallyToFileAsync(targetFile, fileStreamBuffer, options, token).ConfigureAwait(false);
             return targetFile;
         }
 
@@ -258,7 +321,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="fileStreamBuffer">Buffer size of the file stream</param>
         /// <param name="options">File options</param>
         /// <param name="token">Cancellation token to observe</param>
-        public static async Task SaveAsFileAsync(this Func<Stream, bool, CancellationToken, Task> src,
+        public static async Task FinallyToFileAsync(this Func<Stream, bool, CancellationToken, Task> src,
             FileInfo fileinfo,
             int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
             FileOptions options = FileOptions.SequentialScan,
@@ -272,20 +335,16 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             }
         }
 
-        #endregion SaveAsFileAsync
-
-        #region Finalization
-
         /// <summary>
         /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
         /// returns the contents as byte array.
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="token">Cancellation token to observe</param>
-        public static async Task<byte[]> ToBytesAsync(this Func<Stream, bool, CancellationToken, Task> src,
+        public static async Task<byte[]> FinallyToBytesAsync(this Func<Stream, bool, CancellationToken, Task> src,
             CancellationToken token = default(CancellationToken))
         {
-            return (await src.ToBufferAsync(token).ConfigureAwait(false)).ToArray();
+            return (await src.FinallyToBufferAsync(token).ConfigureAwait(false)).ToArray();
         }
 
         /// <summary>
@@ -295,11 +354,11 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="token">Cancellation token to observe</param>
         /// <param name="seekToOrigin">If true, Seek with <seealso cref="SeekOrigin.Begin"/> is performed else not.</param>
-        public static async Task<MemoryStream> ToBufferAsync(this Func<Stream, bool, CancellationToken, Task> src,
+        public static async Task<MemoryStream> FinallyToBufferAsync(this Func<Stream, bool, CancellationToken, Task> src,
             CancellationToken token = default(CancellationToken), bool seekToOrigin = false)
         {
             var ms = new MemoryStream(StdLookUps.DefaultBufferSize);
-            await src.AppendAsync(ms, false, token).ConfigureAwait(false);
+            await src.FinallyToStreamAsync(ms, false, token).ConfigureAwait(false);
             if (seekToOrigin) ms.Seek(0, SeekOrigin.Begin);
             return ms;
         }
@@ -312,7 +371,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="target">Target stream</param>
         /// <param name="disposeTarget">If true, target stream is disposed else left open.</param>
         /// <param name="token">Cancellation token to observe</param>
-        public static async Task AppendAsync(this Func<Stream, bool, CancellationToken, Task> src,
+        public static async Task FinallyToStreamAsync(this Func<Stream, bool, CancellationToken, Task> src,
             Stream target,
             bool disposeTarget,
             CancellationToken token = default(CancellationToken))

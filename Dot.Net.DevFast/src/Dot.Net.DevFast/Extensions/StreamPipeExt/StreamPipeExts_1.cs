@@ -2,15 +2,17 @@
 using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Dot.Net.DevFast.Extensions.Internals;
 
 namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 {
     public static partial class StreamPipeExts
     {
         // we keep internal extensions here
-        internal static Func<Stream, bool, CancellationToken, Task> AddCompression(
+        internal static Func<Stream, bool, CancellationToken, Task> ApplyCompression(
             this Func<Stream, bool, CancellationToken, Task> pipe, 
             bool gzip,
             CompressionLevel level)
@@ -36,6 +38,26 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
                 {
                     await pipe(cs, false, t).ConfigureAwait(false);
                     cs.FlushFinalBlock();
+                }
+            };
+        }
+
+        internal static Func<Stream, bool, CancellationToken, Task> ApplyLoad(
+            this Action<int, char[], int, int> loadAction,
+            int totalLen, 
+            Encoding enc, 
+            int bufferSize)
+        {
+            return async (s, d, t) =>
+            {
+                try
+                {
+                    await s.CopyFromAsync(totalLen, enc, t, bufferSize, loadAction).ConfigureAwait(false);
+
+                }
+                finally
+                {
+                    s.DisposeIfRequired(d);
                 }
             };
         }
