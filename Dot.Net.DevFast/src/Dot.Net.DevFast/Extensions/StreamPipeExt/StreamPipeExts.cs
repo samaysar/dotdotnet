@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
+using Dot.Net.DevFast.Extensions.Internals;
 using Dot.Net.DevFast.Extensions.JsonExt;
 using Dot.Net.DevFast.Extensions.StringExt;
 using Newtonsoft.Json;
@@ -19,10 +20,65 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
     /// </summary>
     public static partial class StreamPipeExts
     {
+        #region Various Bootstrapping
+
+        /// <summary>
+        /// Loads the data of the given file as byte stream and returns a new pipe for functional stream chaining.
+        /// </summary>
+        /// <param name="folder">Parent folder of the file</param>
+        /// <param name="filename">File name with extension</param>
+        /// <param name="fileStreamBuffer">Buffer size to use</param>
+        /// <param name="options">File options</param>
+        public static Func<Stream, bool, CancellationToken, Task> LoadFromFile(this DirectoryInfo folder,
+            string filename,
+            int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
+            FileOptions options = FileOptions.SequentialScan)
+        {
+            return folder.CreateFileInfo(filename).LoadFromFile(fileStreamBuffer, options);
+        }
+
+        /// <summary>
+        /// Loads the data of the given file as byte stream and returns a new pipe for functional stream chaining.
+        /// </summary>
+        /// <param name="fileinfo">Fileinfo instance of the file</param>
+        /// <param name="fileStreamBuffer">Buffer size to use</param>
+        /// <param name="options">File options</param>
+        public static Func<Stream, bool, CancellationToken, Task> LoadFromFile(this FileInfo fileinfo,
+            int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
+            FileOptions options = FileOptions.SequentialScan)
+        {
+            return fileinfo.CreateStream(FileMode.Open, FileAccess.Read, FileShare.ReadWrite, fileStreamBuffer, options)
+                .LoadBytes(fileStreamBuffer);
+        }
+
+        /// <summary>
+        /// Loads bytes from given source stream and returns a new pipe for functional stream chaining.
+        /// </summary>
+        /// <param name="source">Source data stream</param>
+        /// <param name="streamBuffer">Buffer size to use during data loading</param>
+        public static Func<Stream, bool, CancellationToken, Task> LoadBytes(this Stream source,
+            int streamBuffer = StdLookUps.DefaultFileBufferSize)
+        {
+            return async (s, d, t) =>
+            {
+                try
+                {
+                    await source.CopyToAsync(s, streamBuffer, t).ConfigureAwait(false);
+
+                }
+                finally
+                {
+                    s.DisposeIfRequired(d);
+                }
+            };
+        }
+
+        #endregion
+
         #region SerializeAsJson
 
         /// <summary>
-        /// Creates the equivalent json representation of the object.
+        /// Creates the equivalent json representation of the object and returns a new pipe for functional stream chaining.
         /// </summary>
         /// <typeparam name="T">Type of object to serialize</typeparam>
         /// <param name="obj">Object to serialize as json text</param>
@@ -41,7 +97,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         /// <summary>
-        /// Creates the equivalent json array representation using the enumeration.
+        /// Creates the equivalent json array representation using the enumeration and returns a new pipe for functional stream chaining.
         /// </summary>
         /// <typeparam name="T">Type of object to serialize</typeparam>
         /// <param name="obj">Object to serialize as json text</param>
@@ -60,7 +116,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         /// <summary>
-        /// Creates the equivalent json array representation of the objects in the given blocking collection.
+        /// Creates the equivalent json array representation of the objects in the given blocking collection
+        /// and returns a new pipe for functional stream chaining.
         /// </summary>
         /// <typeparam name="T">Type of object to serialize</typeparam>
         /// <param name="obj">Object to serialize as json text</param>
@@ -83,8 +140,10 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 
         #endregion SerializeAsJson
 
+        #region Then Clauses
+
         /// <summary>
-        /// Compresses the data of given Stream pipe as source.
+        /// Compresses the data of given Stream pipe as source and returns a new pipe for functional stream chaining.
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="gzip">If true, <seealso cref="GZipStream"/> is used else 
@@ -95,11 +154,11 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             bool gzip = true,
             CompressionLevel level = CompressionLevel.Optimal)
         {
-            return src.Mutate(pipe => pipe.AddCompression(true, level));
+            return src.AddCompression(true, level);
         }
 
         /// <summary>
-        /// Computes the hash of the data of the given stream pipe as source.
+        /// Computes the hash of the data of the given stream pipe as source and returns a new pipe for functional stream chaining.
         /// <para>IMPORTANT: Access <seealso cref="HashAlgorithm.Hash"/> ONLY AFTER the full
         /// piepline is bootstrapped and processed (i.e. awaited on methods that returns <seealso cref="Task"/>).
         /// Thus, calling <paramref name="ha"/>.Hash immediately
@@ -114,7 +173,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         /// <summary>
-        /// Converts the data, of the given stream pipe as source, to equivalent Base64.
+        /// Converts the data, of the given stream pipe as source, to equivalent Base64
+        /// and returns a new pipe for functional stream chaining.
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
         public static Func<Stream, bool, CancellationToken, Task> ThenToBase64(
@@ -124,7 +184,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         /// <summary>
-        /// Applies the given crypto transformation to the data of the given stream pipe as source.
+        /// Applies the given crypto transformation to the data of the given stream pipe as source
+        /// and returns a new pipe for functional stream chaining.
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="transformation">Crypto Transformation to apply</param>
@@ -132,8 +193,10 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             this Func<Stream, bool, CancellationToken, Task> src,
             ICryptoTransform transformation)
         {
-            return src.Mutate(pipe => pipe.ApplyTransform(transformation));
+            return src.ApplyTransform(transformation);
         }
+
+        #endregion Then Clauses
 
         #region SaveAsFileAsync
 
@@ -154,7 +217,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             string folder,
             string filename = null,
             int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
-            FileOptions options = FileOptions.Asynchronous,
+            FileOptions options = FileOptions.SequentialScan,
             CancellationToken token = default(CancellationToken))
         {
             return await src.SaveAsFileAsync(folder.ToDirectoryInfo(), filename, fileStreamBuffer, options, token)
@@ -178,7 +241,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             DirectoryInfo folder,
             string filename = null,
             int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
-            FileOptions options = FileOptions.Asynchronous,
+            FileOptions options = FileOptions.SequentialScan,
             CancellationToken token = default(CancellationToken))
         {
             var targetFile = folder.CreateFileInfo(filename ?? Guid.NewGuid().ToString("N"));
@@ -198,7 +261,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         public static async Task SaveAsFileAsync(this Func<Stream, bool, CancellationToken, Task> src,
             FileInfo fileinfo,
             int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
-            FileOptions options = FileOptions.Asynchronous,
+            FileOptions options = FileOptions.SequentialScan,
             CancellationToken token = default(CancellationToken))
         {
             using (var strm = fileinfo.CreateStream(FileMode.Create, FileAccess.ReadWrite, FileShare.Read,
@@ -258,13 +321,5 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         #endregion String Finalization
-
-        internal static Func<Stream, bool, CancellationToken, Task> Mutate(
-            this Func<Stream, bool, CancellationToken, Task> mutable,
-            Func<Func<Stream, bool, CancellationToken, Task>,
-                Func<Stream, bool, CancellationToken, Task>> mutation)
-        {
-            return mutation(mutable);
-        }
     }
 }
