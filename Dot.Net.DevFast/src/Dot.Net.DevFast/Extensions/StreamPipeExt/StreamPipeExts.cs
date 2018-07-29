@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -91,6 +92,21 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             CompressionLevel level = CompressionLevel.Optimal)
         {
             return src.Mutate(pipe => pipe.AddCompression(true, level));
+        }
+
+        /// <summary>
+        /// Computes the hash of the data of the given stream pipe as source.
+        /// <para>IMPORTANT: Access <seealso cref="HashAlgorithm.Hash"/> ONLY AFTER the full
+        /// piepline is bootstrapped and processed (after awaiting on
+        /// <seealso cref="StreamPipe.StreamAsync"/>, one of SaveAsFileAsync methods etc.).
+        /// Thus, calling <paramref name="ha"/>.Hash immediately
+        /// after this call will not provide the correct hash.</para>
+        /// </summary>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="ha">Instance of crypto hash algorithm</param>
+        public static StreamPipe AndComputeHash(this StreamPipe src, HashAlgorithm ha)
+        {
+            return src.Mutate(pipe => pipe.ComputeHash(ha));
         }
 
         #region SaveAsFileAsync
