@@ -18,6 +18,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
     /// </summary>
     public static partial class StreamPipeExts
     {
+        #region SerializeAsJson
+
         /// <summary>
         /// Creates the equivalent json representation of the object.
         /// </summary>
@@ -75,6 +77,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             return new StreamPipe((s, d, t) => obj.ToJsonArrayParallely(s, serializer, t, pcts, enc, writerBuffer, d));
         }
 
+        #endregion SerializeAsJson
+
         /// <summary>
         /// Compresses the data of given Stream pipe as source.
         /// </summary>
@@ -88,6 +92,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         {
             return src.Mutate(pipe => pipe.AddCompression(true, level));
         }
+
+        #region SaveAsFileAsync
 
         /// <summary>
         /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
@@ -160,5 +166,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
                 await strm.FlushAsync(token).ConfigureAwait(false);
             }
         }
+    
+        #endregion SaveAsFileAsync
     }
 }
