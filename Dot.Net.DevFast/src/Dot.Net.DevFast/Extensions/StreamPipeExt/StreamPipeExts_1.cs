@@ -53,7 +53,6 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
                 try
                 {
                     await s.CopyFromAsync(totalLen, enc, t, bufferSize, loadAction).ConfigureAwait(false);
-
                 }
                 finally
                 {

@@ -33,7 +33,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// (WwithOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
         /// <param name="bufferSize">Buffer size (as number of char instead of bytes)</param>
         public static Func<Stream, bool, CancellationToken, Task> LoadString(this string s,
-            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize)
+            Encoding enc = null, 
+            int bufferSize = StdLookUps.DefaultBufferSize)
         {
             return new Action<int, char[], int, int>(s.CopyTo).ApplyLoad(s.Length, enc ?? new UTF8Encoding(false),
                 bufferSize);
@@ -48,7 +49,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// (WwithOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
         /// <param name="bufferSize">Buffer size (as number of char instead of bytes)</param>
         public static Func<Stream, bool, CancellationToken, Task> LoadString(this StringBuilder sb,
-            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize)
+            Encoding enc = null, 
+            int bufferSize = StdLookUps.DefaultBufferSize)
         {
             return new Action<int, char[], int, int>(sb.CopyTo).ApplyLoad(sb.Length, enc ?? new UTF8Encoding(false),
                 bufferSize);
@@ -87,22 +89,29 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// Loads bytes from given array and returns a new pipe for functional stream chaining.
         /// </summary>
         /// <param name="source">Source data stream</param>
-        /// <param name="streamBuffer">Buffer size to use during data loading</param>
-        public static Func<Stream, bool, CancellationToken, Task> LoadBytes(this byte[] source,
-            int streamBuffer = StdLookUps.DefaultFileBufferSize)
+        public static Func<Stream, bool, CancellationToken, Task> LoadBytes(this byte[] source)
         {
-            return new ArraySegment<byte>(source, 0, source.Length).LoadBytes(streamBuffer);
+            return new ArraySegment<byte>(source, 0, source.Length).LoadBytes();
         }
 
         /// <summary>
         /// Loads bytes from given byte segment and returns a new pipe for functional stream chaining.
         /// </summary>
         /// <param name="source">Source data stream</param>
-        /// <param name="streamBuffer">Buffer size to use during data loading</param>
-        public static Func<Stream, bool, CancellationToken, Task> LoadBytes(this ArraySegment<byte> source,
-            int streamBuffer = StdLookUps.DefaultFileBufferSize)
+        public static Func<Stream, bool, CancellationToken, Task> LoadBytes(this ArraySegment<byte> source)
         {
-            return new MemoryStream(source.Array, source.Offset, source.Count, false).LoadBytes(streamBuffer);
+            return async (s, d, t) =>
+            {
+                try
+                {
+                    await s.WriteAsync(source.Array, source.Offset, source.Count, t).ConfigureAwait(false);
+                    await s.FlushAsync(t).ConfigureAwait(false);
+                }
+                finally
+                {
+                    s.DisposeIfRequired(d);
+                }
+            };
         }
 
         /// <summary>
@@ -118,7 +127,6 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
                 try
                 {
                     await source.CopyToAsync(s, streamBuffer, t).ConfigureAwait(false);
-
                 }
                 finally
                 {
@@ -196,15 +204,17 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// Compresses the data of given Stream pipe as source and returns a new pipe for functional stream chaining.
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="include">If true is passed, compression is performed else ignored</param>
         /// <param name="gzip">If true, <seealso cref="GZipStream"/> is used else 
         /// <seealso cref="DeflateStream"/> is used</param>
         /// <param name="level">Compression level to use.</param>
         public static Func<Stream, bool, CancellationToken, Task> ThenCompress(
             this Func<Stream, bool, CancellationToken, Task> src,
+            bool include = true,
             bool gzip = true,
             CompressionLevel level = CompressionLevel.Optimal)
         {
-            return src.ApplyCompression(true, level);
+            return include ? src.ApplyCompression(true, level) : src;
         }
 
         /// <summary>
@@ -216,10 +226,13 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="ha">Instance of crypto hash algorithm</param>
+        /// <param name="include">If true is passed, hash is computed else ignored</param>
         public static Func<Stream, bool, CancellationToken, Task> ThenComputeHash(
-            this Func<Stream, bool, CancellationToken, Task> src, HashAlgorithm ha)
+            this Func<Stream, bool, CancellationToken, Task> src, 
+            HashAlgorithm ha,
+            bool include = true)
         {
-            return src.ThenApplyTransform(ha);
+            return include ? src.ThenApplyTransform(ha) : src;
         }
 
         /// <summary>
@@ -227,10 +240,12 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// and returns a new pipe for functional stream chaining.
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="include">If true is passed, ToBase64 conversion is performed else ignored</param>
         public static Func<Stream, bool, CancellationToken, Task> ThenToBase64(
-            this Func<Stream, bool, CancellationToken, Task> src)
+            this Func<Stream, bool, CancellationToken, Task> src,
+            bool include = true)
         {
-            return src.ThenApplyTransform(new ToBase64Transform());
+            return include ? src.ThenApplyTransform(new ToBase64Transform()) : src;
         }
 
         /// <summary>
@@ -239,11 +254,13 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="mode">Base64 transform mode</param>
+        /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         public static Func<Stream, bool, CancellationToken, Task> ThenFromBase64(
             this Func<Stream, bool, CancellationToken, Task> src,
+            bool include = true,
             FromBase64TransformMode mode = FromBase64TransformMode.IgnoreWhiteSpaces)
         {
-            return src.ThenApplyTransform(new FromBase64Transform(mode));
+            return include ? src.ThenApplyTransform(new FromBase64Transform(mode)) : src;
         }
 
         /// <summary>
@@ -252,11 +269,13 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="transformation">Crypto Transformation to apply</param>
+        /// <param name="include">If true is passed, CryptoTransform is performed else ignored</param>
         public static Func<Stream, bool, CancellationToken, Task> ThenApplyTransform(
             this Func<Stream, bool, CancellationToken, Task> src,
-            ICryptoTransform transformation)
+            ICryptoTransform transformation,
+            bool include = true)
         {
-            return src.ApplyTransform(transformation);
+            return include ? src.ApplyTransform(transformation) : src;
         }
 
         #endregion Then Clauses
@@ -373,7 +392,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="token">Cancellation token to observe</param>
         public static async Task FinallyToStreamAsync(this Func<Stream, bool, CancellationToken, Task> src,
             Stream target,
-            bool disposeTarget,
+            bool disposeTarget = false,
             CancellationToken token = default(CancellationToken))
         {
             await src(target, disposeTarget, token).ConfigureAwait(false);
