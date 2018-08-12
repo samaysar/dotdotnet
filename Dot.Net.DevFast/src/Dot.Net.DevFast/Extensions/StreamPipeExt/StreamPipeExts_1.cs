@@ -34,11 +34,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         {
             return async (s, d, t) =>
             {
-                using (var cs = s.CreateCryptoStream(ct, CryptoStreamMode.Write, d))
-                {
-                    await pipe(cs, false, t).ConfigureAwait(false);
-                    cs.FlushFinalBlock();
-                }
+                await pipe(s.CreateCryptoStream(ct, CryptoStreamMode.Write, d), true, t).ConfigureAwait(false);
             };
         }
 
