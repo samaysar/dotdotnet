@@ -1,5 +1,4 @@
-﻿using System;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions.StreamExt;
@@ -15,7 +14,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
         public async Task String_Streaming_With_Base64()
         {
             const string val = "Hello Streaming Worlds!";
-            var outcome = await Task.FromResult(val).LoadString().ThenToBase64().ThenFromBase64().FinallyToBytesAsync()
+            var outcome = await Task.FromResult(val).Load().ThenToBase64().ThenFromBase64().AndWriteBytesAsync()
                 .ConfigureAwait(false);
             Assert.True(val.Equals(new UTF8Encoding(false).GetString(outcome)));
         }
@@ -27,10 +26,10 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
             var md5 = MD5.Create();
             var sha = SHA256.Create();
             var outcome = await Task.FromResult(new UTF8Encoding(false).GetBytes(val))
-                .LoadBytes()
+                .Load()
                 .ThenComputeHash(md5)
                 .ThenComputeHash(sha)
-                .FinallyToBytesAsync().ConfigureAwait(false);
+                .AndWriteBytesAsync().ConfigureAwait(false);
             Assert.False(md5.Hash.ToBase64().Equals(sha.Hash.ToBase64()));
             Assert.True(val.Equals(new UTF8Encoding(false).GetString(outcome)));
         }
