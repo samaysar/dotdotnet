@@ -120,6 +120,21 @@ namespace Dot.Net.DevFast.Extensions.Internals
             }
         }
 
+        internal static async Task CopyToAsync(this Stream readable, Stream writable,
+            int bufferSize, CancellationToken token, bool disposeReadable, bool disposeWritable)
+        {
+            try
+            {
+                await readable.CopyToAsync(writable, bufferSize, token).ConfigureAwait(false);
+                await writable.FlushAsync(token).ConfigureAwait(false);
+                readable.DisposeIfRequired(disposeReadable);
+            }
+            finally
+            {
+                writable.DisposeIfRequired(disposeWritable);
+            }
+        }
+
         internal static async Task<ArraySegment<byte>> CopyToSegmentWithDisposeAsync(this Stream readable,
             int bufferSize, CancellationToken token)
         {

@@ -28,18 +28,13 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             };
         }
 
-        internal static Func<Stream, bool, CancellationToken, Task> ApplyDecompression(
-            this Func<Stream, bool, CancellationToken, Task> pipe,
+        internal static Func<PullFuncStream> ApplyDecompression(this Func<PullFuncStream> pipe,
             bool gzip)
         {
-            return async (s, d, t) =>
+            return () =>
             {
-                using (var compStrm = s.CreateDecompressionStream(gzip, d))
-                {
-                    await pipe(compStrm, false, t).ConfigureAwait(false);
-                    await compStrm.FlushAsync(t).ConfigureAwait(false);
-                    await s.FlushAsync(t).ConfigureAwait(false);
-                }
+                var data = pipe();
+                return new PullFuncStream(data.Readable.CreateDecompressionStream(gzip, data.Dispose), true);
             };
         }
 
@@ -50,6 +45,16 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             return async (s, d, t) =>
             {
                 await pipe(s.CreateCryptoStream(ct, CryptoStreamMode.Write, d), true, t).ConfigureAwait(false);
+            };
+        }
+
+        internal static Func<PullFuncStream> ApplyTransform(this Func<PullFuncStream> pipe,
+            ICryptoTransform ct)
+        {
+            return() =>
+            {
+                var data = pipe();
+                return new PullFuncStream(data.Readable.CreateCryptoStream(ct, CryptoStreamMode.Read, data.Dispose), true);
             };
         }
 

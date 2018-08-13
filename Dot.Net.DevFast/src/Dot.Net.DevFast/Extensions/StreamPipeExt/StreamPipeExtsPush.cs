@@ -313,7 +313,6 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         #region Then Clauses
 
         /// <summary>
-        /// <para>NOTE: Works ONLY with PUSH functional stream pipe.</para>
         /// Applies compression the data of given source functional Stream pipe and returns a new PUSH pipe for chaining.
         /// </summary>
         /// <param name="pushSrc">Current pipe of the PUSH pipeline</param>
@@ -349,7 +348,6 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         /// <summary>
-        /// <para>NOTE: Should be used with PUSH functional stream pipe.</para>
         /// Converts the data, of the given stream pipe as source, to equivalent Base64
         /// and returns a new PUSH pipe for chaining.
         /// </summary>
@@ -393,12 +391,12 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         /// <summary>
-        /// Applies the given crypto transformation to the data of the given PUSH stream pipe as source
+        /// Applies the given arbitrary custom functional streaming pipe as supplied as <paramref name="applyFunc"/>
         /// and returns a new PUSH pipe for chaining.
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="applyFunc">Yet another custom functional stream pipe</param>
-        /// <param name="include">If true is passed, CryptoTransform is performed else ignored</param>
+        /// <param name="include">If true is passed, given func is applied else ignored</param>
         public static Func<Stream, bool, CancellationToken, Task> ThenApply(
             this Func<Stream, bool, CancellationToken, Task> src,
             Func<Func<Stream, bool, CancellationToken, Task>, Func<Stream, bool, CancellationToken, Task>> applyFunc,
