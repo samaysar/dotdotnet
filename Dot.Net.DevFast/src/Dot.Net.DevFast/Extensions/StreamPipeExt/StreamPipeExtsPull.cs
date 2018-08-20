@@ -16,7 +16,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <summary>
         /// Pulls the underlying data from the stream and returns a func stream pipe for chaining.
         /// </summary>
-        /// <param name="readable">A redable stream</param>
+        /// <param name="readable">A readable stream</param>
         /// <param name="disposeSource">If true, stream is disposed at the end of streaming else left open</param>
         public static Func<PullFuncStream> Pull(this Stream readable,
             bool disposeSource = false)
@@ -29,7 +29,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         #region Then Clauses
 
         /// <summary>
-        /// Applies decompression on the given source functional Stream pipe and returns a new PULL pipe for chaining.
+        /// Applies decompression on the data of given functional Stream pipe and returns a new pipe for chaining.
         /// </summary>
         /// <param name="pullSrc">Current pipe of the PUSH pipeline</param>
         /// <param name="include">If true is passed, decompression is performed else ignored</param>
@@ -43,9 +43,9 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         /// <summary>
-        /// Computes the hash on the data of the given source stream pipe and returns a new PULL pipe for chaining.
+        /// Computes the hash on the data of the given functional stream pipe and returns a new pipe for chaining.
         /// <para>IMPORTANT: Access <seealso cref="HashAlgorithm.Hash"/> ONLY AFTER the full
-        /// piepline is bootstrapped and processed. Thus, calling <paramref name="ha"/>.Hash immediately
+        /// piepline is bootstrapped and processed, i.e., calling <paramref name="ha"/>.Hash immediately
         /// after this call will not provide the correct hash.</para>
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
@@ -59,8 +59,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         /// <summary>
-        /// Converts the data, of the given stream pipe as source, to equivalent Base64
-        /// and returns a new PULL pipe for chaining.
+        /// Converts the data, of the given functional stream pipe to equivalent Base64
+        /// and returns a new pipe for chaining.
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="include">If true is passed, ToBase64 conversion is performed else ignored</param>
@@ -71,8 +71,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         /// <summary>
-        /// Decodes the Base64 data, of the given stream pipe as source, 
-        /// and returns a new PULL pipe for chaining.
+        /// Decodes the Base64 data, of the given functional stream pipe and returns a new pipe for chaining.
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="mode">Base64 transform mode</param>
@@ -85,8 +84,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         /// <summary>
-        /// Applies the given crypto transformation to the data of the given PUSH stream pipe as source
-        /// and returns a new PULL pipe for chaining.
+        /// Applies the given crypto transformation to the data of the given functional stream pipe
+        /// and returns a new pipe for chaining.
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="transformation">Crypto Transformation to apply</param>
@@ -99,8 +98,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         /// <summary>
-        /// Applies the given crypto transformation to the data of the given PUSH stream pipe as source
-        /// and returns a new PULL pipe for chaining.
+        /// Appends the given arbitrary custom functional stream pipe (i.e. <paramref name="applyFunc"/>) to the pipeline
+        /// and returns a new pipe for chaining.
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="applyFunc">Yet another custom functional stream pipe</param>
@@ -113,14 +112,15 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         /// <summary>
-        /// Converts the PULL pipeline model to PUSH pipeline model and returns it for chaining.
+        /// Converts the PULL pipeline to PUSH pipeline and returns it for chaining.
         /// </summary>
         /// <param name="src">Current PULL source pipe</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static Func<Stream, bool, CancellationToken, Task> ThenConvertToPush(this Func<PullFuncStream> src,
+        public static Func<PushFuncStream, Task> ThenConvertToPush(this Func<PullFuncStream> src,
             int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            return async (s, d, t) => await src.AndWriteStreamAsync(s, bufferSize, d, t).ConfigureAwait(false);
+            return async pfs => await src.AndWriteStreamAsync(pfs.Writable, bufferSize, pfs.Dispose, pfs.Token)
+                .ConfigureAwait(false);
         }
 
         #endregion Then Clauses
@@ -129,7 +129,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 
         /// <summary>
         /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
-        /// pushes (appends) the contents to the given <seealso cref="Stream"/>.
+        /// pulls data throw the pipeline and appends the contents to the given <seealso cref="Stream"/>.
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="writableTarget">Target stream to write on</param>
@@ -150,8 +150,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         #endregion Finalization
 
         /// <summary>
-        /// Data structure to facilitate Pull based functional streaming
-        /// </summary>
+        /// Data structure to facilitate Pull based functional streaming,
+        /// i.e., 2ndst Pipe reads from 1st, 3rd reads from 2nd and so on and so forth... /// </summary>
         public struct PullFuncStream
         {
             /// <summary>
@@ -169,9 +169,11 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             /// </summary>
             /// <param name="readable">readable stream</param>
             /// <param name="dispose">true to dispose at the end of streaming else false</param>
+            /// <exception cref="DdnDfException"></exception>
             public PullFuncStream(Stream readable, bool dispose)
             {
-                Readable = readable;
+                Readable = readable.CanRead.ThrowIfNot(DdnDfErrorCode.Unspecified, "Cannot read from the stream",
+                    readable);
                 Dispose = dispose;
             }
         }
