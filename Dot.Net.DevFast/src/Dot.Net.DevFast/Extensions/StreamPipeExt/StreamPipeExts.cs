@@ -107,12 +107,12 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 
         #region PullFuncStream PRIVATE
 
-        internal static PullFuncStream ApplyDecompression(this PullFuncStream data, bool gzip)
+        private static PullFuncStream ApplyDecompression(this PullFuncStream data, bool gzip)
         {
             return new PullFuncStream(data.Readable.CreateDecompressionStream(gzip, data.Dispose), true);
         }
 
-        internal static PullFuncStream ApplyTransform(this PullFuncStream data, ICryptoTransform ct)
+        private static PullFuncStream ApplyTransform(this PullFuncStream data, ICryptoTransform ct)
         {
             return new PullFuncStream(data.Readable.CreateCryptoStream(ct, CryptoStreamMode.Read, data.Dispose), true);
         }
