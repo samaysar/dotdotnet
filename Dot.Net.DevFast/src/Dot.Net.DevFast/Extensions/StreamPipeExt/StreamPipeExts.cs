@@ -57,13 +57,39 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             };
         }
 
+        #region PullFuncStream TASK
+
+        internal static Func<Task<PullFuncStream>> ApplyDecompression(this Func<Task<PullFuncStream>> pipe,
+            bool gzip)
+        {
+            return async () =>
+            {
+                var data = await pipe().ConfigureAwait(false);
+                return data.ApplyDecompression(gzip);
+            };
+        }
+
+        internal static Func<Task<PullFuncStream>> ApplyTransform(this Func<Task<PullFuncStream>> pipe,
+            ICryptoTransform ct)
+        {
+            return async () =>
+            {
+                var data = await pipe().ConfigureAwait(false);
+                return data.ApplyTransform(ct);
+            };
+        }
+
+        #endregion PullFuncStream TASK
+
+        #region PullFuncStream NoTASK
+
         internal static Func<PullFuncStream> ApplyDecompression(this Func<PullFuncStream> pipe,
             bool gzip)
         {
             return () =>
             {
                 var data = pipe();
-                return new PullFuncStream(data.Readable.CreateDecompressionStream(gzip, data.Dispose), true);
+                return data.ApplyDecompression(gzip);
             };
         }
 
@@ -73,8 +99,24 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             return () =>
             {
                 var data = pipe();
-                return new PullFuncStream(data.Readable.CreateCryptoStream(ct, CryptoStreamMode.Read, data.Dispose), true);
+                return data.ApplyTransform(ct);
             };
         }
+
+        #endregion PullFuncStream NoTASK
+
+        #region PullFuncStream PRIVATE
+
+        internal static PullFuncStream ApplyDecompression(this PullFuncStream data, bool gzip)
+        {
+            return new PullFuncStream(data.Readable.CreateDecompressionStream(gzip, data.Dispose), true);
+        }
+
+        internal static PullFuncStream ApplyTransform(this PullFuncStream data, ICryptoTransform ct)
+        {
+            return new PullFuncStream(data.Readable.CreateCryptoStream(ct, CryptoStreamMode.Read, data.Dispose), true);
+        }
+
+        #endregion PullFuncStream PRIVATE
     }
 }
