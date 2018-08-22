@@ -176,17 +176,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         {
             return async pfs =>
             {
-                var s = pfs.Writable;
-                var t = pfs.Token;
-                try
-                {
-                    await s.WriteAsync(byteSeg.Array, byteSeg.Offset, byteSeg.Count, t).ConfigureAwait(false);
-                    await s.FlushAsync(t).ConfigureAwait(false);
-                }
-                finally
-                {
-                    s.DisposeIfRequired(pfs.Dispose);
-                }
+                await pfs.Writable.CopyFromAsync(byteSeg, pfs.Token, pfs.Dispose).ConfigureAwait(false);
             };
         }
 
@@ -221,18 +211,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         {
             return async pfs =>
             {
-                var s = pfs.Writable;
-                var t = pfs.Token;
-                try
-                {
-                    await source.CopyToAsync(s, streamBuffer, t).ConfigureAwait(false);
-                    source.DisposeIfRequired(disposeSourceStream);
-                    await s.FlushAsync(t).ConfigureAwait(false);
-                }
-                finally
-                {
-                    s.DisposeIfRequired(pfs.Dispose);
-                }
+                await source.CopyToAsync(pfs.Writable, streamBuffer, pfs.Token, disposeSourceStream, pfs.Dispose)
+                    .ConfigureAwait(false);
             };
         }
 
@@ -538,7 +518,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             await src(new PushFuncStream(writableTarget, disposeTarget, token)).ConfigureAwait(false);
         }
 
-        #endregion String Finalization
+        #endregion Finalization
 
         /// <summary>
         /// Data structure to facilitate Push based functional streaming,

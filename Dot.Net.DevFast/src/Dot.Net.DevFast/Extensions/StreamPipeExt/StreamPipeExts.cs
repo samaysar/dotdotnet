@@ -86,21 +86,13 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         internal static Func<PullFuncStream> ApplyDecompression(this Func<PullFuncStream> pipe,
             bool gzip)
         {
-            return () =>
-            {
-                var data = pipe();
-                return data.ApplyDecompression(gzip);
-            };
+            return () => pipe().ApplyDecompression(gzip);
         }
 
         internal static Func<PullFuncStream> ApplyTransform(this Func<PullFuncStream> pipe,
             ICryptoTransform ct)
         {
-            return () =>
-            {
-                var data = pipe();
-                return data.ApplyTransform(ct);
-            };
+            return () => pipe().ApplyTransform(ct);
         }
 
         #endregion PullFuncStream NoTASK
