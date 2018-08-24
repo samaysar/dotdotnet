@@ -252,13 +252,15 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
         /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
         /// <param name="writerBuffer">Buffer size for the stream writer</param>
+        /// <param name="autoFlush">True to enable auto-flushing else false</param>
         public static Func<PushFuncStream, Task> PushJson<T>(this T obj,
             JsonSerializer serializer = null,
             Encoding enc = null,
-            int writerBuffer = StdLookUps.DefaultFileBufferSize)
+            int writerBuffer = StdLookUps.DefaultFileBufferSize,
+            bool autoFlush = false)
         {
             return new Action<PushFuncStream>(pfs => obj.ToJson(pfs.Writable, serializer, enc,
-                writerBuffer, pfs.Dispose)).ToAsync(false);
+                writerBuffer, pfs.Dispose, autoFlush)).ToAsync(false);
         }
 
         /// <summary>
@@ -272,13 +274,15 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
         /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
         /// <param name="writerBuffer">Buffer size for the stream writer</param>
+        /// <param name="autoFlush">True to enable auto-flushing else false</param>
         public static Func<PushFuncStream, Task> PushJson<T>(this IEnumerable<T> obj,
             JsonSerializer serializer = null,
             Encoding enc = null,
-            int writerBuffer = StdLookUps.DefaultFileBufferSize)
+            int writerBuffer = StdLookUps.DefaultFileBufferSize,
+            bool autoFlush = false)
         {
             return new Action<PushFuncStream>(pfs => obj.ToJsonArray(pfs.Writable, serializer, pfs.Token,
-                enc, writerBuffer, pfs.Dispose)).ToAsync(false);
+                enc, writerBuffer, pfs.Dispose, autoFlush)).ToAsync(false);
         }
 
         /// <summary>
@@ -295,14 +299,16 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="writerBuffer">Buffer size for the stream writer</param>
         /// <param name="pcts">source to cancel in case some error is encountered. Normally,
         /// this source token is observed at data producer side.</param>
+        /// <param name="autoFlush">True to enable auto-flushing else false</param>
         public static Func<PushFuncStream, Task> PushJson<T>(this BlockingCollection<T> obj,
             JsonSerializer serializer = null,
             Encoding enc = null,
             int writerBuffer = StdLookUps.DefaultFileBufferSize,
-            CancellationTokenSource pcts = default(CancellationTokenSource))
+            CancellationTokenSource pcts = default(CancellationTokenSource),
+            bool autoFlush = false)
         {
             return new Action<PushFuncStream>(pfs => obj.ToJsonArrayParallely(pfs.Writable, serializer,
-                pfs.Token, pcts, enc, writerBuffer, pfs.Dispose)).ToAsync(false);
+                pfs.Token, pcts, enc, writerBuffer, pfs.Dispose, autoFlush)).ToAsync(false);
         }
         
         #endregion Various Push

@@ -93,12 +93,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeTarget">If true, <paramref name="target"/> is disposed after the serialization</param>
+        /// <param name="autoFlush">True to enable auto-flushing else false</param>
         public static void ToJsonArrayParallely<T>(this BlockingCollection<T> source,
             Stream target, JsonSerializer serializer = null, CancellationToken token = default(CancellationToken),
             CancellationTokenSource producerTokenSource = null, Encoding enc = null,
-            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeTarget = true)
+            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeTarget = true, 
+            bool autoFlush = false)
         {
-            using (var streamWriter = target.CreateWriter(enc, bufferSize, disposeTarget))
+            using (var streamWriter = target.CreateWriter(enc, bufferSize, disposeTarget, autoFlush))
             {
                 source.ToJsonArrayParallely(streamWriter, serializer, token, producerTokenSource, false);
                 target.Flush();
@@ -231,11 +233,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeTarget">If true, <paramref name="target"/> is disposed after the serialization</param>
+        /// <param name="autoFlush">True to enable auto-flushing else false</param>
         public static void ToJsonArray<T>(this IEnumerable<T> source, Stream target,
             JsonSerializer serializer = null, CancellationToken token = default(CancellationToken),
-            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeTarget = true)
+            Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeTarget = true,
+            bool autoFlush = false)
         {
-            using (var streamWriter = target.CreateWriter(enc, bufferSize, disposeTarget))
+            using (var streamWriter = target.CreateWriter(enc, bufferSize, disposeTarget, autoFlush))
             {
                 source.ToJsonArray(streamWriter, serializer, token, false);
                 target.Flush();
@@ -351,11 +355,12 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeTarget">If true, <paramref name="target"/> is disposed after the serialization</param>
+        /// <param name="autoFlush">True to enable auto-flushing else false</param>
         public static void ToJson<T>(this T source, Stream target, JsonSerializer serializer = null,
             Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize,
-            bool disposeTarget = true)
+            bool disposeTarget = true, bool autoFlush = false)
         {
-            using (var textWriter = target.CreateWriter(enc, bufferSize, disposeTarget))
+            using (var textWriter = target.CreateWriter(enc, bufferSize, disposeTarget, autoFlush))
             {
                 source.ToJson(textWriter, serializer, false);
                 target.Flush();
@@ -440,11 +445,12 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeSource">If true, <paramref name="source"/> is disposed after the deserialization</param>
+        /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
         public static T FromJson<T>(this Stream source, JsonSerializer serializer = null,
             Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize,
-            bool disposeSource = true)
+            bool disposeSource = true, bool detectEncodingFromBom = true)
         {
-            return source.CreateReader(enc, bufferSize, disposeSource).FromJson<T>(serializer);
+            return source.CreateReader(enc, bufferSize, disposeSource, detectEncodingFromBom).FromJson<T>(serializer);
         }
 
         /// <summary>
@@ -527,11 +533,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeSource">If true, <paramref name="source"/> is disposed after the deserialization</param>
+        /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
         public static IEnumerable<T> FromJsonAsEnumerable<T>(this Stream source, JsonSerializer serializer = null, 
             CancellationToken token = default(CancellationToken), Encoding enc = null, 
-            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeSource = true)
+            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeSource = true,
+            bool detectEncodingFromBom = true)
         {
-            return source.CreateReader(enc, bufferSize, disposeSource).FromJsonAsEnumerable<T>(serializer, token);
+            return source.CreateReader(enc, bufferSize, disposeSource, detectEncodingFromBom).FromJsonAsEnumerable<T>(serializer, token);
         }
 
         /// <summary>
@@ -706,13 +714,15 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
         /// adding irrespective of <paramref name="closeTarget"/> setting. When false, <paramref name="closeTarget"/>
         /// setting takes precedence.</param>
+        /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
         public static void FromJsonArrayParallely<T>(this Stream source, BlockingCollection<T> target,
             JsonSerializer serializer = null, CancellationToken token = default(CancellationToken), 
             CancellationTokenSource consumerTokenSource = null,
             Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeSource = true,
-            bool closeTarget = true, bool forceCloseWhenError = true)
+            bool closeTarget = true, bool forceCloseWhenError = true,
+            bool detectEncodingFromBom = true)
         {
-            source.CreateReader(enc, bufferSize, disposeSource)
+            source.CreateReader(enc, bufferSize, disposeSource, detectEncodingFromBom)
                 .FromJsonArrayParallely(target, serializer, token, consumerTokenSource, closeTarget, forceCloseWhenError);
         }
 

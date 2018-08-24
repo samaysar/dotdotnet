@@ -7,7 +7,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.Internals;
+using Dot.Net.DevFast.Extensions.JsonExt;
 using Dot.Net.DevFast.Extensions.StringExt;
+using Newtonsoft.Json;
 
 namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 {
@@ -751,6 +753,31 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             var data = await src().ConfigureAwait(false);
             await data.Readable.CopyToBuilderAsync(sbToAppend, token, enc ?? new UTF8Encoding(false), bufferSize,
                 data.Dispose, detectEncodingFromBom).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
+        /// pulls data throw the pipeline and deserializes the object based on the Json text.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="src"></param>
+        /// <param name="serializer">if not provided, JsonSerializer with default values
+        /// (see also <seealso cref="CustomJson.Serializer()"/>) will be used.</param>
+        /// <param name="enc">Encoding to use while writing the file. 
+        /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
+        /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
+        /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <returns></returns>
+        public static async Task<T> AndParseJsonAsync<T>(this Func<Task<PullFuncStream>> src,
+            JsonSerializer serializer = null,
+            Encoding enc = null, 
+            bool detectEncodingFromBom = true,
+            int bufferSize = StdLookUps.DefaultBufferSize)
+        {
+            var data = await src().ConfigureAwait(false);
+            return data.Readable.FromJson<T>(serializer, enc ?? new UTF8Encoding(false),
+                bufferSize, data.Dispose, detectEncodingFromBom);
         }
 
         #endregion Finalization TASK

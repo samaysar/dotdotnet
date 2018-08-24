@@ -168,12 +168,14 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="disposeInput">If true, disposes <paramref name="input"/> upon operation completion, else leaves it open</param>
         /// <param name="encoding">Encoding to use to compose string characters, if not supplied <seealso cref="Encoding.UTF8"/> is used</param>
         /// <param name="bufferSize">Buffer size</param>
+        /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
         public static Task TransformAsync(this Stream input, ICryptoTransform transform,
             StringBuilder target, CancellationToken token = default(CancellationToken), bool disposeInput = false,
-            Encoding encoding = null, int bufferSize = StdLookUps.DefaultBufferSize)
+            Encoding encoding = null, int bufferSize = StdLookUps.DefaultBufferSize,
+            bool detectEncodingFromBom = true)
         {
             return input.CreateCryptoStream(transform, CryptoStreamMode.Read, disposeInput)
-                .CopyToBuilderAsync(target, token, encoding ?? Encoding.UTF8, bufferSize, true);
+                .CopyToBuilderAsync(target, token, encoding ?? Encoding.UTF8, bufferSize, detectEncodingFromBom);
         }
 
         private static Task TransformChunksAsync(this Stream writable, ICryptoTransform transform,

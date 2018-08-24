@@ -116,11 +116,14 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="share">File share type</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="options">File options</param>
+        /// <param name="autoFlush">True to enable auto-flushing else false</param>
         public static JsonTextWriter CreateJsonWriter(this FileInfo targetFileInfo, Encoding enc = null,
             bool appendToFile = false, FileShare share = FileShare.Read,
-            int bufferSize = StdLookUps.DefaultFileBufferSize, FileOptions options = FileOptions.Asynchronous)
+            int bufferSize = StdLookUps.DefaultFileBufferSize, FileOptions options = FileOptions.Asynchronous,
+            bool autoFlush = false)
         {
-            return targetFileInfo.CreateStreamWriter(enc, appendToFile, share, bufferSize, options).CreateJsonWriter();
+            return targetFileInfo.CreateStreamWriter(enc, appendToFile, share, bufferSize, options, autoFlush)
+                .CreateJsonWriter();
         }
 
         /// <summary>
@@ -133,12 +136,14 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="share">File share type</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="options">File options</param>
+        /// <param name="autoFlush">True to enable auto-flushing else false</param>
         public static StreamWriter CreateStreamWriter(this FileInfo targetFileInfo, Encoding enc = null,
             bool appendToFile = false, FileShare share = FileShare.Read,
-            int bufferSize = StdLookUps.DefaultFileBufferSize, FileOptions options = FileOptions.Asynchronous)
+            int bufferSize = StdLookUps.DefaultFileBufferSize, FileOptions options = FileOptions.Asynchronous,
+            bool autoFlush = false)
         {
             return targetFileInfo.CreateStream(appendToFile ? FileMode.Append : FileMode.Create,
-                FileAccess.ReadWrite, share, bufferSize, options).CreateWriter(enc, bufferSize);
+                FileAccess.ReadWrite, share, bufferSize, options).CreateWriter(enc, bufferSize, true, autoFlush);
         }
 
         #endregion Fileinfo/stream related
@@ -258,10 +263,12 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="enc">Text encoding to use. If null, then <seealso cref="Encoding.UTF8"/> is used.</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeStream">If true, <paramref name="targetStream"/> is disposed after the serialization</param>
+        /// <param name="autoFlush">True to enable auto-flushing else false</param>
         public static JsonTextWriter CreateJsonWriter(this Stream targetStream, Encoding enc = null,
-            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true)
+            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeStream = true,
+            bool autoFlush = false)
         {
-            return targetStream.CreateWriter(enc, bufferSize, disposeStream).CreateJsonWriter();
+            return targetStream.CreateWriter(enc, bufferSize, disposeStream, autoFlush).CreateJsonWriter();
         }
 
         /// <summary>
