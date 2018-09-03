@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
@@ -536,6 +538,56 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
                 .ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Call to this method shall bootstrap the streaming pipeline and pulls data throw the pipeline 
+        /// in order to obtain deserialized object based on the Json text.
+        /// </summary>
+        /// <typeparam name="T">Type of the object from deserialization</typeparam>
+        /// <param name="src"></param>
+        /// <param name="serializer">if not provided, JsonSerializer with default values
+        /// (see also <seealso cref="CustomJson.Serializer()"/>) will be used.</param>
+        /// <param name="enc">Encoding to use while writing the file. 
+        /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
+        /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
+        /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
+        /// <param name="bufferSize">Buffer size</param>
+        public static T AndParseJson<T>(this Func<PullFuncStream> src,
+            JsonSerializer serializer = null,
+            Encoding enc = null,
+            bool detectEncodingFromBom = true,
+            int bufferSize = StdLookUps.DefaultBufferSize)
+        {
+            var data = src();
+            return data.Readable.FromJson<T>(serializer, enc ?? new UTF8Encoding(false),
+                bufferSize, data.Dispose, detectEncodingFromBom);
+        }
+
+        /// <summary>
+        /// Call to this method shall bootstrap the streaming pipeline and pulls data throw the pipeline 
+        /// in order to achieve enumeration on json based deserialized objects.
+        /// </summary>
+        /// <typeparam name="T">Type of the object from deserialization</typeparam>
+        /// <param name="src"></param>
+        /// <param name="serializer">if not provided, JsonSerializer with default values
+        /// (see also <seealso cref="CustomJson.Serializer()"/>) will be used.</param>
+        /// <param name="enc">Encoding to use while writing the file. 
+        /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
+        /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
+        /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="token">Cancellation token to observe</param>
+        public static IEnumerable<T> AndParseJsonArray<T>(this Func<PullFuncStream> src,
+            JsonSerializer serializer = null,
+            Encoding enc = null,
+            bool detectEncodingFromBom = true,
+            int bufferSize = StdLookUps.DefaultBufferSize,
+            CancellationToken token = default(CancellationToken))
+        {
+            var data = src();
+            return data.Readable.FromJsonAsEnumerable<T>(serializer, token, enc ?? new UTF8Encoding(false),
+                bufferSize, data.Dispose, detectEncodingFromBom);
+        }
+
         #endregion Finalization NoTASK
 
         #region Finalization TASK
@@ -759,7 +811,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
         /// pulls data throw the pipeline and deserializes the object based on the Json text.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Type of the object from deserialization</typeparam>
         /// <param name="src"></param>
         /// <param name="serializer">if not provided, JsonSerializer with default values
         /// (see also <seealso cref="CustomJson.Serializer()"/>) will be used.</param>
@@ -768,7 +820,6 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
         /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
         /// <param name="bufferSize">Buffer size</param>
-        /// <returns></returns>
         public static async Task<T> AndParseJsonAsync<T>(this Func<Task<PullFuncStream>> src,
             JsonSerializer serializer = null,
             Encoding enc = null, 
@@ -778,6 +829,51 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             var data = await src().ConfigureAwait(false);
             return data.Readable.FromJson<T>(serializer, enc ?? new UTF8Encoding(false),
                 bufferSize, data.Dispose, detectEncodingFromBom);
+        }
+
+        /// <summary>
+        /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
+        /// pulls data throw the pipeline and deserializes the object based on the Json text.
+        /// </summary>
+        /// <typeparam name="T">Type of the object from deserialization</typeparam>
+        /// <param name="src"></param>
+        /// <param name="target">target blocking collection to populate deserialied JSON data objects</param>
+        /// <param name="serializer">if not provided, JsonSerializer with default values
+        /// (see also <seealso cref="CustomJson.Serializer()"/>) will be used.</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="observedTokenSource">When developing parallel prooducer-consumer pattern and if you wish you
+        /// cancel the consumer (other producer), in case of error produced during json deserialization,
+        /// pass the source of cancellation token which consumer (other producer) is observing.</param>
+        /// <param name="enc">Encoding to use while writing the file. 
+        /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
+        /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
+        /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="closeTarget"><para>When this is the ONLY call that populates the <paramref name="target"/>
+        /// keep it true so that when operation finishes the collection is automatically closed for adding so that consumer 
+        /// shall not remain blocked infinitely. If setting false, then you must explicitly call 
+        /// <seealso cref="BlockingCollection{T}.CompleteAdding"/> for the obvious reason.</para>
+        /// <para>When this call is one among multiple producers populating the same <paramref name="target"/>,
+        /// it is MANDATORY to set this to false and you must explicitly call <seealso cref="BlockingCollection{T}.CompleteAdding"/>
+        /// when all producers finished populating the collection, otherwise weird things may happen.</para></param>
+        /// <param name="forceCloseWhenError">if true, when any error occurs closes the collection for any additional 
+        /// adding irrespective of <paramref name="closeTarget"/> setting. When false, <paramref name="closeTarget"/>
+        /// setting takes precedence.</param>
+        public static async Task AndParseJsonArrayAsync<T>(this Func<Task<PullFuncStream>> src,
+            BlockingCollection<T> target, 
+            JsonSerializer serializer = null,
+            CancellationToken token = default(CancellationToken),
+            CancellationTokenSource observedTokenSource = null,
+            Encoding enc = null,
+            bool detectEncodingFromBom = true,
+            int bufferSize = StdLookUps.DefaultBufferSize,
+            bool closeTarget = true, 
+            bool forceCloseWhenError = true)
+        {
+            var data = await src().ConfigureAwait(false);
+            data.Readable.FromJsonArrayParallely(target, serializer, token, observedTokenSource,
+                enc ?? new UTF8Encoding(false), bufferSize, data.Dispose, closeTarget, forceCloseWhenError,
+                detectEncodingFromBom);
         }
 
         #endregion Finalization TASK
