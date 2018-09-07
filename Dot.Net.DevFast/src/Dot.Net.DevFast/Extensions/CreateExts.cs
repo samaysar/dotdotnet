@@ -16,6 +16,51 @@ namespace Dot.Net.DevFast.Extensions
     /// </summary>
     public static class CreateExts
     {
+#if NET472
+        /// <summary>
+        /// Using <seealso cref="Rfc2898DeriveBytes"/> creates the key and IV byte arrays.
+        /// <para>NOTE: Key = tuple.Item1 and IV = tuple.Item2</para>
+        /// </summary>
+        /// <param name="password">password for key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
+        /// <param name="salt">Salt string to use during key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
+        /// <param name="hashName">Hash algorithm to use</param>
+        /// <param name="byteLengthKey">Key length in number of bytes</param>
+        /// <param name="byteLengthIv">IV length in number of bytes (normally, block size in bytes)</param>
+        /// <param name="loopCnt">Loop count</param>
+        /// <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
+#else
+        /// <summary>
+        /// Using <seealso cref="Rfc2898DeriveBytes"/> creates the key and IV byte arrays.
+        /// <para>NOTE: Key = tuple.Item1 and IV = tuple.Item2</para>
+        /// </summary>
+        /// <param name="password">password for key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
+        /// <param name="salt">Salt string to use during key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
+        /// <param name="byteLengthKey">Key length in number of bytes</param>
+        /// <param name="byteLengthIv">IV length in number of bytes (normally, block size in bytes)</param>
+        /// <param name="loopCnt">Loop count</param>
+        /// <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
+#endif
+        public static Tuple<byte[], byte[]> CreateKeyAndIv(this string password, string salt,
+#if NET472
+            HashAlgorithmName hashName,
+#endif
+            int byteLengthKey = 32,
+            int byteLengthIv = 16,
+            int loopCnt = 10000,
+            Encoding enc = null)
+        {
+            enc = enc ?? new UTF8Encoding(false);
+            using (var gen = new Rfc2898DeriveBytes(enc.GetBytes(password), enc.GetBytes(salt),
+                loopCnt
+#if NET472
+                , hashName
+#endif
+            ))
+            {
+                return new Tuple<byte[], byte[]>(gen.GetBytes(byteLengthKey), gen.GetBytes(byteLengthIv));
+            }
+        }
+
         /// <summary>
         /// Creates the byte array of the segment.
         /// </summary>

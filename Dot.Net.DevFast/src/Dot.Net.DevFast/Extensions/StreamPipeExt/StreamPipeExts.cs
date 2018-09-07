@@ -10,7 +10,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
     public static partial class StreamPipeExts
     {
         // we keep internal extensions here
-        internal static Func<PushFuncStream, Task> ApplyCompression(this Func<PushFuncStream, Task> pipe, 
+        internal static Func<PushFuncStream, Task> ApplyCompression(this Func<PushFuncStream, Task> pipe,
             bool gzip,
             CompressionLevel level)
         {
@@ -27,6 +27,25 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             };
         }
 
+        internal static Func<PushFuncStream, Task> ApplyCrypto<T>(this Func<PushFuncStream, Task> pipe,
+            T encAlg, bool encrypt)
+            where T : SymmetricAlgorithm
+        {
+            return async pfs =>
+            {
+                using (encAlg)
+                {
+                    var cryptor = encrypt
+                        ? encAlg.CreateEncryptor(encAlg.Key, encAlg.IV)
+                        : encAlg.CreateDecryptor(encAlg.Key, encAlg.IV);
+                    using (cryptor)
+                    {
+                        await pipe.ApplyTransform(cryptor)(pfs).ConfigureAwait(false);
+                    }
+                }
+            };
+        }
+
         internal static Func<PushFuncStream, Task> ApplyTransform(this Func<PushFuncStream, Task> pipe,
             ICryptoTransform ct)
         {
@@ -39,8 +58,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         internal static Func<PushFuncStream, Task> ApplyLoad(this Action<int, char[], int, int> loadAction,
-            int totalLen, 
-            Encoding enc, 
+            int totalLen,
+            Encoding enc,
             int bufferSize)
         {
             return async pfs =>
@@ -110,5 +129,23 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         #endregion PullFuncStream PRIVATE
+
+        internal static T InitKeyNIv<T>(this T alg, string password, string salt,
+#if NET472
+            HashAlgorithmName hashName,
+#endif
+            int loopCnt,
+            Encoding enc)
+            where T : SymmetricAlgorithm
+        {
+            var keyIv = password.CreateKeyAndIv(salt,
+#if NET472
+                hashName,
+#endif
+                alg.KeySize / 8, alg.BlockSize / 8, loopCnt, enc);
+            alg.Key = keyIv.Item1;
+            alg.IV = keyIv.Item2;
+            return alg;
+        }
     }
 }

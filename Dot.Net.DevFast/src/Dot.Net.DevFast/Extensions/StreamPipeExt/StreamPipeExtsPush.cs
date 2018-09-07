@@ -56,7 +56,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
         /// <param name="bufferSize">Buffer size (as number of char instead of bytes)</param>
         public static Func<PushFuncStream, Task> Push(this string s,
-            Encoding enc = null, 
+            Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize)
         {
             return new Action<int, char[], int, int>(s.CopyTo).ApplyLoad(s.Length, enc ?? new UTF8Encoding(false),
@@ -93,7 +93,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
         /// <param name="bufferSize">Buffer size (as number of char instead of bytes)</param>
         public static Func<PushFuncStream, Task> Push(this StringBuilder sb,
-            Encoding enc = null, 
+            Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize)
         {
             return new Action<int, char[], int, int>(sb.CopyTo).ApplyLoad(sb.Length, enc ?? new UTF8Encoding(false),
@@ -310,7 +310,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             return new Action<PushFuncStream>(pfs => obj.ToJsonArrayParallely(pfs.Writable, serializer,
                 pfs.Token, pcts, enc, writerBuffer, pfs.Dispose, autoFlush)).ToAsync(false);
         }
-        
+
         #endregion Various Push
 
         #region Then Clauses
@@ -340,7 +340,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="ha">Instance of crypto hash algorithm</param>
         /// <param name="include">If true is passed, hash is computed else ignored</param>
-        public static Func<PushFuncStream, Task> ThenComputeHash(this Func<PushFuncStream, Task> src, 
+        public static Func<PushFuncStream, Task> ThenComputeHash(this Func<PushFuncStream, Task> src,
             HashAlgorithm ha,
             bool include = true)
         {
@@ -374,6 +374,170 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             return src.ThenTransform(new FromBase64Transform(mode), include);
         }
 
+#if NET472
+        /// <summary>
+        /// Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
+        /// and returns a new pipe for chaining.
+        /// </summary>
+        /// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="password">password for key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
+        /// <param name="salt">Salt string to use during key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
+        /// <param name="hashName">Hash algorithm to use</param>
+        /// <param name="loopCnt">Loop count</param>
+        /// <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
+        /// <param name="cipher">Cipher mode to use</param>
+        /// <param name="padding">Padding mode to use</param>
+        /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
+#else
+/// <summary>
+/// Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
+/// and returns a new pipe for chaining.
+/// </summary>
+/// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
+/// <param name="src">Current pipe of the pipeline</param>
+/// <param name="password">password for key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
+/// <param name="salt">Salt string to use during key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
+/// <param name="loopCnt">Loop count</param>
+/// <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
+/// <param name="cipher">Cipher mode to use</param>
+/// <param name="padding">Padding mode to use</param>
+/// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
+#endif
+        public static Func<PushFuncStream, Task> ThenEncrypt<T>(this Func<PushFuncStream, Task> src,
+            string password,
+            string salt,
+#if NET472
+            HashAlgorithmName hashName,
+#endif
+            int loopCnt = 10000,
+            Encoding enc = null,
+            CipherMode cipher = CipherMode.CBC,
+            PaddingMode padding = PaddingMode.PKCS7,
+            bool include = true)
+            where T : SymmetricAlgorithm, new()
+        {
+            return src.ThenApply(s => s.ApplyCrypto(new T
+            {
+                Mode = cipher,
+                Padding = padding
+            }.InitKeyNIv(password, salt,
+#if NET472
+                hashName,
+#endif
+                loopCnt, enc), true), include);
+        }
+
+        /// <summary>
+        /// Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
+        /// and returns a new pipe for chaining.
+        /// </summary>
+        /// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="key">key byte array</param>
+        /// <param name="iv">iv byte array</param>
+        /// <param name="cipher">Cipher mode to use</param>
+        /// <param name="padding">Padding mode to use</param>
+        /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
+        public static Func<PushFuncStream, Task> ThenEncrypt<T>(this Func<PushFuncStream, Task> src,
+            byte[] key,
+            byte[] iv,
+            CipherMode cipher = CipherMode.CBC,
+            PaddingMode padding = PaddingMode.PKCS7,
+            bool include = true)
+            where T : SymmetricAlgorithm, new()
+        {
+            return src.ThenApply(s => s.ApplyCrypto(new T
+            {
+                Mode = cipher,
+                Padding = padding,
+                Key = key,
+                IV = iv
+            }, true), include);
+        }
+
+#if NET472
+        /// <summary>
+        /// Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
+        /// and returns a new pipe for chaining.
+        /// </summary>
+        /// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="password">password for key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
+        /// <param name="salt">Salt string to use during key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
+        /// <param name="hashName">Hash algorithm to use</param>
+        /// <param name="loopCnt">Loop count</param>
+        /// <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
+        /// <param name="cipher">Cipher mode to use</param>
+        /// <param name="padding">Padding mode to use</param>
+        /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
+#else
+/// <summary>
+/// Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
+/// and returns a new pipe for chaining.
+/// </summary>
+/// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
+/// <param name="src">Current pipe of the pipeline</param>
+/// <param name="password">password for key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
+/// <param name="salt">Salt string to use during key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
+/// <param name="loopCnt">Loop count</param>
+/// <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
+/// <param name="cipher">Cipher mode to use</param>
+/// <param name="padding">Padding mode to use</param>
+/// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
+#endif
+        public static Func<PushFuncStream, Task> ThenDecrypt<T>(this Func<PushFuncStream, Task> src,
+            string password,
+            string salt,
+#if NET472
+            HashAlgorithmName hashName,
+#endif
+            int loopCnt = 10000,
+            Encoding enc = null,
+            CipherMode cipher = CipherMode.CBC,
+            PaddingMode padding = PaddingMode.PKCS7,
+            bool include = true)
+            where T : SymmetricAlgorithm, new()
+        {
+            return src.ThenApply(s => s.ApplyCrypto(new T
+            {
+                Mode = cipher,
+                Padding = padding
+            }.InitKeyNIv(password, salt,
+#if NET472
+                hashName,
+#endif
+                loopCnt, enc), false), include);
+        }
+
+        /// <summary>
+        /// Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
+        /// and returns a new pipe for chaining.
+        /// </summary>
+        /// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="key">key byte array</param>
+        /// <param name="iv">iv byte array</param>
+        /// <param name="cipher">Cipher mode to use</param>
+        /// <param name="padding">Padding mode to use</param>
+        /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
+        public static Func<PushFuncStream, Task> ThenDecrypt<T>(this Func<PushFuncStream, Task> src,
+            byte[] key,
+            byte[] iv,
+            CipherMode cipher = CipherMode.CBC,
+            PaddingMode padding = PaddingMode.PKCS7,
+            bool include = true)
+            where T : SymmetricAlgorithm, new()
+        {
+            return src.ThenApply(s => s.ApplyCrypto(new T
+            {
+                Mode = cipher,
+                Padding = padding,
+                Key = key,
+                IV = iv
+            }, false), include);
+        }
+
         /// <summary>
         /// Applies the given crypto transformation to the data of the given functional stream pipe
         /// and returns a new pipe for chaining.
@@ -403,9 +567,10 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             return include ? applyFunc(src) : src;
         }
 
-        #endregion Then Clauses
 
-        #region Finalization
+#endregion Then Clauses
+
+#region Finalization
 
         /// <summary>
         /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
@@ -498,7 +663,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="seekToOrigin">If true, Seek with <seealso cref="SeekOrigin.Begin"/> is performed else not.</param>
         /// <param name="initialSize">Initial Memory buffer Size</param>
         public static async Task<MemoryStream> AndWriteBufferAsync(this Func<PushFuncStream, Task> src,
-            CancellationToken token = default(CancellationToken), 
+            CancellationToken token = default(CancellationToken),
             bool seekToOrigin = false,
             int initialSize = StdLookUps.DefaultBufferSize)
         {
@@ -524,7 +689,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             await src(new PushFuncStream(writableTarget, disposeTarget, token)).ConfigureAwait(false);
         }
 
-        #endregion Finalization
+#endregion Finalization
 
         /// <summary>
         /// Data structure to facilitate Push based functional streaming,
