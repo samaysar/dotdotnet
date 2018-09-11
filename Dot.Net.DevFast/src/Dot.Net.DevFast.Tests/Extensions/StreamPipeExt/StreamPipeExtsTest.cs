@@ -1,8 +1,10 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions.StreamExt;
 using Dot.Net.DevFast.Extensions.StreamPipeExt;
+using Dot.Net.DevFast.Tests.TestHelpers;
 using NUnit.Framework;
 
 namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
@@ -17,6 +19,29 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
             var outcome = await Task.FromResult(val).Push().ThenToBase64().ThenFromBase64().AndWriteBytesAsync()
                 .ConfigureAwait(false);
             Assert.True(val.Equals(new UTF8Encoding(false).GetString(outcome)));
+        }
+
+        [Test]
+        public async Task Encrypt_Decrypt_Harmonize()
+        {
+            var pipeOutcome = await TestValues.BigString.Push().ThenEncrypt<AesManaged>(TestValues.FixedCryptoPass,
+                TestValues.FixedCryptoSalt
+#if NET472
+                , HashAlgorithmName.SHA1
+#endif
+            ).ThenDecrypt<AesManaged>(TestValues.FixedCryptoPass,
+                TestValues.FixedCryptoSalt
+#if NET472
+                , HashAlgorithmName.SHA1
+#endif
+            ).AndWriteBytesAsync().ConfigureAwait(false);
+            Assert.True(new UTF8Encoding(false).GetString(pipeOutcome).Equals(TestValues.BigString));
+
+            pipeOutcome = await TestValues.BigString.Push()
+                .ThenEncrypt<AesManaged>(TestValues.FixedCryptoKey.FromBase64(), TestValues.FixedCryptoIv.FromBase64())
+                .ThenDecrypt<AesManaged>(TestValues.FixedCryptoKey.FromBase64(), TestValues.FixedCryptoIv.FromBase64())
+                .AndWriteBytesAsync().ConfigureAwait(false);
+            Assert.True(new UTF8Encoding(false).GetString(pipeOutcome).Equals(TestValues.BigString));
         }
 
         [Test]

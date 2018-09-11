@@ -361,5 +361,29 @@ namespace Dot.Net.DevFast.Tests.Extensions
                 Assert.True(stream.GetType() == (isgzip ? typeof(GZipStream) : typeof(DeflateStream)));
             }
         }
+
+        [Test]
+        public void CreateKeyAndIv_Works_As_Expected()
+        {
+            var keyIv = TestValues.FixedCryptoPass.CreateKeyAndIv(TestValues.FixedCryptoSalt
+#if NET472
+                , HashAlgorithmName.SHA1
+#endif
+            );
+            //This make sure that default param wont change
+            Assert.True(Convert.ToBase64String(keyIv.Item1).Equals(TestValues.FixedCryptoKey));
+            Assert.True(Convert.ToBase64String(keyIv.Item2).Equals(TestValues.FixedCryptoIv));
+
+            //proof of concept if future version changes values of default params
+            //lets say by mistake 10000 is changed to 1K
+            keyIv = TestValues.FixedCryptoPass.CreateKeyAndIv(TestValues.FixedCryptoSalt
+#if NET472
+                , HashAlgorithmName.SHA1
+#endif
+            , 32, 16, 1000);
+            //This make sure that default param wont change
+            Assert.False(Convert.ToBase64String(keyIv.Item1).Equals(TestValues.FixedCryptoKey));
+            Assert.False(Convert.ToBase64String(keyIv.Item2).Equals(TestValues.FixedCryptoIv));
+        }
     }
 }

@@ -119,6 +119,17 @@ namespace Dot.Net.DevFast.Tests.Extensions
             Assert.True(count == cumsum);
         }
 
+        [Test]
+        public async Task StartIfNeeded_Starts_The_Task_Only_If_Not_Already_Started()
+        {
+            var o = new object();
+            var tt = new Task<object>(() => o);
+            Assert.True(tt.Status == TaskStatus.Created);
+            tt = tt.StartIfNeeded();
+            Assert.True(tt.Status != TaskStatus.Created);
+            Assert.True(ReferenceEquals(await tt.ConfigureAwait(false), o));
+        }
+
         private static IEnumerable<T> CreateEnumeration<T>(T obj, int count)
         {
             for (var i = 0; i < count; i++)

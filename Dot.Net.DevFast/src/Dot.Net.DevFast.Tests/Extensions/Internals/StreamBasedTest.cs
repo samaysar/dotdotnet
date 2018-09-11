@@ -173,5 +173,34 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals
                 }
             }
         }
+
+        [Test]
+        [TestCase(true, true)]
+        [TestCase(false, true)]
+        [TestCase(true, false)]
+        [TestCase(false, false)]
+        public async Task Stream_Stream_Based_CopyTo_Works_As_Expected(bool disposeSrc, bool disposeTgt)
+        {
+            using (var mem = new MemoryStream())
+            {
+                await "123".ToStreamAsync(mem).ConfigureAwait(false);
+                mem.Seek(0, SeekOrigin.Begin);
+                var newbuff = new MemoryStream();
+
+                await mem.CopyToAsync(newbuff, 10, CancellationToken.None, disposeSrc, disposeTgt)
+                    .ConfigureAwait(false);
+                Assert.True(newbuff.CanSeek == !disposeTgt);
+                Assert.True(mem.CanSeek == !disposeSrc);
+
+                var memArr = mem.ToArray();
+                var newBuffArr = newbuff.ToArray();
+
+                Assert.True(memArr.Length == newBuffArr.Length);
+                for (var i = 0; i < memArr.Length; i++)
+                {
+                    Assert.True(memArr[i].Equals(newBuffArr[i]));
+                }
+            }
+        }
     }
 }

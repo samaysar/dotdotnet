@@ -378,6 +378,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <summary>
         /// Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
         /// and returns a new pipe for chaining.
+        /// <para>NOTE:You may use <seealso cref="CreateExts.CreateKeyAndIv"/> extension method to create IV and KEY byte arrays
+        /// using plain text password and salt string.</para>
         /// </summary>
         /// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
         /// <param name="src">Current pipe of the pipeline</param>
@@ -393,6 +395,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 /// <summary>
 /// Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
 /// and returns a new pipe for chaining.
+/// <para>NOTE:You may use <seealso cref="CreateExts.CreateKeyAndIv"/> extension method to create IV and KEY byte arrays
+/// using plain text password and salt string.</para>
 /// </summary>
 /// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
 /// <param name="src">Current pipe of the pipeline</param>
@@ -460,6 +464,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <summary>
         /// Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
         /// and returns a new pipe for chaining.
+        /// <para>NOTE:You may use <seealso cref="CreateExts.CreateKeyAndIv"/> extension method to create IV and KEY byte arrays
+        /// using plain text password and salt string.</para>
         /// </summary>
         /// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
         /// <param name="src">Current pipe of the pipeline</param>
@@ -475,6 +481,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 /// <summary>
 /// Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
 /// and returns a new pipe for chaining.
+/// <para>NOTE:You may use <seealso cref="CreateExts.CreateKeyAndIv"/> extension method to create IV and KEY byte arrays
+/// using plain text password and salt string.</para>
 /// </summary>
 /// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
 /// <param name="src">Current pipe of the pipeline</param>
