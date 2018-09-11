@@ -24,24 +24,15 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
         [Test]
         public async Task Encrypt_Decrypt_Harmonize()
         {
-            var pipeOutcome = await TestValues.BigString.Push().ThenEncrypt<AesManaged>(TestValues.FixedCryptoPass,
-                TestValues.FixedCryptoSalt
+            await Encrypt_Decrypt_Harmonize<AesManaged>().ConfigureAwait(false);
+            await Encrypt_Decrypt_Harmonize<DESCryptoServiceProvider>().ConfigureAwait(false);
+            await Encrypt_Decrypt_Harmonize<TripleDESCryptoServiceProvider>().ConfigureAwait(false);
+            await Encrypt_Decrypt_Harmonize<RijndaelManaged>().ConfigureAwait(false);
+            await Encrypt_Decrypt_Harmonize<RC2CryptoServiceProvider>().ConfigureAwait(false);
 #if NET472
-                , HashAlgorithmName.SHA1
+            await Encrypt_Decrypt_Harmonize<AesCng>().ConfigureAwait(false);
+            await Encrypt_Decrypt_Harmonize<TripleDESCng>().ConfigureAwait(false);
 #endif
-            ).ThenDecrypt<AesManaged>(TestValues.FixedCryptoPass,
-                TestValues.FixedCryptoSalt
-#if NET472
-                , HashAlgorithmName.SHA1
-#endif
-            ).AndWriteBytesAsync().ConfigureAwait(false);
-            Assert.True(new UTF8Encoding(false).GetString(pipeOutcome).Equals(TestValues.BigString));
-
-            pipeOutcome = await TestValues.BigString.Push()
-                .ThenEncrypt<AesManaged>(TestValues.FixedCryptoKey.FromBase64(), TestValues.FixedCryptoIv.FromBase64())
-                .ThenDecrypt<AesManaged>(TestValues.FixedCryptoKey.FromBase64(), TestValues.FixedCryptoIv.FromBase64())
-                .AndWriteBytesAsync().ConfigureAwait(false);
-            Assert.True(new UTF8Encoding(false).GetString(pipeOutcome).Equals(TestValues.BigString));
         }
 
         [Test]
@@ -82,6 +73,36 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
             //Assert.True(sha1.Hash.ToBase64().Equals(sha3.Hash.ToBase64()));
             //Assert.True(md51.Hash.ToBase64().Equals(md53.Hash.ToBase64()));
             Assert.False(val.ToString().Equals(new UTF8Encoding(false).GetString(outcome)));
+        }
+
+        private async Task Encrypt_Decrypt_Harmonize<T>()
+            where T : SymmetricAlgorithm, new()
+        {
+            var pipeOutcome = await TestValues.BigString.Push()
+                .ThenEncrypt<T>(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt,
+#if NET472
+                    HashAlgorithmName.SHA512,
+#endif
+                    20)
+                .ThenDecrypt<T>(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt,
+#if NET472
+                    HashAlgorithmName.SHA512,
+#endif
+                    20)
+                .AndWriteBytesAsync().ConfigureAwait(false);
+            Assert.True(new UTF8Encoding(false).GetString(pipeOutcome).Equals(TestValues.BigString));
+
+            var tins = new T();
+            tins.InitKeyNIv(TestValues.FixedCryptoKey, TestValues.FixedCryptoSalt,
+#if NET472
+                HashAlgorithmName.SHA512,
+#endif
+                10, new UTF8Encoding(false));
+            pipeOutcome = await TestValues.BigString.Push()
+                .ThenEncrypt<T>(tins.Key, tins.IV)
+                .ThenDecrypt<T>(tins.Key, tins.IV)
+                .AndWriteBytesAsync().ConfigureAwait(false);
+            Assert.True(new UTF8Encoding(false).GetString(pipeOutcome).Equals(TestValues.BigString));
         }
     }
 }
