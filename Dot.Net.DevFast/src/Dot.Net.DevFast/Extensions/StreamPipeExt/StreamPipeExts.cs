@@ -88,6 +88,20 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             };
         }
 
+        internal static Func<Task<PullFuncStream>> ApplyCrypto<T>(this Func<Task<PullFuncStream>> pipe,
+            T encAlg, bool encrypt)
+            where T : SymmetricAlgorithm
+        {
+            return async () =>
+            {
+                var data = await pipe().StartIfNeeded().ConfigureAwait(false);
+                var cryptor = encrypt
+                    ? encAlg.CreateEncryptor(encAlg.Key, encAlg.IV)
+                    : encAlg.CreateDecryptor(encAlg.Key, encAlg.IV);
+                return data.ApplyTransform(cryptor);
+            };
+        }
+
         internal static Func<Task<PullFuncStream>> ApplyTransform(this Func<Task<PullFuncStream>> pipe,
             ICryptoTransform ct)
         {
@@ -106,6 +120,19 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             bool gzip)
         {
             return () => pipe().ApplyDecompression(gzip);
+        }
+
+        internal static Func<PullFuncStream> ApplyCrypto<T>(this Func<PullFuncStream> pipe,
+            T encAlg, bool encrypt)
+            where T : SymmetricAlgorithm
+        {
+            return () =>
+            {
+                var cryptor = encrypt
+                    ? encAlg.CreateEncryptor(encAlg.Key, encAlg.IV)
+                    : encAlg.CreateDecryptor(encAlg.Key, encAlg.IV);
+                return pipe().ApplyTransform(cryptor);
+            };
         }
 
         internal static Func<PullFuncStream> ApplyTransform(this Func<PullFuncStream> pipe,
