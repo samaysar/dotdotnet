@@ -216,7 +216,7 @@ namespace Dot.Net.DevFast.Extensions
             return task;
         }
 
-        private static Task StartIfNeeded(this Task task)
+        internal static Task StartIfNeeded(this Task task)
         {
             if (task.Status == TaskStatus.Created) task.Start();
             return task;

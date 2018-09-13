@@ -694,7 +694,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             bool disposeTarget = false,
             CancellationToken token = default(CancellationToken))
         {
-            await src(new PushFuncStream(writableTarget, disposeTarget, token)).ConfigureAwait(false);
+            await src(new PushFuncStream(writableTarget, disposeTarget, token)).StartIfNeeded().ConfigureAwait(false);
         }
 
 #endregion Finalization

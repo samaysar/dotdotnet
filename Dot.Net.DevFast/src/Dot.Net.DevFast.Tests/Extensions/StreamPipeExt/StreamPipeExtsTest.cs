@@ -1,9 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Dot.Net.DevFast.Extensions;
 using Dot.Net.DevFast.Extensions.StreamExt;
 using Dot.Net.DevFast.Extensions.StreamPipeExt;
+using Dot.Net.DevFast.Extensions.StringExt;
 using Dot.Net.DevFast.Tests.TestHelpers;
 using NUnit.Framework;
 
@@ -22,21 +25,21 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
         }
 
         [Test]
-        public async Task Encrypt_Decrypt_Harmonize()
+        public async Task Push_Based_Encrypt_Decrypt_Harmonize()
         {
-            await Encrypt_Decrypt_Harmonize<AesManaged>().ConfigureAwait(false);
-            await Encrypt_Decrypt_Harmonize<DESCryptoServiceProvider>().ConfigureAwait(false);
-            await Encrypt_Decrypt_Harmonize<TripleDESCryptoServiceProvider>().ConfigureAwait(false);
-            await Encrypt_Decrypt_Harmonize<RijndaelManaged>().ConfigureAwait(false);
-            await Encrypt_Decrypt_Harmonize<RC2CryptoServiceProvider>().ConfigureAwait(false);
+            await Push_Based_Encrypt_Decrypt_Harmonize<AesManaged>().ConfigureAwait(false);
+            await Push_Based_Encrypt_Decrypt_Harmonize<DESCryptoServiceProvider>().ConfigureAwait(false);
+            await Push_Based_Encrypt_Decrypt_Harmonize<TripleDESCryptoServiceProvider>().ConfigureAwait(false);
+            await Push_Based_Encrypt_Decrypt_Harmonize<RijndaelManaged>().ConfigureAwait(false);
+            await Push_Based_Encrypt_Decrypt_Harmonize<RC2CryptoServiceProvider>().ConfigureAwait(false);
 #if NET472
-            await Encrypt_Decrypt_Harmonize<AesCng>().ConfigureAwait(false);
-            await Encrypt_Decrypt_Harmonize<TripleDESCng>().ConfigureAwait(false);
+            await Push_Based_Encrypt_Decrypt_Harmonize<AesCng>().ConfigureAwait(false);
+            await Push_Based_Encrypt_Decrypt_Harmonize<TripleDESCng>().ConfigureAwait(false);
 #endif
         }
 
         [Test]
-        public async Task String_Streaming_With_Hashing()
+        public async Task Byte_Streaming_With_Hashing()
         {
             const string val = "Hello Streaming Worlds!";
             var md5 = MD5.Create();
@@ -51,7 +54,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
         }
 
         [Test]
-        public async Task String_Streaming_With_Compression()
+        public async Task StringBuilder_Streaming_With_Compression()
         {
             var val = new StringBuilder("Hello Streaming Worlds!");
             var md51 = MD5.Create();
@@ -75,7 +78,43 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
             Assert.False(val.ToString().Equals(new UTF8Encoding(false).GetString(outcome)));
         }
 
-        private async Task Encrypt_Decrypt_Harmonize<T>()
+        [Test]
+        public async Task File_To_File_Streaming_Encryption_N_Compression()
+        {
+            var fileName = Guid.NewGuid().ToString("N");
+            var file = AppDomain.CurrentDomain.BaseDirectory.ToDirectoryInfo().CreateFileInfo($"{fileName}.txt");
+            try
+            {
+                File.WriteAllText(file.FullName, TestValues.BigString, new UTF8Encoding(false));
+                var encryptedCompressedFile = await file.Directory
+                    .Push($"{fileName}.txt")
+                    .ThenEncrypt<AesManaged>(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt
+#if NET472
+                        , HashAlgorithmName.SHA512
+#endif
+                    )
+                    .ThenCompress()
+                    .AndWriteFileAsync(file.DirectoryName).ConfigureAwait(false);
+                var unecryptedUncompressedData = await encryptedCompressedFile
+                    .Pull()
+                    .ThenDecompress()
+                    .ThenConvertToPush()
+                    .ThenDecrypt<AesManaged>(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt
+#if NET472
+                        , HashAlgorithmName.SHA512
+#endif
+                    )
+                    .AndWriteBytesAsync().ConfigureAwait(false);
+                Assert.True(TestValues.BigString.Equals(new UTF8Encoding(false).GetString(unecryptedUncompressedData)));
+            }
+            finally
+            {
+                file.Refresh();
+                file.Delete();
+            }
+        }
+
+        private static async Task Push_Based_Encrypt_Decrypt_Harmonize<T>()
             where T : SymmetricAlgorithm, new()
         {
             var md51 = MD5.Create();
@@ -112,14 +151,14 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
                 HashAlgorithmName.SHA512,
 #endif
                 20, null);
-            pipeOutcome = await TestValues.BigString.Push()
+            pipeOutcome = (await Task.FromResult(TestValues.BigString).Push()
                 .ThenComputeHash(md51)
                 .ThenComputeHash(sha1)
                 .ThenEncrypt<T>(tins.Key, tins.IV)
                 .ThenComputeHash(md52)
                 .ThenComputeHash(sha2)
                 .ThenDecrypt<T>(tins.Key, tins.IV)
-                .AndWriteBytesAsync().ConfigureAwait(false);
+                .AndWriteBufferAsync(seekToOrigin: true).ConfigureAwait(false)).ToArray();
             Assert.True(new UTF8Encoding(false).GetString(pipeOutcome).Equals(TestValues.BigString));
             Assert.False(md51.Hash.ToBase64().Equals(md52.Hash.ToBase64()));
             Assert.False(sha1.Hash.ToBase64().Equals(sha2.Hash.ToBase64()));

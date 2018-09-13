@@ -20,7 +20,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
                 var t = pfs.Token;
                 using (var compStrm = s.CreateCompressionStream(gzip, level, pfs.Dispose))
                 {
-                    await pipe(new PushFuncStream(compStrm, false, t)).ConfigureAwait(false);
+                    await pipe(new PushFuncStream(compStrm, false, t)).StartIfNeeded().ConfigureAwait(false);
                     await compStrm.FlushAsync(t).ConfigureAwait(false);
                     await s.FlushAsync(t).ConfigureAwait(false);
                 }
@@ -53,7 +53,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             {
                 await pipe(new PushFuncStream(
                         pfs.Writable.CreateCryptoStream(ct, CryptoStreamMode.Write, pfs.Dispose), true, pfs.Token))
-                    .ConfigureAwait(false);
+                    .StartIfNeeded().ConfigureAwait(false);
             };
         }
 
@@ -83,7 +83,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         {
             return async () =>
             {
-                var data = await pipe().ConfigureAwait(false);
+                var data = await pipe().StartIfNeeded().ConfigureAwait(false);
                 return data.ApplyDecompression(gzip);
             };
         }
@@ -93,7 +93,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         {
             return async () =>
             {
-                var data = await pipe().ConfigureAwait(false);
+                var data = await pipe().StartIfNeeded().ConfigureAwait(false);
                 return data.ApplyTransform(ct);
             };
         }

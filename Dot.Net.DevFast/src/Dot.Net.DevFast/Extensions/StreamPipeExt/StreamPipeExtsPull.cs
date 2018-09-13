@@ -730,7 +730,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             bool disposeTarget = false,
             CancellationToken token = default(CancellationToken))
         {
-            var data = await src().ConfigureAwait(false);
+            var data = await src().StartIfNeeded().ConfigureAwait(false);
             await data.Readable.CopyToAsync(writableTarget, bufferSize, token, data.Dispose, disposeTarget)
                 .ConfigureAwait(false);
         }
@@ -802,7 +802,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             int bufferSize = StdLookUps.DefaultBufferSize,
             CancellationToken token = default(CancellationToken))
         {
-            var data = await src().ConfigureAwait(false);
+            var data = await src().StartIfNeeded().ConfigureAwait(false);
             await data.Readable.CopyToBuilderAsync(sbToAppend, token, enc ?? new UTF8Encoding(false), bufferSize,
                 data.Dispose, detectEncodingFromBom).ConfigureAwait(false);
         }
@@ -826,7 +826,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize)
         {
-            var data = await src().ConfigureAwait(false);
+            var data = await src().StartIfNeeded().ConfigureAwait(false);
             return data.Readable.FromJson<T>(serializer, enc ?? new UTF8Encoding(false),
                 bufferSize, data.Dispose, detectEncodingFromBom);
         }
@@ -870,7 +870,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             bool closeTarget = true, 
             bool forceCloseWhenError = true)
         {
-            var data = await src().ConfigureAwait(false);
+            var data = await src().StartIfNeeded().ConfigureAwait(false);
             data.Readable.FromJsonArrayParallely(target, serializer, token, observedTokenSource,
                 enc ?? new UTF8Encoding(false), bufferSize, data.Dispose, closeTarget, forceCloseWhenError,
                 detectEncodingFromBom);
