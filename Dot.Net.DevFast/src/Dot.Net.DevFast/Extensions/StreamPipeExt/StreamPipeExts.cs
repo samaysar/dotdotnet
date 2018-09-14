@@ -95,10 +95,13 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             return async () =>
             {
                 var data = await pipe().StartIfNeeded().ConfigureAwait(false);
-                var cryptor = encrypt
-                    ? encAlg.CreateEncryptor(encAlg.Key, encAlg.IV)
-                    : encAlg.CreateDecryptor(encAlg.Key, encAlg.IV);
-                return data.ApplyTransform(cryptor);
+                using (encAlg)
+                {
+                    var cryptor = encrypt
+                        ? encAlg.CreateEncryptor(encAlg.Key, encAlg.IV)
+                        : encAlg.CreateDecryptor(encAlg.Key, encAlg.IV);
+                    return data.ApplyTransform(cryptor);
+                }
             };
         }
 
@@ -128,10 +131,13 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         {
             return () =>
             {
-                var cryptor = encrypt
-                    ? encAlg.CreateEncryptor(encAlg.Key, encAlg.IV)
-                    : encAlg.CreateDecryptor(encAlg.Key, encAlg.IV);
-                return pipe().ApplyTransform(cryptor);
+                using (encAlg)
+                {
+                    var cryptor = encrypt
+                        ? encAlg.CreateEncryptor(encAlg.Key, encAlg.IV)
+                        : encAlg.CreateDecryptor(encAlg.Key, encAlg.IV);
+                    return pipe().ApplyTransform(cryptor);
+                }
             };
         }
 
