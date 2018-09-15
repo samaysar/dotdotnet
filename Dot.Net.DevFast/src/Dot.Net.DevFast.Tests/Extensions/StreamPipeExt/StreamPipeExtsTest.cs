@@ -9,6 +9,7 @@ using Dot.Net.DevFast.Extensions.StreamExt;
 using Dot.Net.DevFast.Extensions.StreamPipeExt;
 using Dot.Net.DevFast.Extensions.StringExt;
 using Dot.Net.DevFast.Tests.TestHelpers;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
@@ -16,6 +17,19 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
     [TestFixture]
     public class StreamPipeExtTest
     {
+        [Test]
+        public async Task Stream_Streaming_With_Base64()
+        {
+            const string val = "Hello Streaming Worlds!";
+            using (var stream = (Stream) new MemoryStream(val.ToBytes(new UTF8Encoding(false))))
+            {
+                var outcome = Task.FromResult(stream).Push().ThenToBase64().AndWriteBytesAsync();
+                var valBack = await outcome.Pull().ThenFromBase64().AndWriteBytesAsync()
+                    .ConfigureAwait(false);
+                Assert.True(val.Equals(new UTF8Encoding(false).GetString(valBack)));
+            }
+        }
+
         [Test]
         public async Task String_Streaming_With_Base64()
         {
@@ -48,20 +62,6 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
                 .AndWriteBytesAsync()
                 .ConfigureAwait(false);
             Assert.True(val.Equals(new UTF8Encoding(false).GetString(valBack)));
-        }
-
-        [Test]
-        public async Task Encrypt_Decrypt_Harmonize()
-        {
-            await Encrypt_Decrypt_Harmonize<AesManaged>().ConfigureAwait(false);
-            await Encrypt_Decrypt_Harmonize<DESCryptoServiceProvider>().ConfigureAwait(false);
-            await Encrypt_Decrypt_Harmonize<TripleDESCryptoServiceProvider>().ConfigureAwait(false);
-            await Encrypt_Decrypt_Harmonize<RijndaelManaged>().ConfigureAwait(false);
-            await Encrypt_Decrypt_Harmonize<RC2CryptoServiceProvider>().ConfigureAwait(false);
-#if NET472
-            await Encrypt_Decrypt_Harmonize<AesCng>().ConfigureAwait(false);
-            await Encrypt_Decrypt_Harmonize<TripleDESCng>().ConfigureAwait(false);
-#endif
         }
 
         [Test]
@@ -176,6 +176,20 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
         }
 
         [Test]
+        public async Task Encrypt_Decrypt_Harmonize()
+        {
+            await Encrypt_Decrypt_Harmonize<AesManaged>().ConfigureAwait(false);
+            await Encrypt_Decrypt_Harmonize<DESCryptoServiceProvider>().ConfigureAwait(false);
+            await Encrypt_Decrypt_Harmonize<TripleDESCryptoServiceProvider>().ConfigureAwait(false);
+            await Encrypt_Decrypt_Harmonize<RijndaelManaged>().ConfigureAwait(false);
+            await Encrypt_Decrypt_Harmonize<RC2CryptoServiceProvider>().ConfigureAwait(false);
+#if NET472
+            await Encrypt_Decrypt_Harmonize<AesCng>().ConfigureAwait(false);
+            await Encrypt_Decrypt_Harmonize<TripleDESCng>().ConfigureAwait(false);
+#endif
+        }
+
+        [Test]
         public async Task Pull_To_Push_Is_Working_As_Needed()
         {
             Assert.True(new UTF8Encoding(false).GetString(await TestValues.BigString
@@ -197,13 +211,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
                 .Pull()
                 .ThenDecompress()
                 .AndParseJsonAsync<TestObject>().ConfigureAwait(false);
-            Assert.True(obj.IntProp.Equals(postStream.IntProp));
-            Assert.True(obj.StrProp.Equals(postStream.StrProp));
-            Assert.True(obj.BytesProp.Length.Equals(postStream.BytesProp.Length));
-            for (var i = 0; i < obj.BytesProp.Length; i++)
-            {
-                Assert.True(obj.BytesProp[i].Equals(postStream.BytesProp[i]));
-            }
+            AssertOnValueEquality(obj, postStream);
 
             //SYNC
             obj = new TestObject();
@@ -213,13 +221,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
                 .Pull()
                 .ThenDecompress()
                 .AndParseJson<TestObject>();
-            Assert.True(obj.IntProp.Equals(postStream.IntProp));
-            Assert.True(obj.StrProp.Equals(postStream.StrProp));
-            Assert.True(obj.BytesProp.Length.Equals(postStream.BytesProp.Length));
-            for (var i = 0; i < obj.BytesProp.Length; i++)
-            {
-                Assert.True(obj.BytesProp[i].Equals(postStream.BytesProp[i]));
-            }
+            AssertOnValueEquality(obj, postStream);
         }
 
         [Test]
@@ -240,33 +242,83 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
             var cnt = 0;
             foreach (var postStream in coll.GetConsumingEnumerable())
             {
-                Assert.True(obj[cnt].IntProp.Equals(postStream.IntProp));
-                Assert.True(obj[cnt].StrProp.Equals(postStream.StrProp));
-                Assert.True(obj[cnt].BytesProp.Length.Equals(postStream.BytesProp.Length));
-                for (var i = 0; i < obj[cnt].BytesProp.Length; i++)
-                {
-                    Assert.True(obj[cnt].BytesProp[i].Equals(postStream.BytesProp[i]));
-                }
+                AssertOnValueEquality(obj[cnt], postStream);
                 cnt++;
             }
 
             await writerTask.ConfigureAwait(false);
 
             //SYNC
+            var bc = new BlockingCollection<TestObject>(new ConcurrentQueue<TestObject>(obj));
+            bc.CompleteAdding();
             cnt = 0;
-            foreach (var postStream in (await obj.PushJson()
+            foreach (var postStream in (await bc.PushJsonArray()
                     .AndWriteBytesAsync().ConfigureAwait(false))
                 .Pull()
                 .AndParseJsonArray<TestObject>())
             {
-                Assert.True(obj[cnt].IntProp.Equals(postStream.IntProp));
-                Assert.True(obj[cnt].StrProp.Equals(postStream.StrProp));
-                Assert.True(obj[cnt].BytesProp.Length.Equals(postStream.BytesProp.Length));
-                for (var i = 0; i < obj[cnt].BytesProp.Length; i++)
-                {
-                    Assert.True(obj[cnt].BytesProp[i].Equals(postStream.BytesProp[i]));
-                }
+                AssertOnValueEquality(obj[cnt], postStream);
                 cnt++;
+            }
+        }
+
+        [Test]
+        public async Task Pull_Writes_To_Different_Sources_Consistently()
+        {
+            var fileName = Guid.NewGuid().ToString("N");
+            var file = AppDomain.CurrentDomain.BaseDirectory.ToDirectoryInfo().CreateFileInfo($"{fileName}.txt");
+            try
+            {
+                var obj = new TestObject();
+                var sourceForPull = await Task.FromResult(JsonConvert.SerializeObject(obj)
+                        .ToByteSegment(new UTF8Encoding(false)))
+                    .Push()
+                    .ThenCompress()
+                    .AndWriteBytesAsync().ConfigureAwait(false);
+                await sourceForPull
+                    .Pull()
+                    .ThenDecompress()
+                    .AndWriteFileAsync(file).ConfigureAwait(false);
+                AssertOnValueEquality(obj, JsonConvert.DeserializeObject<TestObject>(File.ReadAllText(file.FullName)));
+
+                var buff = await sourceForPull
+                    .Pull()
+                    .ThenDecompress()
+                    .AndWriteBufferAsync(seekToOrigin: true).ConfigureAwait(false);
+                AssertOnValueEquality(obj,
+                    JsonConvert.DeserializeObject<TestObject>(new UTF8Encoding(false).GetString(buff.ToArray())));
+
+                await sourceForPull
+                    .Pull()
+                    .ThenDecompress()
+                    .AndWriteStreamAsync(file.CreateStream(FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite),
+                        disposeTarget: true)
+                    .ConfigureAwait(false);
+                AssertOnValueEquality(obj, JsonConvert.DeserializeObject<TestObject>(File.ReadAllText(file.FullName)));
+
+                var strVal = await sourceForPull
+                    .Pull()
+                    .ThenDecompress()
+                    .AndWriteStringAsync().ConfigureAwait(false);
+                AssertOnValueEquality(obj, JsonConvert.DeserializeObject<TestObject>(strVal));
+
+                var strBuild = await sourceForPull
+                    .Pull()
+                    .ThenDecompress()
+                    .AndWriteStringBuilderAsync().ConfigureAwait(false);
+                AssertOnValueEquality(obj, JsonConvert.DeserializeObject<TestObject>(strBuild.ToString()));
+
+                strBuild.Clear();
+                await sourceForPull
+                    .Pull()
+                    .ThenDecompress()
+                    .AndWriteStringBuilderAsync(strBuild).ConfigureAwait(false);
+                AssertOnValueEquality(obj, JsonConvert.DeserializeObject<TestObject>(strBuild.ToString()));
+            }
+            finally
+            {
+                file.Refresh();
+                file.Delete();
             }
         }
 
@@ -406,6 +458,17 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
             Assert.True(new UTF8Encoding(false).GetString(pipeOutcome).Equals(TestValues.BigString));
             Assert.False(md51.Hash.ToBase64().Equals(md52.Hash.ToBase64()));
             Assert.False(sha1.Hash.ToBase64().Equals(sha2.Hash.ToBase64()));
+        }
+
+        private static void AssertOnValueEquality(TestObject obj, TestObject postStream)
+        {
+            Assert.True(obj.IntProp.Equals(postStream.IntProp));
+            Assert.True(obj.StrProp.Equals(postStream.StrProp));
+            Assert.True(obj.BytesProp.Length.Equals(postStream.BytesProp.Length));
+            for (var i = 0; i < obj.BytesProp.Length; i++)
+            {
+                Assert.True(obj.BytesProp[i].Equals(postStream.BytesProp[i]));
+            }
         }
     }
 }

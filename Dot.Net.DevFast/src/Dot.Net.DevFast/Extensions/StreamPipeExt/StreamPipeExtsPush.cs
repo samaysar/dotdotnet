@@ -246,8 +246,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <summary>
         /// Pushes the equivalent json representation of the object and returns a new pipe for chaining.
         /// <para>NOTE: Use <see cref="PushJsonAsync{T}"/> for <seealso cref="Task{T}"/>
-        /// and use <see cref="PushJsonArray{T}"/> for <seealso cref="BlockingCollection{T}"/> or
-        /// <seealso cref="IEnumerable{T}"/>.</para>
+        /// and use <see cref="PushJsonArray{T}"/> for any implementation of <seealso cref="IEnumerable{T}"/>.</para>
         /// </summary>
         /// <typeparam name="T">Type of object to serialize</typeparam>
         /// <param name="obj">Object to serialize as json text</param>
@@ -271,6 +270,10 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <summary>
         /// Pushes the equivalent json array representation of the objects in the given blocking collection
         /// and returns a new pipe for chaining.
+        /// <para>IMPORTANT: If passed collection is <seealso cref="BlockingCollection{T}"/>, then
+        /// the method uses the instance of <paramref name="pcts"/> to suport the error signaling in
+        /// concurrent producer-consumer. For any other kind of collection (including other concurrent collection),
+        /// the implementation simply ignores the <paramref name="pcts"/> instance.</para>
         /// </summary>
         /// <typeparam name="T">Type of object to serialize</typeparam>
         /// <param name="obj">Object to serialize as json text</param>
@@ -280,8 +283,9 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
         /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
         /// <param name="writerBuffer">Buffer size for the stream writer</param>
-        /// <param name="pcts">source to cancel in case some error is encountered. Normally,
-        /// this source token is observed at data producer side.</param>
+        /// <param name="pcts">Source to cancel in case some error is encountered. Normally,
+        /// this source token is observed at data producer side.
+        /// <para>NOTE: Used ONLY when supplied collection is <seealso cref="BlockingCollection{T}"/></para></param>
         /// <param name="autoFlush">True to enable auto-flushing else false</param>
         public static Func<PushFuncStream, Task> PushJsonArray<T>(this IEnumerable<T> obj,
             JsonSerializer serializer = null,
