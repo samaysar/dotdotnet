@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -19,13 +20,32 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
         public async Task String_Streaming_With_Base64()
         {
             const string val = "Hello Streaming Worlds!";
-            var outcome = await Task.FromResult(val).Push().ThenToBase64().ThenFromBase64().AndWriteBytesAsync()
-                .ConfigureAwait(false);
-            var valBack = await Task.FromResult(outcome).Pull().ThenToBase64().ThenFromBase64().AndWriteBytesAsync()
+            var outcome = Task.FromResult(val).Push().ThenToBase64().AndWriteBytesAsync();
+            var valBack = await outcome.Pull().ThenFromBase64().AndWriteBytesAsync()
                 .ConfigureAwait(false);
             Assert.True(val.Equals(new UTF8Encoding(false).GetString(valBack)));
 
-            valBack = await outcome.Pull().ThenToBase64().ThenFromBase64().AndWriteBytesAsync()
+            valBack = await outcome.Result.Pull().ThenFromBase64().AndWriteBytesAsync()
+                .ConfigureAwait(false);
+            Assert.True(val.Equals(new UTF8Encoding(false).GetString(valBack)));
+
+            //Coverage Test - PUSH
+            valBack = await outcome.Push().ThenFromBase64().AndWriteBytesAsync()
+                .ConfigureAwait(false);
+            Assert.True(val.Equals(new UTF8Encoding(false).GetString(valBack)));
+
+            //Coverage Test - PULL
+            valBack = await outcome.Pull().ThenToBase64()
+                .ThenFromBase64()
+                .ThenFromBase64()
+                .AndWriteBytesAsync()
+                .ConfigureAwait(false);
+            Assert.True(val.Equals(new UTF8Encoding(false).GetString(valBack)));
+
+            valBack = await outcome.Result.Pull().ThenToBase64()
+                .ThenFromBase64()
+                .ThenFromBase64()
+                .AndWriteBytesAsync()
                 .ConfigureAwait(false);
             Assert.True(val.Equals(new UTF8Encoding(false).GetString(valBack)));
         }
@@ -124,17 +144,27 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
                     )
                     .ThenCompress()
                     .AndWriteFileAsync(file.DirectoryName).ConfigureAwait(false);
-                var unecryptedUncompressedData = await encryptedCompressedFile.Directory
+                var fileRevOps = await encryptedCompressedFile.Directory
                     .Pull(encryptedCompressedFile.Name)
                     .ThenDecompress()
-                    .ThenConvertToPush()
                     .ThenDecrypt<AesManaged>(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt
 #if NET472
                         , HashAlgorithmName.SHA512
 #endif
                     )
-                    .AndWriteBytesAsync().ConfigureAwait(false);
-                Assert.True(TestValues.BigString.Equals(new UTF8Encoding(false).GetString(unecryptedUncompressedData)));
+                    .AndWriteFileAsync(file.DirectoryName, file.Name).ConfigureAwait(false);
+                Assert.True(TestValues.BigString.Equals(File.ReadAllText(fileRevOps.FullName)));
+
+                fileRevOps = await encryptedCompressedFile.Directory
+                    .Pull(encryptedCompressedFile.Name)
+                    .ThenDecompress()
+                    .ThenDecrypt<AesManaged>(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt
+#if NET472
+                        , HashAlgorithmName.SHA512
+#endif
+                    )
+                    .AndWriteFileAsync(file.Directory, file.Name).ConfigureAwait(false);
+                Assert.True(TestValues.BigString.Equals(File.ReadAllText(fileRevOps.FullName)));
             }
             finally
             {
@@ -142,6 +172,101 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
                 file.Delete();
                 encryptedCompressedFile?.Refresh();
                 encryptedCompressedFile?.Delete();
+            }
+        }
+
+        [Test]
+        public async Task Pull_To_Push_Is_Working_As_Needed()
+        {
+            Assert.True(new UTF8Encoding(false).GetString(await TestValues.BigString
+                .ToByteSegment(new UTF8Encoding(false))
+                .Pull()
+                .ThenConvertToPush()
+                .AndWriteBytesAsync()
+                .ConfigureAwait(false)).Equals(TestValues.BigString));
+        }
+
+        [Test]
+        public async Task Object_ToJson_Then_Back_Object_In_Streaming()
+        {
+            //ASYNC
+            var obj = new TestObject();
+            var postStream = await Task.FromResult(obj).PushJsonAsync()
+                .ThenCompress()
+                .AndWriteBytesAsync()
+                .Pull()
+                .ThenDecompress()
+                .AndParseJsonAsync<TestObject>().ConfigureAwait(false);
+            Assert.True(obj.IntProp.Equals(postStream.IntProp));
+            Assert.True(obj.StrProp.Equals(postStream.StrProp));
+            Assert.True(obj.BytesProp.Length.Equals(postStream.BytesProp.Length));
+            for (var i = 0; i < obj.BytesProp.Length; i++)
+            {
+                Assert.True(obj.BytesProp[i].Equals(postStream.BytesProp[i]));
+            }
+
+            //SYNC
+            obj = new TestObject();
+            postStream = (await obj.PushJson()
+                    .ThenCompress()
+                    .AndWriteBytesAsync().ConfigureAwait(false))
+                .Pull()
+                .ThenDecompress()
+                .AndParseJson<TestObject>();
+            Assert.True(obj.IntProp.Equals(postStream.IntProp));
+            Assert.True(obj.StrProp.Equals(postStream.StrProp));
+            Assert.True(obj.BytesProp.Length.Equals(postStream.BytesProp.Length));
+            for (var i = 0; i < obj.BytesProp.Length; i++)
+            {
+                Assert.True(obj.BytesProp[i].Equals(postStream.BytesProp[i]));
+            }
+        }
+
+        [Test]
+        public async Task Object_Array_ToJson_Then_Back_Object_In_Streaming()
+        {
+            var obj = new TestObject[5];
+            for (var i = 0; i < obj.Length; i++)
+            {
+                obj[i] = new TestObject();
+            }
+
+            //ASYNC
+            var coll = new BlockingCollection<TestObject>();
+            var writerTask = Task.Run(async () => await obj.PushJsonArray()
+                .AndWriteBytesAsync()
+                .Pull()
+                .AndParseJsonArrayAsync(coll).ConfigureAwait(false));
+            var cnt = 0;
+            foreach (var postStream in coll.GetConsumingEnumerable())
+            {
+                Assert.True(obj[cnt].IntProp.Equals(postStream.IntProp));
+                Assert.True(obj[cnt].StrProp.Equals(postStream.StrProp));
+                Assert.True(obj[cnt].BytesProp.Length.Equals(postStream.BytesProp.Length));
+                for (var i = 0; i < obj[cnt].BytesProp.Length; i++)
+                {
+                    Assert.True(obj[cnt].BytesProp[i].Equals(postStream.BytesProp[i]));
+                }
+                cnt++;
+            }
+
+            await writerTask.ConfigureAwait(false);
+
+            //SYNC
+            cnt = 0;
+            foreach (var postStream in (await obj.PushJson()
+                    .AndWriteBytesAsync().ConfigureAwait(false))
+                .Pull()
+                .AndParseJsonArray<TestObject>())
+            {
+                Assert.True(obj[cnt].IntProp.Equals(postStream.IntProp));
+                Assert.True(obj[cnt].StrProp.Equals(postStream.StrProp));
+                Assert.True(obj[cnt].BytesProp.Length.Equals(postStream.BytesProp.Length));
+                for (var i = 0; i < obj[cnt].BytesProp.Length; i++)
+                {
+                    Assert.True(obj[cnt].BytesProp[i].Equals(postStream.BytesProp[i]));
+                }
+                cnt++;
             }
         }
 

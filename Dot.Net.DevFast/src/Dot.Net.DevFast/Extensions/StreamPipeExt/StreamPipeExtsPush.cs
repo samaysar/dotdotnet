@@ -229,15 +229,17 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
         /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
         /// <param name="writerBuffer">Buffer size for the stream writer</param>
-        public static Func<PushFuncStream, Task> PushJson<T>(this Task<T> objTask,
+        /// <param name="autoFlush">True to enable auto-flushing else false</param>
+        public static Func<PushFuncStream, Task> PushJsonAsync<T>(this Task<T> objTask,
             JsonSerializer serializer = null,
             Encoding enc = null,
-            int writerBuffer = StdLookUps.DefaultFileBufferSize)
+            int writerBuffer = StdLookUps.DefaultFileBufferSize,
+            bool autoFlush = false)
         {
             return async pfs =>
             {
                 var obj = await objTask.StartIfNeeded().ConfigureAwait(false);
-                await obj.PushJson(serializer, enc, writerBuffer)(pfs).ConfigureAwait(false);
+                await obj.PushJson(serializer, enc, writerBuffer, autoFlush)(pfs).ConfigureAwait(false);
             };
         }
 
@@ -275,7 +277,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
         /// <param name="writerBuffer">Buffer size for the stream writer</param>
         /// <param name="autoFlush">True to enable auto-flushing else false</param>
-        public static Func<PushFuncStream, Task> PushJson<T>(this IEnumerable<T> obj,
+        public static Func<PushFuncStream, Task> PushJsonArray<T>(this IEnumerable<T> obj,
             JsonSerializer serializer = null,
             Encoding enc = null,
             int writerBuffer = StdLookUps.DefaultFileBufferSize,
@@ -300,7 +302,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="pcts">source to cancel in case some error is encountered. Normally,
         /// this source token is observed at data producer side.</param>
         /// <param name="autoFlush">True to enable auto-flushing else false</param>
-        public static Func<PushFuncStream, Task> PushJson<T>(this BlockingCollection<T> obj,
+        public static Func<PushFuncStream, Task> PushJsonArray<T>(this BlockingCollection<T> obj,
             JsonSerializer serializer = null,
             Encoding enc = null,
             int writerBuffer = StdLookUps.DefaultFileBufferSize,
@@ -421,11 +423,12 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             bool include = true)
             where T : SymmetricAlgorithm, new()
         {
-            return src.ThenApply(s => s.ApplyCrypto(new T
+            var encAlg = new T
             {
                 Mode = cipher,
                 Padding = padding
-            }.InitKeyNIv(password, salt,
+            };
+            return src.ThenApply(s => s.ApplyCrypto(encAlg.InitKeyNIv(password, salt,
 #if NET472
                 hashName,
 #endif
@@ -507,11 +510,12 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             bool include = true)
             where T : SymmetricAlgorithm, new()
         {
-            return src.ThenApply(s => s.ApplyCrypto(new T
+            var encAlg = new T
             {
                 Mode = cipher,
                 Padding = padding
-            }.InitKeyNIv(password, salt,
+            };
+            return src.ThenApply(s => s.ApplyCrypto(encAlg.InitKeyNIv(password, salt,
 #if NET472
                 hashName,
 #endif
