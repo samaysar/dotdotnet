@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions.Internals;
+using Dot.Net.DevFast.Extensions.JsonExt;
+using Newtonsoft.Json;
 
 namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 {
@@ -74,6 +79,21 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
                     s.DisposeIfRequired(pfs.Dispose);
                 }
             };
+        }
+
+        internal static Func<PushFuncStream, Task> PushJsonEnumeration<T>(this IEnumerable<T> obj,
+            JsonSerializer serializer, Encoding enc, int writerBuffer, bool autoFlush)
+        {
+            return new Action<PushFuncStream>(pfs => obj.ToJsonArray(pfs.Writable, serializer, pfs.Token,
+                enc, writerBuffer, pfs.Dispose, autoFlush)).ToAsync(false);
+        }
+
+        internal static Func<PushFuncStream, Task> PushJsonEnumeration<T>(this BlockingCollection<T> obj,
+            JsonSerializer serializer, Encoding enc, int writerBuffer,
+            CancellationTokenSource pcts, bool autoFlush)
+        {
+            return new Action<PushFuncStream>(pfs => obj.ToJsonArrayParallely(pfs.Writable, serializer,
+                pfs.Token, pcts, enc, writerBuffer, pfs.Dispose, autoFlush)).ToAsync(false);
         }
 
         #region PullFuncStream TASK

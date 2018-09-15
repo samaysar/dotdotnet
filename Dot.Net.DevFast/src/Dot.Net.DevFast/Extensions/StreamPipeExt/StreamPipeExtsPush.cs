@@ -245,6 +245,9 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 
         /// <summary>
         /// Pushes the equivalent json representation of the object and returns a new pipe for chaining.
+        /// <para>NOTE: Use <see cref="PushJsonAsync{T}"/> for <seealso cref="Task{T}"/>
+        /// and use <see cref="PushJsonArray{T}"/> for <seealso cref="BlockingCollection{T}"/> or
+        /// <seealso cref="IEnumerable{T}"/>.</para>
         /// </summary>
         /// <typeparam name="T">Type of object to serialize</typeparam>
         /// <param name="obj">Object to serialize as json text</param>
@@ -266,28 +269,6 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         /// <summary>
-        /// Pushes the equivalent json array representation using the enumeration and returns a new pipe for chaining.
-        /// </summary>
-        /// <typeparam name="T">Type of object to serialize</typeparam>
-        /// <param name="obj">Object to serialize as json text</param>
-        /// <param name="serializer">if not provided, JsonSerializer with default values
-        /// (see also <seealso cref="CustomJson.Serializer()"/>) will be used.</param>
-        /// <param name="enc">Encoding to use while writing the file.
-        /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
-        /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
-        /// <param name="writerBuffer">Buffer size for the stream writer</param>
-        /// <param name="autoFlush">True to enable auto-flushing else false</param>
-        public static Func<PushFuncStream, Task> PushJsonArray<T>(this IEnumerable<T> obj,
-            JsonSerializer serializer = null,
-            Encoding enc = null,
-            int writerBuffer = StdLookUps.DefaultFileBufferSize,
-            bool autoFlush = false)
-        {
-            return new Action<PushFuncStream>(pfs => obj.ToJsonArray(pfs.Writable, serializer, pfs.Token,
-                enc, writerBuffer, pfs.Dispose, autoFlush)).ToAsync(false);
-        }
-
-        /// <summary>
         /// Pushes the equivalent json array representation of the objects in the given blocking collection
         /// and returns a new pipe for chaining.
         /// </summary>
@@ -302,15 +283,16 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="pcts">source to cancel in case some error is encountered. Normally,
         /// this source token is observed at data producer side.</param>
         /// <param name="autoFlush">True to enable auto-flushing else false</param>
-        public static Func<PushFuncStream, Task> PushJsonArray<T>(this BlockingCollection<T> obj,
+        public static Func<PushFuncStream, Task> PushJsonArray<T>(this IEnumerable<T> obj,
             JsonSerializer serializer = null,
             Encoding enc = null,
             int writerBuffer = StdLookUps.DefaultFileBufferSize,
             CancellationTokenSource pcts = default(CancellationTokenSource),
             bool autoFlush = false)
         {
-            return new Action<PushFuncStream>(pfs => obj.ToJsonArrayParallely(pfs.Writable, serializer,
-                pfs.Token, pcts, enc, writerBuffer, pfs.Dispose, autoFlush)).ToAsync(false);
+            return obj is BlockingCollection<T> collection
+                ? collection.PushJsonEnumeration(serializer, enc, writerBuffer, pcts, autoFlush)
+                : obj.PushJsonEnumeration(serializer, enc, writerBuffer, autoFlush);
         }
 
         #endregion Various Push
