@@ -48,9 +48,9 @@ namespace Dot.Net.DevFast.Extensions.Internals
 
         internal static async Task CopyToBuilderAsync(this Stream readable,
             StringBuilder target, CancellationToken token, Encoding encoding, int bufferSize,
-            bool disposeReadable)
+            bool disposeReadable, bool detectEncodingFromBom = true)
         {
-            using (var reader = readable.CreateReader(encoding, bufferSize, disposeReadable))
+            using (var reader = readable.CreateReader(encoding, bufferSize, disposeReadable, detectEncodingFromBom))
             {
                 var charBuffer = new char[bufferSize];
                 int charCnt;
@@ -120,6 +120,21 @@ namespace Dot.Net.DevFast.Extensions.Internals
             }
         }
 
+        internal static async Task CopyToAsync(this Stream readable, Stream writable,
+            int bufferSize, CancellationToken token, bool disposeReadable, bool disposeWritable)
+        {
+            try
+            {
+                await readable.CopyToAsync(writable, bufferSize, token).ConfigureAwait(false);
+                await writable.FlushAsync(token).ConfigureAwait(false);
+                readable.DisposeIfRequired(disposeReadable);
+            }
+            finally
+            {
+                writable.DisposeIfRequired(disposeWritable);
+            }
+        }
+
         internal static async Task<ArraySegment<byte>> CopyToSegmentWithDisposeAsync(this Stream readable,
             int bufferSize, CancellationToken token)
         {
@@ -130,6 +145,20 @@ namespace Dot.Net.DevFast.Extensions.Internals
                     await readable.CopyToAsync(localBuffer, bufferSize, token).ConfigureAwait(false);
                 }
                 return localBuffer.ThrowIfNoBuffer();
+            }
+        }
+
+        internal static async Task CopyFromAsync(this Stream writable, ArraySegment<byte> input,
+            CancellationToken token, bool disposeWritable)
+        {
+            try
+            {
+                await writable.WriteAsync(input.Array, input.Offset, input.Count, token).ConfigureAwait(false);
+                await writable.FlushAsync(token).ConfigureAwait(false);
+            }
+            finally
+            {
+                writable.DisposeIfRequired(disposeWritable);
             }
         }
     }

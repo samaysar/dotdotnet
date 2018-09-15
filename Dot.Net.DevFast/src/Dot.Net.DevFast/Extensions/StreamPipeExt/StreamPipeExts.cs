@@ -1,76 +1,204 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO.Compression;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using Dot.Net.DevFast.Etc;
+using System.Threading.Tasks;
+using Dot.Net.DevFast.Extensions.Internals;
+using Dot.Net.DevFast.Extensions.JsonExt;
 using Newtonsoft.Json;
 
 namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 {
-    /// <summary>
-    /// Extensions methods on stream pipes.
-    /// </summary>
     public static partial class StreamPipeExts
     {
-        /// <summary>
-        /// Creates the equivalent json representation of the object.
-        /// </summary>
-        /// <typeparam name="T">Type of object to serialize</typeparam>
-        /// <param name="obj">Object to serialize as json text</param>
-        /// <param name="serializer">if not provided, JsonSerializer with default values will be used.</param>
-        /// <param name="enc">Encoding to use while writing the file. If not supplied, by default <seealso cref="Encoding.UTF8"/>
-        /// (WwithOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
-        /// <param name="writerBuffer">Buffer size for the stream writer</param>
-        public static IJsonPipe SerializeAsJson<T>(this T obj, JsonSerializer serializer = null,
-            Encoding enc = null, int writerBuffer = StdLookUps.DefaultFileBufferSize)
+        // we keep internal extensions here
+        internal static Func<PushFuncStream, Task> ApplyCompression(this Func<PushFuncStream, Task> pipe,
+            bool gzip,
+            CompressionLevel level)
         {
-            return new JsonObjectPipe<T>(obj, serializer, enc ?? new UTF8Encoding(false), writerBuffer);
+            return async pfs =>
+            {
+                var s = pfs.Writable;
+                var t = pfs.Token;
+                using (var compStrm = s.CreateCompressionStream(gzip, level, pfs.Dispose))
+                {
+                    await pipe(new PushFuncStream(compStrm, false, t)).StartIfNeeded().ConfigureAwait(false);
+                    await compStrm.FlushAsync(t).ConfigureAwait(false);
+                    await s.FlushAsync(t).ConfigureAwait(false);
+                }
+            };
         }
 
-        /// <summary>
-        /// Creates the equivalent json array representation using the enumeration.
-        /// </summary>
-        /// <typeparam name="T">Type of object to serialize</typeparam>
-        /// <param name="obj">Object to serialize as json text</param>
-        /// <param name="serializer">if not provided, JsonSerializer with default values will be used.</param>
-        /// <param name="enc">Encoding to use while writing the file. If not supplied, by default <seealso cref="Encoding.UTF8"/>
-        /// (WwithOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
-        /// <param name="writerBuffer">Buffer size for the stream writer</param>
-        public static IJsonPipe SerializeAsJson<T>(this IEnumerable<T> obj, JsonSerializer serializer = null,
-            Encoding enc = null, int writerBuffer = StdLookUps.DefaultFileBufferSize)
+        internal static Func<PushFuncStream, Task> ApplyCrypto<T>(this Func<PushFuncStream, Task> pipe,
+            T encAlg, bool encrypt)
+            where T : SymmetricAlgorithm
         {
-            return new JsonEnumeratorPipe<T>(obj, serializer, enc ?? new UTF8Encoding(false), writerBuffer);
+            return async pfs =>
+            {
+                using (encAlg)
+                {
+                    var cryptor = encrypt
+                        ? encAlg.CreateEncryptor(encAlg.Key, encAlg.IV)
+                        : encAlg.CreateDecryptor(encAlg.Key, encAlg.IV);
+                    using (cryptor)
+                    {
+                        await pipe.ApplyTransform(cryptor)(pfs).ConfigureAwait(false);
+                    }
+                }
+            };
         }
 
-        /// <summary>
-        /// Creates the equivalent json array representation of the objects in the given blocking collection.
-        /// </summary>
-        /// <typeparam name="T">Type of object to serialize</typeparam>
-        /// <param name="obj">Object to serialize as json text</param>
-        /// <param name="serializer">if not provided, JsonSerializer with default values will be used.</param>
-        /// <param name="enc">Encoding to use while writing the file. If not supplied, by default <seealso cref="Encoding.UTF8"/>
-        /// (WwithOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
-        /// <param name="writerBuffer">Buffer size for the stream writer</param>
-        /// <param name="pcts">source to cancel in case some error is encountered. Normally,
-        /// this source token is observed at data producer side.</param>
-        public static IJsonPipe SerializeAsJson<T>(this BlockingCollection<T> obj, JsonSerializer serializer = null,
-            Encoding enc = null, int writerBuffer = StdLookUps.DefaultFileBufferSize,
-            CancellationTokenSource pcts = default (CancellationTokenSource))
+        internal static Func<PushFuncStream, Task> ApplyTransform(this Func<PushFuncStream, Task> pipe,
+            ICryptoTransform ct)
         {
-            return new JsonBcPipe<T>(obj, serializer, pcts, enc ?? new UTF8Encoding(false), writerBuffer);
+            return async pfs =>
+            {
+                await pipe(new PushFuncStream(
+                        pfs.Writable.CreateCryptoStream(ct, CryptoStreamMode.Write, pfs.Dispose), true, pfs.Token))
+                    .StartIfNeeded().ConfigureAwait(false);
+            };
         }
 
-        /// <summary>
-        /// Compresses the data of given Stream pipe as source.
-        /// </summary>
-        /// <param name="src">Source whose data to compress</param>
-        /// <param name="gzip">If true, <seealso cref="GZipStream"/> is used else <seealso cref="DeflateStream"/> is used</param>
-        /// <param name="level">Compression level to use.</param>
-        public static ICompressedPipe ThenCompress(this IStreamPipe src, bool gzip = true,
-            CompressionLevel level = CompressionLevel.Optimal)
+        internal static Func<PushFuncStream, Task> ApplyLoad(this Action<int, char[], int, int> loadAction,
+            int totalLen,
+            Encoding enc,
+            int bufferSize)
         {
-            return new CompressedPipe(src, gzip, level);
+            return async pfs =>
+            {
+                var s = pfs.Writable;
+                try
+                {
+                    await s.CopyFromAsync(totalLen, enc, pfs.Token, bufferSize, loadAction).ConfigureAwait(false);
+                }
+                finally
+                {
+                    s.DisposeIfRequired(pfs.Dispose);
+                }
+            };
+        }
+
+        internal static Func<PushFuncStream, Task> PushJsonEnumeration<T>(this IEnumerable<T> obj,
+            JsonSerializer serializer, Encoding enc, int writerBuffer, bool autoFlush)
+        {
+            return new Action<PushFuncStream>(pfs => obj.ToJsonArray(pfs.Writable, serializer, pfs.Token,
+                enc, writerBuffer, pfs.Dispose, autoFlush)).ToAsync(false);
+        }
+
+        internal static Func<PushFuncStream, Task> PushJsonEnumeration<T>(this BlockingCollection<T> obj,
+            JsonSerializer serializer, Encoding enc, int writerBuffer,
+            CancellationTokenSource pcts, bool autoFlush)
+        {
+            return new Action<PushFuncStream>(pfs => obj.ToJsonArrayParallely(pfs.Writable, serializer,
+                pfs.Token, pcts, enc, writerBuffer, pfs.Dispose, autoFlush)).ToAsync(false);
+        }
+
+        #region PullFuncStream TASK
+
+        internal static Func<Task<PullFuncStream>> ApplyDecompression(this Func<Task<PullFuncStream>> pipe,
+            bool gzip)
+        {
+            return async () =>
+            {
+                var data = await pipe().StartIfNeeded().ConfigureAwait(false);
+                return data.ApplyDecompression(gzip);
+            };
+        }
+
+        internal static Func<Task<PullFuncStream>> ApplyCrypto<T>(this Func<Task<PullFuncStream>> pipe,
+            T encAlg, bool encrypt)
+            where T : SymmetricAlgorithm
+        {
+            return async () =>
+            {
+                var data = await pipe().StartIfNeeded().ConfigureAwait(false);
+                using (encAlg)
+                {
+                    var cryptor = encrypt
+                        ? encAlg.CreateEncryptor(encAlg.Key, encAlg.IV)
+                        : encAlg.CreateDecryptor(encAlg.Key, encAlg.IV);
+                    return data.ApplyTransform(cryptor);
+                }
+            };
+        }
+
+        internal static Func<Task<PullFuncStream>> ApplyTransform(this Func<Task<PullFuncStream>> pipe,
+            ICryptoTransform ct)
+        {
+            return async () =>
+            {
+                var data = await pipe().StartIfNeeded().ConfigureAwait(false);
+                return data.ApplyTransform(ct);
+            };
+        }
+
+        #endregion PullFuncStream TASK
+
+        #region PullFuncStream NoTASK
+
+        internal static Func<PullFuncStream> ApplyDecompression(this Func<PullFuncStream> pipe,
+            bool gzip)
+        {
+            return () => pipe().ApplyDecompression(gzip);
+        }
+
+        internal static Func<PullFuncStream> ApplyCrypto<T>(this Func<PullFuncStream> pipe,
+            T encAlg, bool encrypt)
+            where T : SymmetricAlgorithm
+        {
+            return () =>
+            {
+                using (encAlg)
+                {
+                    var cryptor = encrypt
+                        ? encAlg.CreateEncryptor(encAlg.Key, encAlg.IV)
+                        : encAlg.CreateDecryptor(encAlg.Key, encAlg.IV);
+                    return pipe().ApplyTransform(cryptor);
+                }
+            };
+        }
+
+        internal static Func<PullFuncStream> ApplyTransform(this Func<PullFuncStream> pipe,
+            ICryptoTransform ct)
+        {
+            return () => pipe().ApplyTransform(ct);
+        }
+
+        #endregion PullFuncStream NoTASK
+
+        #region PullFuncStream PRIVATE
+
+        private static PullFuncStream ApplyDecompression(this PullFuncStream data, bool gzip)
+        {
+            return new PullFuncStream(data.Readable.CreateDecompressionStream(gzip, data.Dispose), true);
+        }
+
+        private static PullFuncStream ApplyTransform(this PullFuncStream data, ICryptoTransform ct)
+        {
+            return new PullFuncStream(data.Readable.CreateCryptoStream(ct, CryptoStreamMode.Read, data.Dispose), true);
+        }
+
+        #endregion PullFuncStream PRIVATE
+
+        internal static T InitKeyNIv<T>(this T alg, string password, string salt,
+#if NET472
+            HashAlgorithmName hashName,
+#endif
+            int loopCnt,
+            Encoding enc)
+            where T : SymmetricAlgorithm
+        {
+            var keyIv = password.CreateKeyAndIv(salt,
+#if NET472
+                hashName,
+#endif
+                alg.KeySize / 8, alg.BlockSize / 8, loopCnt, enc);
+            alg.Key = keyIv.Item1;
+            alg.IV = keyIv.Item2;
+            return alg;
         }
     }
 }

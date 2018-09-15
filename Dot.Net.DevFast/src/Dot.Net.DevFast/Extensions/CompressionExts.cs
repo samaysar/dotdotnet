@@ -134,7 +134,7 @@ namespace Dot.Net.DevFast.Extensions
             CancellationToken token = default(CancellationToken), Encoding enc = null, 
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeSource = false)
         {
-            var strBuilder = new StringBuilder(256);
+            var strBuilder = new StringBuilder(StdLookUps.DefaultStringBuilderSize);
             await source.DecompressAsync(strBuilder, gzip, token, enc, bufferSize, disposeSource).ConfigureAwait(false);
             return strBuilder.ToString();
         }
@@ -152,12 +152,14 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="enc">Encoding to use to get string bytes, if not supplied <seealso cref="Encoding.UTF8"/> is used</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeSource">If true, <paramref name="source"/> is disposed after the operation.</param>
+        /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
         public static Task DecompressAsync(this Stream source, StringBuilder target, bool gzip = true,
             CancellationToken token = default(CancellationToken), Encoding enc = null, 
-            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeSource = false)
+            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeSource = false,
+            bool detectEncodingFromBom = true)
         {
             return source.CreateDecompressionStream(gzip, disposeSource)
-                .CopyToBuilderAsync(target, token, enc ?? Encoding.UTF8, bufferSize, true);
+                .CopyToBuilderAsync(target, token, enc ?? Encoding.UTF8, bufferSize, detectEncodingFromBom);
         }
 
         /// <summary>
