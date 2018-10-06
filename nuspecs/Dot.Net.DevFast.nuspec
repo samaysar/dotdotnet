@@ -11,7 +11,7 @@
     <repository type="git" url="https://github.com/samaysar/dotdotnet"/>
     <iconUrl>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/nuspecs/pkgdt/ddn.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Library to program .Net solutions in most declarative way. DevFast as a library contains, simplest to use yet powerful, set of extensions to increase dev productivity. Use it with confidence, write robust and efficient codes. See also https://rawgit.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/articles/SimplyDevFast.html for DevFast related Articles.</description>
+    <description>A.K.A. Productivity! Otherwise, it is a library to program .Net solutions in most declarative way. DevFast as a library contains, simplest to use yet powerful, set of extensions to increase dev productivity. For the moment, it contains APIs for streaming, concurrent data productivity and more. See also https://rawgit.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/articles/SimplyDevFast.html for DevFast related Articles.</description>
     <releaseNotes>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/ReleaseNotes.txt</releaseNotes>
     <copyright>Copyright © Divya Sarthi MAHESHWARI 2017</copyright>
     <tags>devfast fastdev dot.net stream-processing declarative-programming extension-methods fastdevelopement</tags>

@@ -55,11 +55,11 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             {
                 using (parallelConsumer)
                 {
-                    await parallelConsumer.InitAsync().ConfigureAwait(false);
+                    await parallelConsumer.InitAsync().StartIfNeeded().ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     while (adapter.TryGet(feed, token, out var consumable))
                     {
-                        await parallelConsumer.ConsumeAsync(consumable, token).ConfigureAwait(false);
+                        await parallelConsumer.ConsumeAsync(consumable, token).StartIfNeeded().ConfigureAwait(false);
                     }
                 }
             }
@@ -97,9 +97,9 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             {
                 using (parallelProducer)
                 {
-                    await parallelProducer.InitAsync().ConfigureAwait(false);
+                    await parallelProducer.InitAsync().StartIfNeeded().ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
-                    await parallelProducer.ProduceAsync(feed, token).ConfigureAwait(false);
+                    await parallelProducer.ProduceAsync(feed, token).StartIfNeeded().ConfigureAwait(false);
                 }
             }
             catch
