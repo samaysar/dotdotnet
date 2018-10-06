@@ -12,7 +12,7 @@
     <Title>DevFast</Title>
     <Authors>Divya Sarthi MAHESHWARI</Authors>
     <Owners>samaysar</Owners>
-    <Description>A.K.A. Productivity! Otherwise, it is a library to program .Net solutions in most declarative way. DevFast as a library contains, simplest to use yet powerful, set of extensions to increase dev productivity. For the moment, it contains APIs for streaming, concurrent data productivity and more. See also https://rawgit.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/articles/SimplyDevFast.html for DevFast related Articles.</description>
+    <Description>A.K.A. Productivity! Otherwise, it is a library to program .Net solutions in most declarative way. DevFast as a library contains, simplest to use yet powerful, set of extensions to increase dev productivity. For the moment, it contains APIs for streaming, concurrent data productivity and more. See also https://rawgit.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/articles/SimplyDevFast.html for DevFast related Articles.</Description>
     <Copyright>Copyright © Divya Sarthi MAHESHWARI 2017</Copyright>
     <PackageLicenseUrl>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/samaysar/dotdotnet</PackageProjectUrl>
