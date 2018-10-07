@@ -132,7 +132,9 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             using (var instance = new Pipeline<object, List<object>>(consumers,
                 new IdentityAwaitableListAdapter<object>(2, 0), CancellationToken.None, 1))
             {
+                Assert.True(instance.UnconsumedCount == 0);
                 instance.Add(new object(), CancellationToken.None);
+                Assert.True(instance.UnconsumedCount < 2);
             }
 
             //we check all the counts after dispose! as per documented algo... dispose waits for all

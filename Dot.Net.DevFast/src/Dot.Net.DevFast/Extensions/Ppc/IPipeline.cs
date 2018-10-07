@@ -17,5 +17,10 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <para>NOTE:This method is NOT thread-safe</para>
         /// </summary>
         Task TearDown();
+
+        /// <summary>
+        /// Returns the count of items currently available awaiting for a free consumer.
+        /// </summary>
+        int UnconsumedCount { get; }
     }
 }

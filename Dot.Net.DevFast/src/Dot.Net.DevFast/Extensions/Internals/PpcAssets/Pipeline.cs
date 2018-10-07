@@ -73,5 +73,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
                 }
             });
         }
+
+        public int UnconsumedCount => _feed.Unprocessed;
     }
 }

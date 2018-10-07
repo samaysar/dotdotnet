@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions.Internals;
 using Dot.Net.DevFast.Extensions.JsonExt;
+using Dot.Net.DevFast.IO;
 using Newtonsoft.Json;
 
 namespace Dot.Net.DevFast.Extensions.StreamPipeExt

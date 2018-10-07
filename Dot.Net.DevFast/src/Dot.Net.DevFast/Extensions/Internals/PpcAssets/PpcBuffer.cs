@@ -25,6 +25,8 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
 
         public bool Finished => _collection.IsCompleted;
 
+        public int Unprocessed => _collection.Count;
+
         public void Add(T item, CancellationToken token)
         {
             TryAdd(item, Timeout.Infinite, token);

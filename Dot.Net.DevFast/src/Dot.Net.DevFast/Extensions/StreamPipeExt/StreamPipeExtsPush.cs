@@ -11,6 +11,7 @@ using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.Internals;
 using Dot.Net.DevFast.Extensions.JsonExt;
 using Dot.Net.DevFast.Extensions.StringExt;
+using Dot.Net.DevFast.IO;
 using Newtonsoft.Json;
 
 namespace Dot.Net.DevFast.Extensions.StreamPipeExt
@@ -363,23 +364,6 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
 #if NET472
-        /// <summary>
-        /// Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
-        /// and returns a new pipe for chaining.
-        /// <para>NOTE:You may use <seealso cref="CreateExts.CreateKeyAndIv"/> extension method to create IV and KEY byte arrays
-        /// using plain text password and salt string.</para>
-        /// </summary>
-        /// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
-        /// <param name="src">Current pipe of the pipeline</param>
-        /// <param name="password">password for key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
-        /// <param name="salt">Salt string to use during key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
-        /// <param name="hashName">Hash algorithm to use</param>
-        /// <param name="loopCnt">Loop count</param>
-        /// <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
-        /// <param name="cipher">Cipher mode to use</param>
-        /// <param name="padding">Padding mode to use</param>
-        /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
-#else
 /// <summary>
 /// Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
 /// and returns a new pipe for chaining.
@@ -390,11 +374,28 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 /// <param name="src">Current pipe of the pipeline</param>
 /// <param name="password">password for key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
 /// <param name="salt">Salt string to use during key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
+/// <param name="hashName">Hash algorithm to use</param>
 /// <param name="loopCnt">Loop count</param>
 /// <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
 /// <param name="cipher">Cipher mode to use</param>
 /// <param name="padding">Padding mode to use</param>
 /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
+#else
+        /// <summary>
+        /// Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
+        /// and returns a new pipe for chaining.
+        /// <para>NOTE:You may use <seealso cref="CreateExts.CreateKeyAndIv"/> extension method to create IV and KEY byte arrays
+        /// using plain text password and salt string.</para>
+        /// </summary>
+        /// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="password">password for key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
+        /// <param name="salt">Salt string to use during key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
+        /// <param name="loopCnt">Loop count</param>
+        /// <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
+        /// <param name="cipher">Cipher mode to use</param>
+        /// <param name="padding">Padding mode to use</param>
+        /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
 #endif
         public static Func<PushFuncStream, Task> ThenEncrypt<T>(this Func<PushFuncStream, Task> src,
             string password,
@@ -450,23 +451,6 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
 #if NET472
-        /// <summary>
-        /// Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
-        /// and returns a new pipe for chaining.
-        /// <para>NOTE:You may use <seealso cref="CreateExts.CreateKeyAndIv"/> extension method to create IV and KEY byte arrays
-        /// using plain text password and salt string.</para>
-        /// </summary>
-        /// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
-        /// <param name="src">Current pipe of the pipeline</param>
-        /// <param name="password">password for key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
-        /// <param name="salt">Salt string to use during key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
-        /// <param name="hashName">Hash algorithm to use</param>
-        /// <param name="loopCnt">Loop count</param>
-        /// <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
-        /// <param name="cipher">Cipher mode to use</param>
-        /// <param name="padding">Padding mode to use</param>
-        /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
-#else
 /// <summary>
 /// Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
 /// and returns a new pipe for chaining.
@@ -477,11 +461,28 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 /// <param name="src">Current pipe of the pipeline</param>
 /// <param name="password">password for key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
 /// <param name="salt">Salt string to use during key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
+/// <param name="hashName">Hash algorithm to use</param>
 /// <param name="loopCnt">Loop count</param>
 /// <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
 /// <param name="cipher">Cipher mode to use</param>
 /// <param name="padding">Padding mode to use</param>
 /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
+#else
+        /// <summary>
+        /// Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
+        /// and returns a new pipe for chaining.
+        /// <para>NOTE:You may use <seealso cref="CreateExts.CreateKeyAndIv"/> extension method to create IV and KEY byte arrays
+        /// using plain text password and salt string.</para>
+        /// </summary>
+        /// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="password">password for key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
+        /// <param name="salt">Salt string to use during key/IV generation (see <seealso cref="Rfc2898DeriveBytes"/>)</param>
+        /// <param name="loopCnt">Loop count</param>
+        /// <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
+        /// <param name="cipher">Cipher mode to use</param>
+        /// <param name="padding">Padding mode to use</param>
+        /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
 #endif
         public static Func<PushFuncStream, Task> ThenDecrypt<T>(this Func<PushFuncStream, Task> src,
             string password,
@@ -566,9 +567,9 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
 
-#endregion Then Clauses
+        #endregion Then Clauses
 
-#region Finalization
+        #region Finalization
 
         /// <summary>
         /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
@@ -687,43 +688,6 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             await src(new PushFuncStream(writableTarget, disposeTarget, token)).StartIfNeeded().ConfigureAwait(false);
         }
 
-#endregion Finalization
-
-        /// <summary>
-        /// Data structure to facilitate Push based functional streaming,
-        /// i.e., 1st Pipe writes on 2nd that writes on 3rd and so on and so forth...
-        /// </summary>
-        public struct PushFuncStream
-        {
-            /// <summary>
-            /// Writable stream
-            /// </summary>
-            public Stream Writable { get; }
-
-            /// <summary>
-            /// If true, stream is disposed at the end of streaming else left open
-            /// </summary>
-            public bool Dispose { get; }
-
-            /// <summary>
-            /// Associated Cancellation token
-            /// </summary>
-            public CancellationToken Token { get; }
-
-            /// <summary>
-            /// Ctor.
-            /// </summary>
-            /// <param name="writable">writable stream</param>
-            /// <param name="dispose">true to dispose at the end of streaming else false</param>
-            /// <param name="token">Cancellation token to observe</param>
-            /// <exception cref="DdnDfException"></exception>
-            public PushFuncStream(Stream writable, bool dispose, CancellationToken token)
-            {
-                Writable = writable.CanWrite.ThrowIfNot(DdnDfErrorCode.Unspecified, "Cannot write on the stream",
-                    writable);
-                Dispose = dispose;
-                Token = token;
-            }
-        }
+        #endregion Finalization
     }
 }
