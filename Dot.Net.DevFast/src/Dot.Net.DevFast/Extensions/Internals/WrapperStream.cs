@@ -1,9 +1,6 @@
 ﻿#if !NET472
 using System;
 using System.IO;
-#if !NETSTANDARD2_0 && !NETCOREAPP2_0
-using System.Runtime.Remoting;
-#endif
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -108,61 +105,9 @@ namespace Dot.Net.DevFast.Extensions.Internals
             return _stream.ReadAsync(buffer, offset, count, cancellationToken);
         }
 
-        public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback,
-            object state)
-        {
-            return _stream.BeginRead(buffer, offset, count, callback, state);
-        }
-
-        public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback,
-            object state)
-        {
-            return _stream.BeginWrite(buffer, offset, count, callback, state);
-        }
-
-#if FEATURE_REMOTING
-
-        public override ObjRef CreateObjRef(Type requestedType)
-        {
-            return _stream.CreateObjRef(requestedType);
-        }
-
-        public override object InitializeLifetimeService()
-        {
-            return _stream.InitializeLifetimeService();
-        }
-
-#elif !NETSTANDARD2_0 && !NETCOREAPP2_0
-
-        public override ObjRef CreateObjRef(Type requestedType)
-        {
-            throw new RemotingException(RemotingErrorTxt);
-        }
-
-        public override object InitializeLifetimeService()
-        {
-            throw new RemotingException(RemotingErrorTxt);
-        }
-#endif
-
-        public override int EndRead(IAsyncResult asyncResult)
-        {
-            return _stream.EndRead(asyncResult);
-        }
-
-        public override void EndWrite(IAsyncResult asyncResult)
-        {
-            _stream.EndWrite(asyncResult);
-        }
-
         public override void WriteByte(byte value)
         {
             _stream.WriteByte(value);
-        }
-
-        public override void Close()
-        {
-            Dispose(true);
         }
 
         protected override void Dispose(bool disposing)
@@ -173,6 +118,7 @@ namespace Dot.Net.DevFast.Extensions.Internals
                 {
                 }
             }
+            base.Dispose(disposing);
         }
     }
 }

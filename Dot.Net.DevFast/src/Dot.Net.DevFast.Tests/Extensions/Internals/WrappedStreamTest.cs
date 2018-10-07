@@ -1,9 +1,6 @@
 ﻿#if !NET472
 using System;
 using System.IO;
-#if !NETSTANDARD2_0 && !NETCOREAPP2_0
-using System.Runtime.Remoting;
-#endif
 using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions.Internals;
@@ -98,6 +95,8 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals
         public async Task Parameterized_Methods_Are_Properly_Wrapped()
         {
             var strm = Substitute.For<Stream>();
+            strm.CanRead.Returns(true);
+            strm.CanWrite.Returns(true);
             using (var wrprstrm = new WrappedStream(strm, false))
             {
                 wrprstrm.Seek(0, SeekOrigin.Current);
@@ -129,32 +128,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals
                 await strm.Received(1)
                     .ReadAsync(arrByte, 1, arrByte.Length, CancellationToken.None)
                     .ConfigureAwait(false);
-
-                var cb = new AsyncCallback(ar => { });
-                var result = wrprstrm.BeginRead(arrByte, 0, arrByte.Length, cb, null);
-                strm.Received(1).BeginRead(arrByte, 0, arrByte.Length, cb, null);
-
-                wrprstrm.BeginWrite(arrByte, 0, arrByte.Length, cb, null);
-                strm.Received(1).BeginWrite(arrByte, 0, arrByte.Length, cb, null);
-
-#if FEATURE_REMOTING
-                wrprstrm.CreateObjRef(null);
-                strm.Received(1).CreateObjRef(null);
-
-                wrprstrm.InitializeLifetimeService();
-                strm.Received(1).InitializeLifetimeService();
-#elif !NETSTANDARD2_0 && !NETCOREAPP2_0
-                Assert.True(Assert.Throws<RemotingException>(() => wrprstrm.CreateObjRef(null))
-                    .Message.Equals(WrappedStream.RemotingErrorTxt));
-                Assert.True(Assert.Throws<RemotingException>(() => wrprstrm.InitializeLifetimeService())
-                    .Message.Equals(WrappedStream.RemotingErrorTxt));
-#endif
-                wrprstrm.EndRead(result);
-                strm.Received(1).EndRead(result);
-
-                wrprstrm.EndWrite(result);
-                strm.Received(1).EndWrite(result);
-
+                
                 wrprstrm.WriteByte(20);
                 strm.Received(1).WriteByte(20);
 
