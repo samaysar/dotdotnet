@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions;
 
 namespace Dot.Net.DevFast.IO
@@ -137,17 +135,6 @@ namespace Dot.Net.DevFast.IO
             {
                 if (_innerStream != null) _innerStream.Position = value;
             }
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Calls the <seealso cref="Stream.CopyToAsync(Stream,int,CancellationToken)"/> on the inner stream if supplied through Ctor and counts bytes.
-        /// </summary>
-        /// <exception cref="NotImplementedException">When inner stream is not supplied</exception>
-        public override async Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
-        {
-            if (_innerStream == null) throw new NotImplementedException();
-            await _innerStream.CopyToAsync(destination, bufferSize, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
