@@ -11,9 +11,6 @@ namespace Dot.Net.DevFast.IO
     /// </summary>
     public class ByteCountStream : Stream
     {
-        private readonly Stream _innerStream;
-        private readonly bool _disposeInner;
-
         /// <inheritdoc />
         /// <summary>
         /// Initialize a Counting ONLY instance.
@@ -31,8 +28,8 @@ namespace Dot.Net.DevFast.IO
         /// <param name="disposeInner">true to dispose inner or false to leave it open.</param>
         public ByteCountStream(Stream innerStream, bool disposeInner)
         {
-            _innerStream = innerStream;
-            _disposeInner = disposeInner;
+            InnerStream = innerStream;
+            DisposeInner = disposeInner;
         }
 
         /// <inheritdoc />
@@ -41,7 +38,7 @@ namespace Dot.Net.DevFast.IO
         /// </summary>
         public override void Flush()
         {
-            _innerStream?.Flush();
+            InnerStream?.Flush();
         }
 
         /// <inheritdoc />
@@ -50,8 +47,8 @@ namespace Dot.Net.DevFast.IO
         /// </summary>
         public override long Seek(long offset, SeekOrigin origin)
         {
-            if (_innerStream == null) throw new NotImplementedException();
-            return _innerStream.Seek(offset, origin);
+            if (InnerStream == null) throw new NotImplementedException();
+            return InnerStream.Seek(offset, origin);
         }
 
         /// <inheritdoc />
@@ -60,7 +57,7 @@ namespace Dot.Net.DevFast.IO
         /// </summary>
         public override void SetLength(long value)
         {
-            _innerStream?.SetLength(value);
+            InnerStream?.SetLength(value);
         }
 
         /// <inheritdoc />
@@ -70,8 +67,8 @@ namespace Dot.Net.DevFast.IO
         /// <exception cref="NotImplementedException">When inner stream is not supplied</exception>
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (_innerStream == null) throw new NotImplementedException();
-            var innerCount = _innerStream.Read(buffer, offset, count);
+            if (InnerStream == null) throw new NotImplementedException();
+            var innerCount = InnerStream.Read(buffer, offset, count);
             ByteCount += innerCount;
             return innerCount;
         }
@@ -83,7 +80,7 @@ namespace Dot.Net.DevFast.IO
         /// </summary>
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (_innerStream == null)
+            if (InnerStream == null)
             {
                 buffer.ThrowIfNull($"Buffer is null inside {nameof(ByteCountStream)}").Length
                     .ThrowIfLess(
@@ -93,7 +90,7 @@ namespace Dot.Net.DevFast.IO
             }
             else
             {
-                _innerStream.Write(buffer, offset, count);
+                InnerStream.Write(buffer, offset, count);
             }
 
             ByteCount += count;
@@ -103,25 +100,25 @@ namespace Dot.Net.DevFast.IO
         /// <summary>
         /// Calls the <seealso cref="Stream.CanRead"/> on the inner stream if supplied through Ctor else returns False.
         /// </summary>
-        public override bool CanRead => _innerStream != null && _innerStream.CanRead;
+        public override bool CanRead => InnerStream != null && InnerStream.CanRead;
 
         /// <inheritdoc />
         /// <summary>
         /// Calls the <seealso cref="Stream.CanSeek"/> on the inner stream if supplied through Ctor else returns False.
         /// </summary>
-        public override bool CanSeek => _innerStream != null && _innerStream.CanSeek;
+        public override bool CanSeek => InnerStream != null && InnerStream.CanSeek;
 
         /// <inheritdoc />
         /// <summary>
         /// Calls the <seealso cref="Stream.CanWrite"/> on the inner stream if supplied through Ctor else returns True.
         /// </summary>
-        public override bool CanWrite => _innerStream == null || _innerStream.CanWrite;
+        public override bool CanWrite => InnerStream == null || InnerStream.CanWrite;
 
         /// <inheritdoc />
         /// <summary>
         /// Calls the <seealso cref="Stream.Length"/> on the inner stream if supplied through Ctor else returns 0.
         /// </summary>
-        public override long Length => _innerStream?.Length ?? 0;
+        public override long Length => InnerStream?.Length ?? 0;
 
         /// <inheritdoc />
         /// <summary>
@@ -130,10 +127,10 @@ namespace Dot.Net.DevFast.IO
         /// </summary>
         public override long Position
         {
-            get => _innerStream?.Position ?? 0;
+            get => InnerStream?.Position ?? 0;
             set
             {
-                if (_innerStream != null) _innerStream.Position = value;
+                if (InnerStream != null) InnerStream.Position = value;
             }
         }
 
@@ -145,13 +142,16 @@ namespace Dot.Net.DevFast.IO
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
-            if (_innerStream != null && disposing && _disposeInner)
+            if (InnerStream != null && disposing && DisposeInner)
             {
-                using (_innerStream)
+                using (InnerStream)
                 {
                 }
             }
             base.Dispose(disposing);
         }
+
+        internal Stream InnerStream { get; }
+        internal bool DisposeInner { get; }
     }
 }
