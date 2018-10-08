@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.CompilerServices;
 using Dot.Net.DevFast.Extensions;
 
 namespace Dot.Net.DevFast.IO
