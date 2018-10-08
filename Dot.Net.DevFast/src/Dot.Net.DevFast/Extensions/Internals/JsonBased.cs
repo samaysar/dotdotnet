@@ -1,6 +1,5 @@
 ﻿using Dot.Net.DevFast.Etc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Dot.Net.DevFast.Extensions.Internals
 {
@@ -8,7 +7,7 @@ namespace Dot.Net.DevFast.Extensions.Internals
     {
         internal static T FromJsonGetNext<T>(this JsonReader jsonReader, JsonSerializer serializer)
         {
-            return JToken.Load(jsonReader).ToObject<T>(serializer);
+            return serializer.Deserialize<T>(jsonReader);
         }
 
         internal static bool NotAnEndArrayToken(this JsonReader jsonReader)
