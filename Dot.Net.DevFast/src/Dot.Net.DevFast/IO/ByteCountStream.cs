@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using Dot.Net.DevFast.Extensions;
 
 namespace Dot.Net.DevFast.IO
@@ -33,7 +34,7 @@ namespace Dot.Net.DevFast.IO
         /// </summary>
         public override void Flush()
         {
-            InnerStream.Flush();
+            ThrowIfDisposed(InnerStream).Flush();
         }
 
         /// <inheritdoc />
@@ -42,7 +43,7 @@ namespace Dot.Net.DevFast.IO
         /// </summary>
         public override long Seek(long offset, SeekOrigin origin)
         {
-            return InnerStream.Seek(offset, origin);
+            return ThrowIfDisposed(InnerStream).Seek(offset, origin);
         }
 
         /// <inheritdoc />
@@ -51,7 +52,7 @@ namespace Dot.Net.DevFast.IO
         /// </summary>
         public override void SetLength(long value)
         {
-            InnerStream.SetLength(value);
+            ThrowIfDisposed(InnerStream).SetLength(value);
         }
 
         /// <inheritdoc />
@@ -60,7 +61,7 @@ namespace Dot.Net.DevFast.IO
         /// </summary>
         public override int Read(byte[] buffer, int offset, int count)
         {
-            var innerCount = InnerStream.Read(buffer, offset, count);
+            var innerCount = ThrowIfDisposed(InnerStream).Read(buffer, offset, count);
             ByteCount += innerCount;
             return innerCount;
         }
@@ -71,7 +72,7 @@ namespace Dot.Net.DevFast.IO
         /// </summary>
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (ReferenceEquals(this, Null))
+            if (ReferenceEquals(ThrowIfDisposed(InnerStream), Null))
             {
                 buffer.ThrowIfNull($"Buffer is null inside {nameof(ByteCountStream)}").Length
                     .ThrowIfLess(
@@ -91,25 +92,25 @@ namespace Dot.Net.DevFast.IO
         /// <summary>
         /// Calls the <seealso cref="Stream.CanRead"/> on the inner stream.
         /// </summary>
-        public override bool CanRead => InnerStream.CanRead;
+        public override bool CanRead => ThrowIfDisposed(InnerStream).CanRead;
 
         /// <inheritdoc />
         /// <summary>
         /// Calls the <seealso cref="Stream.CanSeek"/> on the inner stream.
         /// </summary>
-        public override bool CanSeek => InnerStream.CanSeek;
+        public override bool CanSeek => ThrowIfDisposed(InnerStream).CanSeek;
 
         /// <inheritdoc />
         /// <summary>
         /// Calls the <seealso cref="Stream.CanWrite"/> on the inner stream.
         /// </summary>
-        public override bool CanWrite => InnerStream.CanWrite;
+        public override bool CanWrite => ThrowIfDisposed(InnerStream).CanWrite;
 
         /// <inheritdoc />
         /// <summary>
         /// Calls the <seealso cref="Stream.Length"/> on the inner stream.
         /// </summary>
-        public override long Length => InnerStream.Length;
+        public override long Length => ThrowIfDisposed(InnerStream).Length;
 
         /// <inheritdoc />
         /// <summary>
@@ -117,8 +118,8 @@ namespace Dot.Net.DevFast.IO
         /// </summary>
         public override long Position
         {
-            get => InnerStream.Position;
-            set => InnerStream.Position = value;
+            get => ThrowIfDisposed(InnerStream).Position;
+            set => ThrowIfDisposed(InnerStream).Position = value;
         }
 
         /// <summary>
@@ -129,11 +130,12 @@ namespace Dot.Net.DevFast.IO
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
-            if (InnerStream != null && disposing && _disposeInner)
+            if (disposing && _disposeInner)
             {
                 using (InnerStream)
                 {
                 }
+                InnerStream = null;
             }
             base.Dispose(disposing);
         }
@@ -141,6 +143,12 @@ namespace Dot.Net.DevFast.IO
         /// <summary>
         /// Gets the associated inner stream.
         /// </summary>
-        public Stream InnerStream { get; }
+        public Stream InnerStream { get; private set; }
+
+        private Stream ThrowIfDisposed(Stream checkForNull)
+        {
+            if (checkForNull is null) throw new ObjectDisposedException(nameof(ByteCountStream));
+            return checkForNull;
+        }
     }
 }
