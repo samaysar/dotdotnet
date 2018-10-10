@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
@@ -16,6 +17,22 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
     public static partial class StreamPipeExts
     {
         // we keep internal extensions here
+        internal static Func<PushFuncStream, Task> ApplyConcurrentStream(this Func<PushFuncStream, Task> pipe,
+            Stream stream,
+            bool disposeStream)
+        {
+            return async pfs =>
+            {
+                using (var concurrentStream = new ConcurrentWritableStream(pfs, stream, disposeStream))
+                {
+                    var t = pfs.Token;
+                    await pipe(new PushFuncStream(concurrentStream, false, t)).StartIfNeeded()
+                        .ConfigureAwait(false);
+                    await concurrentStream.FlushAsync(t).ConfigureAwait(false);
+                }
+            };
+        }
+
         internal static Func<PushFuncStream, Task> ApplyCompression(this Func<PushFuncStream, Task> pipe,
             bool gzip,
             CompressionLevel level)

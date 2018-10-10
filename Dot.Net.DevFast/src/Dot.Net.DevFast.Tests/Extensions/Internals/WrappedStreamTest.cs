@@ -1,6 +1,4 @@
-﻿#if !NET472
-using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions.Internals;
@@ -138,4 +136,3 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals
         }
     }
 }
-#endif

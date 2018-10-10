@@ -430,11 +430,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="disposeTarget">True to dispose, else false. Disposal takes effect when wrapper is disposed.</param>
         public static Stream CreateWrappedStream(this Stream target, bool disposeTarget = false)
         {
-#if !NET472
             return new WrappedStream(target, disposeTarget);
-#else
-            return target;
-#endif
         }
 
         #endregion CryptoStream related

@@ -305,19 +305,34 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         #region Then Clauses
 
         /// <summary>
+        /// Concurrently writes on <paramref name="writableStream"/> and returns a new pipe for chaining.
+        /// </summary>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="writableStream">Stream on which to write concurrently</param>
+        /// <param name="disposeWritableStream">true to dispose <paramref name="writableStream"/> else false.</param>
+        /// <param name="include">If true is passed, compression is performed else ignored</param>
+        public static Func<PushFuncStream, Task> ThenAlsoWriteTo(this Func<PushFuncStream, Task> src,
+            Stream writableStream,
+            bool disposeWritableStream,
+            bool include = true)
+        {
+            return src.ThenApply(s => s.ApplyConcurrentStream(writableStream, disposeWritableStream), include);
+        }
+
+        /// <summary>
         /// Applies compression on the data of given functional Stream pipe and returns a new pipe for chaining.
         /// </summary>
-        /// <param name="pushSrc">Current pipe of the pipeline</param>
-        /// <param name="include">If true is passed, compression is performed else ignored</param>
+        /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="gzip">If true, <seealso cref="GZipStream"/> is used else 
         /// <seealso cref="DeflateStream"/> is used</param>
         /// <param name="level">Compression level to use.</param>
-        public static Func<PushFuncStream, Task> ThenCompress(this Func<PushFuncStream, Task> pushSrc,
+        /// <param name="include">If true is passed, compression is performed else ignored</param>
+        public static Func<PushFuncStream, Task> ThenCompress(this Func<PushFuncStream, Task> src,
             bool gzip = true,
             CompressionLevel level = CompressionLevel.Optimal,
             bool include = true)
         {
-            return pushSrc.ThenApply(s => s.ApplyCompression(gzip, level), include);
+            return src.ThenApply(s => s.ApplyCompression(gzip, level), include);
         }
 
         /// <summary>

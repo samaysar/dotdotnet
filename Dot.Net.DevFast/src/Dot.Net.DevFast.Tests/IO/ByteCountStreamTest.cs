@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.StringExt;
 using Dot.Net.DevFast.IO;
@@ -21,6 +20,9 @@ namespace Dot.Net.DevFast.Tests.IO
             var strm = Substitute.For<Stream>();
             using (var _ = new ByteCountStream(strm, leaveOpen))
             {
+                //dual dispose must work
+                using (_)
+                { }
             }
             strm.Received(leaveOpen ? 0 : 1).Dispose();
         }

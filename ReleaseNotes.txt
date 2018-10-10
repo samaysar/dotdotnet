@@ -1,3 +1,12 @@
+Changes to Dot.Net.DevFast 3.0.0 (Proposed)
+
+ 1. Change/Fix - CreateWrappedStream correctly returns an instance of CreateWrappedStream in .Net Framework 4.7.2 dll.
+ 2. Change/Fix - All Pipe and Pipeline implementations now properly awaits on created as well as running tasks.
+ 3. New feature - WrappedStream is available now for .Net Framework 4.7.2.
+ 4. New feature - UnconsumedCount is added to IPipeline interface. Now polling can be done on this property to determine count of remaining produced items in the buffer.
+ 5. New feature - ByteCountStream is created. Now it is possible to count the bytes observed throughout the stream read/write operations.
+ 6. New feature - PUSH/PULL (add notes...)
+ 
 Changes to Dot.Net.DevFast 2.0.0
 
  1. Transperant package standarization.

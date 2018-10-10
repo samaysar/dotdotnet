@@ -301,17 +301,9 @@ namespace Dot.Net.DevFast.Tests.Extensions
             var strm = Substitute.For<Stream>();
             using (var wrapped = strm.CreateWrappedStream(dispose))
             {
-#if !NET472
                 Assert.True(wrapped is WrappedStream);
-#else
-                Assert.True(ReferenceEquals(strm, wrapped));
-#endif
             }
-#if !NET472
             strm.Received(dispose ? 1 : 0).Dispose();
-#else
-            strm.Received(1).Dispose();
-#endif
         }
 
         [Test]
