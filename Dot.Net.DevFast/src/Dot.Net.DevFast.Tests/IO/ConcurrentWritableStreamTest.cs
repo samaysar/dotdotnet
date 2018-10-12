@@ -76,7 +76,7 @@ namespace Dot.Net.DevFast.Tests.IO
             {
                 Assert.True(instance.CanWrite);
                 Assert.False(instance.CanSeek);
-                Assert.True(instance.CanRead);
+                Assert.False(instance.CanRead);
 
                 Assert.True(instance.Length == 0);
                 instance.SetLength(10);
