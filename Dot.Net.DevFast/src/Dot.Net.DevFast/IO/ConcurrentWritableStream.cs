@@ -40,6 +40,26 @@ namespace Dot.Net.DevFast.IO
 
         /// <inheritdoc />
         /// <summary>
+        /// Cotr.
+        /// </summary>
+        /// <param name="pfs">Pull functional stream to write on.</param>
+        /// <param name="writableStream">Another writable stream</param>
+        /// <param name="disposeWritable">true to dispose <paramref name="writableStream"/> else false.</param>
+        /// <param name="token">cancellation token</param>
+        public ConcurrentWritableStream(PullFuncStream pfs, Stream writableStream, bool disposeWritable,
+            CancellationToken token)
+        {
+            _anotherStream = writableStream.CanWrite.ThrowIfNot(DdnDfErrorCode.Unspecified,
+                "Stream instance is not writable", writableStream);
+            _pfsStream = pfs.Readable
+                .ThrowIfNull($"{nameof(PushFuncStream)}.{nameof(PushFuncStream.Writable)} is null");
+            _disposePfs = pfs.Dispose;
+            _disposeAnother = disposeWritable;
+            _token = token;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
         /// Flushes both streams.
         /// </summary>
         public override void Flush()
@@ -82,9 +102,19 @@ namespace Dot.Net.DevFast.IO
 
         /// <inheritdoc />
         /// <summary>
-        /// Not implementted. Calling this function will yield in error.
+        /// Works on Pull based Streaming.
         /// </summary>
-        public override int Read(byte[] buffer, int offset, int count) => throw new NotImplementedException();
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            return ReadAsync(buffer, offset, count, _token).Result;
+        }
+
+        public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            var readCount = await _pfsStream.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
+            await _anotherStream.WriteAsync(buffer, offset, readCount, cancellationToken).ConfigureAwait(false);
+            return readCount;
+        }
 
         /// <inheritdoc />
         public override void Write(byte[] buffer, int offset, int count)
@@ -105,7 +135,7 @@ namespace Dot.Net.DevFast.IO
         /// <summary>
         /// Always returns false.
         /// </summary>
-        public override bool CanRead => false;
+        public override bool CanRead => true;
 
         /// <inheritdoc />
         /// <summary>

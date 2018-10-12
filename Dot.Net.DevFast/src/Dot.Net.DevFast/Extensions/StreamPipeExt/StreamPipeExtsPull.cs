@@ -130,6 +130,26 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         #region Then Clauses NoTASK
 
         /// <summary>
+        /// Counts the number of bytes observed during pull based streaming (exposed through 
+        /// <seealso cref="IByteCounter"/>.<seealso cref="IByteCounter.ByteCount"/>) 
+        /// and returns a new pipe for chaining.
+        /// <para>IMPORTANT: Access <seealso cref="IByteCounter.ByteCount"/> ONLY AFTER the full
+        /// piepline is bootstrapped and processed, i.e., calling <paramref name="byteCounter"/>.ByteCount immediately
+        /// after this call will not provide the correct count.</para>
+        /// </summary>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="byteCounter">out param which exposes <seealso cref="IByteCounter.ByteCount"/>) property.</param>
+        /// <param name="include">If true is passed, compression is performed else ignored</param>
+        public static Func<PullFuncStream> ThenCountBytes(this Func<PullFuncStream> src,
+            out IByteCounter byteCounter,
+            bool include = true)
+        {
+            var bcs = new ByteCountStream();
+            byteCounter = bcs;
+            return src.ThenApply(s => s.ApplyByteCount(bcs), include);
+        }
+
+        /// <summary>
         /// Applies decompression on the data of given functional Stream pipe and returns a new pipe for chaining.
         /// </summary>
         /// <param name="pullSrc">Current pipe of the PUSH pipeline</param>
@@ -389,6 +409,26 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         #endregion Then Clauses NoTASK
 
         #region Then Clauses TASK
+
+        /// <summary>
+        /// Counts the number of bytes observed during pull based streaming (exposed through 
+        /// <seealso cref="IByteCounter"/>.<seealso cref="IByteCounter.ByteCount"/>) 
+        /// and returns a new pipe for chaining.
+        /// <para>IMPORTANT: Access <seealso cref="IByteCounter.ByteCount"/> ONLY AFTER the full
+        /// piepline is bootstrapped and processed, i.e., calling <paramref name="byteCounter"/>.ByteCount immediately
+        /// after this call will not provide the correct count.</para>
+        /// </summary>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="byteCounter">out param which exposes <seealso cref="IByteCounter.ByteCount"/>) property.</param>
+        /// <param name="include">If true is passed, compression is performed else ignored</param>
+        public static Func<Task<PullFuncStream>> ThenCountBytes(this Func<Task<PullFuncStream>> src,
+            out IByteCounter byteCounter,
+            bool include = true)
+        {
+            var bcs = new ByteCountStream();
+            byteCounter = bcs;
+            return src.ThenApply(s => s.ApplyByteCount(bcs), include);
+        }
 
         /// <summary>
         /// Applies decompression on the data of given functional Stream pipe and returns a new pipe for chaining.

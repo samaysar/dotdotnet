@@ -311,12 +311,32 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="writableStream">Stream on which to write concurrently</param>
         /// <param name="disposeWritableStream">true to dispose <paramref name="writableStream"/> else false.</param>
         /// <param name="include">If true is passed, compression is performed else ignored</param>
-        public static Func<PushFuncStream, Task> ThenAlsoWriteTo(this Func<PushFuncStream, Task> src,
+        public static Func<PushFuncStream, Task> ThenConcurrentlyWriteTo(this Func<PushFuncStream, Task> src,
             Stream writableStream,
             bool disposeWritableStream,
             bool include = true)
         {
             return src.ThenApply(s => s.ApplyConcurrentStream(writableStream, disposeWritableStream), include);
+        }
+
+        /// <summary>
+        /// Counts the number of bytes observed during push based streaming (exposed through 
+        /// <seealso cref="IByteCounter"/>.<seealso cref="IByteCounter.ByteCount"/>) 
+        /// and returns a new pipe for chaining.
+        /// <para>IMPORTANT: Access <seealso cref="IByteCounter.ByteCount"/> ONLY AFTER the full
+        /// piepline is bootstrapped and processed, i.e., calling <paramref name="byteCounter"/>.ByteCount immediately
+        /// after this call will not provide the correct count.</para>
+        /// </summary>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="byteCounter">out param which exposes <seealso cref="IByteCounter.ByteCount"/>) property.</param>
+        /// <param name="include">If true is passed, compression is performed else ignored</param>
+        public static Func<PushFuncStream, Task> ThenCountBytes(this Func<PushFuncStream, Task> src,
+            out IByteCounter byteCounter,
+            bool include = true)
+        {
+            var bcs = new ByteCountStream();
+            byteCounter = bcs;
+            return src.ThenApply(s => s.ApplyByteCount(bcs), include);
         }
 
         /// <summary>

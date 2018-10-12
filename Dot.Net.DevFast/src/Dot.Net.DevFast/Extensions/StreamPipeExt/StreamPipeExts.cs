@@ -17,6 +17,23 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
     public static partial class StreamPipeExts
     {
         // we keep internal extensions here
+        internal static Func<PushFuncStream, Task> ApplyByteCount(this Func<PushFuncStream, Task> pipe,
+            ByteCountStream bcs)
+        {
+            return async pfs =>
+            {
+                bcs.ResetWith(pfs.Writable, pfs.Dispose);
+                using (bcs)
+                {
+                    var t = pfs.Token;
+                    await pipe(new PushFuncStream(bcs, false, t)).StartIfNeeded()
+                        .ConfigureAwait(false);
+                    await bcs.FlushAsync(t).ConfigureAwait(false);
+                }
+            };
+        }
+
+        // we keep internal extensions here
         internal static Func<PushFuncStream, Task> ApplyConcurrentStream(this Func<PushFuncStream, Task> pipe,
             Stream stream,
             bool disposeStream)
@@ -153,6 +170,16 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             };
         }
 
+        internal static Func<Task<PullFuncStream>> ApplyByteCount(this Func<Task<PullFuncStream>> pipe,
+            ByteCountStream bcs)
+        {
+            return async () =>
+            {
+                var data = await pipe().StartIfNeeded().ConfigureAwait(false);
+                return data.ApplyByteCount(bcs);
+            };
+        }
+
         #endregion PullFuncStream TASK
 
         #region PullFuncStream NoTASK
@@ -185,6 +212,12 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             return () => pipe().ApplyTransform(ct);
         }
 
+        internal static Func<PullFuncStream> ApplyByteCount(this Func<PullFuncStream> pipe,
+            ByteCountStream bcs)
+        {
+            return () => pipe().ApplyByteCount(bcs);
+        }
+
         #endregion PullFuncStream NoTASK
 
         #region PullFuncStream PRIVATE
@@ -197,6 +230,12 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         private static PullFuncStream ApplyTransform(this PullFuncStream data, ICryptoTransform ct)
         {
             return new PullFuncStream(data.Readable.CreateCryptoStream(ct, CryptoStreamMode.Read, data.Dispose), true);
+        }
+
+        internal static PullFuncStream ApplyByteCount(this PullFuncStream data, ByteCountStream bcs)
+        {
+            bcs.ResetWith(data.Readable, data.Dispose);
+            return new PullFuncStream(bcs, true);
         }
 
         #endregion PullFuncStream PRIVATE

@@ -4,14 +4,25 @@ using Dot.Net.DevFast.Extensions;
 
 namespace Dot.Net.DevFast.IO
 {
+    /// <summary>
+    /// Interface to impose the byte countting getter.
+    /// </summary>
+    public interface IByteCounter
+    {
+        /// <summary>
+        /// Count of bytes observed during Streaming operations.
+        /// </summary>
+        long ByteCount { get; }
+    }
+
     /// <inheritdoc />
     /// <summary>
     /// Stream implementation that counts the number of BYTEs (exposed by <see cref="P:Dot.Net.DevFast.IO.ByteCountingStream.ByteCount" /> property)
     /// passed through it. It works as a pass-through stream if another stream is supplied through one of the Ctor.
     /// </summary>
-    public class ByteCountStream : Stream
+    internal class ByteCountStream : Stream, IByteCounter
     {
-        private readonly bool _disposeInner;
+        private bool _disposeInner;
 
         /// <inheritdoc />
         /// <summary>
@@ -25,6 +36,23 @@ namespace Dot.Net.DevFast.IO
         {
             InnerStream = innerStream ?? Null;
             _disposeInner = !leaveOpen;
+        }
+
+        /// <summary>
+        /// This is a workaround to support out param in streaming APIs.
+        /// </summary>
+        internal void ResetWith(Stream stream, bool dispose)
+        {
+            //!!! Hacky sln for the moment.
+
+            //First we dispose old inner as needed
+            Dispose(true);
+
+            //We change
+            InnerStream = stream;
+            _disposeInner = dispose;
+            //we change the stream we reset byte count
+            ByteCount = 0;
         }
 
         /// <inheritdoc />
@@ -115,6 +143,7 @@ namespace Dot.Net.DevFast.IO
 
         /// <summary>
         /// Count of bytes observed during read/write methods.
+        /// <para>Property remains accessible after dispose.</para>
         /// </summary>
         public long ByteCount { get; private set; }
 
@@ -129,8 +158,6 @@ namespace Dot.Net.DevFast.IO
 
                 InnerStream = null;
             }
-
-            base.Dispose(disposing);
         }
 
         /// <summary>

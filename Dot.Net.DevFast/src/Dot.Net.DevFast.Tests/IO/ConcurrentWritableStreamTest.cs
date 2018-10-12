@@ -77,7 +77,7 @@ namespace Dot.Net.DevFast.Tests.IO
             {
                 Assert.True(instance.CanWrite);
                 Assert.False(instance.CanSeek);
-                Assert.False(instance.CanRead);
+                Assert.True(instance.CanRead);
 
                 Assert.True(instance.Length == 0);
                 instance.SetLength(10);
@@ -88,8 +88,6 @@ namespace Dot.Net.DevFast.Tests.IO
                 Assert.True(instance.Position == 0);
 
                 Assert.True(instance.Seek(10, SeekOrigin.Begin) == 0);
-
-                Assert.Throws<NotImplementedException>(() => instance.Read(new byte[0], 0, 0));
             }
         }
 
