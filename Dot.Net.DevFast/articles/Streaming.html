@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>In Search of Streaming...</title>
+<meta http-equiv="content-language" content="en-US">
+<meta charset="UTF-8">
+<meta name="Description" CONTENT="Discussing about streams...about streaming...about functional streaming...and about time travel.">
+<meta name="Author" content="D Sarthi Maheshwari">
+<link type="text/css" rel="stylesheet" href="main.min.css">
+</head>
+
+<body>
+<h1 class="ttlpl">In Search of Streaming...</h1>
+<h5>Discussing about streams...about streaming...about functional streaming...and about time travel.</h5>
+
+<p>Before we begin talking about streaming or any associated details, we would like to make a commentary on the the vocabulary used in this article, in order to avoid the state of confusion.</p>
+
+<ul>
+	<li>We will use the word &quot;<strong>Stream</strong>&quot; or &quot;<strong>Streams</strong>&quot; to talk about the underlying code-implementation (interfaces, associated classes etc) capable of:</li>
+</ul>
+
+<ol>
+	<li>forming a pipeline by repetitive use in tandem.</li>
+	<li>mutating&nbsp;and forwarding&nbsp;<code>byte</code>-sequences to next such stream in chain.</li>
+</ol>
+
+<p>As a matter of fact, we remain indifferent to the implementation complexity and source of such implementation (i.e. part of framework, an open source library or home-made recipe) as long as the desired results can be obtained. In effect, this assumption is so important, because, otherwise it would be impossible for us&nbsp;to obtain a truly context agnostic API that is capable to support virtually any operation on the underlying byte-streams (as we will see below).</p>
+
+<ul>
+	<li>We will use the word &quot;<strong>Streaming</strong>&quot;, to associate the flow of byte-sequences as they goes through such a stream based pipeline.</li>
+</ul>
+
+<p>In fact, as a special case of such declaration, when one of&nbsp;such streams in the pipeline is actually a network stream and the flowing byte contents are multimedia contents; we obtain the implementation of mutlimedia-streaming (or just streaming as it is widely known). Thus, it is important to remember that the we do NOT restrict the scope of the word &quot;streaming&quot; to mutimedia-streaming, during our discussion.</p>
+
+<h2>Trivia</h2>
+
+<p>Streams are, undoubtably, one of its kind and special-purpose&nbsp;breeded beasts.&nbsp;Though&nbsp;a&nbsp;stream&nbsp;can be thought as a&nbsp;sequence&nbsp;of bytes (like any other object); it unfolds its true power through its dynamics. Let us explain. In fact, at runtime, any other object be that <code>string</code>, <code>array</code>, data in a custom <code>class/</code><code>struct</code> objects, even the source code itself; are all sequence of bytes in memory residing somewhere. Even, a simple <code>interger</code> value can be thought as a sequence of 4 bytes (<a href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">for <code>int32</code> in .Net</a>). In addition, it is possible to extract a sub-sequence&nbsp;from these byte representation of these objects to perform some delicate operations; yet such byte sequences&nbsp;lack&nbsp;dynamics which streams exhibit out of the box. And, for our discussion, the notion of such flow, associated to bytes, comes handy as we start talking about our work on data-streaming. Going forward we will <strong>NOT ONLY</strong> make effort to explain this <code>buffer-mutate-forward (BMF)</code>&nbsp;phenomenon in details, <strong>BUT ALSO</strong>, will propose a completely novel APIs to deal with data&nbsp;streaming requirements.</p>
+
+<p>As soon as we hear the word &quot;Streaming&quot;, many pictures comes to the mind, like watching a videos online, watching live telecast of an event, listening to a favorite song online etc. More or less, we almost immediately associate Multimedia contents like Audio &amp;&nbsp;Video with this word. Thus, it is important for us to switch the gear and set a platform and in order to do so , first,&nbsp;we would like to personalize the definition of Streaming, by expanding the Streaming universe in our definition, that can be written as plainly as:</p>
+
+<p style="margin-left: 40px;"><strong>&quot;To send/transfer data<sup>1</sup>, potentially, as varying sized chunks of binary data&nbsp;continuously;&nbsp;at the same time, permitting the receiving end<sup>2</sup> to continuously process those chunks without any constraint&nbsp;to wait for the whole dataset to be available.&quot;</strong></p>
+
+<p><sup>1</sup>The term &quot;<strong>Data</strong>&quot; is contextual here (whatever defines as whole dataset at receiving end, i.e. whole video or just a 1 second clip of that video or simply a &quot;Hello World!&quot; string or a never ending data series)<br />
+<sup>2</sup>The term &quot;receiving-end&quot; is used to represent the data exit (or output) endpoint. It can be a client in a client-server architecture but NOT necessary.</p>
+
+<p>With such a definition at hand:</p>
+
+<ul>
+	<li>We are more interested in <code>BYTE</code> format of data instead of mediatype. Hence, we want to deal with any kind of data that is either promptly available as bytes or convertible (irrespective of complexity of conversion) to byte format.</li>
+	<li>We want to transfer data as it becomes available, and, hence, do&nbsp;not want to be dependent on chunk-size.</li>
+	<li>We are agnostic to underlying protocols/APIs, as long as we are able to send those data-chunks continuously.</li>
+	<li>We want to design a scheme/framework/mechanism that can support any such arbitrary data processing end-to-end.</li>
+	<li>And <strong>MOST IMPORTANTLY</strong>, we are receiver agnostic as long as it is&nbsp;able to accept such data-chunks (i.e. irrespective of its data-processing capabilities).</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h2>A New Beginning</h2>
+
+<p>Working.....</p>
+
+<h2>Remember&nbsp;The Titans</h2>
+
+<p>Working.....</p>
+
+</body>
+</html>
