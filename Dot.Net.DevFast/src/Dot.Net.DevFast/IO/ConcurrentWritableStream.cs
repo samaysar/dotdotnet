@@ -18,7 +18,6 @@ namespace Dot.Net.DevFast.IO
         private Stream _pfsStream;
         private readonly bool _disposeAnother;
         private readonly bool _disposePfs;
-        private readonly CancellationToken _token;
 
         /// <inheritdoc />
         /// <summary>
@@ -35,7 +34,6 @@ namespace Dot.Net.DevFast.IO
                 .ThrowIfNull($"{nameof(PushFuncStream)}.{nameof(PushFuncStream.Writable)} is null");
             _disposePfs = pfs.Dispose;
             _disposeAnother = disposeWritable;
-            _token = pfs.Token;
         }
 
         /// <inheritdoc />
@@ -44,7 +42,7 @@ namespace Dot.Net.DevFast.IO
         /// </summary>
         public override void Flush()
         {
-            FlushAsync(_token).Wait(_token);
+            FlushAsync(CancellationToken.None).Wait();
         }
 
         /// <inheritdoc />
@@ -54,21 +52,21 @@ namespace Dot.Net.DevFast.IO
         public override async Task FlushAsync(CancellationToken cancellationToken)
         {
             //Safe we can flush both
-            var streamTask = Task.Run(async () => await _anotherStream.FlushAsync(_token).ConfigureAwait(false),
-                _token);
-            var anotherStreamTask = Task.Run(async () => await _pfsStream.FlushAsync(_token).ConfigureAwait(false),
-                _token);
+            var streamTask = Task.Run(async () => await _anotherStream.FlushAsync(cancellationToken).ConfigureAwait(false),
+                cancellationToken);
+            var anotherStreamTask = Task.Run(async () => await _pfsStream.FlushAsync(cancellationToken).ConfigureAwait(false),
+                cancellationToken);
             await Task.WhenAll(streamTask, anotherStreamTask).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         /// <summary>
-        /// Does nothing
+        /// Throws NotImplementedException.
         /// </summary>
         public override long Seek(long offset, SeekOrigin origin)
         {
             //unsafe we can NOT do both
-            return 0;
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc />
@@ -82,28 +80,31 @@ namespace Dot.Net.DevFast.IO
 
         /// <inheritdoc />
         /// <summary>
-        /// Not implementted. Calling this function will yield in error.
+        /// Throws NotImplementedException.
         /// </summary>
         public override int Read(byte[] buffer, int offset, int count) => throw new NotImplementedException();
 
         /// <inheritdoc />
         public override void Write(byte[] buffer, int offset, int count)
         {
-            WriteAsync(buffer, offset, count, _token).Wait(_token);
+            WriteAsync(buffer, offset, count, CancellationToken.None).Wait();
         }
 
+        /// <inheritdoc />
         public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             var streamTask = Task.Run(async () =>
-                await _pfsStream.WriteAsync(buffer, offset, count, _token).ConfigureAwait(false), _token);
+                    await _pfsStream.WriteAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false),
+                cancellationToken);
             var anotherStreamTask = Task.Run(async () =>
-                await _anotherStream.WriteAsync(buffer, offset, count, _token).ConfigureAwait(false), _token);
+                    await _anotherStream.WriteAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false),
+                cancellationToken);
             await Task.WhenAll(streamTask, anotherStreamTask).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         /// <summary>
-        /// Always returns false.
+        /// Returns false.
         /// </summary>
         public override bool CanRead => false;
 
@@ -121,13 +122,13 @@ namespace Dot.Net.DevFast.IO
 
         /// <inheritdoc />
         /// <summary>
-        /// Does nothing
+        /// Returns 0.
         /// </summary>
         public override long Length => 0;
 
         /// <inheritdoc />
         /// <summary>
-        /// Does nothing
+        /// Gets 0, sets nothing
         /// </summary>
         public override long Position
         {

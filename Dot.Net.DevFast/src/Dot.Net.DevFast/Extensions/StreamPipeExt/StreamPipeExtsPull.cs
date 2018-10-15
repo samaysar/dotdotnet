@@ -838,6 +838,23 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 
         /// <summary>
         /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
+        /// pushes data throw the pipeline.
+        /// <para>NOTE: Calling this function will result in running the streaming pipeline, but, you won't receive
+        /// anything in the end. Normally, usage of this function is to avoid use of <seealso cref="MemoryStream"/>
+        /// to reduce runtime memory pressure, and at the same time counting bytes, calculate crypto-hashes etc.</para>
+        /// </summary>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="token">Cancellation token to observe</param>
+        public static async Task AndExecuteAsync(this Func<PullFuncStream> src,
+            int bufferSize = StdLookUps.DefaultBufferSize,
+            CancellationToken token = default(CancellationToken))
+        {
+            await src.ToAsync(false).AndExecuteAsync(bufferSize, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
         /// pulls data throw the pipeline and appends the contents to the given <seealso cref="Stream"/>.
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>
@@ -1102,6 +1119,35 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             await src.AndWriteStreamAsync(ms, bufferSize, false, token).ConfigureAwait(false);
             if (seekToOrigin) ms.Seek(0, SeekOrigin.Begin);
             return ms;
+        }
+
+        /// <summary>
+        /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
+        /// pushes data throw the pipeline.
+        /// <para>NOTE: Calling this function will result in running the streaming pipeline, but, you won't receive
+        /// anything in the end. Normally, usage of this function is to avoid use of <seealso cref="MemoryStream"/>
+        /// to reduce runtime memory pressure, and at the same time counting bytes, calculate crypto-hashes etc.</para>
+        /// </summary>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="token">Cancellation token to observe</param>
+        public static async Task AndExecuteAsync(this Func<Task<PullFuncStream>> src,
+            int bufferSize = StdLookUps.DefaultBufferSize,
+            CancellationToken token = default(CancellationToken))
+        {
+            var data = await src().StartIfNeeded().ConfigureAwait(false);
+            try
+            {
+                var buffer = new byte[bufferSize];
+                while (await data.Readable.ReadAsync(buffer, 0, buffer.Length, token).ConfigureAwait(false) != 0)
+                {
+                    //reading until drained!
+                }
+            }
+            finally
+            {
+                data.Readable.DisposeIfRequired(data.Dispose);
+            }
         }
 
         /// <summary>

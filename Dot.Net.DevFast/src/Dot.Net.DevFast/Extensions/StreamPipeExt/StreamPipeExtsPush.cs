@@ -709,6 +709,34 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 
         /// <summary>
         /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
+        /// pushes data throw the pipeline.
+        /// <para>NOTE: Calling this function will result in running the streaming pipeline, but, you won't receive
+        /// anything in the end. Normally, usage of this function is to avoid use of <seealso cref="MemoryStream"/>
+        /// to reduce runtime memory pressure, and at the same time counting bytes, calculate crypto-hashes etc.</para>
+        /// </summary>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="token">Cancellation token to observe</param>
+        public static async Task AndExecuteAsync(this Func<PushFuncStream, Task> src,
+            CancellationToken token = default(CancellationToken))
+        {
+            await src.AndWriteStreamAsync(Stream.Null, false, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Call to this method shall bootstrap the streaming pipeline and returns the total bytes observed at the end.
+        /// </summary>
+        /// <param name="src">Current pipe of the pipeline</param>
+        /// <param name="token">Cancellation token to observe</param>
+        public static async Task<long> AndCountBytesAsync(this Func<PushFuncStream, Task> src,
+            CancellationToken token = default(CancellationToken))
+        {
+            var bcs = new ByteCountStream();
+            await src.AndWriteStreamAsync(bcs, true, token).ConfigureAwait(false);
+            return bcs.ByteCount;
+        }
+
+        /// <summary>
+        /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
         /// pushes data throw the pipeline and appends the contents to the given <seealso cref="Stream"/>.
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>

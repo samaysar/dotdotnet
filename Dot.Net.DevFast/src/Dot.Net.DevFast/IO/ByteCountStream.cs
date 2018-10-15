@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions;
 
 namespace Dot.Net.DevFast.IO
@@ -75,20 +77,39 @@ namespace Dot.Net.DevFast.IO
 
         /// <inheritdoc />
         /// <summary>
-        /// Calls the <seealso cref="Stream.Read"/> on the inner stream and counts bytes.
+        /// Calls <seealso cref="Stream.Read"/> on the inner stream and counts bytes.
         /// </summary>
         public override int Read(byte[] buffer, int offset, int count)
         {
-            var innerCount = ThrowIfDisposed().Read(buffer, offset, count);
-            ByteCount += innerCount;
+            return ReadAsync(buffer, offset, count, CancellationToken.None).Result;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Calls <seealso cref="Stream.ReadAsync(byte[],int,int,CancellationToken)"/> on the inner stream and counts bytes.
+        /// </summary>
+        public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            var innerCount = await ThrowIfDisposed().ReadAsync(buffer, offset, count, cancellationToken)
+                .ConfigureAwait(false);
+            AddByteCount(innerCount);
             return innerCount;
         }
 
         /// <inheritdoc />
         /// <summary>
-        /// Calls the <seealso cref="Stream.Write"/> on the inner stream and counts bytes.
+        /// Calls <seealso cref="Stream.Write"/> on the inner stream and counts bytes.
         /// </summary>
         public override void Write(byte[] buffer, int offset, int count)
+        {
+            WriteAsync(buffer, offset, count, CancellationToken.None).Wait();
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Calls <seealso cref="Stream.WriteAsync(byte[],int,int, CancellationToken)"/> on the inner stream and counts bytes.
+        /// </summary>
+        public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             if (ReferenceEquals(ThrowIfDisposed(), Null))
             {
@@ -101,10 +122,9 @@ namespace Dot.Net.DevFast.IO
             }
             else
             {
-                InnerStream.Write(buffer, offset, count);
+                await InnerStream.WriteAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
             }
-
-            ByteCount += count;
+            AddByteCount(count);
         }
 
         /// <inheritdoc />
@@ -141,6 +161,7 @@ namespace Dot.Net.DevFast.IO
             set => ThrowIfDisposed().Position = value;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Count of bytes observed during read/write methods.
         /// <para>Property remains accessible after dispose.</para>
@@ -164,6 +185,11 @@ namespace Dot.Net.DevFast.IO
         /// Gets the associated inner stream.
         /// </summary>
         public Stream InnerStream { get; private set; }
+
+        internal void AddByteCount(int count)
+        {
+            ByteCount += count;
+        }
 
         private Stream ThrowIfDisposed()
         {

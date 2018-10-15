@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.IO;
@@ -86,7 +87,7 @@ namespace Dot.Net.DevFast.Tests.IO
                 instance.Position = 10;
                 Assert.True(instance.Position == 0);
 
-                Assert.True(instance.Seek(10, SeekOrigin.Begin) == 0);
+                Assert.Throws<NotImplementedException>(() => instance.Seek(10, SeekOrigin.Begin));
             }
         }
 
