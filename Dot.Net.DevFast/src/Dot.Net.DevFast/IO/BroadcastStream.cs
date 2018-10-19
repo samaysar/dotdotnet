@@ -9,10 +9,11 @@ namespace Dot.Net.DevFast.IO
 {
     /// <inheritdoc />
     /// <summary>
-    /// Stream that can perform concurrent unidirectionl write on multiple underlying stream.
-    /// Normally this implementation is NOT needed. It exists specially for streaming APIs to have concurrent writes.
+    /// Stream that can perform concurrent unidirectionl write on two underlying streams.
+    /// Normally this implementation is NOT for public exposure.
+    /// It exists specially for streaming APIs to have concurrent writes.
     /// </summary>
-    internal class ConcurrentWritableStream : Stream
+    internal class BroadcastStream : Stream
     {
         private Stream _anotherStream;
         private Stream _pfsStream;
@@ -26,7 +27,7 @@ namespace Dot.Net.DevFast.IO
         /// <param name="pfs">Push functional stream to write on.</param>
         /// <param name="writableStream">Another writable stream</param>
         /// <param name="disposeWritable">true to dispose <paramref name="writableStream"/> else false.</param>
-        public ConcurrentWritableStream(PushFuncStream pfs, Stream writableStream, bool disposeWritable)
+        public BroadcastStream(PushFuncStream pfs, Stream writableStream, bool disposeWritable)
         {
             _anotherStream = writableStream.CanWrite.ThrowIfNot(DdnDfErrorCode.Unspecified,
                 "Stream instance is not writable", writableStream);

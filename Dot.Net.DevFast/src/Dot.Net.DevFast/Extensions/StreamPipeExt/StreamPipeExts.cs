@@ -40,7 +40,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         {
             return async pfs =>
             {
-                using (var concurrentStream = new ConcurrentWritableStream(pfs, stream, disposeStream))
+                using (var concurrentStream = new BroadcastStream(pfs, stream, disposeStream))
                 {
                     var t = pfs.Token;
                     await pipe(new PushFuncStream(concurrentStream, false, t)).StartIfNeeded()

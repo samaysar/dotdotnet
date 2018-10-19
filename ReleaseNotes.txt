@@ -2,10 +2,15 @@ Changes to Dot.Net.DevFast 3.0.0 (Proposed)
 
  1. Change/Fix - CreateWrappedStream correctly returns an instance of CreateWrappedStream in .Net Framework 4.7.2 dll.
  2. Change/Fix - All Pipe and Pipeline implementations now properly awaits on created as well as running tasks.
- 3. New feature - WrappedStream is available now for .Net Framework 4.7.2.
- 4. New feature - UnconsumedCount is added to IPipeline interface. Now polling can be done on this property to determine count of remaining produced items in the buffer.
- 5. New feature - ByteCountStream is created. Now it is possible to count the bytes observed throughout the stream read/write operations.
- 6. New feature - PUSH/PULL (add notes...)
+ 3. Change/Fix - To/FromJsonXXX extensions now contains more control parameters like encoding, flushing etc.
+ 4. Change/Fix - TransformXXX extensions now contains more control parameters like encoding, flushing etc.
+ 5. Change/Fix - CreateXXXWriter extensions now contains more control parameters like encoding, flushing etc.
+ 5. Change/Fix - De/Compression extensions now contains more control parameters like encoding, flushing etc.
+ 6. New feature - WrappedStream is available now for .Net Framework 4.7.2.
+ 7. New feature - UnconsumedCount is added to IPipeline interface. Now polling can be done on this property to determine count of remaining produced items in the buffer.
+ 8. New feature - StartIfNeeded extension added on both Task and Task<T>.
+ 9. New feature - CreateKeyAndIv extension method on string is added to generate Crypto Key and IV bytes.
+ 8. New feature - PUSH/PULL (add notes...)
  
 Changes to Dot.Net.DevFast 2.0.0
 
