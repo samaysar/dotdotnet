@@ -88,6 +88,7 @@ namespace Dot.Net.DevFast.Tests.IO
                 Assert.True(instance.Position == 0);
 
                 Assert.Throws<NotImplementedException>(() => instance.Seek(10, SeekOrigin.Begin));
+                Assert.Throws<NotImplementedException>(() => instance.Read(new byte[0], 0, 0 ));
             }
         }
 

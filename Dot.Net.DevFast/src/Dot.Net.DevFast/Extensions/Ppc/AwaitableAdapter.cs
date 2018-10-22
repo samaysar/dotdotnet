@@ -44,7 +44,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     {
         internal static readonly IdentityAwaitableAdapter<T> Default = new IdentityAwaitableAdapter<T>();
 
-        private IdentityAwaitableAdapter()
+        internal IdentityAwaitableAdapter()
         {
             //singleton as methods are pure
         }

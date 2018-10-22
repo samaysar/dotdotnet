@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.Internals;
 using Dot.Net.DevFast.Extensions.JsonExt;
+using Dot.Net.DevFast.Extensions.Ppc;
 using Dot.Net.DevFast.Extensions.StringExt;
 using Dot.Net.DevFast.IO;
 using Newtonsoft.Json;
@@ -260,7 +261,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 #if NET472
                 hashName,
 #endif
-                loopCnt, enc), true), include);
+                loopCnt, enc ?? new UTF8Encoding(false)), true), include);
         }
 
         /// <summary>
@@ -347,7 +348,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 #if NET472
                 hashName,
 #endif
-                loopCnt, enc), false), include);
+                loopCnt, enc ?? new UTF8Encoding(false)), false), include);
         }
 
         /// <summary>
@@ -541,7 +542,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 #if NET472
                 hashName,
 #endif
-                loopCnt, enc), true), include);
+                loopCnt, enc ?? new UTF8Encoding(false)), true), include);
         }
 
         /// <summary>
@@ -628,7 +629,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 #if NET472
                 hashName,
 #endif
-                loopCnt, enc), false), include);
+                loopCnt, enc ?? new UTF8Encoding(false)), false), include);
         }
 
         /// <summary>
@@ -994,6 +995,70 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
                 bufferSize, data.Dispose, detectEncodingFromBom);
         }
 
+        /// <summary>
+        /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
+        /// pulls data throw the pipeline and deserializes the object and feeeds to consumer after adapting those
+        /// using the given adapter.
+        /// </summary>
+        /// <typeparam name="T">Type of the object for deserialization and consumer</typeparam>
+        /// <param name="src"></param>
+        /// <param name="consumer">Consumer instance to form the PPC-Pipe</param>
+        /// <param name="serializer">if not provided, JsonSerializer with default values
+        /// (see also <seealso cref="CustomJson.Serializer()"/>) will be used.</param>
+        /// <param name="ppcBufferSize">Max. number of produced item to hold in intermediary buffer.</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="enc">Encoding to use while writing the file. 
+        /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
+        /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
+        /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
+        /// <param name="bufferSize">Buffer size</param>
+        public static async Task AndParseJsonArrayAsync<T>(this Func<PullFuncStream> src,
+            IConsumer<T> consumer,
+            JsonSerializer serializer = null,
+            int ppcBufferSize = ConcurrentBuffer.StandardSize,
+            CancellationToken token = default(CancellationToken),
+            Encoding enc = null,
+            bool detectEncodingFromBom = true,
+            int bufferSize = StdLookUps.DefaultBufferSize)
+        {
+            await src.AndParseJsonArrayAsync(consumer, new IdentityAwaitableAdapter<T>(), serializer, ppcBufferSize,
+                token, enc ?? new UTF8Encoding(false), detectEncodingFromBom, bufferSize).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
+        /// pulls data throw the pipeline and deserializes the object and feeeds to consumer after adapting those
+        /// using the given adapter.
+        /// </summary>
+        /// <typeparam name="TJ">Type of the object for deserialization</typeparam>
+        /// <typeparam name="TC">Type of the object for consumer</typeparam>
+        /// <param name="src"></param>
+        /// <param name="consumer">Consumer instance to form the PPC-Pipe</param>
+        /// <param name="adapter">Adapter to convert deserialized objects to consumable type</param>
+        /// <param name="serializer">if not provided, JsonSerializer with default values
+        /// (see also <seealso cref="CustomJson.Serializer()"/>) will be used.</param>
+        /// <param name="ppcBufferSize">Max. number of produced item to hold in intermediary buffer.</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="enc">Encoding to use while writing the file. 
+        /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
+        /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
+        /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
+        /// <param name="bufferSize">Buffer size</param>
+        public static async Task AndParseJsonArrayAsync<TJ, TC>(this Func<PullFuncStream> src,
+            IConsumer<TC> consumer,
+            IDataAdapter<TJ, TC> adapter,
+            JsonSerializer serializer = null,
+            int ppcBufferSize = ConcurrentBuffer.StandardSize,
+            CancellationToken token = default(CancellationToken),
+            Encoding enc = null,
+            bool detectEncodingFromBom = true,
+            int bufferSize = StdLookUps.DefaultBufferSize)
+        {
+            var data = src();
+            await data.ApplyPpcParseJsonArray(consumer, adapter, serializer, token, enc ?? new UTF8Encoding(false),
+                detectEncodingFromBom, bufferSize, ppcBufferSize).ConfigureAwait(false);
+        }
+
         #endregion Finalization NoTASK
 
         #region Finalization TASK
@@ -1189,8 +1254,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             int bufferSize = StdLookUps.DefaultBufferSize,
             CancellationToken token = default(CancellationToken))
         {
-            return (await src.AndWriteStringBuilderAsync(initialSize, enc, detectEncodingFromBom, bufferSize, token)
-                .ConfigureAwait(false)).ToString();
+            return (await src.AndWriteStringBuilderAsync(initialSize, enc ?? new UTF8Encoding(false),
+                    detectEncodingFromBom, bufferSize, token).ConfigureAwait(false)).ToString();
         }
 
         /// <summary>
@@ -1213,8 +1278,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             CancellationToken token = default(CancellationToken))
         {
             var sb = new StringBuilder(initialSize);
-            await src.AndWriteStringBuilderAsync(sb, enc, detectEncodingFromBom, bufferSize, token)
-                .ConfigureAwait(false);
+            await src.AndWriteStringBuilderAsync(sb, enc ?? new UTF8Encoding(false), detectEncodingFromBom, bufferSize,
+                    token).ConfigureAwait(false);
             return sb;
         }
 
@@ -1309,6 +1374,70 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             data.Readable.FromJsonArrayParallely(target, serializer, token, observedTokenSource,
                 enc ?? new UTF8Encoding(false), bufferSize, data.Dispose, closeTarget, forceCloseWhenError,
                 detectEncodingFromBom);
+        }
+
+        /// <summary>
+        /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
+        /// pulls data throw the pipeline and deserializes the object and feeeds to consumer after adapting those
+        /// using the given adapter.
+        /// </summary>
+        /// <typeparam name="T">Type of the object for deserialization and consumer</typeparam>
+        /// <param name="src"></param>
+        /// <param name="consumer">Consumer instance to form the PPC-Pipe</param>
+        /// <param name="serializer">if not provided, JsonSerializer with default values
+        /// (see also <seealso cref="CustomJson.Serializer()"/>) will be used.</param>
+        /// <param name="ppcBufferSize">Max. number of produced item to hold in intermediary buffer.</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="enc">Encoding to use while writing the file. 
+        /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
+        /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
+        /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
+        /// <param name="bufferSize">Buffer size</param>
+        public static async Task AndParseJsonArrayAsync<T>(this Func<Task<PullFuncStream>> src,
+            IConsumer<T> consumer,
+            JsonSerializer serializer = null,
+            int ppcBufferSize = ConcurrentBuffer.StandardSize,
+            CancellationToken token = default(CancellationToken),
+            Encoding enc = null,
+            bool detectEncodingFromBom = true,
+            int bufferSize = StdLookUps.DefaultBufferSize)
+        {
+            await src.AndParseJsonArrayAsync(consumer, new IdentityAwaitableAdapter<T>(), serializer, ppcBufferSize,
+                token, enc ?? new UTF8Encoding(false), detectEncodingFromBom, bufferSize).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Call to this method shall bootstrap the streaming pipeline and returns the associated asynchronous task that 
+        /// pulls data throw the pipeline and deserializes the object and feeeds to consumer after adapting those
+        /// using the given adapter.
+        /// </summary>
+        /// <typeparam name="TJ">Type of the object for deserialization</typeparam>
+        /// <typeparam name="TC">Type of the object for consumer</typeparam>
+        /// <param name="src"></param>
+        /// <param name="consumer">Consumer instance to form the PPC-Pipe</param>
+        /// <param name="adapter">Adapter to convert deserialized objects to consumable type</param>
+        /// <param name="serializer">if not provided, JsonSerializer with default values
+        /// (see also <seealso cref="CustomJson.Serializer()"/>) will be used.</param>
+        /// <param name="ppcBufferSize">Max. number of produced item to hold in intermediary buffer.</param>
+        /// <param name="token">Cancellation token to observe</param>
+        /// <param name="enc">Encoding to use while writing the file. 
+        /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
+        /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
+        /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
+        /// <param name="bufferSize">Buffer size</param>
+        public static async Task AndParseJsonArrayAsync<TJ, TC>(this Func<Task<PullFuncStream>> src,
+            IConsumer<TC> consumer, 
+            IDataAdapter<TJ, TC> adapter,
+            JsonSerializer serializer = null,
+            int ppcBufferSize = ConcurrentBuffer.StandardSize,
+            CancellationToken token = default(CancellationToken),
+            Encoding enc = null,
+            bool detectEncodingFromBom = true,
+            int bufferSize = StdLookUps.DefaultBufferSize)
+        {
+            var data = await src().StartIfNeeded().ConfigureAwait(false);
+            await data.ApplyPpcParseJsonArray(consumer, adapter, serializer, token, enc ?? new UTF8Encoding(false),
+                detectEncodingFromBom, bufferSize, ppcBufferSize).ConfigureAwait(false);
         }
 
         #endregion Finalization TASK

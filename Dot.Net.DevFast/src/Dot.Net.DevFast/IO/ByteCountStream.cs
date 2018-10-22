@@ -17,7 +17,7 @@ namespace Dot.Net.DevFast.IO
         long ByteCount { get; }
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="Stream"/>
     /// <summary>
     /// Stream implementation that counts the number of BYTEs (exposed by <see cref="P:Dot.Net.DevFast.IO.ByteCountingStream.ByteCount" /> property)
     /// passed through it. It works as a pass-through stream if another stream is supplied through one of the Ctor.

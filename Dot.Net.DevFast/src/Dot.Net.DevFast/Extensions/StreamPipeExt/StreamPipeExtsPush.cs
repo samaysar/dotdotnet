@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.Internals;
 using Dot.Net.DevFast.Extensions.JsonExt;
+using Dot.Net.DevFast.Extensions.Ppc;
 using Dot.Net.DevFast.Extensions.StringExt;
 using Dot.Net.DevFast.IO;
 using Newtonsoft.Json;
@@ -247,7 +248,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <summary>
         /// Pushes the equivalent json representation of the object and returns a new pipe for chaining.
         /// <para>NOTE: Use <see cref="PushJsonAsync{T}"/> for <seealso cref="Task{T}"/>
-        /// and use <see cref="PushJsonArray{T}"/> for any implementation of <seealso cref="IEnumerable{T}"/>.</para>
+        /// and use <see cref="PushJsonArray{T}(IEnumerable{T},JsonSerializer,Encoding,int,CancellationTokenSource,bool)"/> for any implementation of <seealso cref="IEnumerable{T}"/>.</para>
         /// </summary>
         /// <typeparam name="T">Type of object to serialize</typeparam>
         /// <param name="obj">Object to serialize as json text</param>
@@ -264,8 +265,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             int writerBuffer = StdLookUps.DefaultFileBufferSize,
             bool autoFlush = false)
         {
-            return new Action<PushFuncStream>(pfs => obj.ToJson(pfs.Writable, serializer, enc,
-                writerBuffer, pfs.Dispose, autoFlush)).ToAsync(false);
+            return new Action<PushFuncStream>(pfs => obj.ToJson(pfs.Writable, serializer,
+                enc ?? new UTF8Encoding(false), writerBuffer, pfs.Dispose, autoFlush)).ToAsync(false);
         }
 
         /// <summary>
@@ -296,8 +297,49 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             bool autoFlush = false)
         {
             return obj is BlockingCollection<T> collection
-                ? collection.PushJsonEnumeration(serializer, enc, writerBuffer, pcts, autoFlush)
-                : obj.PushJsonEnumeration(serializer, enc, writerBuffer, autoFlush);
+                ? collection.PushJsonEnumeration(serializer, enc ?? new UTF8Encoding(false), writerBuffer, pcts,
+                    autoFlush)
+                : obj.PushJsonEnumeration(serializer, enc ?? new UTF8Encoding(false), writerBuffer, autoFlush);
+        }
+
+        /// <summary>
+        /// Pushes the equivalent json array representation of the objects produced by the producer implementation
+        /// and returns a new pipe for chaining.
+        /// </summary>
+        /// <typeparam name="T">Type of object to serialize</typeparam>
+        /// <param name="producer">Producer side responcible of object production</param>
+        /// <param name="serializer">if not provided, JsonSerializer with default values
+        /// (see also <seealso cref="CustomJson.Serializer()"/>) will be used.</param>
+        /// <param name="ppcBufferSize">Max. number of produced item to hold in intermediary buffer.</param>
+        /// <param name="enc">Encoding to use while writing the file. 
+        /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
+        /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
+        /// <param name="writerBuffer">Buffer size for the stream writer</param>
+        /// <param name="autoFlush">True to enable auto-flushing else false</param>
+        /// <exception cref="AggregateException"></exception>
+        public static Func<PushFuncStream, Task> PushJsonArray<T>(this IProducer<T> producer,
+            JsonSerializer serializer = null,
+            int ppcBufferSize = ConcurrentBuffer.StandardSize,
+            Encoding enc = null,
+            int writerBuffer = StdLookUps.DefaultFileBufferSize,
+            bool autoFlush = false)
+        {
+            return async pfs =>
+            {
+                using (var serialBc = new BlockingCollection<T>(ppcBufferSize))
+                {
+                    using (var localCts = new CancellationTokenSource())
+                    {
+                        using (var combinedCts =
+                            CancellationTokenSource.CreateLinkedTokenSource(pfs.Token, localCts.Token))
+                        {
+                            await serialBc.PushPpcJsonEnumeration(serializer, enc ?? new UTF8Encoding(false),
+                                writerBuffer, localCts, autoFlush,
+                                combinedCts.Token, pfs, producer, ppcBufferSize).ConfigureAwait(false);
+                        }
+                    }
+                }
+            };
         }
 
         #endregion Various Push
@@ -454,7 +496,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 #if NET472
                 hashName,
 #endif
-                loopCnt, enc), true), include);
+                loopCnt, enc ?? new UTF8Encoding(false)), true), include);
         }
 
         /// <summary>
@@ -541,7 +583,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
 #if NET472
                 hashName,
 #endif
-                loopCnt, enc), false), include);
+                loopCnt, enc ?? new UTF8Encoding(false)), false), include);
         }
 
         /// <summary>

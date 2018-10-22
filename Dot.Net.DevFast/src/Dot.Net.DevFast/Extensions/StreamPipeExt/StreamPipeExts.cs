@@ -7,8 +7,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.Internals;
 using Dot.Net.DevFast.Extensions.JsonExt;
+using Dot.Net.DevFast.Extensions.Ppc;
 using Dot.Net.DevFast.IO;
 using Newtonsoft.Json;
 
@@ -127,8 +129,28 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             JsonSerializer serializer, Encoding enc, int writerBuffer,
             CancellationTokenSource pcts, bool autoFlush)
         {
-            return new Action<PushFuncStream>(pfs => obj.ToJsonArrayParallely(pfs.Writable, serializer,
-                pfs.Token, pcts, enc, writerBuffer, pfs.Dispose, autoFlush)).ToAsync(false);
+            return JsonEnumeration(obj, serializer, enc, writerBuffer, pcts, autoFlush).ToAsync(false);
+        }
+
+        internal static async Task PushPpcJsonEnumeration<T>(this BlockingCollection<T> bc,
+            JsonSerializer serializer, Encoding enc, int writerBuffer,
+            CancellationTokenSource pcts, bool autoFlush,
+            CancellationToken token, PushFuncStream pfs, IProducer<T> producer,
+            int ppcBufferSize)
+        {
+            var errList = new List<Exception>();
+            var serialConsumerTask = Task.Run(() => JsonEnumeration(bc, serializer, enc, writerBuffer, pcts, autoFlush)(pfs),
+                token);
+            await PpcJsonEnumerationProducer(bc, producer, token, ppcBufferSize, errList, pcts).ConfigureAwait(false);
+            try
+            {
+                await serialConsumerTask.ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                errList.Add(e);
+                throw new AggregateException("Error during JSON streaming.", errList);
+            }
         }
 
         #region PullFuncStream TASK
@@ -238,6 +260,95 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             return new PullFuncStream(bcs, true);
         }
 
+        internal static async Task ApplyPpcParseJsonArray<TJ, TC>(this PullFuncStream data,
+            IConsumer<TC> consumer, 
+            IDataAdapter<TJ, TC> adapter,
+            JsonSerializer serializer,
+            CancellationToken token,
+            Encoding enc,
+            bool detectEncodingFromBom,
+            int bufferSize, 
+            int ppcBuffSize)
+        {
+            using (var bc = new BlockingCollection<TJ>())
+            {
+                using (var localCts = new CancellationTokenSource())
+                {
+                    using (var combinedCts = CancellationTokenSource.CreateLinkedTokenSource(token, localCts.Token))
+                    {
+                        await data.ApplyPpcParseJsonArray(consumer, adapter, serializer, combinedCts.Token, enc,
+                            detectEncodingFromBom, bufferSize, bc, localCts, ppcBuffSize).ConfigureAwait(false);
+                    }
+                }
+            }
+        }
+
+        internal static async Task ApplyPpcParseJsonArray<TJ, TC>(this PullFuncStream data,
+            IConsumer<TC> consumer,
+            IDataAdapter<TJ, TC> adapter,
+            JsonSerializer serializer,
+            CancellationToken token,
+            Encoding enc,
+            bool detectEncodingFromBom,
+            int bufferSize,
+            BlockingCollection<TJ> bc,
+            CancellationTokenSource localCts,
+            int ppcBuffSize)
+        {
+            var errList = new List<Exception>();
+            var ppcProducerTask = GetParseJsonArrayProducerTask(data, serializer, token, enc, detectEncodingFromBom,
+                bufferSize, bc, localCts);
+
+            await RunPpcJsonArray(bc, localCts, consumer, adapter, token, ppcBuffSize, errList).ConfigureAwait(false);
+            try
+            {
+                await ppcProducerTask.ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                errList.Add(e);
+                throw new AggregateException("Error during JSON streaming.", errList);
+            }
+        }
+
+        internal static async Task RunPpcJsonArray<TJ, TC>(BlockingCollection<TJ> bc,
+            CancellationTokenSource localCts,
+            IConsumer<TC> consumer,
+            IDataAdapter<TJ, TC> adapter,
+            CancellationToken token,
+            int ppcBuffSize,
+            List<Exception> errList)
+        {
+            try
+            {
+                await new Action<IProducerBuffer<TJ>, CancellationToken>((pb, tkn) =>
+                {
+                    while (bc.TryTake(out var outobj, Timeout.Infinite, tkn))
+                    {
+                        pb.Add(outobj, tkn);
+                    }
+                }).Pipe(consumer, adapter, token, ppcBuffSize).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                errList.Add(e);
+                if (!localCts.IsCancellationRequested) localCts.Cancel();
+            }
+        }
+
+        internal static Task GetParseJsonArrayProducerTask<TJ>(PullFuncStream data,
+            JsonSerializer serializer,
+            CancellationToken token,
+            Encoding enc,
+            bool detectEncodingFromBom,
+            int bufferSize,
+            BlockingCollection<TJ> bc,
+            CancellationTokenSource localCts)
+        {
+            return Task.Run(() => data.Readable.FromJsonArrayParallely(bc, serializer, token,
+                localCts, enc, bufferSize, data.Dispose, true, true, detectEncodingFromBom), CancellationToken.None);
+        }
+
         #endregion PullFuncStream PRIVATE
 
         internal static T InitKeyNIv<T>(this T alg, string password, string salt,
@@ -256,6 +367,33 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             alg.Key = keyIv.Item1;
             alg.IV = keyIv.Item2;
             return alg;
+        }
+
+        internal static Action<PushFuncStream> JsonEnumeration<T>(BlockingCollection<T> obj,
+            JsonSerializer serializer, Encoding enc, int writerBuffer,
+            CancellationTokenSource pcts, bool autoFlush)
+        {
+            return pfs => obj.ToJsonArrayParallely(pfs.Writable, serializer,
+                pfs.Token, pcts, enc, writerBuffer, pfs.Dispose, autoFlush);
+        }
+
+        internal static async Task PpcJsonEnumerationProducer<T>(BlockingCollection<T> obj, IProducer<T> producer,
+            CancellationToken token, int ppcBufferSize, List<Exception> errList, CancellationTokenSource pcts)
+        {
+            try
+            {
+                await producer.Pipe((ins, tkn) => obj.Add(ins, tkn), token, ppcBufferSize)
+                    .ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                errList.Add(e);
+                if (!pcts.IsCancellationRequested) pcts.Cancel();
+            }
+            finally
+            {
+                obj.CompleteAdding();
+            }
         }
     }
 }

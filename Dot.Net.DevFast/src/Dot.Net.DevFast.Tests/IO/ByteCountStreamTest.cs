@@ -98,6 +98,18 @@ namespace Dot.Net.DevFast.Tests.IO
                     }
                     instance.Write(buffer, 0, buffSize);
                     Assert.True(instance.ByteCount == mem.Length);
+
+                    using (var mem1 = new MemoryStream())
+                    {
+                        instance.ResetWith(mem1, true);
+                        buffer = new byte[buffSize];
+                        for (var i = 0; i < buffSize; i++)
+                        {
+                            buffer[i] = 5;
+                        }
+                        instance.Write(buffer, 0, buffSize);
+                        Assert.True(instance.ByteCount == mem.Length);
+                    }
                 }
             }
         }
