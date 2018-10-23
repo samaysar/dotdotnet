@@ -149,8 +149,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             catch (Exception e)
             {
                 errList.Add(e);
-                throw new AggregateException("Error during JSON streaming.", errList);
             }
+            if (errList.Count > 0) throw new AggregateException("Error during JSON PUSH streaming.", errList);
         }
 
         #region PullFuncStream TASK
@@ -307,8 +307,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             catch (Exception e)
             {
                 errList.Add(e);
-                throw new AggregateException("Error during JSON streaming.", errList);
             }
+            if (errList.Count > 0) throw new AggregateException("Error during JSON PULL streaming.", errList);
         }
 
         internal static async Task RunPpcJsonArray<TJ, TC>(BlockingCollection<TJ> bc,
