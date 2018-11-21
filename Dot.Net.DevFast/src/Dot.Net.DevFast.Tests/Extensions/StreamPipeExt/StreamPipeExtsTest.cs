@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions;
+using Dot.Net.DevFast.Extensions.Ppc;
 using Dot.Net.DevFast.Extensions.StreamExt;
 using Dot.Net.DevFast.Extensions.StreamPipeExt;
 using Dot.Net.DevFast.Extensions.StringExt;
@@ -319,6 +323,82 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
             {
                 file.Refresh();
                 file.Delete();
+            }
+        }
+
+        [Test]
+        [TestCase(1)]
+        [TestCase(20)]
+        public async Task Ppc_Based_Json_Array_Is_Consistent(int total)
+        {
+            using (var mem = new MemoryStream())
+            {
+                var dico = new Dictionary<string, TestObject>();
+                await new Action<IProducerBuffer<TestObject>, CancellationToken>((b, t) =>
+                    {
+                        for (var i = 0; i < total; i++)
+                        {
+                            var instance = new TestObject();
+                            dico[instance.StrProp] = instance;
+                            b.Add(instance, t);
+                        }
+                    }).PushJsonArray(autoFlush: true)
+                    .ThenCompress().AndWriteStreamAsync(mem).ConfigureAwait(false);
+                mem.Seek(0, SeekOrigin.Begin);
+                var deserialList = mem.Pull(false).ThenDecompress().AndParseJsonArray<TestObject>().ToList();
+                Assert.True(deserialList.Count.Equals(total));
+                foreach (var o in deserialList)
+                {
+                    var lookedUp = dico[o.StrProp];
+                    Assert.True(o.IntProp.Equals(lookedUp.IntProp));
+                    Assert.True(o.BytesProp.SequenceEqual(lookedUp.BytesProp));
+                }
+
+                mem.Seek(0, SeekOrigin.Begin);
+                var counter = 0;
+                await mem.Pull(false).ThenDecompress().AndParseJsonArrayAsync(new Action<TestObject, CancellationToken>(
+                    (o, t) =>
+                    {
+                        var lookedUp = dico[o.StrProp];
+                        Assert.True(o.IntProp.Equals(lookedUp.IntProp));
+                        Assert.True(o.BytesProp.SequenceEqual(lookedUp.BytesProp));
+                        counter++;
+                    })).ConfigureAwait(false);
+                Assert.True(counter.Equals(total));
+
+                mem.Seek(0, SeekOrigin.Begin);
+                counter = 0;
+                await mem.Pull(false).ThenDecompress().AndParseJsonArrayAsync((o, t) =>
+                {
+                    var lookedUp = dico[o.StrProp];
+                    Assert.True(o.IntProp.Equals(lookedUp.IntProp));
+                    Assert.True(o.BytesProp.SequenceEqual(lookedUp.BytesProp));
+                    counter++;
+                }, new IdentityAwaitableAdapter<TestObject>()).ConfigureAwait(false);
+                Assert.True(counter.Equals(total));
+
+                mem.Seek(0, SeekOrigin.Begin);
+                counter = 0;
+                await Task.FromResult((Stream)mem).Pull(false).ThenDecompress().AndParseJsonArrayAsync(new Action<TestObject, CancellationToken>(
+                    (o, t) =>
+                    {
+                        var lookedUp = dico[o.StrProp];
+                        Assert.True(o.IntProp.Equals(lookedUp.IntProp));
+                        Assert.True(o.BytesProp.SequenceEqual(lookedUp.BytesProp));
+                        counter++;
+                    })).ConfigureAwait(false);
+                Assert.True(counter.Equals(total));
+
+                mem.Seek(0, SeekOrigin.Begin);
+                counter = 0;
+                await Task.FromResult((Stream)mem).Pull(false).ThenDecompress().AndParseJsonArrayAsync((o, t) =>
+                {
+                    var lookedUp = dico[o.StrProp];
+                    Assert.True(o.IntProp.Equals(lookedUp.IntProp));
+                    Assert.True(o.BytesProp.SequenceEqual(lookedUp.BytesProp));
+                    counter++;
+                }, new IdentityAwaitableAdapter<TestObject>()).ConfigureAwait(false);
+                Assert.True(counter.Equals(total));
             }
         }
 

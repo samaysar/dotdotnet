@@ -6,6 +6,7 @@ namespace Dot.Net.DevFast.Tests.TestHelpers
     [JsonObject(MemberSerialization.OptOut)]
     public class TestObject
     {
+        [JsonIgnore]
         private static readonly Random Ran = new Random();
 
         [JsonConstructor]
