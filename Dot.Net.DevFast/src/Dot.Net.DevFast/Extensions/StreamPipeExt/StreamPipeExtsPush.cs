@@ -303,11 +303,63 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         /// <summary>
+        /// Pushes the equivalent json array representation of the objects produced by the producer's action
+        /// implementation and returns a new pipe for chaining.
+        /// </summary>
+        /// <typeparam name="T">Type of object to serialize</typeparam>
+        /// <param name="producerAction">Producer lambda responsible of object production</param>
+        /// <param name="serializer">if not provided, JsonSerializer with default values
+        /// (see also <seealso cref="CustomJson.Serializer()"/>) will be used.</param>
+        /// <param name="ppcBufferSize">Max. number of produced item to hold in intermediary buffer.</param>
+        /// <param name="enc">Encoding to use while writing the file. 
+        /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
+        /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
+        /// <param name="writerBuffer">Buffer size for the stream writer</param>
+        /// <param name="autoFlush">True to enable auto-flushing else false</param>
+        /// <exception cref="AggregateException"></exception>
+        public static Func<PushFuncStream, Task> PushJsonArray<T>(
+            this Action<IProducerBuffer<T>, CancellationToken> producerAction,
+            JsonSerializer serializer = null,
+            int ppcBufferSize = ConcurrentBuffer.StandardSize,
+            Encoding enc = null,
+            int writerBuffer = StdLookUps.DefaultFileBufferSize,
+            bool autoFlush = false)
+        {
+            return producerAction.ToAsync(false).PushJsonArray(serializer, ppcBufferSize, enc, writerBuffer, autoFlush);
+        }
+
+        /// <summary>
+        /// Pushes the equivalent json array representation of the objects produced by the producer's action
+        /// implementation and returns a new pipe for chaining.
+        /// </summary>
+        /// <typeparam name="T">Type of object to serialize</typeparam>
+        /// <param name="producerFunc">Producer async lambda responsible of object production</param>
+        /// <param name="serializer">if not provided, JsonSerializer with default values
+        /// (see also <seealso cref="CustomJson.Serializer()"/>) will be used.</param>
+        /// <param name="ppcBufferSize">Max. number of produced item to hold in intermediary buffer.</param>
+        /// <param name="enc">Encoding to use while writing the file. 
+        /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
+        /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
+        /// <param name="writerBuffer">Buffer size for the stream writer</param>
+        /// <param name="autoFlush">True to enable auto-flushing else false</param>
+        /// <exception cref="AggregateException"></exception>
+        public static Func<PushFuncStream, Task> PushJsonArray<T>(
+            this Func<IProducerBuffer<T>, CancellationToken, Task> producerFunc,
+            JsonSerializer serializer = null,
+            int ppcBufferSize = ConcurrentBuffer.StandardSize,
+            Encoding enc = null,
+            int writerBuffer = StdLookUps.DefaultFileBufferSize,
+            bool autoFlush = false)
+        {
+            return producerFunc.ToProducer().PushJsonArray(serializer, ppcBufferSize, enc, writerBuffer, autoFlush);
+        }
+
+        /// <summary>
         /// Pushes the equivalent json array representation of the objects produced by the producer implementation
         /// and returns a new pipe for chaining.
         /// </summary>
         /// <typeparam name="T">Type of object to serialize</typeparam>
-        /// <param name="producer">Producer side responcible of object production</param>
+        /// <param name="producer">Producer side responsible of object production</param>
         /// <param name="serializer">if not provided, JsonSerializer with default values
         /// (see also <seealso cref="CustomJson.Serializer()"/>) will be used.</param>
         /// <param name="ppcBufferSize">Max. number of produced item to hold in intermediary buffer.</param>
