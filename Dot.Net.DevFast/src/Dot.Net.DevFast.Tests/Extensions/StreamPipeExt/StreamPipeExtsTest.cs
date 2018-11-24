@@ -14,6 +14,7 @@ using Dot.Net.DevFast.Extensions.StreamPipeExt;
 using Dot.Net.DevFast.Extensions.StringExt;
 using Dot.Net.DevFast.Tests.TestHelpers;
 using Newtonsoft.Json;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
@@ -400,6 +401,19 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
                 }, new IdentityAwaitableAdapter<TestObject>()).ConfigureAwait(false);
                 Assert.True(counter.Equals(total));
             }
+        }
+
+        [Test]
+        public void Ppc_Based_Json_Array_Streaming_Errors_Are_Aggregated()
+        {
+            var mem = Substitute.For<Stream>();
+            mem.CanWrite.Returns(true);
+            mem.When(x => x.Write(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>()))
+                .Do(x => throw new Exception("Test"));
+            mem.WriteAsync(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(x => throw new Exception("Test"));
+            Assert.ThrowsAsync<AggregateException>(async () =>
+                await new Action<IProducerBuffer<TestObject>, CancellationToken>((b, t) => b.Add(new TestObject(), t))
+                    .PushJsonArray(autoFlush: true).AndWriteStreamAsync(mem).ConfigureAwait(false));
         }
 
         private static async Task Encrypt_Decrypt_Harmonize<T>()

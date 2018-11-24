@@ -323,9 +323,9 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             {
                 await new Action<IProducerBuffer<TJ>, CancellationToken>((pb, tkn) =>
                 {
-                    while (bc.TryTake(out var outobj, Timeout.Infinite, tkn))
+                    while (bc.TryTake(out var outObj, Timeout.Infinite, tkn))
                     {
-                        pb.Add(outobj, tkn);
+                        pb.Add(outObj, tkn);
                     }
                 }).Pipe(consumer, adapter, token, ppcBuffSize).ConfigureAwait(false);
             }
