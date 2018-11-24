@@ -404,13 +404,19 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="writableStream">Stream on which to write concurrently</param>
         /// <param name="disposeWritableStream">true to dispose <paramref name="writableStream"/> else false.</param>
+        /// <param name="errorHandler">Lambda to call in case an error is encountered during stream operations.
+        /// If NOT supplied then the exception is immediately rethrown, otherwise, it is passed to the lambda
+        /// along with the <paramref name="writableStream"/> instance. It is then up to lambda whether to
+        /// rethrow it or not.</param>
         /// <param name="include">If true is passed, compression is performed else ignored</param>
         public static Func<PushFuncStream, Task> ThenConcurrentlyWriteTo(this Func<PushFuncStream, Task> src,
             Stream writableStream,
             bool disposeWritableStream,
+            Action<Stream, Exception> errorHandler = null,
             bool include = true)
         {
-            return src.ThenApply(s => s.ApplyConcurrentStream(writableStream, disposeWritableStream), include);
+            return src.ThenApply(s => s.ApplyConcurrentStream(writableStream, disposeWritableStream, errorHandler),
+                include);
         }
 
         /// <summary>
@@ -418,7 +424,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <seealso cref="IByteCounter"/>.<seealso cref="IByteCounter.ByteCount"/>) 
         /// and returns a new pipe for chaining.
         /// <para>IMPORTANT: Access <seealso cref="IByteCounter.ByteCount"/> ONLY AFTER the full
-        /// piepline is bootstrapped and processed, i.e., calling <paramref name="byteCounter"/>.ByteCount immediately
+        /// pipeline is bootstrapped and processed, i.e., calling <paramref name="byteCounter"/>.ByteCount immediately
         /// after this call will not provide the correct count.</para>
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>

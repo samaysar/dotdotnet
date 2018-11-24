@@ -2070,5 +2070,59 @@ namespace Dot.Net.DevFast.Tests.Extensions
                     sync16.ToAsync(token: cts.Token)(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)).Message
                 .Equals(erroText));
         }
+
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        public void Sync_Lambdas_Runs_Error_Wrapped_Perfectly(bool withError)
+        {
+            var errorCnt = 0;
+            void ErrorHandler(Exception e)
+            {
+                errorCnt++;
+                Assert.True(e.Message.Equals("Test"));
+            }
+
+            var actionToRun = withError ? () => throw new Exception("Test") : new Action(() => { });
+            actionToRun.ExecuteErrorWrapped(ErrorHandler);
+            Assert.True(errorCnt.Equals(withError ? 1 : 0));
+
+            int ErrorHandler2(Exception e)
+            {
+                errorCnt++;
+                Assert.True(e.Message.Equals("Test"));
+                return 0;
+            }
+
+            var funcToRun = withError ? () => throw new Exception("Test") : new Func<int>(() => 0);
+            Assert.True(funcToRun.ExecuteErrorWrapped(ErrorHandler2).Equals(0));
+            Assert.True(errorCnt.Equals(withError ? 2 : 0));
+        }
+
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task Async_Lambdas_Runs_Error_Wrapped_Perfectly(bool withError)
+        {
+            var errorCnt = 0;
+            var actionToRun = withError ? () => throw new Exception("Test") : new Func<Task>(() => Task.CompletedTask);
+            await actionToRun.ExecuteErrorWrapped(e =>
+            {
+                errorCnt++;
+                Assert.True(e.Message.Equals("Test"));
+            }).ConfigureAwait(false);
+            Assert.True(errorCnt.Equals(withError ? 1 : 0));
+
+            int ErrorHandler2(Exception e)
+            {
+                errorCnt++;
+                Assert.True(e.Message.Equals("Test"));
+                return 0;
+            }
+
+            var funcToRun = withError ? () => throw new Exception("Test") : new Func<Task<int>>(() => Task.FromResult(0));
+            Assert.True((await funcToRun.ExecuteErrorWrapped(ErrorHandler2).ConfigureAwait(false)).Equals(0));
+            Assert.True(errorCnt.Equals(withError ? 2 : 0));
+        }
     }
 }

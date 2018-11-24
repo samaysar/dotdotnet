@@ -37,11 +37,12 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         // we keep internal extensions here
         internal static Func<PushFuncStream, Task> ApplyConcurrentStream(this Func<PushFuncStream, Task> pipe,
             Stream stream,
-            bool disposeStream)
+            bool disposeStream,
+            Action<Stream, Exception> errorHandler)
         {
             return async pfs =>
             {
-                using (var concurrentStream = new BroadcastStream(pfs, stream, disposeStream))
+                using (var concurrentStream = new BroadcastStream(pfs, stream, disposeStream, errorHandler))
                 {
                     var t = pfs.Token;
                     await pipe(new PushFuncStream(concurrentStream, false, t)).StartIfNeeded()

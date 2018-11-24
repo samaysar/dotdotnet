@@ -19,14 +19,14 @@ namespace Dot.Net.DevFast.Tests.IO
                 var nonWritable = Substitute.For<Stream>();
                 nonWritable.CanWrite.Returns(false);
                 var _ = new BroadcastStream(new PushFuncStream(Stream.Null, false, CancellationToken.None),
-                    nonWritable, true);
+                    nonWritable, true, null);
             }).ErrorCode == DdnDfErrorCode.Unspecified);
 
             Assert.True(Assert.Throws<DdnDfException>(() =>
             {
                 var nonWritable = Substitute.For<Stream>();
                 nonWritable.CanWrite.Returns(true);
-                var _ = new BroadcastStream(default(PushFuncStream), nonWritable, true);
+                var _ = new BroadcastStream(default(PushFuncStream), nonWritable, true, null);
             }).ErrorCode == DdnDfErrorCode.NullObject);
         }
 
@@ -38,7 +38,7 @@ namespace Dot.Net.DevFast.Tests.IO
             stm1.CanWrite.Returns(true);
             stm2.CanWrite.Returns(true);
             using (var instance =
-                new BroadcastStream(new PushFuncStream(stm1, true, CancellationToken.None), stm2, true))
+                new BroadcastStream(new PushFuncStream(stm1, true, CancellationToken.None), stm2, true, null))
             {
                 instance.Flush();
                 stm1.Received(1).FlushAsync();
@@ -58,7 +58,7 @@ namespace Dot.Net.DevFast.Tests.IO
             stm1.CanWrite.Returns(true);
             stm2.CanWrite.Returns(true);
             using (var _ = new BroadcastStream(new PushFuncStream(stm1, disposePfs, CancellationToken.None),
-                stm2, disposeStrm))
+                stm2, disposeStrm, null))
             {
             }
             stm1.Received(disposePfs ? 1 : 0).Dispose();
@@ -73,7 +73,7 @@ namespace Dot.Net.DevFast.Tests.IO
             stm1.CanWrite.Returns(true);
             stm2.CanWrite.Returns(true);
             using (var instance =
-                new BroadcastStream(new PushFuncStream(stm1, true, CancellationToken.None), stm2, true))
+                new BroadcastStream(new PushFuncStream(stm1, true, CancellationToken.None), stm2, true, null))
             {
                 Assert.True(instance.CanWrite);
                 Assert.False(instance.CanSeek);
@@ -100,7 +100,7 @@ namespace Dot.Net.DevFast.Tests.IO
             stm1.CanWrite.Returns(true);
             stm2.CanWrite.Returns(true);
             using (var instance =
-                new BroadcastStream(new PushFuncStream(stm1, true, CancellationToken.None), stm2, true))
+                new BroadcastStream(new PushFuncStream(stm1, true, CancellationToken.None), stm2, true, null))
             {
                 var bytes = new byte[0];
                 instance.Write(bytes, 0, 0);
