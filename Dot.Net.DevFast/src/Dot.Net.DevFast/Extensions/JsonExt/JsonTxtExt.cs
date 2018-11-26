@@ -174,7 +174,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             }
             catch
             {
-                producerTokenSource?.Cancel();
+                if(!token.IsCancellationRequested) producerTokenSource?.Cancel();
                 throw;
             }
             finally
@@ -817,7 +817,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             catch
             {
                 inerror = true;
-                consumerTokenSource?.Cancel();
+                if (!token.IsCancellationRequested) consumerTokenSource?.Cancel();
                 throw;
             }
             finally

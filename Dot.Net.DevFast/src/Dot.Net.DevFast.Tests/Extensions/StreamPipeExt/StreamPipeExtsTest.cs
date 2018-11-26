@@ -118,7 +118,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
             sha1 = SHA256.Create();
             md52 = MD5.Create();
             sha2 = SHA256.Create();
-            outcome = await Task.FromResult((Stream)new MemoryStream(outcome))
+            outcome = await Task.FromResult((Stream) new MemoryStream(outcome))
                 .Pull()
                 .ThenComputeHash(md51)
                 .ThenComputeHash(sha1)
@@ -278,6 +278,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
                 var sourceForPull = await Task.FromResult(JsonConvert.SerializeObject(obj)
                         .ToByteSegment(new UTF8Encoding(false)))
                     .Push()
+                    .ThenCountBytes(out var pushByteCounter)
                     .ThenCompress()
                     .AndWriteBytesAsync().ConfigureAwait(false);
                 await sourceForPull
@@ -319,6 +320,15 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
                     .ThenDecompress()
                     .AndWriteStringBuilderAsync(strBuild).ConfigureAwait(false);
                 AssertOnValueEquality(obj, JsonConvert.DeserializeObject<TestObject>(strBuild.ToString()));
+
+                await sourceForPull
+                    .Pull()
+                    .ThenDecompress()
+                    .ThenCountBytes(out var pullByteCounter)
+                    .AndExecuteAsync().ConfigureAwait(false);
+
+                Assert.True(pullByteCounter.ByteCount != sourceForPull.Length);
+                Assert.True(pushByteCounter.ByteCount == pullByteCounter.ByteCount);
             }
             finally
             {
@@ -380,19 +390,20 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
 
                 mem.Seek(0, SeekOrigin.Begin);
                 counter = 0;
-                await Task.FromResult((Stream)mem).Pull(false).ThenDecompress().AndParseJsonArrayAsync(new Action<TestObject, CancellationToken>(
-                    (o, t) =>
-                    {
-                        var lookedUp = dico[o.StrProp];
-                        Assert.True(o.IntProp.Equals(lookedUp.IntProp));
-                        Assert.True(o.BytesProp.SequenceEqual(lookedUp.BytesProp));
-                        counter++;
-                    })).ConfigureAwait(false);
+                await Task.FromResult((Stream) mem).Pull(false).ThenDecompress().AndParseJsonArrayAsync(
+                    new Action<TestObject, CancellationToken>(
+                        (o, t) =>
+                        {
+                            var lookedUp = dico[o.StrProp];
+                            Assert.True(o.IntProp.Equals(lookedUp.IntProp));
+                            Assert.True(o.BytesProp.SequenceEqual(lookedUp.BytesProp));
+                            counter++;
+                        })).ConfigureAwait(false);
                 Assert.True(counter.Equals(total));
 
                 mem.Seek(0, SeekOrigin.Begin);
                 counter = 0;
-                await Task.FromResult((Stream)mem).Pull(false).ThenDecompress().AndParseJsonArrayAsync((o, t) =>
+                await Task.FromResult((Stream) mem).Pull(false).ThenDecompress().AndParseJsonArrayAsync((o, t) =>
                 {
                     var lookedUp = dico[o.StrProp];
                     Assert.True(o.IntProp.Equals(lookedUp.IntProp));
@@ -404,16 +415,54 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
         }
 
         [Test]
-        public void Ppc_Based_Json_Array_Streaming_Errors_Are_Aggregated()
+        public async Task Ppc_Based_Json_Array_Streaming_Errors_Are_Aggregated()
         {
+            // Testing Push JsonArray Side Exceptions
+            // 1. Due to Stream Writing
             var mem = Substitute.For<Stream>();
             mem.CanWrite.Returns(true);
             mem.When(x => x.Write(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>()))
                 .Do(x => throw new Exception("Test"));
-            mem.WriteAsync(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(x => throw new Exception("Test"));
+            mem.WriteAsync(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
+                .Returns(x => throw new Exception("Test"));
             Assert.ThrowsAsync<AggregateException>(async () =>
                 await new Action<IProducerBuffer<TestObject>, CancellationToken>((b, t) => b.Add(new TestObject(), t))
                     .PushJsonArray(autoFlush: true).AndWriteStreamAsync(mem).ConfigureAwait(false));
+
+            // 2. Due to Producer
+            mem = Substitute.For<Stream>();
+            mem.CanWrite.Returns(true);
+            mem.WriteAsync(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
+                .Returns(x => Task.CompletedTask);
+            Assert.ThrowsAsync<AggregateException>(async () =>
+                await new Action<IProducerBuffer<TestObject>, CancellationToken>((b, t) => throw new Exception("Test"))
+                    .PushJsonArray(autoFlush: true).AndWriteStreamAsync(mem).ConfigureAwait(false));
+
+            // Testing Pull JsonArray Side Exceptions
+            // 1. Due to Stream Reading
+            const int total = 20;
+            using (var mem2 = new MemoryStream())
+            {
+                await new Action<IProducerBuffer<TestObject>, CancellationToken>((b, t) =>
+                    {
+                        for (var i = 0; i < total; i++)
+                        {
+                            b.Add(new TestObject(), t);
+                        }
+                    }).PushJsonArray(autoFlush: true)
+                    .ThenCompress().AndWriteStreamAsync(mem2).ConfigureAwait(false);
+                mem2.Seek(0, SeekOrigin.Begin);
+                Assert.ThrowsAsync<AggregateException>(async () =>
+                    await mem2.Pull(false).ThenDecompress().AndParseJsonArrayAsync(
+                        new Action<TestObject, CancellationToken>(
+                            (o, t) => throw new Exception("Test"))).ConfigureAwait(false));
+
+                mem2.Seek(0, SeekOrigin.Begin);
+                Assert.ThrowsAsync<AggregateException>(async () =>
+                    await mem2.Pull(false).ThenDecompress().AndParseJsonArrayAsync(
+                        new Action<TestObject, CancellationToken>((o, t) => { }),
+                        enc: Encoding.UTF32, detectEncodingFromBom: false).ConfigureAwait(false));
+            }
         }
 
         private static async Task Encrypt_Decrypt_Harmonize<T>()

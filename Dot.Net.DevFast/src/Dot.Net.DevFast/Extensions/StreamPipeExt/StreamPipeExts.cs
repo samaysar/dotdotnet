@@ -139,9 +139,11 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             int ppcBufferSize)
         {
             var errList = new List<Exception>();
-            var serialConsumerTask = Task.Run(() => JsonEnumeration(bc, serializer, enc, writerBuffer, pcts, autoFlush)(pfs),
-                token);
-            await PpcJsonEnumerationProducer(bc, producer, token, ppcBufferSize, errList, pcts).ConfigureAwait(false);
+            var serialConsumerTask = Task.Run(
+                () => JsonEnumeration(bc, serializer, enc, writerBuffer, pcts, autoFlush)(pfs), token);
+
+            await PpcJsonEnumerationProducer(bc, producer, token, ppcBufferSize, errList, pcts)
+                .ConfigureAwait(false);
             try
             {
                 await serialConsumerTask.ConfigureAwait(false);
@@ -150,6 +152,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             {
                 errList.Add(e);
             }
+
             if (errList.Count > 0) throw new AggregateException("Error during JSON PUSH streaming.", errList);
         }
 
@@ -299,7 +302,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             var ppcProducerTask = GetParseJsonArrayProducerTask(data, serializer, token, enc, detectEncodingFromBom,
                 bufferSize, bc, localCts);
 
-            await RunPpcJsonArray(bc, localCts, consumer, adapter, token, ppcBuffSize, errList).ConfigureAwait(false);
+            await RunPpcJsonArray(bc, localCts, consumer, adapter, token, ppcBuffSize, errList)
+                .ConfigureAwait(false);
             try
             {
                 await ppcProducerTask.ConfigureAwait(false);
@@ -308,6 +312,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             {
                 errList.Add(e);
             }
+
             if (errList.Count > 0) throw new AggregateException("Error during JSON PULL streaming.", errList);
         }
 
@@ -332,7 +337,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             catch (Exception e)
             {
                 errList.Add(e);
-                if (!localCts.IsCancellationRequested) localCts.Cancel();
+                if (!token.IsCancellationRequested) localCts.Cancel();
             }
         }
 
@@ -388,7 +393,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             catch (Exception e)
             {
                 errList.Add(e);
-                if (!pcts.IsCancellationRequested) pcts.Cancel();
+                Console.Out.WriteLine("Cancellation Token: " + token.IsCancellationRequested);
+                if (!token.IsCancellationRequested) pcts.Cancel();
             }
             finally
             {
