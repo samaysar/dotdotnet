@@ -2106,7 +2106,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
         {
             var errorCnt = 0;
             var actionToRun = withError ? () => throw new Exception("Test") : new Func<Task>(() => Task.CompletedTask);
-            await actionToRun.ExecuteErrorWrapped(e =>
+            await actionToRun.ExecuteErrorWrappedAsync(e =>
             {
                 errorCnt++;
                 Assert.True(e.Message.Equals("Test"));
@@ -2121,7 +2121,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
             }
 
             var funcToRun = withError ? () => throw new Exception("Test") : new Func<Task<int>>(() => Task.FromResult(0));
-            Assert.True((await funcToRun.ExecuteErrorWrapped(ErrorHandler2).ConfigureAwait(false)).Equals(0));
+            Assert.True((await funcToRun.ExecuteErrorWrappedAsync(ErrorHandler2).ConfigureAwait(false)).Equals(0));
             Assert.True(errorCnt.Equals(withError ? 2 : 0));
         }
     }

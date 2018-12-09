@@ -1910,7 +1910,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="lambdaToExecute">Func async Lambda</param>
         /// <param name="errorHandler">Error handler</param>
-        public static async Task ExecuteErrorWrapped(this Func<Task> lambdaToExecute, Action<Exception> errorHandler)
+        public static async Task ExecuteErrorWrappedAsync(this Func<Task> lambdaToExecute, Action<Exception> errorHandler)
         {
             await lambdaToExecute.ErrorWrapper(errorHandler)().ConfigureAwait(false);
         }
@@ -1920,7 +1920,7 @@ namespace Dot.Net.DevFast.Extensions
         /// </summary>
         /// <param name="lambdaToExecute">Func async Lambda</param>
         /// <param name="errorHandler">Error handler</param>
-        public static async Task<T> ExecuteErrorWrapped<T>(this Func<Task<T>> lambdaToExecute, Func<Exception, T> errorHandler)
+        public static async Task<T> ExecuteErrorWrappedAsync<T>(this Func<Task<T>> lambdaToExecute, Func<Exception, T> errorHandler)
         {
             return await lambdaToExecute.ErrorWrapper(errorHandler)().ConfigureAwait(false);
         }
