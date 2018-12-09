@@ -303,11 +303,63 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         }
 
         /// <summary>
+        /// Pushes the equivalent json array representation of the objects produced by the producer's action
+        /// implementation and returns a new pipe for chaining.
+        /// </summary>
+        /// <typeparam name="T">Type of object to serialize</typeparam>
+        /// <param name="producerAction">Producer lambda responsible of object production</param>
+        /// <param name="serializer">if not provided, JsonSerializer with default values
+        /// (see also <seealso cref="CustomJson.Serializer()"/>) will be used.</param>
+        /// <param name="ppcBufferSize">Max. number of produced item to hold in intermediary buffer.</param>
+        /// <param name="enc">Encoding to use while writing the file. 
+        /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
+        /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
+        /// <param name="writerBuffer">Buffer size for the stream writer</param>
+        /// <param name="autoFlush">True to enable auto-flushing else false</param>
+        /// <exception cref="AggregateException"></exception>
+        public static Func<PushFuncStream, Task> PushJsonArray<T>(
+            this Action<IProducerBuffer<T>, CancellationToken> producerAction,
+            JsonSerializer serializer = null,
+            int ppcBufferSize = ConcurrentBuffer.StandardSize,
+            Encoding enc = null,
+            int writerBuffer = StdLookUps.DefaultFileBufferSize,
+            bool autoFlush = false)
+        {
+            return producerAction.ToAsync(false).PushJsonArray(serializer, ppcBufferSize, enc, writerBuffer, autoFlush);
+        }
+
+        /// <summary>
+        /// Pushes the equivalent json array representation of the objects produced by the producer's action
+        /// implementation and returns a new pipe for chaining.
+        /// </summary>
+        /// <typeparam name="T">Type of object to serialize</typeparam>
+        /// <param name="producerFunc">Producer async lambda responsible of object production</param>
+        /// <param name="serializer">if not provided, JsonSerializer with default values
+        /// (see also <seealso cref="CustomJson.Serializer()"/>) will be used.</param>
+        /// <param name="ppcBufferSize">Max. number of produced item to hold in intermediary buffer.</param>
+        /// <param name="enc">Encoding to use while writing the file. 
+        /// If not supplied, by default <seealso cref="Encoding.UTF8"/>
+        /// (withOUT the utf-8 identifier, i.e. new UTF8Encoding(false)) will be used</param>
+        /// <param name="writerBuffer">Buffer size for the stream writer</param>
+        /// <param name="autoFlush">True to enable auto-flushing else false</param>
+        /// <exception cref="AggregateException"></exception>
+        public static Func<PushFuncStream, Task> PushJsonArray<T>(
+            this Func<IProducerBuffer<T>, CancellationToken, Task> producerFunc,
+            JsonSerializer serializer = null,
+            int ppcBufferSize = ConcurrentBuffer.StandardSize,
+            Encoding enc = null,
+            int writerBuffer = StdLookUps.DefaultFileBufferSize,
+            bool autoFlush = false)
+        {
+            return producerFunc.ToProducer().PushJsonArray(serializer, ppcBufferSize, enc, writerBuffer, autoFlush);
+        }
+
+        /// <summary>
         /// Pushes the equivalent json array representation of the objects produced by the producer implementation
         /// and returns a new pipe for chaining.
         /// </summary>
         /// <typeparam name="T">Type of object to serialize</typeparam>
-        /// <param name="producer">Producer side responcible of object production</param>
+        /// <param name="producer">Producer side responsible of object production</param>
         /// <param name="serializer">if not provided, JsonSerializer with default values
         /// (see also <seealso cref="CustomJson.Serializer()"/>) will be used.</param>
         /// <param name="ppcBufferSize">Max. number of produced item to hold in intermediary buffer.</param>
@@ -352,13 +404,19 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="writableStream">Stream on which to write concurrently</param>
         /// <param name="disposeWritableStream">true to dispose <paramref name="writableStream"/> else false.</param>
+        /// <param name="errorHandler">Lambda to call in case an error is encountered during stream operations.
+        /// If NOT supplied then the exception is immediately rethrown, otherwise, it is passed to the lambda
+        /// along with the <paramref name="writableStream"/> instance. It is then up to lambda whether to
+        /// rethrow it or not.</param>
         /// <param name="include">If true is passed, compression is performed else ignored</param>
         public static Func<PushFuncStream, Task> ThenConcurrentlyWriteTo(this Func<PushFuncStream, Task> src,
             Stream writableStream,
             bool disposeWritableStream,
+            Action<Stream, Exception> errorHandler = null,
             bool include = true)
         {
-            return src.ThenApply(s => s.ApplyConcurrentStream(writableStream, disposeWritableStream), include);
+            return src.ThenApply(s => s.ApplyConcurrentStream(writableStream, disposeWritableStream, errorHandler),
+                include);
         }
 
         /// <summary>
@@ -366,7 +424,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <seealso cref="IByteCounter"/>.<seealso cref="IByteCounter.ByteCount"/>) 
         /// and returns a new pipe for chaining.
         /// <para>IMPORTANT: Access <seealso cref="IByteCounter.ByteCount"/> ONLY AFTER the full
-        /// piepline is bootstrapped and processed, i.e., calling <paramref name="byteCounter"/>.ByteCount immediately
+        /// pipeline is bootstrapped and processed, i.e., calling <paramref name="byteCounter"/>.ByteCount immediately
         /// after this call will not provide the correct count.</para>
         /// </summary>
         /// <param name="src">Current pipe of the pipeline</param>

@@ -1,16 +1,75 @@
-Changes to Dot.Net.DevFast 3.0.0 (Proposed)
+Changes to Dot.Net.DevFast 3.1.1
 
- 1. Change/Fix - CreateWrappedStream correctly returns an instance of CreateWrappedStream in .Net Framework 4.7.2 dll.
- 2. Change/Fix - All Pipe and Pipeline implementations now properly awaits on created as well as running tasks.
- 3. Change/Fix - To/FromJsonXXX extensions now contains more control parameters like encoding, flushing etc.
- 4. Change/Fix - TransformXXX extensions now contains more control parameters like encoding, flushing etc.
- 5. Change/Fix - CreateXXXWriter extensions now contains more control parameters like encoding, flushing etc.
- 5. Change/Fix - De/Compression extensions now contains more control parameters like encoding, flushing etc.
- 6. New feature - WrappedStream is available now for .Net Framework 4.7.2.
- 7. New feature - UnconsumedCount is added to IPipeline interface. Now polling can be done on this property to determine count of remaining produced items in the buffer.
- 8. New feature - StartIfNeeded extension added on both Task and Task<T>.
- 9. New feature - CreateKeyAndIv extension method on string is added to generate Crypto Key and IV bytes.
- 8. New feature - PUSH/PULL (add notes...)
+ 1. Change/Fix - For .Net Framework 4.7.2 dll, inside namespace Dot.Net.DevFast.Extensions.CreateExts, method CreateWrappedStream correctly returns an instance of Stream that wrappes the given Stream to control the Dispose behavior when passed to another stream.
+ 2. Change/Fix - Inside Dot.Net.DevFast.Extensions.Ppc, all Pipe and Pipeline implementations now properly awaits on created as well as running tasks.
+ 3. Change/Fix - Inside Dot.Net.DevFast.Extensions.JsonExt.JsonTxtExt, all To/FromJsonXXX extensions now contains more control parameters like encoding, flushing etc.
+ 4. Change/Fix - Inside Dot.Net.DevFast.Extensions.StreamExt.CryptoStreamExt, all TransformXXX extensions now contains more control parameters like encoding, flushing etc.
+ 5. Change/Fix - Inside Dot.Net.DevFast.Extensions.CreateExts, all CreateXXXWriter extensions now contains more control parameters like encoding, flushing etc.
+ 6. Change/Fix - Inside Dot.Net.DevFast.Extensions.CompressionExts, all De/Compression extensions now contains more control parameters like encoding, flushing etc.
+ 7. New feature - Dot.Net.DevFast.Extensions.Ppc.IPipeline interface contains UnconsumedCount property. Now polling can be done on this property to determine count of remaining produced items in the buffer.
+ 8. New feature - Dot.Net.DevFast.Extensions.TaskExts contains StartIfNeeded extension added on both Task and Task<T>.
+ 9. New feature - Dot.Net.DevFast.Extensions.CreateExts contains CreateKeyAndIv extension method on string is added to generate Crypto Key and IV bytes.
+10. New feature - Dot.Net.DevFast.Extensions.SyncAsync contains ExecuteErrorWrapped on Action and Func<T> to execute lambda inside try catch with error handler.
+11. New feature - Dot.Net.DevFast.Extensions.SyncAsync contains ExecuteErrorWrappedAsync on Func<Task> and Func<Task<T>> to execute async lambda inside try catch with error handler.
+12. New feature - Dot.Net.DevFast.Extensions.SyncAsync contains ErrorWrapper on Action and Func<T> to create new lambda wrapping the given lambda inside try catch with error handler.
+13. New feature - Dot.Net.DevFast.Extensions.SyncAsync contains ErrorWrapper on Func<Task> and Func<Task<T>> to create new ASYNC lambda wrapping the given ASYNC lambda inside try catch with error handler.
+14. New feature - Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts namespace contains, new streaming API methods:
+		  A) Push Streaming API:
+				  a) .Push extension methods defined on following types:
+						i) Task<string> and string
+					   ii) Task<StringBuilder> and StringBuilder
+					  iii) DirectoryInfo and FileInfo
+					   iv) Task<byte[]> and byte[]
+					    v) Task<ArraySegment<byte>> and ArraySegment<byte>
+					   vi) Task<Stream> and Stream
+				  b) .PushJson on generic <T> and .PushJsonAsync Task<T>
+				  c) .PushJsonArray on following types:
+						i) IEnumerable<T> convering BlockingCollection<T> with special treatment (see method documentation)
+					   ii) Action<IProducerBuffer<T>, CancellationToken> to support PPC style implementation
+					  iii) Func<IProducerBuffer<T>, CancellationToken, Task> to support PPC style implementation
+					   iv) IProducer<T> to support PPC style implementation
+				  d) .ThenXXX extension methods to chain with .Pipe to support following:
+						i) Concurrent writing on Streams
+					   ii) Byte Counting
+					  iii) Compression
+					   iv) Hash Computing
+					    v) Base64 To and Fro conversions
+					   vi) Encryption and Decryption
+					  vii) Generic Crypto Transform
+					 viii) Apply any custom operation on stream
+				  e) .AndXXX as final clauses resulting:
+						i) returning FileInfo and writing to Files
+					   ii) returning byte[]
+					  iii) returning MemoryStream
+					   iv) returning Byte count
+					    v) Generic Stream writing
+					   vi) Simple constructed pipeline execution				  
+		  A) Pull Streaming API:
+				  a) .Pull extension methods defined on following types:
+						i) DirectoryInfo and FileInfo
+					   ii) Task<byte[]> and byte[]
+					  iii) Task<ArraySegment<byte>> and ArraySegment<byte>
+					   iv) Task<Stream> and Stream
+				  b) .ThenXXX extension methods to chain with .Pipe to support following:
+					    i) Byte Counting
+					   ii) Decompression
+					  iii) Hash Computing
+					   iv) Base64 To and Fro conversions
+					    v) Encryption and Decryption
+					   vi) Generic Crypto Transform
+					  vii) Apply any custom operation on stream
+				  c) .AndXXX as final clauses
+						i) returning FileInfo and writing to Files
+					   ii) returning byte[], ArraySegment<byte>
+					  iii) returning MemoryStream
+					   iv) Generic Stream writing
+					    v) Simple constructed pipeline execution				  
+					   vi) returning string
+					  vii) writing StringBuilder or returning StringBuilder
+				  d) .AndParseJsonXXX methods as:
+						i) AndParseJson/AndParseJsonAsync for deserializing stream as generic T object
+					   ii) AndParseJsonArray returning IEnumerable<T>
+					  iii) AndParseJsonArrayAsync extensions are defined, to support PPC style setup, on BlockingCollection<T>, Action<T, CancellationToken>, Func<T, CancellationToken, Task> and IConsumer<T> with the possibility of injecting IDataAdapter.
  
 Changes to Dot.Net.DevFast 2.0.0
 

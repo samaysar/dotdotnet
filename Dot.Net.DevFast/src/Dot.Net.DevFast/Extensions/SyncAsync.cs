@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Dot.Net.DevFast.Extensions
 {
     /// <summary>
-    /// Contains extention method on synchronous delegates to convert those to corresponding Async delegates
+    /// Contains extension method on synchronous delegates to convert those to corresponding Async delegates
     /// </summary>
     public static class SyncAsync
     {
@@ -1882,6 +1882,130 @@ namespace Dot.Net.DevFast.Extensions
                     }
                 }, token);
                 return tcs.Task;
+            };
+        }
+
+        /// <summary>
+        /// Executes the <paramref name="lambdaToExecute"/> inside try and passes the caught exception to <paramref name="errorHandler"/>.
+        /// </summary>
+        /// <param name="lambdaToExecute">Action sync Lambda</param>
+        /// <param name="errorHandler">Error handler</param>
+        public static void ExecuteErrorWrapped(this Action lambdaToExecute, Action<Exception> errorHandler)
+        {
+            lambdaToExecute.ErrorWrapper(errorHandler)();
+        }
+
+        /// <summary>
+        /// Executes the <paramref name="lambdaToExecute"/> inside try and passes the caught exception to <paramref name="errorHandler"/>.
+        /// </summary>
+        /// <param name="lambdaToExecute">Func sync Lambda</param>
+        /// <param name="errorHandler">Error handler</param>
+        public static T ExecuteErrorWrapped<T>(this Func<T> lambdaToExecute, Func<Exception, T> errorHandler)
+        {
+            return lambdaToExecute.ErrorWrapper(errorHandler)();
+        }
+
+        /// <summary>
+        /// Executes the <paramref name="lambdaToExecute"/> inside try and passes the caught exception to <paramref name="errorHandler"/>.
+        /// </summary>
+        /// <param name="lambdaToExecute">Func async Lambda</param>
+        /// <param name="errorHandler">Error handler</param>
+        public static async Task ExecuteErrorWrappedAsync(this Func<Task> lambdaToExecute, Action<Exception> errorHandler)
+        {
+            await lambdaToExecute.ErrorWrapper(errorHandler)().ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Executes the <paramref name="lambdaToExecute"/> inside try and passes the caught exception to <paramref name="errorHandler"/>.
+        /// </summary>
+        /// <param name="lambdaToExecute">Func async Lambda</param>
+        /// <param name="errorHandler">Error handler</param>
+        public static async Task<T> ExecuteErrorWrappedAsync<T>(this Func<Task<T>> lambdaToExecute, Func<Exception, T> errorHandler)
+        {
+            return await lambdaToExecute.ErrorWrapper(errorHandler)().ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Returns a new sync lambda which executes given lambda inside try-catch and passes any exception
+        /// to error handler.
+        /// </summary>
+        /// <param name="lambdaToExecute">Sync lambda to execute inside try-catch</param>
+        /// <param name="errorHandler">Error handler to call in case of error.</param>
+        public static Action ErrorWrapper(this Action lambdaToExecute, Action<Exception> errorHandler)
+        {
+            return () =>
+            {
+                try
+                {
+                    lambdaToExecute();
+                }
+                catch (Exception e)
+                {
+                    errorHandler(e);
+                }
+            };
+        }
+
+        /// <summary>
+        /// Returns a new sync lambda which executes given lambda inside try-catch and passes any exception
+        /// to error handler.
+        /// </summary>
+        /// <param name="lambdaToExecute">Sync lambda to execute inside try-catch</param>
+        /// <param name="errorHandler">Error handler to call in case of error.</param>
+        public static Func<T> ErrorWrapper<T>(this Func<T> lambdaToExecute, Func<Exception, T> errorHandler)
+        {
+            return () =>
+            {
+                try
+                {
+                    return lambdaToExecute();
+                }
+                catch (Exception e)
+                {
+                    return errorHandler(e);
+                }
+            };
+        }
+
+        /// <summary>
+        /// Returns a new async lambda which executes given lambda inside try-catch and passes any exception
+        /// to error handler.
+        /// </summary>
+        /// <param name="lambdaToExecute">Async lambda to execute inside try-catch</param>
+        /// <param name="errorHandler">Error handler to call in case of error.</param>
+        public static Func<Task> ErrorWrapper(this Func<Task> lambdaToExecute, Action<Exception> errorHandler)
+        {
+            return async () =>
+            {
+                try
+                {
+                    await lambdaToExecute().StartIfNeeded().ConfigureAwait(false);
+                }
+                catch (Exception e)
+                {
+                    errorHandler(e);
+                }
+            };
+        }
+
+        /// <summary>
+        /// Returns a new async lambda which executes given lambda inside try-catch and passes any exception
+        /// to error handler.
+        /// </summary>
+        /// <param name="lambdaToExecute">Async lambda to execute inside try-catch</param>
+        /// <param name="errorHandler">Error handler to call in case of error.</param>
+        public static Func<Task<T>> ErrorWrapper<T>(this Func<Task<T>> lambdaToExecute, Func<Exception, T> errorHandler)
+        {
+            return async () =>
+            {
+                try
+                {
+                    return await lambdaToExecute().StartIfNeeded().ConfigureAwait(false);
+                }
+                catch (Exception e)
+                {
+                    return errorHandler(e);
+                }
             };
         }
 

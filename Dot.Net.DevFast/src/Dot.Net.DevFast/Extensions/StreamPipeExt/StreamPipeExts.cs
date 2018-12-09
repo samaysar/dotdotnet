@@ -7,7 +7,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.Internals;
 using Dot.Net.DevFast.Extensions.JsonExt;
 using Dot.Net.DevFast.Extensions.Ppc;
@@ -38,11 +37,12 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         // we keep internal extensions here
         internal static Func<PushFuncStream, Task> ApplyConcurrentStream(this Func<PushFuncStream, Task> pipe,
             Stream stream,
-            bool disposeStream)
+            bool disposeStream,
+            Action<Stream, Exception> errorHandler)
         {
             return async pfs =>
             {
-                using (var concurrentStream = new BroadcastStream(pfs, stream, disposeStream))
+                using (var concurrentStream = new BroadcastStream(pfs, stream, disposeStream, errorHandler))
                 {
                     var t = pfs.Token;
                     await pipe(new PushFuncStream(concurrentStream, false, t)).StartIfNeeded()
@@ -139,9 +139,11 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             int ppcBufferSize)
         {
             var errList = new List<Exception>();
-            var serialConsumerTask = Task.Run(() => JsonEnumeration(bc, serializer, enc, writerBuffer, pcts, autoFlush)(pfs),
-                token);
-            await PpcJsonEnumerationProducer(bc, producer, token, ppcBufferSize, errList, pcts).ConfigureAwait(false);
+            var serialConsumerTask = Task.Run(
+                () => JsonEnumeration(bc, serializer, enc, writerBuffer, pcts, autoFlush)(pfs), token);
+
+            await PpcJsonEnumerationProducer(bc, producer, token, ppcBufferSize, errList, pcts)
+                .ConfigureAwait(false);
             try
             {
                 await serialConsumerTask.ConfigureAwait(false);
@@ -150,6 +152,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             {
                 errList.Add(e);
             }
+
             if (errList.Count > 0) throw new AggregateException("Error during JSON PUSH streaming.", errList);
         }
 
@@ -299,7 +302,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             var ppcProducerTask = GetParseJsonArrayProducerTask(data, serializer, token, enc, detectEncodingFromBom,
                 bufferSize, bc, localCts);
 
-            await RunPpcJsonArray(bc, localCts, consumer, adapter, token, ppcBuffSize, errList).ConfigureAwait(false);
+            await RunPpcJsonArray(bc, localCts, consumer, adapter, token, ppcBuffSize, errList)
+                .ConfigureAwait(false);
             try
             {
                 await ppcProducerTask.ConfigureAwait(false);
@@ -308,6 +312,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             {
                 errList.Add(e);
             }
+
             if (errList.Count > 0) throw new AggregateException("Error during JSON PULL streaming.", errList);
         }
 
@@ -323,16 +328,16 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             {
                 await new Action<IProducerBuffer<TJ>, CancellationToken>((pb, tkn) =>
                 {
-                    while (bc.TryTake(out var outobj, Timeout.Infinite, tkn))
+                    while (bc.TryTake(out var outObj, Timeout.Infinite, tkn))
                     {
-                        pb.Add(outobj, tkn);
+                        pb.Add(outObj, tkn);
                     }
                 }).Pipe(consumer, adapter, token, ppcBuffSize).ConfigureAwait(false);
             }
             catch (Exception e)
             {
                 errList.Add(e);
-                if (!localCts.IsCancellationRequested) localCts.Cancel();
+                if (!token.IsCancellationRequested) localCts.Cancel();
             }
         }
 
@@ -388,7 +393,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             catch (Exception e)
             {
                 errList.Add(e);
-                if (!pcts.IsCancellationRequested) pcts.Cancel();
+                Console.Out.WriteLine("Cancellation Token: " + token.IsCancellationRequested);
+                if (!token.IsCancellationRequested) pcts.Cancel();
             }
             finally
             {

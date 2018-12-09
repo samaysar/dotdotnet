@@ -9,7 +9,7 @@ namespace Dot.Net.DevFast.IO
 {
     /// <inheritdoc />
     /// <summary>
-    /// Stream that can perform concurrent unidirectionl write on two underlying streams.
+    /// Stream that can perform concurrent unidirectional write on two underlying streams.
     /// Normally this implementation is NOT for public exposure.
     /// It exists specially for streaming APIs to have concurrent writes.
     /// </summary>
@@ -17,17 +17,21 @@ namespace Dot.Net.DevFast.IO
     {
         private Stream _anotherStream;
         private Stream _pfsStream;
+        private bool _anotherStreamInError;
         private readonly bool _disposeAnother;
+        private readonly Action<Exception> _streamErrHandler;
         private readonly bool _disposePfs;
 
         /// <inheritdoc />
         /// <summary>
-        /// Cotr.
+        /// Ctor.
         /// </summary>
         /// <param name="pfs">Push functional stream to write on.</param>
         /// <param name="writableStream">Another writable stream</param>
         /// <param name="disposeWritable">true to dispose <paramref name="writableStream"/> else false.</param>
-        public BroadcastStream(PushFuncStream pfs, Stream writableStream, bool disposeWritable)
+        /// <param name="streamErrHandler">Error handler for writable stream</param>
+        public BroadcastStream(PushFuncStream pfs, Stream writableStream, bool disposeWritable,
+            Action<Stream, Exception> streamErrHandler)
         {
             _anotherStream = writableStream.CanWrite.ThrowIfNot(DdnDfErrorCode.Unspecified,
                 "Stream instance is not writable", writableStream);
@@ -35,6 +39,13 @@ namespace Dot.Net.DevFast.IO
                 .ThrowIfNull($"{nameof(PushFuncStream)}.{nameof(PushFuncStream.Writable)} is null");
             _disposePfs = pfs.Dispose;
             _disposeAnother = disposeWritable;
+            _anotherStreamInError = false;
+            _streamErrHandler = e =>
+            {
+                if (streamErrHandler == null) throw new Exception("Error during Concurrent streaming.", e);
+                _anotherStreamInError = true;
+                streamErrHandler(_anotherStream, e);
+            };
         }
 
         /// <inheritdoc />
@@ -53,9 +64,12 @@ namespace Dot.Net.DevFast.IO
         public override async Task FlushAsync(CancellationToken cancellationToken)
         {
             //Safe we can flush both
-            var streamTask = Task.Run(async () => await _anotherStream.FlushAsync(cancellationToken).ConfigureAwait(false),
-                cancellationToken);
-            var anotherStreamTask = Task.Run(async () => await _pfsStream.FlushAsync(cancellationToken).ConfigureAwait(false),
+            var anotherStreamTask = _anotherStreamInError
+                ? Task.CompletedTask
+                : Task.Run(new Func<Task>(async () =>
+                        await _anotherStream.FlushAsync(cancellationToken).ConfigureAwait(false))
+                    .ErrorWrapper(_streamErrHandler), cancellationToken);
+            var streamTask = Task.Run(async () => await _pfsStream.FlushAsync(cancellationToken).ConfigureAwait(false),
                 cancellationToken);
             await Task.WhenAll(streamTask, anotherStreamTask).ConfigureAwait(false);
         }
@@ -97,9 +111,11 @@ namespace Dot.Net.DevFast.IO
             var streamTask = Task.Run(async () =>
                     await _pfsStream.WriteAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false),
                 cancellationToken);
-            var anotherStreamTask = Task.Run(async () =>
-                    await _anotherStream.WriteAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false),
-                cancellationToken);
+            var anotherStreamTask = _anotherStreamInError
+                ? Task.CompletedTask
+                : Task.Run(new Func<Task>(async () => await _anotherStream
+                        .WriteAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false))
+                    .ErrorWrapper(_streamErrHandler), cancellationToken);
             await Task.WhenAll(streamTask, anotherStreamTask).ConfigureAwait(false);
         }
 

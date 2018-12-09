@@ -4214,45 +4214,45 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         #region Convertors
 
-        private static IProducer<T> ToProducer<T>(this Func<IProducerBuffer<T>, CancellationToken, Task> producer)
+        internal static IProducer<T> ToProducer<T>(this Func<IProducerBuffer<T>, CancellationToken, Task> producer)
         {
             return new AsyncProducer<T>(producer);
         }
 
-        private static IProducer<T> ToProducer<T>(this Action<IProducerBuffer<T>, CancellationToken> producer)
+        internal static IProducer<T> ToProducer<T>(this Action<IProducerBuffer<T>, CancellationToken> producer)
         {
             return producer.ToAsync(false).ToProducer();
         }
 
-        private static IReadOnlyList<IProducer<T>> ToProducer<T>(
+        internal static IReadOnlyList<IProducer<T>> ToProducer<T>(
             this IEnumerable<Func<IProducerBuffer<T>, CancellationToken, Task>> producers)
         {
             return producers.Select(x => x.ToProducer()).ToList();
         }
 
-        private static IReadOnlyList<IProducer<T>> ToProducer<T>(
+        internal static IReadOnlyList<IProducer<T>> ToProducer<T>(
             this IEnumerable<Action<IProducerBuffer<T>, CancellationToken>> producers)
         {
             return producers.Select(x => x.ToProducer()).ToList();
         }
 
-        private static IConsumer<T> ToConsumer<T>(this Func<T, CancellationToken, Task> consumer)
+        internal static IConsumer<T> ToConsumer<T>(this Func<T, CancellationToken, Task> consumer)
         {
             return new AsyncConsumer<T>(consumer);
         }
 
-        private static IConsumer<T> ToConsumer<T>(this Action<T, CancellationToken> consumer)
+        internal static IConsumer<T> ToConsumer<T>(this Action<T, CancellationToken> consumer)
         {
             return consumer.ToAsync(false).ToConsumer();
         }
 
-        private static IReadOnlyList<IConsumer<T>> ToConsumer<T>(
+        internal static IReadOnlyList<IConsumer<T>> ToConsumer<T>(
             this IEnumerable<Func<T, CancellationToken, Task>> consumers)
         {
             return consumers.Select(x => x.ToConsumer()).ToList();
         }
 
-        private static IReadOnlyList<IConsumer<T>> ToConsumer<T>(
+        internal static IReadOnlyList<IConsumer<T>> ToConsumer<T>(
             this IEnumerable<Action<T, CancellationToken>> consumers)
         {
             return consumers.Select(x => x.ToConsumer()).ToList();
