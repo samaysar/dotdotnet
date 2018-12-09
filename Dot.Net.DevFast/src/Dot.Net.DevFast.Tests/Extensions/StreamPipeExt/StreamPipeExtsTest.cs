@@ -209,24 +209,33 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
         public async Task Object_ToJson_Then_Back_Object_In_Streaming()
         {
             //ASYNC
-            var obj = new TestObject();
-            var postStream = await Task.FromResult(obj).PushJsonAsync()
-                .ThenCompress()
-                .AndWriteBytesAsync()
-                .Pull()
-                .ThenDecompress()
-                .AndParseJsonAsync<TestObject>().ConfigureAwait(false);
-            AssertOnValueEquality(obj, postStream);
-
-            //SYNC
-            obj = new TestObject();
-            postStream = (await obj.PushJson()
+            using (var mem1 = new MemoryStream())
+            {
+                var obj = new TestObject();
+                var byteCount = await Task.FromResult(obj)
+                    .PushJsonAsync()
                     .ThenCompress()
-                    .AndWriteBytesAsync().ConfigureAwait(false))
-                .Pull()
-                .ThenDecompress()
-                .AndParseJson<TestObject>();
-            AssertOnValueEquality(obj, postStream);
+                    .ThenConcurrentlyWriteTo(mem1, false)
+                    .AndCountBytesAsync().ConfigureAwait(false);
+                var postStreamBytes = Task.FromResult(mem1.ToArray());
+                var postStream = await postStreamBytes
+                    .Pull()
+                    .ThenCountBytes(out var byteCounter)
+                    .ThenDecompress()
+                    .AndParseJsonAsync<TestObject>().ConfigureAwait(false);
+                AssertOnValueEquality(obj, postStream);
+                Assert.True((await postStreamBytes.ConfigureAwait(false)).Length.Equals((int) byteCounter.ByteCount));
+                Assert.True(byteCount.Equals(byteCounter.ByteCount));
+                //SYNC
+                obj = new TestObject();
+                postStream = (await obj.PushJson()
+                        .ThenCompress()
+                        .AndWriteBytesAsync().ConfigureAwait(false))
+                    .Pull()
+                    .ThenDecompress()
+                    .AndParseJson<TestObject>();
+                AssertOnValueEquality(obj, postStream);
+            }
         }
 
         [Test]
@@ -274,61 +283,75 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
             var file = AppDomain.CurrentDomain.BaseDirectory.ToDirectoryInfo().CreateFileInfo($"{fileName}.txt");
             try
             {
-                var obj = new TestObject();
-                var sourceForPull = await Task.FromResult(JsonConvert.SerializeObject(obj)
-                        .ToByteSegment(new UTF8Encoding(false)))
-                    .Push()
-                    .ThenCountBytes(out var pushByteCounter)
-                    .ThenCompress()
-                    .AndWriteBytesAsync().ConfigureAwait(false);
-                await sourceForPull
-                    .Pull()
-                    .ThenDecompress()
-                    .AndWriteFileAsync(file).ConfigureAwait(false);
-                AssertOnValueEquality(obj, JsonConvert.DeserializeObject<TestObject>(File.ReadAllText(file.FullName)));
+                using (var mem1 = new MemoryStream())
+                {
+                    using (var mem2 = new MemoryStream())
+                    {
+                        var obj = new TestObject();
+                        await Task.FromResult(JsonConvert.SerializeObject(obj)
+                                .ToByteSegment(new UTF8Encoding(false)))
+                            .Push()
+                            .ThenCountBytes(out var pushByteCounter)
+                            .ThenCompress()
+                            .ThenConcurrentlyWriteTo(mem1, false)
+                            .ThenConcurrentlyWriteTo(mem2, false)
+                            .AndExecuteAsync().ConfigureAwait(false);
+                        var sourceForPull = mem1.ToArray();
+                        await sourceForPull
+                            .Pull()
+                            .ThenDecompress()
+                            .AndWriteFileAsync(file).ConfigureAwait(false);
+                        AssertOnValueEquality(obj,
+                            JsonConvert.DeserializeObject<TestObject>(File.ReadAllText(file.FullName)));
 
-                var buff = await sourceForPull
-                    .Pull()
-                    .ThenDecompress()
-                    .AndWriteBufferAsync(seekToOrigin: true).ConfigureAwait(false);
-                AssertOnValueEquality(obj,
-                    JsonConvert.DeserializeObject<TestObject>(new UTF8Encoding(false).GetString(buff.ToArray())));
+                        Assert.True(mem1.ToArray().SequenceEqual(mem2.ToArray()));
+                        var buff = await sourceForPull
+                            .Pull()
+                            .ThenDecompress()
+                            .AndWriteBufferAsync(seekToOrigin: true).ConfigureAwait(false);
+                        AssertOnValueEquality(obj,
+                            JsonConvert.DeserializeObject<TestObject>(
+                                new UTF8Encoding(false).GetString(buff.ToArray())));
 
-                await sourceForPull
-                    .Pull()
-                    .ThenDecompress()
-                    .AndWriteStreamAsync(file.CreateStream(FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite),
-                        disposeTarget: true)
-                    .ConfigureAwait(false);
-                AssertOnValueEquality(obj, JsonConvert.DeserializeObject<TestObject>(File.ReadAllText(file.FullName)));
+                        await sourceForPull
+                            .Pull()
+                            .ThenDecompress()
+                            .AndWriteStreamAsync(
+                                file.CreateStream(FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite),
+                                disposeTarget: true)
+                            .ConfigureAwait(false);
+                        AssertOnValueEquality(obj,
+                            JsonConvert.DeserializeObject<TestObject>(File.ReadAllText(file.FullName)));
 
-                var strVal = await sourceForPull
-                    .Pull()
-                    .ThenDecompress()
-                    .AndWriteStringAsync().ConfigureAwait(false);
-                AssertOnValueEquality(obj, JsonConvert.DeserializeObject<TestObject>(strVal));
+                        var strVal = await sourceForPull
+                            .Pull()
+                            .ThenDecompress()
+                            .AndWriteStringAsync().ConfigureAwait(false);
+                        AssertOnValueEquality(obj, JsonConvert.DeserializeObject<TestObject>(strVal));
 
-                var strBuild = await sourceForPull
-                    .Pull()
-                    .ThenDecompress()
-                    .AndWriteStringBuilderAsync().ConfigureAwait(false);
-                AssertOnValueEquality(obj, JsonConvert.DeserializeObject<TestObject>(strBuild.ToString()));
+                        var strBuild = await sourceForPull
+                            .Pull()
+                            .ThenDecompress()
+                            .AndWriteStringBuilderAsync().ConfigureAwait(false);
+                        AssertOnValueEquality(obj, JsonConvert.DeserializeObject<TestObject>(strBuild.ToString()));
 
-                strBuild.Clear();
-                await sourceForPull
-                    .Pull()
-                    .ThenDecompress()
-                    .AndWriteStringBuilderAsync(strBuild).ConfigureAwait(false);
-                AssertOnValueEquality(obj, JsonConvert.DeserializeObject<TestObject>(strBuild.ToString()));
+                        strBuild.Clear();
+                        await sourceForPull
+                            .Pull()
+                            .ThenDecompress()
+                            .AndWriteStringBuilderAsync(strBuild).ConfigureAwait(false);
+                        AssertOnValueEquality(obj, JsonConvert.DeserializeObject<TestObject>(strBuild.ToString()));
 
-                await sourceForPull
-                    .Pull()
-                    .ThenDecompress()
-                    .ThenCountBytes(out var pullByteCounter)
-                    .AndExecuteAsync().ConfigureAwait(false);
+                        await sourceForPull
+                            .Pull()
+                            .ThenDecompress()
+                            .ThenCountBytes(out var pullByteCounter)
+                            .AndExecuteAsync().ConfigureAwait(false);
 
-                Assert.True(pullByteCounter.ByteCount != sourceForPull.Length);
-                Assert.True(pushByteCounter.ByteCount == pullByteCounter.ByteCount);
+                        Assert.True(pullByteCounter.ByteCount != sourceForPull.Length);
+                        Assert.True(pushByteCounter.ByteCount == pullByteCounter.ByteCount);
+                    }
+                }
             }
             finally
             {
