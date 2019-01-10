@@ -24,7 +24,7 @@
 	<li>mutating&nbsp;and forwarding&nbsp;<code>byte</code>-sequences to next such stream in chain.</li>
 </ol>
 
-<p>As a matter of fact, we remain indifferent to the implementation complexity and source of such implementation (i.e. part of framework, an open source library or home-made recipe) as long as the desired results can be obtained. In effect, this assumption is so important, because, otherwise it would be impossible for us&nbsp;to obtain a truly context agnostic API that is capable to support virtually any operation on the underlying byte-streams (as we will see below).</p>
+<p>As a matter of fact, as we talk about those Stream implementation, we remain indifferent to the implementation complexity and source of such implementation (i.e. part of framework, an open source library or home-made recipe) as long as the desired results can be obtained. In effect, this assumption is so important, because, otherwise it would be impossible for us&nbsp;to obtain a truly context agnostic API that is capable to support virtually any operation on the underlying byte-streams (as we will see below).</p>
 
 <ul>
 	<li>We will use the word &quot;<strong>Streaming</strong>&quot;, to associate the flow of byte-sequences as they goes through such a stream based pipeline.</li>
@@ -32,36 +32,56 @@
 
 <p>In fact, as a special case of such declaration, when one of&nbsp;such streams in the pipeline is actually a network stream and the flowing byte contents are multimedia contents; we obtain the implementation of mutlimedia-streaming (or just streaming as it is widely known). Thus, it is important to remember that the we do NOT restrict the scope of the word &quot;streaming&quot; to mutimedia-streaming, during our discussion.</p>
 
-<h2>Trivia</h2>
+<h2>Relevant Trivia</h2>
 
-<p>Streams are, undoubtably, one of its kind and special-purpose&nbsp;breeded beasts.&nbsp;Though&nbsp;a&nbsp;stream&nbsp;can be thought as a&nbsp;sequence&nbsp;of bytes (like any other object); it unfolds its true power through its dynamics. Let us explain. In fact, at runtime, any other object be that <code>string</code>, <code>array</code>, data in a custom <code>class/</code><code>struct</code> objects, even the source code itself; are all sequence of bytes in memory residing somewhere. Even, a simple <code>interger</code> value can be thought as a sequence of 4 bytes (<a href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">for <code>int32</code> in .Net</a>). In addition, it is possible to extract a sub-sequence&nbsp;from these byte representation of these objects to perform some delicate operations; yet such byte sequences&nbsp;lack&nbsp;dynamics which streams exhibit out of the box. And, for our discussion, the notion of such flow, associated to bytes, comes handy as we start talking about our work on data-streaming. Going forward we will <strong>NOT ONLY</strong> make effort to explain this <code>buffer-mutate-forward (BMF)</code>&nbsp;phenomenon in details, <strong>BUT ALSO</strong>, will propose a completely novel APIs to deal with data&nbsp;streaming requirements.</p>
+<p>Streams are, undoubtably, one of its kind and special-purpose&nbsp;breeded beasts.&nbsp;Though&nbsp;a&nbsp;stream&nbsp;can be thought as generator&nbsp;of byte sequences; it unfolds its true power through its dynamics. Let us explain. In fact, at runtime, any other object be that <code>string</code>, <code>array</code>, data in a custom <code>class/</code><code>struct</code> objects, even the source code itself; are all sequence of bytes in memory residing somewhere. Even, a simple <code>interger</code> value can be thought as a sequence of 4 bytes (<a href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">for <code>int32</code> in .Net</a>). In addition, it is possible to extract a sub-sequence&nbsp;from these byte representation of these objects to perform some delicate operations; yet such byte sequences&nbsp;lack&nbsp;dynamics which streamimg&nbsp;exhibit out of the box. And, for our discussion, the notion of such flow, associated to bytes and runtime&nbsp;processing, comes handy as we start talking about our work on data-streaming. Going forward we will <strong>NOT ONLY</strong> make effort to explain this phenomenon in details, <strong>BUT ALSO</strong>, will propose a completely novel APIs to deal with data&nbsp;streaming requirements.</p>
 
-<p>As soon as we hear the word &quot;Streaming&quot;, many pictures comes to the mind, like watching a videos online, watching live telecast of an event, listening to a favorite song online etc. More or less, we almost immediately associate Multimedia contents like Audio &amp;&nbsp;Video with this word. Thus, it is important for us to switch the gear and set a platform and in order to do so , first,&nbsp;we would like to personalize the definition of Streaming, by expanding the Streaming universe in our definition, that can be written as plainly as:</p>
+<p>As soon as we hear the word &quot;Streaming&quot;, many pictures comes to the mind, like watching a videos online, watching live telecast of an event, listening to a favorite song online etc. More or less, we almost immediately associate Multimedia contents like Audio &amp;&nbsp;Video with this word. Thus, it is important for us to switch the gear and set a platform. In order to do so , first,&nbsp;we would like to personalize the definition of Streaming, by expanding the Streaming universe in our definition, that can be written as plainly as:</p>
 
-<p style="margin-left: 40px;"><strong>&quot;To send/transfer data<sup>1</sup>, potentially, as varying sized chunks of binary data&nbsp;continuously;&nbsp;at the same time, permitting the receiving end<sup>2</sup> to continuously process those chunks without any constraint&nbsp;to wait for the whole dataset to be available.&quot;</strong></p>
+<p style="margin-left: 40px;"><strong>&quot;Sending/transfering data<sup>1</sup>, potentially&nbsp;as varying sized chunks of binary data, continuously;&nbsp;at the same time, permitting the receiving-end<sup>2</sup> to continuously process those chunks,&nbsp;whenever possible in independent fashion (i.e. without buffering&nbsp;data<sup>1</sup>).&quot;</strong></p>
 
-<p><sup>1</sup>The term &quot;<strong>Data</strong>&quot; is contextual here (whatever defines as whole dataset at receiving end, i.e. whole video or just a 1 second clip of that video or simply a &quot;Hello World!&quot; string or a never ending data series)<br />
-<sup>2</sup>The term &quot;receiving-end&quot; is used to represent the data exit (or output) endpoint. It can be a client in a client-server architecture but NOT necessary.</p>
+<p><sup>1</sup>The term &quot;<strong>Data</strong>&quot; is contextual here. For us, it is whatever defines as whole dataset, i.e. whole video or just a 1 second clip of that video or simply a &quot;Hello World!&quot; string or a never ending data series.<br />
+<sup>2</sup>The term &quot;receiving-end&quot; is used to represent the next Stream in tandem.</p>
 
 <p>With such a definition at hand:</p>
 
 <ul>
-	<li>We are more interested in <code>BYTE</code> format of data instead of mediatype. Hence, we want to deal with any kind of data that is either promptly available as bytes or convertible (irrespective of complexity of conversion) to byte format.</li>
-	<li>We want to transfer data as it becomes available, and, hence, do&nbsp;not want to be dependent on chunk-size.</li>
+	<li>We are more interested in <code>BYTE</code> format of data instead of mediatype. Hence, we want to deal with any kind of data that is either promptly available as bytes or convertible (irrespective of complexity of conversion) to bytes.</li>
+	<li>We want to transfer data continuously, i.e. as it becomes available, and, potentially as&nbsp;chunks. Thus, we strive to not to buffer whole dataset, in memory, at any point during the streaming.</li>
 	<li>We are agnostic to underlying protocols/APIs, as long as we are able to send those data-chunks continuously.</li>
 	<li>We want to design a scheme/framework/mechanism that can support any such arbitrary data processing end-to-end.</li>
-	<li>And <strong>MOST IMPORTANTLY</strong>, we are receiver agnostic as long as it is&nbsp;able to accept such data-chunks (i.e. irrespective of its data-processing capabilities).</li>
+	<li>And <strong>most importantly</strong>, we are receiver agnostic as long as it is&nbsp;able to accept such data-chunks (i.e. irrespective of its data-processing capabilities).</li>
 </ul>
 
-<p>&nbsp;</p>
+<h3>Implementation Notes</h3>
 
-<h2>A New Beginning</h2>
+<p>From a theoritical point of view, the article remains valid for several languages/frameworks; however, we have implemented our thoughts in C# .Net. Though we would be pitching some .Net code snippets throughout the discussion, we will try our best to keep those at minimal possible level.</p>
 
-<p>Working.....</p>
+<h2>Defining Goals</h2>
 
-<h2>Remember&nbsp;The Titans</h2>
+<p>Before we try to understand why we thought of such an implementation, we should first understand the existing tools we have. Considering we have two <code>Stream</code>&nbsp;instances <code>_readableStream</code> and <code>_writableStream</code>; as the name suggests we can read from <code>_readableStream</code> and write to <code>_writableStream</code>. Further assume, we have&nbsp;a trivial task at hand which warrants us to copy data from <code>_readableStream</code> to <code>_writableStream</code>. Most of the languages/framework provides following&nbsp;implementation (more or less) to achieve it:</p>
 
-<p>Working.....</p>
+<pre>
+<strong>//PSUEDO CODE
+
+//define some temporary byte array as buffer
+</strong>byte[] buffer = new byte[buffer_size];
+
+<strong>//continuously read from readable stream 
+</strong>while ((readLength = _readableStream.read(buffer)) &gt; 0) 
+{
+<strong>&nbsp;  //write on writable stream as long as we read at least 1 byte
+</strong>&nbsp;  _writableStream.write(buffer, 0, readLength);
+}
+</pre>
+
+<p>From the above code, we notice that by using a fixed size buffer (normally of a few KB in size), we achieve such stream to stream copy. Complexity is linear to the stream length and we dont consume much space;&nbsp;fair enough.</p>
+
+<p>But wait a moment, we made an assumption here&nbsp;that streams are associated to I/O devices (especially _writableStream) like file, network etc. But happens when our _writableStream is actually an in-memory stream (<code>MemoryStream</code> in C# .Net), then <strong>we immediately increases the space complexity</strong>. And what if both (_readableStream/_writableStream) are in-memory streams. <strong>Then space requirement is doubled</strong>.</p>
+
+<p>But why we care so much about it? It can be said that Memory is Cheap BUT not FREE and neither LIMITLess, nonetheless, the reason is NOT that simple. Thus, without adding any further verbosity; author invites readers to read an excellent article, titled &quot;<a href="https://www.codeproject.com/Articles/1191534/%2FArticles%2F1191534%2FTo-Heap-or-not-to-Heap-That-s-the-Large-Object-Que">To Heap or not to Heap; That&rsquo;s the Large Object Question?</a>&quot;, written by&nbsp;<a href="https://www.codeproject.com/script/Membership/View.aspx?mid=13259718" rel="author">Doug Duerner</a>,&nbsp;<a href="https://www.codeproject.com/script/Membership/View.aspx?mid=13259794" rel="author">Yeon-Chang Wang</a>, to understand those&nbsp;details related to increasing space complexity associated with large objects (such as strings, list/arrays in general).</p>
+
+<p>MOREEEEEEEEEEEE to come......</p>
 
 </body>
 </html>
