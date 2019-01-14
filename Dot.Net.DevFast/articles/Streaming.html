@@ -11,7 +11,7 @@
 
 <body>
 <h1 class="ttlpl">In Search of Streaming...</h1>
-<h5>Discussing about streams...about streaming...about functional streaming...and about time travel.</h5>
+<h5>Discussing about streams...about streaming...about functional streaming...and nothing else.</h5>
 
 <p>Before we begin talking about streaming or any associated details, we would like to make a commentary on the the vocabulary used in this article, in order to avoid the state of confusion.</p>
 
@@ -55,14 +55,19 @@
 
 <h3>Implementation Notes</h3>
 
-<p>From a theoritical point of view, the article remains valid for several languages/frameworks; however, we have implemented our thoughts in C# .Net. Though we would be pitching some .Net code snippets throughout the discussion, we will try our best to keep those at minimal possible level.</p>
+<ul>
+	<li>From a theoritical point of view, the article is generic in nature and may remain&nbsp;valid for several languages/frameworks; however, we have implemented our thoughts in C# .Net and we would be pitching some .Net code snippets throughout the discussion.</li>
+	<li>Readers who wants to compile the attached source code, as it is, in Visual studio&nbsp;should make sure that they have&nbsp;.Net Framework 4.7.2 SDKs installed and have C# language version 7.1 or above installed (as mentioned in <a href="https://blogs.msdn.microsoft.com/mazhou/2017/05/30/c-7-series-part-2-async-main/">MSDN blog</a>)</li>
+</ul>
 
-<h2>Defining Goals</h2>
+<h2>Reasons First</h2>
 
 <p>Before we try to understand why we thought of such an implementation, we should first understand the existing tools we have. Considering we have two <code>Stream</code>&nbsp;instances <code>_readableStream</code> and <code>_writableStream</code>; as the name suggests we can read from <code>_readableStream</code> and write to <code>_writableStream</code>. Further assume, we have&nbsp;a trivial task at hand which warrants us to copy data from <code>_readableStream</code> to <code>_writableStream</code>. Most of the languages/framework provides following&nbsp;implementation (more or less) to achieve it:</p>
 
 <pre>
-<strong>//PSUEDO CODE
+<strong>/////////////////////
+//// PSUEDO CODE ////
+/////////////////////
 
 //define some temporary byte array as buffer
 </strong>byte[] buffer = new byte[buffer_size];
@@ -75,13 +80,61 @@
 }
 </pre>
 
-<p>From the above code, we notice that by using a fixed size buffer (normally of a few KB in size), we achieve such stream to stream copy. Complexity is linear to the stream length and we dont consume much space;&nbsp;fair enough.</p>
+<p>From the above code snippet, we notice that by using a fixed size buffer (normally of a few KB in size), we achieve such stream-to-stream copy. Complexity is linear to the stream length and we dont consume much space;&nbsp;fair enough.</p>
 
-<p>But wait a moment, we made an assumption here&nbsp;that streams are associated to I/O devices (especially _writableStream) like file, network etc. But happens when our _writableStream is actually an in-memory stream (<code>MemoryStream</code> in C# .Net), then <strong>we immediately increases the space complexity</strong>. And what if both (_readableStream/_writableStream) are in-memory streams. <strong>Then space requirement is doubled</strong>.</p>
+<p>But wait a moment, we made an assumption here&nbsp;that streams are associated to I/O devices (especially <code>_writableStream</code>) like file, network etc. But happens when our <code>_writableStream</code> turns out to be an in-memory stream (<code>MemoryStream</code> in C# .Net), then we immediately increases the space complexity. And what if both (<code>_readableStream</code> and <code>_writableStream</code>) are in-memory streams. Then space requirement is doubled.</p>
 
-<p>But why we care so much about it? It can be said that Memory is Cheap BUT not FREE and neither LIMITLess, nonetheless, the reason is NOT that simple. Thus, without adding any further verbosity; author invites readers to read an excellent article, titled &quot;<a href="https://www.codeproject.com/Articles/1191534/%2FArticles%2F1191534%2FTo-Heap-or-not-to-Heap-That-s-the-Large-Object-Que">To Heap or not to Heap; That&rsquo;s the Large Object Question?</a>&quot;, written by&nbsp;<a href="https://www.codeproject.com/script/Membership/View.aspx?mid=13259718" rel="author">Doug Duerner</a>,&nbsp;<a href="https://www.codeproject.com/script/Membership/View.aspx?mid=13259794" rel="author">Yeon-Chang Wang</a>, to understand those&nbsp;details related to increasing space complexity associated with large objects (such as strings, list/arrays in general).</p>
+<p>But why we care so much about it? Simplistically speaking, It&#39;s sufficient to say&nbsp;that Memory is Cheap BUT not FREE and neither LIMITLess, nonetheless, the reason is NOT that simple. Thus, without adding any further verbosity; author invites readers to read an excellent article, titled &quot;<a href="https://www.codeproject.com/Articles/1191534/%2FArticles%2F1191534%2FTo-Heap-or-not-to-Heap-That-s-the-Large-Object-Que">To Heap or not to Heap; That&rsquo;s the Large Object Question?</a>&quot;, written by&nbsp;<a href="https://www.codeproject.com/script/Membership/View.aspx?mid=13259718" rel="author">Doug Duerner</a>,&nbsp;<a href="https://www.codeproject.com/script/Membership/View.aspx?mid=13259794" rel="author">Yeon-Chang Wang</a>, to understand those&nbsp;details related to increasing space complexity associated with large objects (such as strings, list or arrays in general).&nbsp;</p>
 
-<p>MOREEEEEEEEEEEE to come......</p>
+<p>In general, saving on runtime Memory is our first reason.&nbsp;On the same lines, our next reason is Latency which can be reduced by re-using the same buffer (allocated once) during copy operations,&nbsp;without the need to spend precious CPU time in re-sizing/copying byte arrays in-memory to buffer entire data.</p>
 
+<p>Though, normally less talked, our next reason is <strong>code readability</strong>; our goal is to prepare an API to perform streaming operations which is&nbsp;intuitive and expressive. Furthermore, we want to embed some sort of artificial intelligence in our APIs to allow us to bring <strong>runtime mutability</strong> in our chain of streams. In the end, we want to have a liberty to build&nbsp;pipelines to perform arbitrary operations (<strong>WILDCARD</strong>s) on the running chunks of byte without losing the associated benefits. As a matter of fact, we will build some specific streaming operations to demostrate such <strong>WILDCARD</strong> capabilities.</p>
+
+<h2>Being Pragmatic</h2>
+
+<p>If you have followed us until here, you might argue that streaming is NOT that significantly used in a regular application and even most of the applications do NOT go beyond&nbsp;file reading/writing. You might be right or might not! We cannot decide that for you. However, we propose following <strong>non-exhaustive</strong> check-list for you and lets say if you find yourself writing code for AT LEAST one (1) of these cases, then we believe you should read this article before you decide:</p>
+
+<ul>
+	<li>WebAPIs</li>
+	<li>Base64 operations</li>
+	<li>Object seriailization</li>
+	<li>Data encryption</li>
+	<li>Data compression</li>
+	<li>Hash computation</li>
+</ul>
+
+<h4>Measuring performance of a trivial task</h4>
+
+<p>Lets assume we have a following task at hand:</p>
+
+<blockquote class="quote">
+<div class="op">Definition:</div>
+
+<p>Give a path of a&nbsp;binary file, read it. First, decompress it using <a href="https://en.wikipedia.org/wiki/Gzip">GZip compression algorithm</a>, then deserialize data&nbsp;as a well-defined Object array (i.e. List&lt;T&gt; where T is known) using JSON serializer.</p>
+</blockquote>
+
+<h1>MOREEEEEEEEEEEE to come......</h1>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
 </body>
 </html>
