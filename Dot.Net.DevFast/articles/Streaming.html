@@ -92,26 +92,59 @@
 
 <h2>Being Pragmatic</h2>
 
-<p>If you have followed us until here, you might argue that streaming is NOT that significantly used in a regular application and even most of the applications do NOT go beyond&nbsp;file reading/writing. You might be right or might not! We cannot decide that for you. However, we propose following <strong>non-exhaustive</strong> check-list for you and lets say if you find yourself writing code for AT LEAST one (1) of these cases, then we believe you should read this article before you decide:</p>
+<p>If you have followed us until here, you might argue that streaming is NOT that significantly used in a regular application and even most of the applications do NOT go beyond&nbsp;file reading/writing. You might be right or might not! We cannot decide that for you. However, we propose following <strong>non-exhaustive</strong> check-list for you and lets say if you find yourself writing code for AT LEAST one (1) of these cases&nbsp;(of course, apart from file reading/writing);&nbsp;then we believe you will like reading this (and perhaps add a comment for us to read; we love reading comments and improve on our work):</p>
 
 <ul>
 	<li>WebAPIs</li>
 	<li>Base64 operations</li>
-	<li>Object seriailization</li>
-	<li>Data encryption</li>
-	<li>Data compression</li>
-	<li>Hash computation</li>
+	<li>Seriailization</li>
+	<li>Encryption</li>
+	<li>Compression</li>
+	<li>Hash computing... so on and so forth...</li>
 </ul>
 
 <h4>Measuring performance of a trivial task</h4>
 
-<p>Lets assume we have a following task at hand:</p>
+<p>Before going crazy, lets start with an example. Assume we have a following task at hand:</p>
 
 <blockquote class="quote">
 <div class="op">Definition:</div>
 
-<p>Give a path of a&nbsp;binary file, read it. First, decompress it using <a href="https://en.wikipedia.org/wiki/Gzip">GZip compression algorithm</a>, then deserialize data&nbsp;as a well-defined Object array (i.e. List&lt;T&gt; where T is known) using JSON serializer.</p>
+<p>Give a path of a&nbsp;binary file, read all its bytes. First, decompress it using <a href="https://en.wikipedia.org/wiki/Gzip">GZip compression algorithm</a>, then deserialize data&nbsp;as a well-defined Object array (i.e. List&lt;T&gt; where T is known) using JSON serializer.</p>
 </blockquote>
+
+<p>From above statement, we can identify three (3) distinct operations, namely:</p>
+
+<ol>
+	<li>Read all bytes from the given file</li>
+	<li>Use GZip algorithm to decompress those&nbsp;bytes</li>
+	<li>With Json serializer create <code>List&lt;T&gt;</code> (<code>T</code> is known or it is a generic place holder it hardly matters) from decompressed bytes</li>
+</ol>
+
+<p>To maintain code readability and by neglecting any performance optimization (just for the moment), we consider implementation of following three (3) functions:</p>
+
+<pre lang="cs">
+public byte[] <strong>ReadAllBytesFrom</strong>(FileInfo file)
+{
+&nbsp;    return File.ReadAllBytes(file.FullName);
+}
+
+public byte[] <strong>DecompressUsingGzip</strong>(byte[] compressedBytes)
+{
+&nbsp;    var unzippedData = new MemoryStream();
+     using (var unzipper = new GZipStream(new MemoryStream(compressedBytes), CompressionMode.Decompress, false))
+&nbsp; &nbsp; &nbsp;{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; unzipper.CopyTo(unzippedData);
+&nbsp; &nbsp; &nbsp;}
+&nbsp;    return unzippedData.ToArray();
+}
+
+public List&lt;T&gt; <strong>DeserializeAsList</strong>&lt;T&gt;(byte[] data)
+{
+&nbsp;    <strong>// ===&gt; Using Newtonsoft.Json</strong>
+&nbsp;    return JsonConvert.DeserializeObject&lt;List&lt;T&gt;&gt;(new UTF8Encoding().GetString(data));
+}
+</pre>
 
 <h1>MOREEEEEEEEEEEE to come......</h1>
 
