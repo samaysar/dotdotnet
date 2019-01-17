@@ -60,6 +60,14 @@
 	<li>Readers who wants to compile the attached source code, as it is, in Visual studio&nbsp;should make sure that they have&nbsp;.Net Framework 4.7.2 SDKs installed and have C# language version 7.1 or above installed (as mentioned in <a href="https://blogs.msdn.microsoft.com/mazhou/2017/05/30/c-7-series-part-2-async-main/">MSDN blog</a>)</li>
 </ul>
 
+<p>NOTE: Statistics, presented in this article, are obtained with following system configuration:</p>
+
+<p><img alt="Hardware_Config" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/Streaming_Hardware.PNG" style="width: 635px; height: 192px;" /></p>
+
+<p><img alt="Software_Config" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/Streaming_Software.PNG" style="width: 500px; height: 186px;" /></p>
+
+<p><img alt="VS_CONFIG" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/Streaming_VS.PNG" style="width: 837px; height: 183px;" /></p>
+
 <h2>Reasons First</h2>
 
 <p>Before we try to understand why we thought of such an implementation, we should first understand the existing tools we have. Considering we have two <code>Stream</code>&nbsp;instances <code>_readableStream</code> and <code>_writableStream</code>; as the name suggests we can read from <code>_readableStream</code> and write to <code>_writableStream</code>. Further assume, we have&nbsp;a trivial task at hand which warrants us to copy data from <code>_readableStream</code> to <code>_writableStream</code>. Most of the languages/framework provides following&nbsp;implementation (more or less) to achieve it:</p>
@@ -121,10 +129,10 @@
 	<li>With Json serializer create <code>List&lt;T&gt;</code> (<code>T</code> is known or it is a generic place holder it hardly matters) from decompressed bytes</li>
 </ol>
 
-<p>To maintain code readability and by neglecting any performance optimization (just for the moment), we consider implementation of following three (3) functions:</p>
+<p>To maintain code readability and by neglecting any performance/code optimization (just for the moment), we consider implementation of following three (3) functions:</p>
 
 <pre lang="cs">
-public byte[] <strong>ReadAllBytesFrom</strong>(FileInfo file)
+public byte[] <strong>PullAllBytesFrom</strong>(FileInfo file)
 {
 &nbsp;    return File.ReadAllBytes(file.FullName);
 }
@@ -145,6 +153,25 @@ public List&lt;T&gt; <strong>DeserializeAsList</strong>&lt;T&gt;(byte[] data)
 &nbsp;    return JsonConvert.DeserializeObject&lt;List&lt;T&gt;&gt;(new UTF8Encoding().GetString(data));
 }
 </pre>
+
+<p>We could have passed the <code>FileStream</code> to <code>GZipStream</code> in order to avoid the <code>MemoryStream</code> for <code>compressedBytes</code>; the reason that we created all the three (3) operations&nbsp;separately is a subject for next section and we will discuss those in details there. For the moment, we just want to focus on the performance of following code:</p>
+
+<pre lang="cs">
+public List&lt;T&gt; DeserializeList&lt;T&gt;(FileInfo compressedJsonFile)
+{
+&nbsp;    var fileBytes = <strong>PullAllBytesFrom</strong>(compressedJsonFile);
+&nbsp;    var uncompressedBytes = <strong>DecompressUsingGzip</strong>(fileBytes);
+&nbsp;    return <strong>DeserializeAsList</strong>(uncompressedBytes);
+}
+</pre>
+
+<p>If you run similarly written code of &quot;DeserializeList&quot; (if you have downloaded the attached source code from this article, you can run <code>PerfCompareNonStreamingWithStreamingAsync</code>&nbsp;method), you will see following similar performance graphs from the Visual Studio Diagnostic Tools (NOTE: API Method is our implementation and subject of this discussion and DeserializeList is the method snippet from above):</p>
+
+<p><img alt="Image1_Perf_Visual" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/PerfCompareNonStreamingWithStreamingAsync_Visual.PNG" style="width: 1116px; height: 423px;" /></p>
+
+<p>If you run&nbsp;<code>PerfCompareNonStreamingWithStreamingAsync</code>&nbsp;method from the attached source code, you will obtain following similar numerical values (depending upon your machine configuration):</p>
+
+<p><img alt="IMage1_Perf_Stats" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/PerfCompareNonStreamingWithStreamingAsync_Stats.PNG" style="width: 1082px; height: 165px;" /></p>
 
 <h1>MOREEEEEEEEEEEE to come......</h1>
 
