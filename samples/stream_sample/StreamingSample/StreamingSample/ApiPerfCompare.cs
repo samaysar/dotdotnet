@@ -49,6 +49,7 @@ namespace StreamingSample
 
             var deserializedJson =
                 JsonConvert.DeserializeObject<List<MyTestData>>(new UTF8Encoding().GetString(unzippedData.ToArray()));
+            sw.Stop();
             if (iswarmup) afterMem = Helpers.GetMemoryPostGc() >> 10;
             Thread.MemoryBarrier();
             if (deserializedJson.Count != totalObjects)
@@ -82,6 +83,7 @@ namespace StreamingSample
                 //In fact it is useless to convert it to list... coz actually it is a real
                 //on the fly IEnumerable... so it consumes memory required for object
                 var deserializedJson = file.Pull().ThenDecompress().AndParseJsonArray<MyTestData>().ToList();
+                sw.Stop();
                 afterMem = Helpers.GetMemoryPostGc() >> 10;
                 Thread.MemoryBarrier();
                 count = deserializedJson.Count;
@@ -92,6 +94,7 @@ namespace StreamingSample
                 afterMem = Helpers.GetMemoryPostGc() >> 10;
                 Thread.MemoryBarrier();
                 count = deserializedJson.Count();
+                sw.Stop();
             }
             if (count != totalObjects)
             {
@@ -100,17 +103,21 @@ namespace StreamingSample
 
             if (iswarmup)
             {
+                Console.Out.WriteLine();
                 await Console.Out.WriteLineAsync($"StreamingAPI Memory (Forcing to LIST) => Before: {beforeMem} KB, After: {afterMem} KB, " +
                                                  $"Diff: {afterMem - beforeMem} KB")
+                    .ConfigureAwait(false);
+                await Console.Out.WriteLineAsync($"StreamingAPI (LIST) Total Time:{sw.ElapsedMilliseconds} ms")
                     .ConfigureAwait(false);
                 await RunWithStreamingApiAsync(file, totalObjects, false).ConfigureAwait(false);
             }
             else
             {
+                Console.Out.WriteLine();
                 await Console.Out.WriteLineAsync($"StreamingAPI Memory (using IEnumerable) => Before: {beforeMem} KB, After: {afterMem} KB, " +
                                                  $"Diff: {afterMem - beforeMem} KB")
                     .ConfigureAwait(false);
-                await Console.Out.WriteLineAsync($"StreamingAPI Total Time:{sw.ElapsedMilliseconds} ms")
+                await Console.Out.WriteLineAsync($"StreamingAPI (IENUMERABLE) Total Time:{sw.ElapsedMilliseconds} ms")
                     .ConfigureAwait(false);
             }
         }
