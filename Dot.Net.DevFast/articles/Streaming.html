@@ -96,11 +96,11 @@
 
 <p>In general, saving on runtime Memory is our first reason.&nbsp;On the same lines, our next reason is Latency which can be reduced by re-using the same buffer (allocated once) during copy operations,&nbsp;without the need to spend precious CPU time in re-sizing/copying byte arrays (in memory) to buffer entire data.</p>
 
-<p>Though, normally less talked, our next reason is <strong>code readability</strong>; our goal is to prepare an API to perform streaming operations which is&nbsp;intuitive and expressive. Furthermore, we want to embed some sort of artificial intelligence in our APIs to allow us to bring <strong>runtime mutability</strong> in our chain of streams. In the end, we want to have a liberty to build&nbsp;pipelines to perform arbitrary operations (<strong>WILDCARD</strong>s) on the running chunks of byte without losing the associated benefits. As a matter of fact, we will build some specific streaming operations to demostrate such <strong>WILDCARD</strong> capabilities.</p>
+<p>Though, normally less talked, our next reason is <strong>code readability</strong>; our goal is to prepare an API to perform streaming operations which is&nbsp;intuitive and expressive. Furthermore, we want to embed some sort of artificial intelligence in our APIs to allow us to bring <strong>runtime mutability</strong> in our chain of streams. In the end, we want to have a liberty to build&nbsp;pipelines to perform arbitrary operations (<strong>WILDCARD</strong>s) on the running chunks of byte without losing the associated benefits. As a matter of fact, we will build some specific streaming operations to demostrate such wildcard capabilities.</p>
 
 <h2>Being Pragmatic</h2>
 
-<p>If you have followed us until here, you might argue that streaming is NOT that significantly used in a regular application and even most of the applications do NOT go beyond&nbsp;file reading/writing. You might be right or might not! We cannot decide that for you. However, we propose following <strong>non-exhaustive</strong> check-list for you and lets say if you find yourself writing code for AT LEAST one (1) of these cases&nbsp;(of course, apart from file reading/writing);&nbsp;then we believe you might be interested in our work (and perhaps add a comment for us to read; we love reading comments and improve on our work):</p>
+<p>If you have followed us until here, you might argue that streaming is NOT that significantly used in a regular application and even most of the applications do NOT go beyond&nbsp;file reading/writing.&nbsp;We cannot argue about&nbsp;that. However, following non-exhaustive list does provide usage of streaming:</p>
 
 <ul>
 	<li>WebAPIs</li>
@@ -165,7 +165,7 @@ public List&lt;T&gt; DeserializeList&lt;T&gt;(FileInfo compressedJsonFile)
 }
 </pre>
 
-<p>If you run similarly written code of &quot;DeserializeList&quot; (if you have downloaded the attached source code from this article, you can run <code>PerfCompareNonStreamingWithStreamingAsync</code>&nbsp;method), you will see following similar performance graphs from the Visual Studio Diagnostic Tools (NOTE: API Method is our implementation and subject of this discussion and DeserializeList is the method snippet from above):</p>
+<p>If you run similarly written code of &quot;DeserializeList&quot; (if you have downloaded the attached source code from this article, you can run <code>PerfCompareNonStreamingWithStreamingAsync</code>&nbsp;method), you will see following similar performance graphs from the Visual Studio Diagnostic Tools (NOTE: API Method is our implementation and subject of this discussion and DeserializeList is similarly written method as shown in above snippet):</p>
 
 <p><img alt="Image1_Perf_Visual" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/PerfCompareNonStreamingWithStreamingAsync_Visual.PNG" style="width: 1116px; height: 423px;" /></p>
 
@@ -256,8 +256,26 @@ public abstract class Stream : MarshalByRefObject, IDisposable
 
 <p>Overall, if we accumulate all these thoughts to prepare a mind-map, we come up with following naive illustration:</p>
 
-<p><img alt="flow_of_data" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/FlowOFData.PNG" style="width: 710px; height: 446px;" /></p>
+<p><img alt="flow_of_data" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/FlowOFData.PNG" style="width: 550px; height: 345px;" /></p>
 
+<p>Academic interests aside, the presence of streaming makes sense when:</p>
+
+<ul>
+	<li>Data is persisted (e.g. as a file on hard disk) and when persisted data is consumed</li>
+	<li>Data is transferred to another entity/process (e.g. server to client)</li>
+</ul>
+
+<p>Irrespective of the use-case, the data-flow can be modeled as if the data publisher side pushes the data at one end and the consumer side of the data pulls the data at another end. Depending upon the nature&nbsp;of data exchange, consumer either can run concurrently or sequentially. For e.g., in case of http communication, while sender is writing data on network during chunked transfer-encoding, receiver recovers payload data simultenously; whereas when&nbsp;sender writes the data to a file, receiver can&nbsp;consume the file&nbsp;anytime after (in absence of synchronization) file is persisted. Secondly, during these data push(es), whenever sender applies any data transformation,&nbsp;consumer, normally,&nbsp;requires to apply inverse transformations in reverse order to obtain the original data;&nbsp;and this is where streaming comes in to play, in order to optimize on the performance. Following diagram illustrates same idea.</p>
+
+<p><img alt="Sd_Rx_Flow_Of_Data" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/Sd_Rx_Flow_Of_Data.PNG" style="width: 800px; height: 271px;" /></p>
+
+<p>Thus, we see above, that all data transformation operations (shown by OP-) at sender side have corresponding inverse transformation (shown by INV-OP-) in reverse order (i.e. if sender applies OP-1 before OP-2 then receiver applies INV-OP-2 before INV-OP-1). Thus, lets say if sender first serialized data as json and then applied GZip-compression, then,&nbsp;in order to get back the equivalent original data in-memory representation, receiver first applies GZip decompression&nbsp;and then deserializes the JSON data.</p>
+
+<h5><strong>NOTE:</strong></h5>
+
+<p>Some data transformations are inherently non-reversable, i.e., once the data is transformed it is theoritically not possible to obtain the original data; for e.g., Cryptographic HASH compting. But of course, if the intend is to just send the HASH of the data to the receiver then it is already assumed that original data is NOT required at receiver&#39;s end. Thus, for these similar cases, above shown reverse chain won&#39;t be present at receiver side, nonetheless, streaming can still be used with all its benefits.</p>
+
+<h2>Towards Implementation</h2>
 <h1>MOREEEEEEEEEEEE to come......</h1>
 
 <br />
