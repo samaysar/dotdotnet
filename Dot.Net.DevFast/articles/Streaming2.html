@@ -264,11 +264,14 @@ var generatePositiveEvenRandomInteger = <strong>GenerateNumberAndApply</strong>(
 Console.WriteLine(generatePositiveEvenRandomInteger());
 </pre>
 
-<p>Everytime, we call&nbsp;<code>generatePositiveEvenRandomInteger</code><code>()</code> (mark the paranthesis &quot;()&quot; after the name) we have our newly generated random even integer. Ooook! But except each function has become single liner, we do NOT yet see any remarkable genius in it, right? But, observe, we have gain two (2) highly sought characterstics: <strong>READABILITY</strong> &amp; <strong>REUSABILITY</strong>!</p>
+<p>Everytime, we call&nbsp;<code>generatePositiveEvenRandomInteger</code><code>()</code> (mark the paranthesis &quot;()&quot; after the name) we have our newly generated random even integer. Ooook! But except each function has become single liner, we do NOT yet see any remarkable genius in it, right? But, observe, we have gain two (2) highly sought characterstics: <strong>Maintainability</strong> &amp; <strong>Reusability</strong>!</p>
 
-<h5>Why Readability?</h5>
+<h5>Why Maintainability?</h5>
 
-<p>Though, it looks longer compared to our original&nbsp;<a href="#GeneratePositiveEvenRandomInteger">GeneratePositiveEvenRandomInteger code</a>; but we should not forget that we are using a trivial example here. Consider a case where all the involved functions (i.e. number factory, predicateFactory, and both whenTrue and whenFalse logic) are complex in nature; here, we have achieved a true separation of concerns. Aboveall, consider following signature of&nbsp;<code>GenerateNumberAndApply</code>&nbsp;with Generics (i.e. <code>&lt;T&gt;</code>):</p>
+<p>Though, it looks longer compared to our original&nbsp;<a href="#GeneratePositiveEvenRandomInteger">GeneratePositiveEvenRandomInteger code</a>; but we should appreciate the fact that all the functions can now be easily tested with their own isolated scope of concerns. 
+Consider, a case, where all the involved functions (i.e. number factory, predicateFactory, and both whenTrue and whenFalse logic) are complex in nature; 
+here, we have achieved a true separation of concerns and even will complex artifacts, we can manage their intricated interplay easily.
+ Aboveall, consider following signature of&nbsp;<code>GenerateNumberAndApply</code>&nbsp;with Generics (i.e. <code>&lt;T&gt;</code>):</p>
 
 <pre lang="cs">
 //generic higher-order function that applies lamdas, on generated value,
@@ -331,7 +334,8 @@ Console.WriteLine(generatePositive<strong>Odd</strong>RandomInteger());
 
 <h4>Not Convinced!</h4>
 
-<p>Still the functionality is NOT reflecting the problem statement out of the box! Thats true, so adding expressiveness (declarative way) to the code is our next stop.</p>
+<p>Still the functionality is NOT reflecting the problem statement out of the box!
+ Thats to say, it is missing <strong>Readability</strong>. Thats true, so adding expressiveness (declarative way) to the code is our next stop.</p>
 
 <h3>Adding Sugar!</h3>
 
@@ -390,18 +394,18 @@ randomGenerator.GenerateInt(0, int.MaxValue/2)
             &nbsp;  .And(print);
 </pre>
 
-<p>If we ignore bit of C# grammer, while reading the final call, we experience the following WOW-effect:</p>
+<p>If we ignore bit of C# grammer, while reading the final chain of method call, we experience the following WOW-effect (i.e. Readability):</p>
 
 <blockquote class="quote">
-<div class="op">The WOW-effect:</div>
+<div class="op">The WOW-effect (a.k.a. Readability):</div>
 
 <p>randomGenerator.GenerateInt(0, int.MaxValue/2).If(IsOdd).Then(MultiplyByTwo).And(print); =&gt;<br />
-<strong>Random generator, </strong>please<strong> generate </strong>a new random<strong> int, if</strong> the number<strong> is odd</strong><strong>, </strong>then <strong>multiply </strong>the number&nbsp;<strong>by two </strong>and <strong>print</strong> the resultant number!</p>
+<strong>Random generator, </strong>please<strong> generate </strong>a new random<strong> int, if</strong> the number<strong> is odd, then multiply </strong>the number&nbsp;<strong>by two and print</strong> the resultant number!</p>
 
 <p>Let&#39;s try again:</p>
 
 <p>randomGenerator.GenerateInt(0, int.MaxValue/2).If(<strong>val&nbsp;=&gt; !IsOdd(val)</strong>).Then(<strong>AddOne</strong>).And(print); =&gt;<br />
-<strong>Random generator</strong>, please <strong>generate</strong> a new random <strong>int</strong>, <strong>if</strong> the number&nbsp;<strong>is NOT odd</strong>, then <strong>add one</strong>&nbsp;to the number and <strong>print</strong> the resultant number!</p>
+<strong>Random generator</strong>, please <strong>generate</strong> a new random <strong>int</strong>, <strong>if</strong> the number&nbsp;<strong>is NOT odd, then add one</strong> to the number <strong>and print</strong> the resultant number!</p>
 </blockquote>
 
 <p>Equipped with this knowledge lets explore a new way of streaming.</p>
