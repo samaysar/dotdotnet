@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>In Search of Streaming...</title>
+<title>In Search of Streaming...Part 1 of 2</title>
 <meta http-equiv="content-language" content="en-US">
 <meta charset="UTF-8">
 <meta name="Description" CONTENT="Discussing about streams...about streaming...about functional streaming...and about time travel.">
@@ -10,7 +10,7 @@
 </head>
 
 <body>
-<h1 class="ttlpl">In Search of Streaming...</h1>
+<h1 class="ttlpl">In Search of Streaming... Part 1 of 2</h1>
 <h5>Discussing about streams...about streaming...about functional streaming...and nothing else.</h5>
 
 <p>Before we begin talking about streaming or any associated details, we would like to make a commentary on the the vocabulary used in this article, in order to avoid the state of confusion.</p>
@@ -38,7 +38,7 @@
 
 <p>As soon as we hear the word &quot;Streaming&quot;, many pictures comes to the mind, like watching a videos online, watching live telecast of an event, listening to a favorite song online etc. More or less, we almost immediately associate Multimedia contents like Audio &amp;&nbsp;Video with this word. Thus, it is important for us to switch the gear and set a platform. In order to do so , first,&nbsp;we would like to personalize the definition of Streaming, by expanding the Streaming universe in our definition, that can be written as plainly as:</p>
 
-<p style="margin-left: 40px;"><strong>&quot;Sending/transfering data<sup>1</sup>, potentially&nbsp;as varying sized chunks of binary data, continuously;&nbsp;at the same time, permitting the receiving-end<sup>2</sup> to continuously process those chunks,&nbsp;whenever possible, in independent fashion (i.e. without buffering&nbsp;data<sup>1</sup>).&quot;</strong></p>
+<p style="margin-left: 40px"><strong>&quot;Sending/transfering data<sup>1</sup>, potentially&nbsp;as varying sized chunks of binary data, continuously;&nbsp;at the same time, permitting the receiving-end<sup>2</sup> to continuously process those chunks,&nbsp;whenever possible, in independent fashion (i.e. without buffering&nbsp;data<sup>1</sup>).&quot;</strong></p>
 
 <p><sup>1</sup>The term &quot;<strong>Data</strong>&quot; is contextual here. For us, it is whatever defines as whole dataset, i.e. whole video or just a 1 second clip of that video or simply a &quot;Hello World!&quot; string or a never ending data series.<br />
 <sup>2</sup>The term &quot;receiving-end&quot; is used to identify the next Stream in tandem.</p>
@@ -62,11 +62,11 @@
 
 <p>NOTE: Statistics, presented in this article, are obtained with following system configuration:</p>
 
-<p><img alt="Hardware_Config" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/Streaming_Hardware.PNG" style="width: 350px; height: 106px;" /></p>
+<p><img alt="Hardware_Config" height="192" src="d44593e9-8daa-4f0d-8565-ac7f9b2421de.Png" style="width: 350px; height: 106px" width="635" /></p>
 
-<p><img alt="Software_Config" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/Streaming_Software.PNG" style="width: 300px; height: 112px;" /></p>
+<p><img alt="Software_Config" height="186" src="0972caca-b094-4844-b97e-3d6d882e8a11.Png" style="width: 300px; height: 112px" width="500" /></p>
 
-<p><img alt="VS_CONFIG" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/Streaming_VS.PNG" style="width: 400px; height: 100px;" /></p>
+<p><img alt="VS_CONFIG" height="183" src="65d5e944-7e36-4655-85bb-c3d466690f9c.Png" style="width: 400px; height: 100px" width="837" /></p>
 
 <h2>Reasons First</h2>
 
@@ -100,7 +100,7 @@
 
 <p>Though, normally less talked, our next reason is <strong>code organization </strong>(e.g. readability,testability, separation of concerns etc.); our goal is to prepare an API to perform streaming operations which is&nbsp;intuitive and expressive. Furthermore, we want to embed some sort of artificial intelligence in our APIs to allow us to bring <strong>runtime malleability</strong>&nbsp;(i.e. conditional plumbing of pipeline) in our chain of streams. In the end, we want to have a liberty to build&nbsp;pipelines to perform arbitrary operations (<strong>WILDCARD</strong>s) on the running chunks of byte without losing the associated benefits. As a matter of fact, we will build some specific streaming operations to demostrate such wildcard capabilities.</p>
 
-<h2>BEING PRAGMATIC</h2>
+<h2>Being Pragmatic</h2>
 
 <p>If you have followed us until here, you might argue that streaming is NOT that significantly used in a regular application and even most of the applications do NOT go beyond&nbsp;file reading/writing.&nbsp;We cannot argue about&nbsp;that as it is experience based argument. However, following non-exhaustive list does provide usage of streaming:</p>
 
@@ -177,16 +177,16 @@ public List&lt;T&gt; DeserializeListFrom&lt;T&gt;(FileInfo compressedJsonFile)
 
 <p>If you run similarly written code of &quot;DeserializeListFrom&quot; (if you have downloaded the attached source code from this article, you can run <code>PerfCompareNonStreamingWithStreamingAsync</code>&nbsp;method), you will see following similar performance graphs from the Visual Studio Diagnostic Tools (NOTE: API Method is our implementation and subject of this discussion and DeserializeListFrom is similarly written method as shown in above snippet):</p>
 
-<p><img alt="Image1_Perf_Visual" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/PerfCompareNonStreamingWithStreamingAsync_Visual.PNG" style="width: 700px; height: 300px;" /></p>
+<p><img alt="Image1_Perf_Visual" height="404" src="d9fe6dd7-fb48-4547-9c07-e14a4816873c.Png" style="width: 700px; height: 300px" width="921" /></p>
 
-<p>Looking at this image, we see there is a constly memory consuming operation going on during code execution and perhaps the byte array was re-allocated several time (hence, recopied). Overall, it&#39;s evident that we have an opportunity here to win big on memory and significantly on CPU time too. Thus, knowing the issue we can drill down further.</p>
+<p>Looking at this image, we see there is a costly memory consuming operation going on during code execution and perhaps the byte array was re-allocated several time (hence, recopied). Overall, it&#39;s evident that we have an opportunity here to win big on memory and significantly on CPU time too. Thus, knowing the issue we can drill down further.</p>
 
 <h4>Defining Goals</h4>
 
 <p>Based on our discussion so far, we want to:</p>
 
 <ul>
-	<li>Void the usage of in-Memory buffers to improve on runtime memory</li>
+	<li>Avoid the usage of in-Memory buffers to improve on runtime memory</li>
 	<li>Work only with necessary fixed size buffers</li>
 	<li>be able to create efficient pipeline (chain of operations) end-to-end (source to target)</li>
 	<li>Create an API that offers:
@@ -230,7 +230,7 @@ public abstract class Stream : MarshalByRefObject, IDisposable
 
 <p>Thus, apart from <code>Read</code> and <code>Write</code> methods, Stream exposes <code>CanRead</code> and <code>CanWrite</code> truth values; thus, if a stream supports Read operation it shall return true for CanRead and similarly if it supports Write operation it should be truthy for CanWrite. In fact, NOT all stream implementations return True for both of these properties. Thus, we can say when stream is either Readable or Writable (not both) it&#39;s unidirectional (e.g. <strong>FileStream</strong> with read access); similarly,&nbsp;when its both Readable &amp; writable at the same time it is bidirectional (e.g. <strong>MemoryStream</strong> with writable=true).</p>
 
-<h5>Open-Ended Vs Closed-Ended</h5>
+<h5><a id="OPENENDEDSTREAM" name="OPENENDEDSTREAM"></a>Open-Ended Vs Closed-Ended</h5>
 
 <p>Some stream implementations are in fact closed in the sense that they are bound to target device; for e.g. <code>FileStream</code> is bound to physical location on a disk. On the other hand, some stream implementation are open (agnostic) to the target involved in reading or writing operations, i.e., they operates on abstraction (e.g. abstract <strong>Stream</strong> class in .Net). Such streams, often, requires an instance of Stream at construction time (i.e. constrctor call); for e.g. GZipStream constructor accepts another <code>Stream</code>&#39;s instance for reading/writing operation during decompression/compression respectively,&nbsp;yet, agnostic to whether the given Stream is <code>MemoryStream</code> or <code>FileStream</code>. Though, given explanation (and stream classification) looks trivial in nature, <strong>it enable us to make a chain (pipeline) during streaming.</strong></p>
 
@@ -281,9 +281,9 @@ public abstract class Stream : MarshalByRefObject, IDisposable
 	<li>Stream Length: When interest is to obtain the data byte count based on choosen encoding and treatment.</li>
 </ul>
 
-<p>Overall, if we accumulate all these thoughts to prepare a mind-map, we come up with following naive illustration:</p>
+<p>Overall, if we accumulate all these thoughts to prepare a mind-map, we come up with following naive illustration:<a id="DATAFLOW" name="DATAFLOW"></a></p>
 
-<p><img alt="flow_of_data" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/FlowOFData.PNG" style="width: 550px; height: 345px;" /></p>
+<p><img alt="flow_of_data" height="446" src="824362f8-5037-4a5c-927c-1202a74b3603.Png" style="width: 550px; height: 345px" width="710" /></p>
 
 <p>Academic interests aside, the presence of streaming makes sense when:</p>
 
@@ -292,9 +292,9 @@ public abstract class Stream : MarshalByRefObject, IDisposable
 	<li>Data is transferred to another entity/process (e.g. server to client)</li>
 </ul>
 
-<p>Irrespective of the use-case, the data-flow can be modeled as if the data publisher side (i.e. data producer) pushes the data at one end and the consumer side of the data pulls the data at another end. Depending upon the nature&nbsp;of data exchange, consumer either can run concurrently or sequentially. For e.g., in case of http communication, while sender is writing data on network during chunked transfer-encoding, receiver may recover&nbsp;payload data simultenously; whereas when&nbsp;sender writes the data to a file, receiver can&nbsp;consume (in absence of synchronization) the file&nbsp;only after file is persisted. Secondly, during these data push(es), whenever sender applies any data transformation,&nbsp;consumer, normally,&nbsp;requires to apply inverse transformations in reverse order to obtain the original data. These are the common streaming scenarios&nbsp;where performance can be optimized. Following diagram illustrates same idea.</p>
+<p>Irrespective of the use-case, the data-flow can be modeled as if the data publisher side (i.e. data producer) pushes the data at one end and the consumer side of the data pulls the data at another end. Depending upon the nature&nbsp;of data exchange, consumer either can run concurrently or sequentially. For e.g., in case of http communication, while sender is writing data on network during chunked transfer-encoding, receiver may recover&nbsp;payload data simultenously; whereas when&nbsp;sender writes the data to a file, receiver can&nbsp;consume (in absence of synchronization) the file&nbsp;only after file is persisted. Secondly, during these data push(es), whenever sender applies any data transformation,&nbsp;consumer, normally,&nbsp;requires to apply inverse transformations in reverse order to obtain the original data. These are the common streaming scenarios&nbsp;where performance can be optimized. Following diagram illustrates same idea.<a id="PIPELINEOPS" name="PIPELINEOPS"></a></p>
 
-<p><img alt="Sd_Rx_Flow_Of_Data" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/Sd_Rx_Flow_Of_Data.PNG" style="width: 800px; height: 271px;" /></p>
+<p><img alt="Sd_Rx_Flow_Of_Data" height="365" src="568f88d3-389c-467c-b151-dd245a43dd0e.Png" style="width: 800px; height: 271px" width="1083" /></p>
 
 <p>Thus, we see above, that all data transformation operations (shown by OP-) at sender side have corresponding inverse transformation (shown by INV-OP-) in reverse order (i.e. if sender applies OP-1 before OP-2 then receiver applies INV-OP-2 before INV-OP-1). Thus, lets say if sender first serialized data as json and then applied GZip-compression, then,&nbsp;in order to get back the equivalent original data in-memory representation, receiver first applies GZip decompression&nbsp;and then deserializes the JSON data.</p>
 
@@ -316,7 +316,7 @@ public T DeserializeObjectFrom&lt;T&gt;(FileInfo uncompressedJsonFile)
 
 <p>So without rewriting/modifying/breaking existing code, we immediately (almost) delivered a feature. Such innocent implementation honestly speaking fits well to <u><strong>S</strong></u>OLID (<a href="https://blog.cleancoder.com/uncle-bob/2014/05/08/SingleReponsibilityPrinciple.html">Single responcibility</a>). However, if we notice, at surface, these implementations look benign, however, as we start increasing the file byte size, we&nbsp;discover associate issues. We realize that&nbsp;the &quot;<code>File.ReadAllBytes</code>&quot; allocates&nbsp;byte array proportional to the size of the file, but what is less remarked is that, internally, &quot;<code>File.ReadAllBytes</code>&quot; still using a similar buffer copy loop, <a href="#PSUEDOCODE">as shown in Psuedo Code in the very beginning</a>. Once we realize that, using those &quot;fixed size buffer copying loop&quot; is one of the strengths (and perhaps the least understood/appreciated) of streaming, we can appreciate all that comes here onwards.</p>
 
-<p>Aware of this issue, we might be tempted to change the code in following way (in order&nbsp;to improve on the performance):</p>
+<p><a id="USINGUSING" name="USINGUSING"></a>Aware of this issue, we might be tempted to change the code in following way (in order&nbsp;to improve on the performance):</p>
 
 <pre lang="cs">
 public T DeserializeObjectFrom&lt;T&gt;(FileInfo uncompressedJsonFile)
@@ -363,39 +363,25 @@ public T DeserializeObjectFrom&lt;T&gt;(FileInfo uncompressedJsonFile)
 
 <p>Based on above listed assumption, following is an approximate visualization:</p>
 
-<p><img alt="runtime-mem-viz-no-optim" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/runtime-memory-visualization-without_optimization.PNG" style="width: 700px; height: 380px;" /></p>
+<p><img alt="runtime-mem-viz-no-optim" height="475" src="8626717a-640b-4594-9967-5d55baf782a0.Png" style="width: 700px; height: 380px" width="916" /></p>
 
-<p>Even in this simple image, which ignores memory wastage (due to reallocation/copy), we clearly observe that we have unnecessarily consumed memory upto 5 Mbytes (peak at t3); as target state consumes only 2 MBytes of memory. Having realized this fact, it makes it easy to envision ideal target state which is consistent with following visualization:</p>
+<p>Even in this simple image, which ignores memory wastage (due to reallocation/copy), we clearly observe that we have unnecessarily consumed memory upto 5 Mbytes (peak at t3); as target state consumes only 2 MBytes of memory. Having realized this fact, it makes it easy to envision ideal target state which is consistent with following visualization:<a id="TARGETSTATEVISUAL" name="TARGETSTATEVISUAL"></a></p>
 
-<p><img alt="target_mem_viz_optim" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/runtime-memory-visualization-optim.PNG" style="width: 600px; height: 343px;" /></p>
+<p><img alt="target_mem_viz_optim" height="473" src="f87a8db5-bbdc-4328-898a-5cf6bd74dd13.Png" style="width: 600px; height: 343px" width="811" /></p>
 
 <p>Comparing Image 4 and Image 5, immediately gives us insights on the gains we would like to make. Now, we are in position to actually discuss implementation details that helps us&nbsp;achieve our goals.</p>
 
-<h2>Theories&nbsp;&#39;N&#39; Implementation</h2>
+<h2>So Far, Not Far...</h2>
 
-<p>&nbsp;</p>
-<h1>MOREEEEEEEEEEEE to come......</h1>
+<p>Until here, we have discussed associated issues related to stream operations and code implementations, and have identified the goals. In general, we have gathered material based on which&nbsp;we would like to assert the choices we have made during our implementation.</p>
 
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
+<p>We decided to split the whole article into 2 parts we did not want to just show the implementation but wanted to elaborate the &quot;why&quot; behind it. We are still working on the Part 2 of the article to complete our discussion and we would love to hear comments from our readers in order to improve on the quality of the material.</p>
+
+<p>We also invite our readers to check attached example code source and the implementation ahead in time:</p>
+
+<ul class="download">
+	<li><a href="https://github.com/samaysar/dotdotnet/tree/develop/samples/stream_sample/StreamingSample">Sample Source code</a></li>
+	<li><a href="https://github.com/samaysar/dotdotnet/tree/develop/Dot.Net.DevFast/src/Dot.Net.DevFast/Extensions/StreamPipeExt">API Source Code</a></li>
+</ul>
 </body>
 </html>

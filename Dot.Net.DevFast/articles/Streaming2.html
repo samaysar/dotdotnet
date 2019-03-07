@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>In Search of Streaming...Part 2 of 2</title>
+<meta http-equiv="content-language" content="en-US">
+<meta charset="UTF-8">
+<meta name="Description" CONTENT="Discussing about streams...about streaming...about functional streaming...and about time travel.">
+<meta name="Author" content="D Sarthi Maheshwari">
+<link type="text/css" rel="stylesheet" href="main.min.css">
+</head>
+
+<body>
+<h1 class="ttlpl">In Search of Streaming... Part 2 of 2</h1>
+<h5>Discussing about streams...about streaming...about functional streaming...and nothing else.</h5>
+
+<p>This article completes our discussion <a href="https://www.codeproject.com/Articles/1255313/In-Search-of-Streaming-Part-1-of-2">we started in part 1</a>. Previously, we discussed a few use-cases of streaming and, with the help of an example, showed some performance issues. We had seen how mal-implemented streaming pipeline can trigger memory consumption off the charts. Furthermore, we visualized the data-flow in such pipelines and identified target state of the implementation. Identified&nbsp;goals can be delineated&nbsp;as:</p>
+
+<ul>
+	<li>Avoid the usage of in-Memory buffers to improve on runtime memory</li>
+	<li>Work only with necessary fixed size buffers</li>
+	<li>be able to create efficient pipeline (chain of operations) end-to-end (source to target)</li>
+	<li>Create an API that offers:
+	<ul>
+		<li><strong>Composability</strong>: composition of operations</li>
+		<li><strong>Readability</strong>: composition are declarative</li>
+		<li><strong>Maintainability</strong>: promotes single responcibility principle for each underlying composed operation</li>
+		<li><strong>Elasticity</strong>:&nbsp;open to any exotic and/or regular data processing requirement</li>
+		<li><strong>Reusability</strong>: permits run-time mutation in a composed chain in a deterministic manner</li>
+	</ul>
+	</li>
+</ul>
+
+<p>In this article, we are going to elaborate on the implementation, with respect to defined goals, and several strategical use-cases of such implementation.</p>
+
+<h2>Basic Building Block</h2>
+
+<p>In part 1, we showed one of many possible ways to achieve efficiency by <a href="https://www.codeproject.com/Articles/1255313/In-Search-of-Streaming-Part-1-of-2#USINGUSING">using nested &ldquo;using&rdquo; block</a> while passing streams in cascade fashion. In fact, unknowingly/knowingly, we exploited the Open-Ended nature of intermediary streams in the call-chain. As we know such cascade of streams can improve runtime performance, it suffers from a lot many other problems. Lets investigate some of those issues quickly. Lets say, we have a given streaming cascade&nbsp;which handles file reading, decompression and conversion from JSON text to some object &lt;T&gt;; as shown:</p>
+
+<pre id="pre153237" lang="cs">
+public T StreamCascade&lt;T&gt;(FileInfo jsonFile, ...)
+{
+ &nbsp; using(var fileStream = new FileStream(uncompressedJsonFile, ...))
+&nbsp;  {
+       using(var textReader = new TextReader(fileStream, ...))
+&nbsp;      {
+&nbsp;           //<strong>JsonReader of Newtonsoft.Json</strong>
+&nbsp;           using(var jsonReader = new JsonReader(textReader, ...))
+&nbsp;           {
+&nbsp;                //... your serialization code ...//
+&nbsp;           }
+&nbsp;      }
+&nbsp;  }
+}</pre>
+
+<p>What we would like is to have full control on the behavior of it, such as:</p>
+
+<ul>
+	<li>Conditional JSON deserialization: Sometimes we would like to Deserialize JSON string to some known object&nbsp;type otherwise just collect JSON string itself, i.e.</li>
+</ul>
+
+<pre id="pre153237" lang="cs">
+public <strong>object</strong> DeserializeObjectFrom(FileInfo uncompressedJsonFile)
+{
+ &nbsp; using(var fileStream = new FileStream(uncompressedJsonFile, ...))
+&nbsp;  {
+       using(var textReader = new TextReader(fileStream, ...))
+&nbsp;      {
+&nbsp;           <strong>if (deseralize) </strong>
+&nbsp;           {
+&nbsp;                //JsonReader of Newtonsoft.Json
+&nbsp;                using(var jsonReader = new JsonReader(textReader, ...))
+&nbsp;                {
+&nbsp;                    //... your serialization code ...//
+&nbsp;                }
+&nbsp;           } <strong>else </strong>{
+<strong>&nbsp;                return textReader.ReadToEnd();</strong>
+&nbsp;           }
+&nbsp;      }
+&nbsp;  }
+}</pre>
+
+<p>Now, immediately we start recognizing the limitation of such a construct. Some observations are:</p>
+
+<ul>
+	<li>the return type is now &quot;<code>object</code>&quot;, instead of some concrete <code>&lt;T&gt;</code> type due to the presence of conditional <code>if</code>.</li>
+	<li>conditional <code>if</code> itself added yet another nesting level.</li>
+</ul>
+
+<p>Now, to extend our argument further, we would like to pass both compressed and uncompressed file path to it (i.e. making decompression conditional too). Furthermore, we desire to expose all configurational param to our function to control the behavior of serialization, buffer size, cancellation, character encodings, file stream params so on and so forth.</p>
+
+<p>Above all, we desire to add base64 ops (conditionally too!) and/or encryption support? In short, we want to make this function <u><strong>UGLIER</strong></u>!</p>
+
+<p>Based on some experiments we recognized that in order to achieve performance either we were creating dedicated cascade of &quot;<code>using</code>&quot; and duplicating code, or, creating some non-readable complex code fragments. And we decided, those implementation were not acceptable to us; and, thus we decided to create our APIs. But, before we look at it, lets cover some literature.</p>
+
+<h3>FUNCTIONAL PROGRAMMING</h3>
+
+<p><a href="https://en.wikipedia.org/wiki/Functional_programming">Functional Programming</a> is a&nbsp;programming paradigm whose explanation&nbsp;is beyond&nbsp;the scope of this article. Here, we will just take a minor tour around <a href="https://en.wikipedia.org/wiki/First-class_function">first-class functions</a> and <a href="https://en.wikipedia.org/wiki/Higher-order_function">higher-order functions</a> as both are important for our implementation. Fortunately, in C# .Net, we have the notion of <a href="https://en.wikipedia.org/wiki/First-class_citizen">Functions as first-call citizen</a>, notion of delegates, presence of pre-defined&nbsp;<code>Action&lt;&gt;</code>&nbsp;and <code>Func&lt;&gt;</code> delegates, facility to define <code>Lambda</code>&#39;s using these pre-defined delegates. On top of that, as these&nbsp;<code>Action&lt;&gt;</code>&nbsp;and <code>Func&lt;&gt;</code> delegates are generic in nature, creating higer-order function is just a matter of assigning a right type to those generic&nbsp; <code>&lt;T&gt;</code>s (i.e. type placeholders). Lets consider a hypotheical example to understand the use:</p>
+
+<blockquote class="quote">
+<div class="op">Problem Statement:</div>
+
+<p>Generate a positive&nbsp;random integer. If it is odd then multiply it by 2. Print the results to Console.</p>
+</blockquote>
+
+<p>A normal procedural program might look like following:<a id="GeneratePositiveEvenRandomInteger" name="GeneratePositiveEvenRandomInteger"></a></p>
+
+<pre lang="cs">
+public void GeneratePositiveEvenRandomInteger()
+{
+&nbsp;   var randomGenerator = new Random();
+&nbsp;   var nextRandom = randomGenerator.Next(0, int.MaxValue/2);
+&nbsp;   if (nextRandom % 2 == 1)
+    {
+&nbsp;       Console.WriteLine(nextRandom * 2);
+&nbsp;   }
+&nbsp;   Console.WriteLine(nextRandom);
+}
+</pre>
+
+<p>Well and good. Now, lets see how we can achieve the same functionality using <code>Function</code>s:</p>
+
+<pre lang="cs">
+<strong>//this is our First-class function</strong>
+public int <strong>MultiplyByTwo</strong>(int value)
+{
+&nbsp;   return value * 2;
+} 
+
+<strong>//our higher-order function that accepts Odd-To-Even delegate as parameter</strong>
+public int GeneratePositiveEvenRandomInteger(Func&lt;int, int&gt; oddToEvenFunc)
+{
+&nbsp;   var randomGenerator = new Random();
+&nbsp;   var nextRandom = randomGenerator.Next(0, int.MaxValue/2);
+&nbsp;   return nextRandom % 2 == 1 ? oddToEvenFunc(nextRandom) : nextRandom;
+}
+
+<strong>//somewhere else in the code:
+//Passing our First-Class function in our Higher-Order function
+</strong>var results = GeneratePositiveEvenRandomInteger(<strong>MultiplyByTwo</strong>);
+Console.WriteLine(results);
+</pre>
+
+<p>Ooook! We yet do not see any benefit of it; rather at first glance it might look overwhelming. But, hold on there, observe that:<br />
+<strong>DoubleTheInt</strong> logic has been separated out of the whole logic, This mean if tomorrow we need to change the logic of &quot;odd number processing&quot; it would be easier for us to make modification only to this function and leaving remaining logic intact (separation of concerns). Plus, unit testing those functions would be easier too!</p>
+
+<p>Yet, it might not look convincing, right! Lets extend the idea a bit further based on following observations:</p>
+
+<ul>
+	<li>GeneratePositiveEvenRandomInteger is doing several things:
+	<ul>
+		<li>it is creating a new instance of <code>Random</code>&nbsp;at each call</li>
+		<li>it is checking the oddness of the&nbsp;<code>nextRandom</code> value.</li>
+		<li>returning appropriate value based on oddness</li>
+	</ul>
+	</li>
+</ul>
+
+<p>Separating&nbsp;concerns in our example is our next stop.</p>
+
+<h3>CLOSURE</h3>
+
+<p>It would be sad to not to cover <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)">closure</a> when talking about Functional Programming (you may refer to <a href="https://blogs.msdn.microsoft.com/seteplia/2017/10/03/dissecting-the-local-functions-in-c-7/">this article</a> for some interesting details). Most of times, you will see an anonymous function (or lambda) as example to demonstrate the concept of closure. Lets do something similar to start with. Lets say in order to have our&nbsp;<code>randomGenerator</code>&nbsp;(from above code), we create a factory function that wraps (closes) on the <code>Random()</code>&nbsp;instance, which is:</p>
+
+<pre lang="cs">
+<strong>//our random integer generator</strong>
+public Func&lt;int&gt; RandomIntFactory(int min, int max)
+{
+&nbsp;   var <strong>randomGenerator </strong>= new Random();
+&nbsp;   return () =&gt; randomGenerator.Next(min, max);
+}
+
+<strong>//somewhere else in the code:</strong>
+var randomIntFactory = RandomIntFactory(0, int.MaxValue/2);
+
+//now, we say randomIntFactory has a closure (or closed over) <strong>randomGenerator, min and max</strong>
+</pre>
+
+<p>Everytime, we call&nbsp;<code>randomIntFactory()</code> (mark the paranthesis &quot;()&quot; after the name), we get a new random number create by &quot;<code><strong>randomGenerator</strong></code>&quot; (same instance!). In order to better understand how all this magic works, we can change the above code as follows (<strong>NOTE:</strong> Below code just conveys the idea and by no mean represents the EXACT runtime behavior of .Net code under execution):</p>
+
+<pre lang="cs">
+public class <strong>ClosureClass</strong>()
+{
+&nbsp;   public Random _random;
+  &nbsp; public int _min;
+  &nbsp; public int _max;
+&nbsp;   
+&nbsp;   public ClosureClass(Random random, int min, int max)
+&nbsp;   {
+&nbsp;       _random = random;
+&nbsp;       _min = min;
+&nbsp;       _max = max;
+&nbsp;   }
+
+&nbsp;   public int <strong>NextRandom</strong>()
+&nbsp;   {
+&nbsp;       return _random.Next(min, max);
+&nbsp;   }
+}
+
+<strong>//somewhere else in the code:
+//our random integer generator</strong>
+public Func&lt;int&gt; RandomIntFactory(int min, int max)
+{
+&nbsp;   var closure <b>= </b>new <strong>ClosureClass</strong>(new Random(), min, max);
+&nbsp;   //add we return the first-class function of our closure class
+  &nbsp; return closure.<strong>NextRandom</strong>;
+}
+</pre>
+
+<p>Now, with the help of first-class function (&quot;<strong>NextRandom</strong>&quot;) it is clearer how magically those values are still present for the next random value generation beyond the scope of <code>RandomIntFactory</code> function! So the magic was that we are still holding a reference to a class-instance-method, which in turn, linked to the class instance itself and the instance itself holds required data&nbsp;(everything is now connected and makes sense!)</p>
+
+<p><strong>Note:</strong>&nbsp;Going forwards, we will be using only anonymous functions/lambads in the code and enjoy the closure support provided by .Net itself.</p>
+
+<h3>Playing by the rules</h3>
+
+<p>After covering closures, we in position to discuss again our unfinished tale of&nbsp;GeneratePositiveEvenRandomInteger. Lets create function for everything (i.e. 1 function for 1 responcibility):</p>
+
+<pre lang="cs">
+//our random integer generator
+public Func&lt;int&gt; <strong>RandomIntFactory</strong>(int min, int max)
+{
+&nbsp;   var randomGenerator<strong> </strong>= new Random();
+&nbsp;   return () =&gt; randomGenerator.Next(min, max);
+}
+
+//oddness check
+public bool <strong>IsOdd</strong>(int value)
+{
+&nbsp;   return value % 2 == 1;
+}
+
+//twice of value
+public int <strong>MultiplyByTwo</strong>(int value)
+{
+&nbsp;   return value * 2;
+}
+
+//Identity function
+public int <strong>Identity</strong>(int value)
+{
+&nbsp;   return value;
+}
+
+//higher-order function that applies lamdas, on generated value,
+//based on predicate
+public int <strong>GenerateNumberAndApply</strong>(Func&lt;int&gt; factory, 
+&nbsp;                                 Func&lt;int, bool&gt; predicateFactory, 
+&nbsp;                                 Func&lt;int, int&gt; whenTrue, 
+&nbsp;                                 Func&lt;int, int&gt; whenFalse)
+{
+&nbsp;   var value = factory();
+&nbsp;   return predicateFactory(value) ? whenTrue(value) : whenFalse(value);
+}
+
+////////////
+//somewhere else in the code:
+////////////
+var factory = <strong>RandomIntFactory</strong>(0, int.MaxValue/2);
+var generatePositiveEvenRandomInteger = <strong>GenerateNumberAndApply</strong>(factory,
+&nbsp;                                                              <strong>IsOdd</strong>,
+&nbsp;                                                              <strong>MultiplyByTwo</strong>,
+&nbsp;                                                              <strong>Identity</strong>);
+<strong>//Et voilaaaa...!</strong>
+Console.WriteLine(generatePositiveEvenRandomInteger());
+</pre>
+
+<p>Everytime, we call&nbsp;<code>generatePositiveEvenRandomInteger</code><code>()</code> (mark the paranthesis &quot;()&quot; after the name) we have our newly generated random even integer. Ooook! But except each function has become single liner, we do NOT yet see any remarkable genius in it, right? But, observe, we have gain two (2) highly sought characterstics: <strong>READABILITY</strong> &amp; <strong>REUSABILITY</strong>!</p>
+
+<h5>Why Readability?</h5>
+
+<p>Though, it looks longer compared to our original&nbsp;<a href="#GeneratePositiveEvenRandomInteger">GeneratePositiveEvenRandomInteger code</a>; but we should not forget that we are using a trivial example here. Consider a case where all the involved functions (i.e. number factory, predicateFactory, and both whenTrue and whenFalse logic) are complex in nature; here, we have achieved a true separation of concerns. Aboveall, consider following signature of&nbsp;<code>GenerateNumberAndApply</code>&nbsp;with Generics (i.e. <code>&lt;T&gt;</code>):</p>
+
+<pre lang="cs">
+//generic higher-order function that applies lamdas, on generated value,
+//based on predicate
+public <strong>T</strong> GenerateNumberAndApply<strong>&lt;T&gt;</strong>(Func<strong>&lt;T&gt;</strong> factory, 
+ &nbsp;                                 Func<strong>&lt;T, bool&gt;</strong> predicateFactory, 
+&nbsp;                                  Func<strong>&lt;T, T&gt;</strong> whenTrue, 
+&nbsp;                                  Func<strong>&lt;T, T&gt;</strong> whenFalse)
+{
+&nbsp;   var value = factory();
+&nbsp;   return predicateFactory(value) ? whenTrue(value) : whenFalse(value);
+}
+
+////////////
+//somewhere else in the code:
+////////////
+var factory = RandomIntFactory(0, int.MaxValue/2);
+var generatePositiveEvenRandomInteger = GenerateNumberAndApply<strong>&lt;int&gt;</strong>(factory,
+&nbsp;                                                                   IsOdd,
+&nbsp;                                                                   MultiplyByTwo,
+&nbsp;                                                                   Identity);
+//Et voilaaaa...!
+Console.WriteLine(generatePositiveEvenRandomInteger());
+</pre>
+
+<p>Now, we are free to use <strong>any generic type</strong>, that requires exact same conditional processing; just pass the compatible functions and enjoy! Also, notice, this function has become a strong candidate to be a library function!</p>
+
+<h5>Why Reusability?</h5>
+
+<p>Consider suddenly we got following new requirement:</p>
+
+<blockquote class="quote">
+<div class="op">Problem Statement:</div>
+
+<p>Generate a positive&nbsp;random integer. If it is even then add 1. Print the results to Console.</p>
+</blockquote>
+
+<p>Now, to fulfill this new requirement, we need to make following minor change:</p>
+
+<pre lang="cs">
+//twice of value
+public int <strong>AddOne</strong>(int value)
+{
+&nbsp;   return value + 1;
+}
+
+////////////
+//somewhere else in the code:
+////////////
+var factory = RandomIntFactory(0, int.MaxValue/2);
+var generatePositive<strong>Odd</strong>RandomInteger = GenerateNumberAndApply<strong>&lt;int&gt;</strong>(factory,
+&nbsp;                                                                  IsOdd,
+&nbsp;                                                                  Identity,
+&nbsp;                                                                  <strong>AddOne</strong>);
+//Et voilaaaa...!
+Console.WriteLine(generatePositive<strong>Odd</strong>RandomInteger());
+</pre>
+
+<p>So instead of re-writing a complete new function, just to make this minor change, we wrote a new single liner function and re-used existing artifacts!</p>
+
+<h4>Not Convinced!</h4>
+
+<p>Still the functionality is NOT reflecting the problem statement out of the box! Thats true, so adding expressiveness (declarative way) to the code is our next stop.</p>
+
+<h3>Adding Sugar!</h3>
+
+<p>We know C#.Net is not a declarative programming language. To bring declarative&quot;ness&quot; to our code, we took help from another feature of the laugauge: <a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods">Extension method</a>s (a.ka. <a href="https://en.wikipedia.org/wiki/Syntactic_sugar">syntactic sugar!</a>) (<strong>NOTE:</strong>&nbsp;We do not want to fall in the chaotic arguments whether usage of extension methods&nbsp;is an anti-pattern or not! Below example is to simply demonstrate how to enrich expressiveness to those plain delegates).</p>
+
+<p>We know, in the language itself (C# of course), we cannot do much with <a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates/">delegates</a>, hence on those <code>Func&lt;&gt;</code> and <code>Action&lt;&gt;</code>. Apart from, some invocation related methods and associated parameters, there is nothing much provided by the framework. Yet, thanks to Extension methods, we can attach (Visitor kinda) functionality to those. Lets build some of those methods on our random number generation purpose:</p>
+
+<pre lang="cs">
+<strong>//Extension methods are static and part of static class!</strong>
+public static class HelperExtension
+{
+&nbsp;   <strong>//We carefully choose names of our functions
+&nbsp;   //to maintain readability!
+
+&nbsp;   </strong>//instead of naming it CreateGenerator (which it indeed does), we
+&nbsp;   //call it by the Action it&#39;s suppose to perform at execution time.
+&nbsp;   // we will see the &quot;why&quot; when reading the use-case!
+&nbsp;   public static Func&lt;int&gt; <strong>GenerateInt</strong>(this Random value, int min, int max)
+&nbsp;   {
+&nbsp;       return () =&gt; value.Next(min, max);
+&nbsp;   }
+
+&nbsp;   public static Func&lt;Func&lt;int, int&gt;, Func&lt;int&gt;&gt; <strong>If</strong>(this Func&lt;int&gt; <strong>factory</strong>,
+&nbsp;                                                    Func&lt;int, bool&gt; <strong>predicateFunc</strong>)
+&nbsp;   {
+&nbsp;       //reusing all the function we defined above!
+&nbsp;       return <strong>whenTrue</strong> =&gt; () =&gt; GenerateNumberAndApply(<strong>factory</strong>,
+&nbsp;                                                       <strong>predicateFunc</strong>,
+&nbsp;                                                       <strong>whenTrue</strong>,
+&nbsp;                                                       Identity);
+&nbsp;   }
+
+  &nbsp; public static Func&lt;int&gt; <strong>Then</strong>(this Func&lt;Func&lt;int, int&gt;, Func&lt;int&gt;&gt; <strong>conditionFunc</strong>,
+&nbsp;                              Func&lt;int, int&gt; <strong>whenTrue</strong>)
+&nbsp;   {
+&nbsp;       return <strong>conditionFunc</strong>(<strong>whenTrue</strong>);
+&nbsp;   }
+
+&nbsp;   public static void <strong>And</strong>(this Func&lt;int&gt; <strong>func</strong>, Action&lt;int&gt; <strong>apply</strong>)
+&nbsp;   {
+&nbsp;       <strong>apply</strong>(<strong>func</strong>());
+&nbsp;   }
+}
+
+////////////
+//somewhere else in the code:
+////////////
+
+Action&lt;int&gt; print = val =&gt; Console.WriteLine(&quot;Value is: &quot; + val);
+
+<strong>//And we call as:
+</strong>var randomGenerator = new Random();
+randomGenerator.GenerateInt(0, int.MaxValue/2)
+            &nbsp;  .If(IsOdd)
+            &nbsp;  .Then(MultiplyByTwo)
+            &nbsp;  .And(print);
+</pre>
+
+<p>If we ignore bit of C# grammer, while reading the final call, we experience the following WOW-effect:</p>
+
+<blockquote class="quote">
+<div class="op">The WOW-effect:</div>
+
+<p>randomGenerator.GenerateInt(0, int.MaxValue/2).If(IsOdd).Then(MultiplyByTwo).And(print); =&gt;<br />
+<strong>Random generator, </strong>please<strong> generate </strong>a new random<strong> int, if</strong> the number<strong> is odd</strong><strong>, </strong>then <strong>multiply </strong>the number&nbsp;<strong>by two </strong>and <strong>print</strong> the resultant number!</p>
+
+<p>Let&#39;s try again:</p>
+
+<p>randomGenerator.GenerateInt(0, int.MaxValue/2).If(<strong>val&nbsp;=&gt; !IsOdd(val)</strong>).Then(<strong>AddOne</strong>).And(print); =&gt;<br />
+<strong>Random generator</strong>, please <strong>generate</strong> a new random <strong>int</strong>, <strong>if</strong> the number&nbsp;<strong>is NOT odd</strong>, then <strong>add one</strong>&nbsp;to the number and <strong>print</strong> the resultant number!</p>
+</blockquote>
+
+<p>Equipped with this knowledge lets explore a new way of streaming.</p>
+
+<h2>Functional Streaming</h2>
+
+<p>As we are extensively going to use the functional programming concepts, we coin the term &quot;Functional Streaming&quot; to tag our APIs. As we will discuss the basic implementation under this title, before adding features to it.</p>
+
+<h3>Revisiting Open-Ended Stream</h3>
+
+<p>In part 1, <a href="https://www.codeproject.com/Articles/1255313/In-Search-of-Streaming#OPENENDEDSTREAM">we cursorily covered Open-Ended streams</a>. Basically, we call a Stream an Open-Ended stream, when its constructor (Ctor) signature matches following rough pseudo signature:</p>
+
+<pre lang="cs">
+class<strong> SomeStream : Stream</strong>
+{
+     public <strong>SomeStream</strong>(<strong>Stream</strong> baseStream, ...)
+&nbsp;    {
+&nbsp;        ... Ctor implementation ...
+     }
+&nbsp;
+&nbsp;    ... class implementation ...
+}
+</pre>
+
+<p>Internally, when we read (if itʼs either bi-directional or returns CanRead=true) from such stream, it internally reads from the Ctor injected stream (<code>baseStream</code> parameter in above example).&nbsp;Eventually it may manipulate&nbsp;those bytes and provide as an outcome. Based on configured buffer size, such streams should be&nbsp;capable&nbsp;to read&nbsp;<code>baseStream</code> as many times as needed. We call this mechanism <code>buffer-mutate-forward (BMF) mechanism</code>. Hence, a stream that exhibit such characteristics can be called Mutated-Byte-Generators or simply&nbsp;&ldquo;<code><strong>Generators</strong></code>&rdquo; for this discussion&nbsp;(though the term &quot;Generator&quot; has a large scope). Following pseudo code exhibits the same idea:</p>
+
+<pre lang="cs">
+class<strong> </strong>SomeStream : Stream
+{
+    public SomeStream(Stream baseStream, ...)
+&nbsp;   {
+&nbsp;       ... Ctor implementation ...
+    }
+
+&nbsp;   public bool <strong>CanRead =&gt; true;</strong>
+
+&nbsp;   public int <strong>Read(byte[] buffer, int offset, int count)</strong>
+&nbsp;   {
+&nbsp;       while (<strong>buffer != full</strong> and <strong>baseStream.HasData</strong>)
+&nbsp;       {
+&nbsp;            <strong>baseStream</strong>.Read(localBuffer, localOffset, localCount);
+
+&nbsp;            <strong>//</strong>If there is NO transformation required, then the function
+<strong>             //</strong>is an IDENTITY function (returns the localBuffer back).
+&nbsp;            var <strong>mutatedBytes</strong> = PerformDataTransformation(localBuffer, localOffset, localCount);
+
+&nbsp;            <strong>mutatedBytes</strong>.CopyTo(<strong>buffer</strong>);
+&nbsp;       }
+&nbsp;       
+&nbsp;   }
+&nbsp;
+&nbsp;   ... class implementation ...
+}</pre>
+
+<p>In similar way, when such stream is either bidirectional or, at least, returns CanWrite=true, when can write on it. Again,&nbsp;internally, it writes mutatedbytes on the injected stream while maintaining buffer state. Following pseudo code represents writing mechanism:</p>
+
+<pre lang="cs">
+class<strong> </strong>SomeStream : Stream
+{
+    public SomeStream(Stream baseStream, ...)
+&nbsp;   {
+&nbsp;       ... Ctor implementation ...
+    }
+
+&nbsp;   public bool <strong>CanWrite =&gt; true;</strong>
+
+&nbsp;   public int <strong>Write(byte[] buffer, int offset, int count)</strong>
+&nbsp;   {
+       &nbsp; <strong>//</strong>If there is NO transformation required, then the function
+<strong>         //</strong>is an IDENTITY function (returns the localBuffer back).
+         var <strong>mutatedBytes</strong> = PerformDataTransformation(<strong>buffer</strong>, offset, count);
+         <strong>baseStream</strong>.Write(<strong>mutatedBytes, ...</strong>);&nbsp;       
+&nbsp;   }
+&nbsp;
+&nbsp;   ... class implementation ...
+}</pre>
+
+<p>We found enormous potential in such, out of the box, capability of Stream implementation that we based our APIs around it; instead of designing something afresh. Letʼs dissect the concept further.</p>
+
+<h3>Visualizing Pipeline</h3>
+
+MORE TO COME........................
+
+</body>
+</html>
