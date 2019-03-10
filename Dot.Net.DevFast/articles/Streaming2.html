@@ -30,9 +30,58 @@
 	</li>
 </ul>
 
-<p>In this article, we are going to elaborate on the implementation, with respect to defined goals, and several strategical use-cases of such implementation.</p>
+<h2 style="text-align: right;"><a href="https://www.codeproject.com/Articles/1255313/In-Search-of-Streaming-Part-1-of-2">&lt;&lt; In Search of Streaming - PART 1</a></h2>
 
-<h2>Basic Building Block</h2>
+<p>In this article, we are going to elaborate on the implementation, with respect to defined goals, and several strategical use-cases of such implementation. Following is the table of contents:</p>
+
+<ul>
+	<li><a href="#bbb">Basic Building Block</a>
+
+	<ul>
+		<li><a href="#FuncProgrammingBefore">Functional Programming</a></li>
+		<li><a href="#Closure">Closure</a></li>
+		<li><a href="#PlayRules">Playing by the rules</a>
+		<ul>
+			<li><a href="#WhyMaintain">Why Maintainability?</a></li>
+			<li><a href="#WhyReuse">Why Reusability?</a></li>
+			<li><a href="#NotConvinced1">Not Convinced!</a></li>
+		</ul>
+		</li>
+		<li><a href="#AddSugar">Adding Sugar!</a></li>
+	</ul>
+	</li>
+	<li><a href="#FuncStreaming">Functional Streaming</a>
+	<ul>
+		<li><a href="#OPENENDEDREVISITED">Revisting Open-Ended Stream</a></li>
+		<li><a href="#VisualPipeline">Visualizing Pipeline</a></li>
+		<li><a href="#HoistingGenerators">Hoisting Generator(s)</a>
+		<ul>
+			<li><a href="#NotConvinced2">Not Convinced!</a></li>
+		</ul>
+		</li>
+		<li><a href="#PushVsPull">PUSH Vs PULL</a>
+		<ul>
+			<li><a href="#PushBased">Push based Streaming</a></li>
+			<li><a href="#PullBased">Pull based Streaming</a></li>
+		</ul>
+		</li>
+		<li><a href="#ApiImpliment">API Implementation</a></li>
+	</ul>
+	</li>
+	<li><a href="#TheApi">The&nbsp;API</a>
+	<ul>
+		<li><a href="#UseLinks">Useful Links</a></li>
+		<li><a href="#KeyStrokes">Simplifying Keystrokes</a></li>
+		<li><a href="#METAPIPELINE">Meta-Pipelines</a></li>
+		<li><a href="#ElasticPipeline">Elastic Pipelines</a></li>
+		<li><a href="#TeeingNSuperTeeing">TEEing &amp; Super-TEEing</a></li>
+		<li><a href="#ByteCounting">Byte Counting</a></li>
+	</ul>
+	</li>
+	<li><a href="#Commentary">Commentary</a></li>
+</ul>
+
+<h2><a id="bbb" name="bbb"></a>Basic Building Block</h2>
 
 <p>In part 1, we showed one of many possible ways to achieve efficiency by <a href="https://www.codeproject.com/Articles/1255313/In-Search-of-Streaming-Part-1-of-2#USINGUSING">using nested &ldquo;using&rdquo; block</a> while passing streams in cascade fashion. In fact, unknowingly/knowingly, we exploited the Open-Ended nature of intermediary streams in the call-chain. As we know such cascade of streams can improve runtime performance, it suffers from a lot many other problems. Lets investigate some of those issues quickly. Lets say, we have a given streaming cascade&nbsp;which handles file reading, decompression and conversion from JSON text to some object &lt;T&gt;; as shown:</p>
 
@@ -92,7 +141,7 @@ public <strong>object</strong> DeserializeObjectFrom(FileInfo uncompressedJsonFi
 
 <p>Based on some experiments we recognized that in order to achieve performance either we were creating dedicated cascade of &quot;<code>using</code>&quot; and duplicating code, or, creating some non-readable complex code fragments. And we decided, those implementation were not acceptable to us; and, thus we decided to create our APIs. But, before we look at it, lets cover some literature.</p>
 
-<h3>FUNCTIONAL PROGRAMMING</h3>
+<h3><a id="FuncProgrammingBefore" name="FuncProgrammingBefore"></a>FUNCTIONAL PROGRAMMING</h3>
 
 <p><a href="https://en.wikipedia.org/wiki/Functional_programming">Functional Programming</a> is a&nbsp;programming paradigm whose explanation&nbsp;is beyond&nbsp;the scope of this article. Here, we will just take a minor tour around <a href="https://en.wikipedia.org/wiki/First-class_function">first-class functions</a> and <a href="https://en.wikipedia.org/wiki/Higher-order_function">higher-order functions</a> as both are important for our implementation. Fortunately, in C# .Net, we have the notion of <a href="https://en.wikipedia.org/wiki/First-class_citizen">Functions as first-call citizen</a>, notion of delegates, presence of pre-defined&nbsp;<code>Action&lt;&gt;</code>&nbsp;and <code>Func&lt;&gt;</code> delegates, facility to define <code>Lambda</code>&#39;s using these pre-defined delegates. On top of that, as these&nbsp;<code>Action&lt;&gt;</code>&nbsp;and <code>Func&lt;&gt;</code> delegates are generic in nature, creating higer-order function is just a matter of assigning a right type to those generic&nbsp; <code>&lt;T&gt;</code>s (i.e. type placeholders). Lets consider a hypotheical example to understand the use:</p>
 
@@ -141,7 +190,7 @@ Console.WriteLine(results);
 </pre>
 
 <p>Ooook! We yet do not see any benefit of it; rather at first glance it might look overwhelming. But, hold on there, observe that:<br />
-<strong>DoubleTheInt</strong> logic has been separated out of the whole logic, This mean if tomorrow we need to change the logic of &quot;odd number processing&quot; it would be easier for us to make modification only to this function and leaving remaining logic intact (separation of concerns). Plus, unit testing those functions would be easier too!</p>
+<strong>MultiplyByTwo&nbsp;</strong>logic has been separated out of the whole logic, This mean if tomorrow we need to change the logic of &quot;odd number processing&quot; it would be easier for us to make modification only to this function and leaving remaining logic intact (separation of concerns). Plus, unit testing those functions would be easier too!</p>
 
 <p>Yet, it might not look convincing, right! Lets extend the idea a bit further based on following observations:</p>
 
@@ -157,7 +206,7 @@ Console.WriteLine(results);
 
 <p>Separating&nbsp;concerns in our example is our next stop.</p>
 
-<h3>CLOSURE</h3>
+<h3><a id="Closure" name="Closure"></a>CLOSURE</h3>
 
 <p>It would be sad to not to cover <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)">closure</a> when talking about Functional Programming (you may refer to <a href="https://blogs.msdn.microsoft.com/seteplia/2017/10/03/dissecting-the-local-functions-in-c-7/">this article</a> for some interesting details). Most of times, you will see an anonymous function (or lambda) as example to demonstrate the concept of closure. Lets do something similar to start with. Lets say in order to have our&nbsp;<code>randomGenerator</code>&nbsp;(from above code), we create a factory function that wraps (closes) on the <code>Random()</code>&nbsp;instance, which is:</p>
 
@@ -211,7 +260,7 @@ public Func&lt;int&gt; RandomIntFactory(int min, int max)
 
 <p><strong>Note:</strong>&nbsp;Going forwards, we will be using only anonymous functions/lambads in the code and enjoy the closure support provided by .Net itself.</p>
 
-<h3>Playing by the rules</h3>
+<h3><a id="PlayRules" name="PlayRules"></a>Playing by the rules</h3>
 
 <p>After covering closures, we in position to discuss again our unfinished tale of&nbsp;GeneratePositiveEvenRandomInteger. Lets create function for everything (i.e. 1 function for 1 responcibility):</p>
 
@@ -266,12 +315,9 @@ Console.WriteLine(generatePositiveEvenRandomInteger());
 
 <p>Everytime, we call&nbsp;<code>generatePositiveEvenRandomInteger</code><code>()</code> (mark the paranthesis &quot;()&quot; after the name) we have our newly generated random even integer. Ooook! But except each function has become single liner, we do NOT yet see any remarkable genius in it, right? But, observe, we have gain two (2) highly sought characterstics: <strong>Maintainability</strong> &amp; <strong>Reusability</strong>!</p>
 
-<h5>Why Maintainability?</h5>
+<h5><a id="WhyMaintain" name="WhyMaintain"></a>Why Maintainability?</h5>
 
-<p>Though, it looks longer compared to our original&nbsp;<a href="#GeneratePositiveEvenRandomInteger">GeneratePositiveEvenRandomInteger code</a>; but we should appreciate the fact that all the functions can now be easily tested with their own isolated scope of concerns. 
-Consider, a case, where all the involved functions (i.e. number factory, predicateFactory, and both whenTrue and whenFalse logic) are complex in nature; 
-here, we have achieved a true separation of concerns and even will complex artifacts, we can manage their intricated interplay easily.
- Aboveall, consider following signature of&nbsp;<code>GenerateNumberAndApply</code>&nbsp;with Generics (i.e. <code>&lt;T&gt;</code>):</p>
+<p>Though, it looks longer compared to our original&nbsp;<a href="#GeneratePositiveEvenRandomInteger">GeneratePositiveEvenRandomInteger code</a>; but we should appreciate the fact that all the functions can now be easily tested with their own isolated scope of concerns. Consider, a case, where all the involved functions (i.e. number factory, predicateFactory, and both whenTrue and whenFalse logic) are complex in nature; here, we have achieved a true separation of concerns and even with complex artifacts, we can manage their intricated interplay easily. Aboveall, consider following signature of&nbsp;<code>GenerateNumberAndApply</code>&nbsp;with Generics (i.e. <code>&lt;T&gt;</code>):</p>
 
 <pre lang="cs">
 //generic higher-order function that applies lamdas, on generated value,
@@ -299,7 +345,7 @@ Console.WriteLine(generatePositiveEvenRandomInteger());
 
 <p>Now, we are free to use <strong>any generic type</strong>, that requires exact same conditional processing; just pass the compatible functions and enjoy! Also, notice, this function has become a strong candidate to be a library function!</p>
 
-<h5>Why Reusability?</h5>
+<h5><a id="WhyReuse" name="WhyReuse"></a>Why Reusability?</h5>
 
 <p>Consider suddenly we got following new requirement:</p>
 
@@ -332,12 +378,11 @@ Console.WriteLine(generatePositive<strong>Odd</strong>RandomInteger());
 
 <p>So instead of re-writing a complete new function, just to make this minor change, we wrote a new single liner function and re-used existing artifacts!</p>
 
-<h4>Not Convinced!</h4>
+<h4><a id="NotConvinced1" name="NotConvinced1"></a>Not Convinced!</h4>
 
-<p>Still the functionality is NOT reflecting the problem statement out of the box!
- Thats to say, it is missing <strong>Readability</strong>. Thats true, so adding expressiveness (declarative way) to the code is our next stop.</p>
+<p>Still the functionality is NOT reflecting the problem statement out of the box! Thats to say, it is missing <strong>Readability</strong>. Thats true, so adding expressiveness (declarative way) to the code is our next stop.</p>
 
-<h3>Adding Sugar!</h3>
+<h3><a id="AddSugar" name="AddSugar"></a>Adding Sugar!</h3>
 
 <p>We know C#.Net is not a declarative programming language. To bring declarative&quot;ness&quot; to our code, we took help from another feature of the laugauge: <a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods">Extension method</a>s (a.ka. <a href="https://en.wikipedia.org/wiki/Syntactic_sugar">syntactic sugar!</a>) (<strong>NOTE:</strong>&nbsp;We do not want to fall in the chaotic arguments whether usage of extension methods&nbsp;is an anti-pattern or not! Below example is to simply demonstrate how to enrich expressiveness to those plain delegates).</p>
 
@@ -410,11 +455,11 @@ randomGenerator.GenerateInt(0, int.MaxValue/2)
 
 <p>Equipped with this knowledge lets explore a new way of streaming.</p>
 
-<h2>Functional Streaming</h2>
+<h2><a id="FuncStreaming" name="FuncStreaming"></a>Functional Streaming</h2>
 
-<p>As we are extensively going to use the functional programming concepts, we coin the term &quot;Functional Streaming&quot; to tag our APIs. As we will discuss the basic implementation under this title, before adding features to it.</p>
+<p>As we are going to use the functional programming concepts, we coin the term &quot;Functional Streaming&quot; to tag our APIs. As we will discuss the basic implementation under this title, before adding features to it.</p>
 
-<h3>Revisiting Open-Ended Stream</h3>
+<h3><a id="OPENENDEDREVISITED" name="OPENENDEDREVISITED"></a>Revisiting Open-Ended Stream</h3>
 
 <p>In part 1, <a href="https://www.codeproject.com/Articles/1255313/In-Search-of-Streaming#OPENENDEDSTREAM">we cursorily covered Open-Ended streams</a>. Basically, we call a Stream an Open-Ended stream, when its constructor (Ctor) signature matches following rough pseudo signature:</p>
 
@@ -485,9 +530,719 @@ class<strong> </strong>SomeStream : Stream
 
 <p>We found enormous potential in such, out of the box, capability of Stream implementation that we based our APIs around it; instead of designing something afresh. Letʼs dissect the concept further.</p>
 
-<h3>Visualizing Pipeline</h3>
+<h3><a id="VisualPipeline" name="VisualPipeline"></a>Visualizing Pipeline</h3>
 
-MORE TO COME........................
+<p>The best way to work on any implimentation is to start with the visualization before writing any code. Thus, lets see how pipelines actually works with the help of following illustration:</p>
+
+<p><img alt="pipeline_construct" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/Pipeline_Construct.PNG" style="width: 600px; height: 294px;" /></p>
+
+<p>In above diagram we identify three (3) distinct types of pipe:</p>
+
+<ul>
+	<li>Source pipe: which is the first pipe of the pipeline. It contains data (in some form). It is closed at left-hand side and open to accept a new pipe on the right hand side.</li>
+	<li>Intermediary pipes: These are <strong>optional</strong> and connected (if at all) to Source pipe in tandem (like train wagons to the engine in tandem) and finally the last of those is connected to target pipe.</li>
+	<li>Target pipe: it is the last pipe in the pipeline that terminates it. It is open on left-hand side to be connected to either source pipe (in absence of intermediary pipes) or to the last of those intermediary pipes.</li>
+</ul>
+
+<p>Mediatating on these thoughts for a while, we can recognize that our:</p>
+
+<ul>
+	<li>Open-ended streams (<a href="#OPENENDEDREVISITED">as discussed above</a> and <a href="https://www.codeproject.com/Articles/1255313/In-Search-of-Streaming-Part-1-of-2#OPENENDEDSTREAM">in part 1</a>) are perfect candidates for Intermediary pipes</li>
+	<li>Closed ended streams (<a href="https://www.codeproject.com/Articles/1255313/In-Search-of-Streaming-Part-1-of-2#OPENENDEDSTREAM">discussed in part 1</a>) with <code>CanRead=true</code> (i.e. reader streams) are Source candidates along with other data types like <code>string, byte[], T[]</code>&nbsp;(where T is some well-defined Type that can be serialized to bytes or string) etc...</li>
+	<li>Closed ended streams (<a href="https://www.codeproject.com/Articles/1255313/In-Search-of-Streaming-Part-1-of-2#OPENENDEDSTREAM">discussed in part 1</a>) with <code>CanWrite=true</code> (i.e. writer streams) are Target candidates along with other data types like <code>StringBuilder,&nbsp;</code>writable&nbsp;<code>MemoryStream, List&lt;T&gt;</code>&nbsp;(where T is some well-defined Type that can be serialized to bytes or string) etc...</li>
+</ul>
+
+<p>Based on above listed observations and knowing the how to achieve our goals of all *-ability (Reusability, Maintainability and Readability), all we need to do is to convert those streams into <code>Generator</code>s. Next stop is creating on of those simple Generator.</p>
+
+<h3><a id="HoistingGenerators" name="HoistingGenerators"></a>Hoisting Generator(s)</h3>
+
+<p>Lets again, we restart our journey with those nested &quot;<code>using</code>&quot; block:</p>
+
+<pre id="pre576797" lang="cs">
+<strong>//NOTE:</strong>&nbsp;Comments contains part of explanation!
+
+public T DeserializeObjectFrom&lt;T&gt;(FileInfo uncompressedJsonFile)
+{
+ &nbsp; using(var fileStream = new FileStream(uncompressedJsonFile.FullName, ...))
+&nbsp;  {
+     &nbsp; <strong>//... in order to create a generator on the above fileStream
+&nbsp;      //    we need to <u>hoist</u> the below testReader out of this function
+&nbsp;      //    </strong>
+       using(var textReader = new StreamReader(fileStream, ...))
+&nbsp;      {
+&nbsp;           //<strong>JsonReader of Newtonsoft.Json</strong>
+&nbsp;           using(var jsonReader = new JsonReader(textReader, ...))
+&nbsp;           {
+&nbsp;                //... your serialization code ...//
+&nbsp;           }      
+&nbsp;      }
+&nbsp;  }
+}
+</pre>
+
+<p>The problem we had with above code is that the second (2<sup>nd</sup>) &quot;<code>using</code>&quot; block is <u><strong>inside</strong></u> of the first (1<sup>st</sup>) one (similarly 3<sup>rd</sup> &quot;<code>using</code>&quot; out of 2<sup>nd</sup> one... so on and so forth). Thus, in order to separate the concerns related to each stream, <strong>we need to hoist those inner ones out</strong>! As shown in following illustration:</p>
+
+<p><img alt="hoisting_nested_code" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/Hositing_Nesting.PNG" style="width: 650px; height: 360px;" /></p>
+
+<p>In order to do such hoisting, we go back to the principles of Functional programming as what&nbsp;we discussed above. And, surprisingly, we created a such of an implementation already! Do you remember how did we separate the &quot;<code>If</code>&quot; logic from the &quot;<code>Then</code>&quot; action? Lets revisit it:</p>
+
+<pre lang="cs">
+<strong>//NOTE:</strong>&nbsp;Comments contains part of explanation!
+
+//As we did NOT know beforehand what function will take place in case of predicate is TRUTHY
+//   we turned that FUTURE input as a parameter to our higher-order function!
+
+public static Func&lt;<strong>Func&lt;int, int&gt;</strong>, Func&lt;int&gt;&gt; If(this Func&lt;int&gt; factory,
+                                                 Func&lt;int, bool&gt; predicateFunc)
+{
+    //When &quot;If&quot; will execute at Runtime, it is still unaware of the &quot;Then&quot; part
+    //  thus, we let the &quot;Then&quot; part to decide what should be the truthy execution
+&nbsp;   //  so, we make that a parameter to the lambda!
+
+    return <strong>funcForWhenTrue</strong> =&gt; () =&gt; GenerateNumberAndApply(factory,
+                                                           predicateFunc,
+                                                           <strong>funcForWhenTrue</strong>,
+                                                           Identity);
+
+&nbsp;   <strong>//NOTE: </strong>though, it is very well possible to pass &quot;whenTrue&quot; as parameter of
+&nbsp;   //      this function, but then we wont be able to Chain the calls like:
+&nbsp;   //      .If(...).Then(...)
+    //
+&nbsp;   //      Instead the usage would become:
+&nbsp;   //      .If(..., Then)... and of course... this is NOT what we think of a pipeline!
+&nbsp;   //
+&nbsp;   //   Consider following and decide yourself which version is better:
+&nbsp;   //
+&nbsp;   //      .If(...).Then(...).If(...).Then(...) <strong>&lt;= No nesting of paranthesis</strong>
+&nbsp;   //               OR
+&nbsp;   //      .If(..., Then(..., If(..., Then(..., )))) <strong>&lt;= Nested paranthesis
+</strong>    //
+&nbsp;   // We do not know about you, but for us Nested paranthesis are no better than
+&nbsp;   //       nested &quot;using&quot;!  (May be some <strong>LISP</strong>ers won&#39;t agree with us... lol!)
+}
+
+public static Func&lt;int&gt; Then(this Func&lt;<strong>Func&lt;int, int&gt;</strong>, Func&lt;int&gt;&gt; conditionFunc,
+                             <strong>Func&lt;int, int&gt; whenTrue</strong>)
+{
+&nbsp;   // Here we pass the known functionality &quot;<strong>whenTrue</strong>&quot; associated with TRUTHY value
+&nbsp;   // into the <strong>conditionFunc</strong>
+&nbsp;   // Now, this &quot;<strong>whenTrue</strong>&quot; upon execution will become &quot;<strong>funcForWhenTrue</strong>&quot; and will get
+&nbsp;   // passed to &quot;<strong>GenerateNumberAndApply</strong>&quot; as shown above in &quot;IF&quot; in bold!
+    return conditionFunc(whenTrue);
+}
+</pre>
+
+<p>Lets try some code hoisting on these streams (based on above ideas):</p>
+
+<pre lang="cs">
+<strong>//NOTE: &quot;...&quot; are operation specific params which we can ignore for the moment
+
+//We are going to PULL the data from this file
+//We hoist our 1st&nbsp;&quot;using&quot; and create a separate Func
+</strong>public static Func&lt;Stream&gt; PullData(this FileInfo someFileInfo, ...)
+{
+&nbsp;   //just return the file stream to be consumed later by &quot;then&quot; parts
+&nbsp;   return () =&gt; new FileStream(someFileInfo.FullName, ...);
+}
+
+<strong>//To hoist out our 2nd &quot;using&quot;, we need our first hoisted &quot;using&quot;, lets
+//pass it as parameter
+</strong>public static Func&lt;TextReader&gt; ThenGenerateText(this Func&lt;Stream&gt; prevHoist, ...)
+{
+&nbsp;   return () =&gt; new StreamReader(<strong>prevHoist()</strong>, ...);
+}
+
+<strong>//To hoist out our 3rd &quot;using&quot;, we need our second hoisted &quot;using&quot;, lets
+//pass it as parameter</strong>
+public static Func&lt;T&gt; AndJsonDeserialize(this Func&lt;TextReader&gt; prevHoist, ...)
+{
+&nbsp;   return () =&gt; 
+    {
+         //JsonReader of Newtonsoft.Json
+<strong>&nbsp;     </strong> &nbsp; using(var jsonReader = new JsonReader(<strong>prevHoist()</strong>, ...))
+&nbsp;      &nbsp; {
+&nbsp;          &nbsp; //... your serialization code returning instance of &lt;T&gt; ...// &nbsp; 
+&nbsp;        }
+&nbsp;   };
+}
+</pre>
+
+<p>With the above snippet, we have created three (3) generators successfully (at least for example sake):</p>
+
+<ul>
+	<li>PullData : Generator of bytes (i.e. <code>byte[]</code>) in the File pointed by supplied FileInfo. If we want we can call it immediately and use any of FileStream method on it; but its not that much interesting in itself, as it serves as <strong>source pipe in our pipeline</strong>.</li>
+	<li>ThenGenerateText : Generator which is capable of generating text segments (i.e.&nbsp;<code>char[]</code>) based on the underlying supplied stream. Again, not very interesting to call it immediatly on it as it serves as <strong>intermediary pipe in our pipeline</strong>.</li>
+	<li>AndJsonDeserialize : Generator of <code>&lt;T&gt;</code> object instance based on underlying text segment generator! Yes, we can call it immediately as it serves as an example of our <strong>target pipe in the pipeline</strong>.</li>
+</ul>
+
+<p>Using these three (3) example pipes... creating a json_file-to-object pipeline is a piece of cake as shown below:</p>
+
+<pre lang="cs">
+var myObject = new FileInfo(&quot;Path to my json file&quot;)
+&nbsp;                      .PullData(...)
+&nbsp;                      .ThenGenerateText(...)
+&nbsp;                      .AndJsonDeserialize(...);
+<strong>//Notice the WOW-effect</strong>
+</pre>
+
+<h4><a id="NotConvinced2" name="NotConvinced2"></a>Not Convinced!</h4>
+
+<p>Yes, we agree too! To set an example it was a good exercise, but, practically it makes no sense creating all those extension methods on each type we encounter... even in this small example, we created extensions on 3 different types:</p>
+
+<ol>
+	<li>PullData on <code>FileInfo</code></li>
+	<li>ThenGenerateText on <code>Func&lt;Stream&gt;</code></li>
+	<li>AndJsonDeserialize on <code>Func&lt;TextReader&gt;</code></li>
+</ol>
+
+<p>If we continue on this path we have to handle a lot many variations, which can quickly create a chaos in the code. We need something, which remains constant i.e. we need to identify a <code>&lt;T&gt;</code> which remains same for all of our extension methods&nbsp;(something like universal streaming object)!</p>
+
+<h3><a id="PushVsPull" name="PushVsPull"></a>PUSH Vs.&nbsp;PULL</h3>
+
+<p>In the part 1, we showed a <a href="http://codeproject.com/Articles/1255313/In-Search-of-Streaming-Part-1-of-2#PIPELINEOPS">typical streaming usage as pipeline</a>&nbsp;and also identified <a href="https://www.codeproject.com/Articles/1255313/In-Search-of-Streaming-Part-1-of-2#DATAFLOW">associated artifacts and their respective interplay in the pipeline</a>. And, based on the nature of streams (Unidirectional Vs Bidirectional), we identified data-flow related requirements which can be summarized in following tables.</p>
+
+<h5><a id="PushBased" name="PushBased"></a>PUSH Based Streaming</h5>
+
+<p>We call streaming operation as &quot;PUSH based streaming&quot; when we have a datasource and we have streaming pipes which are writable.&nbsp;In other words, in the pipeline, we have AT LEAST one (1) pipe which is Unidirectional and writable ONLY (i.e. CanRead=false).</p>
+
+<p>For example, in C#, compression stream (such as <code>GZipStream</code>) is <strong>write-only</strong> when using it to <strong>compress</strong> data. Thus, if we want to stream data which involves compression, we have no choice then constructing <strong>write-only pipeline</strong>!</p>
+
+<p>We call this pipeline as &quot;PUSH based pipeline&quot; and the First pipe (source pipe) of this pipeline we named as Push(...). Thus, &quot;<code>Push(...)</code>&quot;&nbsp;extension method can be applied to any of below listed source pipe. Example: <code>someString.Push(...)</code>, <code>someStream.Push(...)</code> etc.</p>
+
+<p>In the same spirit, we define various intermediary pipes (extension methods) while keeping &quot;<code>.Then</code>&quot; as prefix on them. Finally, target pipes (also, extension method) having &quot;<code>.And</code>&quot; as naming prefix.</p>
+
+<table align="left" border="3" cellpadding="1" cellspacing="1" style="width:100%;" summary="PULL DATA FLOW">
+	<caption style="background-color: #18bef2">&nbsp;</caption>
+</table>
+
+<table align="left" border="3" cellpadding="1" cellspacing="1" style="width:100%;" summary="PUSH DATA FLOW">
+	<caption style="background-color: #18bef2">
+	<h4>PUSHing Data from Source towards Target<sup>1</sup></h4>
+	</caption>
+	<thead>
+		<tr style="background-color: #26ceff">
+			<th scope="col">SOURCE PIPE<br />
+			(.Push pipe)</th>
+			<th scope="col">INTERMEDIARY PIPEs<br />
+			(.ThenXXX pipes)</th>
+			<th scope="col">TARGET PIPE<br />
+			(.AndXXX pipes)</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr style="background-color: #c4f1ff">
+			<td valign="top">
+			<ul>
+				<li>string</li>
+				<li>StringBuilder</li>
+				<li>byte[]</li>
+				<li>FileInfo</li>
+				<li>ArraySegment&lt;byte&gt;</li>
+				<li>Any Stream implementation (thus, FileStream, MemoryStream etc)</li>
+				<li>Generic &lt;T&gt;</li>
+				<li>Any implementation of IEnumerable&lt;T&gt;</li>
+			</ul>
+			</td>
+			<td valign="top">
+			<ul>
+				<li>Serialization</li>
+				<li>Text Encoding</li>
+				<li>Compression</li>
+				<li>Hash Computation</li>
+				<li>Base64 operations</li>
+				<li>Encryption</li>
+				<li>WILDCARDs operations<sup>2</sup></li>
+			</ul>
+			</td>
+			<td valign="top">
+			<ul>
+				<li>Any Stream implementation (thus, FileStream, MemoryStream etc)</li>
+				<li>byte[]</li>
+				<li>ArraySegment&lt;byte&gt;</li>
+			</ul>
+			</td>
+		</tr>
+	</tbody>
+	<tfoot style="background-color: #98AFC7">
+		<tr>
+			<td colspan="3" style="padding:10px"><sup>1</sup>API is open to more Source/Intermediary/Target Pipes, as long as they can produce compatible signature<br />
+			<sup>2</sup>Wildcard operations are Ad-hoc byte-manipulation requirements for example: Counting the bytes in the stream without buffering, Stream Fan-out (a.k.a. TEEing) etc...</td>
+		</tr>
+	</tfoot>
+</table>
+
+<p>As most of the streaming operations can benefit <code>Async-Await</code> APIs of C#.NET, we have identified <code>Func&lt;PushFuncStream&gt;</code> to be our universal representative of our extension methods, where&nbsp;<code>PushFuncStream struct</code> is defined as follows:</p>
+
+<pre lang="cs">
+public struct PushFuncStream
+{
+    <strong>// Our Writable stream</strong>
+    public Stream Writable { get; }
+
+    <strong>// If true, stream is disposed at the end of streaming else left open</strong>
+    public bool Dispose { get; }
+
+    <strong>// Associated Cancellation token</strong>
+    public CancellationToken Token { get; }
+
+    public PushFuncStream(Stream writable, bool dispose, CancellationToken token)
+    {
+        Writable = writable.CanWrite.ThrowIfNot(DdnDfErrorCode.Unspecified, 
+&nbsp;                                               &quot;Cannot write on the stream&quot;,
+                                                writable);
+        Dispose = dispose;
+        Token = token;
+    }
+}
+</pre>
+
+<p>We will see associated implementation in the next section.</p>
+
+<h5><a id="PullBased" name="PullBased"></a>PULL Based Streaming</h5>
+
+<p>Similarly, we call streaming operation as &quot;PULL based streaming&quot; when we have a datasource and we have streaming pipes which are readable.&nbsp;In other words, in the pipeline, we have AT LEAST one (1) pipe which is Unidirectional and readable ONLY (i.e. CanWrite=false).</p>
+
+<p>For example, in C#, compression stream (such as <code>GZipStream</code>) is <strong>read-only</strong> when using it to <strong>decompress</strong> data. Thus, if we want to stream data which involves decompression, we have no choice then constructing <strong>read-only pipeline</strong>!</p>
+
+<p>We call this pipeline as &quot;PULL&nbsp;based pipeline&quot; and the First pipe (source pipe) of this pipeline we named as Pull(...). Thus, &quot;<code>Pull(...)</code>&quot;&nbsp;extension method can be applied to any of below listed source pipe. Example: <code>someByteArray.Pull(...)</code>, <code>someStream.Pull(...)</code> etc.</p>
+
+<p>No surprise that for Pull pipeline too, we define various intermediary pipes (extension methods) while keeping &quot;<code>.Then</code>&quot; as prefix on them;&nbsp;and, target pipes (also, extension method) having &quot;<code>.And</code>&quot; as naming prefix.</p>
+
+<table align="left" border="3" cellpadding="1" cellspacing="1" style="width:100%;" summary="PULL DATA FLOW">
+	<caption style="background-color: #18bef2">
+	<h4>PULLing Data from Source to Target<sup>1</sup></h4>
+	</caption>
+	<thead>
+		<tr style="background-color: #26ceff">
+			<th scope="col">SOURCE PIPE<br />
+			(.Pull pipe)</th>
+			<th scope="col">INTERMEDIARY PIPEs<br />
+			(.ThenXXX pipes)</th>
+			<th scope="col">TARGET PIPE<br />
+			(.AndXXX pipes)</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr style="background-color: #c4f1ff">
+			<td valign="top">
+			<ul>
+				<li>Any Stream implementation (thus, FileStream, MemoryStream etc)</li>
+				<li>byte[]</li>
+				<li>ArraySegment&lt;byte&gt;</li>
+			</ul>
+			</td>
+			<td valign="top">
+			<ul>
+				<li>Deserialization</li>
+				<li>Text Decoding</li>
+				<li>Decompression</li>
+				<li>Hash Computation</li>
+				<li>Base64 operations</li>
+				<li>Decryption</li>
+				<li>WILDCARDs operations<sup>2</sup></li>
+			</ul>
+			</td>
+			<td valign="top">
+			<ul>
+				<li>string</li>
+				<li>StringBuilder</li>
+				<li>byte[]</li>
+				<li>FileInfo</li>
+				<li>ArraySegment&lt;byte&gt;</li>
+				<li>Any Stream implementation (thus, FileStream, MemoryStream etc)</li>
+				<li>Generic &lt;T&gt;</li>
+				<li>Any implementation of IEnumerable&lt;T&gt;</li>
+			</ul>
+			</td>
+		</tr>
+	</tbody>
+	<tfoot style="background-color: #98AFC7">
+		<tr>
+			<td colspan="3" style="padding:10px"><sup>1</sup>API is open to more Source/Intermediary/Target Pipes, as long as they can produce compatible signature<br />
+			<sup>2</sup>Wildcard operations are Ad-hoc byte-manipulation requirements for example: Counting the bytes in the stream without buffering etc...</td>
+		</tr>
+	</tfoot>
+</table>
+
+<p>Again, in order to take benefit of&nbsp;<code>Async-Await</code> APIs of C#.NET, we have identified <code>Func&lt;PullFuncStream&gt;</code> to be our universal representative of our extension methods, where&nbsp;<code>PullFuncStream struct</code> is defined as follows:</p>
+
+<pre lang="cs">
+public struct PullFuncStream
+{
+    <strong>// Our Readable stream</strong>
+    public Stream Readable { get; }
+
+    <strong>// If true, stream is disposed at the end of streaming else left open</strong>
+    public bool Dispose { get; }
+
+    public PullFuncStream(Stream readable, bool dispose)
+    {
+        Readable = readable.CanRead.ThrowIfNot(DdnDfErrorCode.Unspecified, 
+&nbsp;                                              &quot;Cannot read from the stream&quot;,
+                                               readable);
+        Dispose = dispose;
+    }
+}
+</pre>
+
+<p>Let&#39;s discuss associated implementation around these concepts.</p>
+
+<p><strong>IMPLEMENTATION NOTE:</strong>&nbsp;Worth to mention, if our pipeline is made up of bidirectional pipes only, then both PUSH and PULL based pipeline will yield identical results.</p>
+
+<h3><a id="ApiImpliment" name="ApiImpliment"></a>API Implementation</h3>
+
+<p>It would be very interesting we see the implementation by considering our original trivial task from part 1, which was:</p>
+
+<blockquote class="quote">
+<div class="op">Problem Statement:</div>
+
+<p>Give a path of a&nbsp;binary file, read all its bytes. First, decompress it using <a href="https://en.wikipedia.org/wiki/Gzip">GZip compression algorithm</a>, then deserialize data&nbsp;as a well-defined Object array (i.e. List&lt;T&gt; where T is known) using JSON serializer.</p>
+</blockquote>
+
+<p>And we recognized following distinct operations, namely:</p>
+
+<ol>
+	<li>Read all bytes from the given file</li>
+	<li>Use GZip algorithm to decompress those&nbsp;bytes</li>
+	<li>With Json serializer create <code>List&lt;T&gt;</code> (<code>T</code> is known or it is a generic place holder it hardly matters) from decompressed bytes</li>
+</ol>
+
+<p>Lets prepare our Functional Streaming artifacts to achieve the task:</p>
+
+<pre lang="cs">
+<strong>//Comments contains some exaplanations
+//&quot;...&quot; are operation specific parameters which we can ignore for our discussion
+</strong>
+
+//STEP 1.
+//Our file based byte Generator (PULL based)
+//   as we need decompression which is read-only as explained above
+public static Func&lt;PullStreamFunc&gt; Pull(this FileInfo fileInfo, ...)
+{
+&nbsp;    return () =&gt; new PullStreamFunc(new FileStream(fileInfo.FullName, ...), true);
+&nbsp;    //last true is for dispose (we need to dispose file handle after reading is done)
+}
+
+//STEP 2.
+//Our Gzip based byte Generator
+public static Func&lt;PullStreamFunc&gt; ThenDecompress(this Func&lt;PullStreamFunc&gt; previous,
+&nbsp;                                                 bool <strong>include</strong> = true)
+{
+&nbsp;    //we will discuss this include shortly (and when discussing <strong>Meta-Pipeline</strong>)
+&nbsp;    //<strong>Commentary on &quot;ThenApply&quot; is provided below separately</strong>
+&nbsp;    return <strong>previous</strong>.ThenApply(p =&gt; {
+&nbsp;            //when you will check the signature of &quot;ThenApply&quot; below,
+             //you will see, p is infact <strong>previous</strong> (i.e. Func&lt;PullStreamFunc&gt;)
+&nbsp;            //thus <strong>prevSrc</strong> is our PullStreamFunc!
+
+&nbsp;            var <strong>prevSrc</strong> = p();
+
+&nbsp;            //standard Gzip constructor!
+&nbsp;            var unzip = new GZipStream(prevSrc.Readable, 
+&nbsp;                                       CompressionMode.Decompress,
+&nbsp;                                       !prevSrc.Dispose);
+&nbsp;
+&nbsp;            //We return a Func&lt;PullStreamFunc&gt;, <strong>NOT</strong> PullStreamFunc itself!
+&nbsp;            return () =&gt; new PullFuncStream(unzip, true);
+&nbsp;            //last true is for dispose (we dispose the stream once decompression is done)
+
+        }, <strong>include</strong>);
+}
+
+//STEP 3.
+//Our JSON deserializer
+public static T AndParseJson&lt;T&gt;(this Func&lt;PullStreamFunc&gt; previous, ...)
+{
+&nbsp;    var prevSrc = previous();
+&nbsp;    using(var txtReader = new StreamReader(prevSrc.Readable, ...))
+&nbsp;    {
+<strong>          //using Newtonsoft.Json</strong>
+&nbsp;         using(var jsonReader = new JsonReader(txtReader, ...))
+&nbsp;         {
+&nbsp;              T instance = ... serialization logic ...
+&nbsp;              return instance;
+&nbsp;         }
+&nbsp;    }
+}
+
+//Step ThenApply Logic.
+public static Func&lt;PullFuncStream&gt; ThenApply(this Func&lt;PullFuncStream&gt; src,
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;                Func&lt;Func&lt;PullFuncStream&gt;, Func&lt;PullFuncStream&gt;&gt; applyFunc,
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;                bool include = true)
+{
+     //applyFunc =&gt; It is a higher-order function, that =&gt;
+&nbsp;    // 1. Accepts an instance of Func&lt;PullFuncStream&gt; as input
+&nbsp;    // 2. Returns an instance of Func&lt;PullFuncStream&gt; as output
+
+&nbsp;    //Do you remember our construct of &quot;If&quot;-&quot;Then&quot; pipes while discussing
+&nbsp;    //example of Even Random integer generation
+&nbsp;    //In the &quot;If&quot; condition we were applying Identity operation when condition was Falsy!
+&nbsp;    //
+&nbsp;    //This is same logic. When :
+&nbsp;    // Include = false =&gt; we return &quot;src&quot; (Identity operation on Func&lt;PullFuncStream&gt;)
+&nbsp;    // Include = true =&gt; We pass &quot;src&quot; to &quot;applyFunc&quot; to get 
+&nbsp;    //                   new Func that contains new PullFuncStream with added 
+&nbsp;    //                   streaming pipe!
+ &nbsp; &nbsp; return include ? applyFunc(src) : src;
+}
+</pre>
+
+<p>With above constructs, following would be the solution:</p>
+
+<blockquote class="quote">
+<div class="op">Problem Statement &amp; Solution:</div>
+
+<p>Give a path of a&nbsp;binary file, read all its bytes. First, decompress it using <a href="https://en.wikipedia.org/wiki/Gzip">GZip compression algorithm</a>, then deserialize data&nbsp;as a well-defined Object array (i.e. List&lt;T&gt; where T is known) using JSON serializer.<br />
+=&gt;<br />
+List&lt;T&gt; objectList = new FileInfo(&quot;Path of File&quot;, ...).Pull()<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.ThenDecompress()<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.AndParseJson&lt;List&lt;T&gt;&gt;( . . . );</p>
+</blockquote>
+
+<p><u><strong>REMARKs:</strong></u> As we never used any in-memory buffer (i.e. MemoryStream) in the whole operation; we achieve&nbsp;<a href="https://www.codeproject.com/Articles/1255313/In-Search-of-Streaming-Part-1-of-2#TARGETSTATEVISUAL">our target state that&nbsp;we visualized in part 1</a>.</p>
+
+<h2><a id="TheApi" name="TheApi"></a>The&nbsp;API</h2>
+
+<h3>NOTE: If you are <u><strong>NOT</strong></u> interested in using our APIs, please feel free to skip this section!</h3>
+
+<h3><a id="UseLinks" name="UseLinks"></a>Useful Links:</h3>
+
+<ul>
+	<li><a href="https://github.com/samaysar/dotdotnet">GITHUB</a></li>
+	<li><a href="https://www.nuget.org/packages/Dot.Net.DevFast/">NuGet</a></li>
+	<li><a href="https://www.codeproject.com/Articles/samaysar#Article">Other Articles</a></li>
+</ul>
+
+<p>As mentioned above we have divided our implementation in 2 parts:</p>
+
+<ul>
+	<li>PUSH based pipeline: when we have at least one (1) pipe which is write-only.</li>
+	<li>PULL based pipeline: when we have at least one (1) pipe which is read-only.</li>
+</ul>
+
+<p>In fact, to facilitate some operations (features), we have added an adapter to convert PULL pipeline to PUSH pipeline. For e.g., if we are reading&nbsp;bytes from some WebAPI method using PULL based pipeline. But at the same time, we want to save the bytes to compressed file on local disk; in such a case, again without buffering data in memory, we can convert our Pull pipeline to Push pipeline and add Compression pipe on it. The signature of this adapter extension function is:<a id="CONVERTPUSHPULL" name="CONVERTPUSHPULL"></a></p>
+
+<pre lang="cs">
+<strong>//SYNC PullFuncStream</strong>
+public static Func&lt;PushFuncStream, Task&gt; ThenConvertToPush(<strong>this</strong> Func&lt;PullFuncStream&gt; src,
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;                                    int bufferSize = StdLookUps.DefaultBufferSize)
+{
+&nbsp; &nbsp; return ...;
+}
+
+<strong>//ASYNC PullFuncStream
+</strong>public static Func&lt;PushFuncStream, Task&gt; ThenConvertToPush(<strong>this</strong> Func&lt;Task&lt;PullFuncStream&gt;&gt; src,
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; int bufferSize = StdLookUps.DefaultBufferSize)
+{
+&nbsp; &nbsp; return ...;
+}
+</pre>
+
+<h3><a id="KeyStrokes" name="KeyStrokes"></a>Simplifying Keystrokes</h3>
+
+<p>As intellisense helps discovering method names, in order to simplify the usage, we have divided our API pipes, with three (3) distinct prefixes:</p>
+
+<ol>
+	<li>First pipe operations have either <code>.Push</code>&nbsp;or <code>.Pull</code> prefix.</li>
+	<li>Intermediary pipes are <u><strong>optional</strong></u> (i.e. pipeline can contain <u><strong>zero</strong></u> or any number of pipes in tandem) and prefixed with <code>.Then</code>.</li>
+	<li>Target pipe starts with <code>.And</code> prefix.</li>
+</ol>
+
+<p>By knowing these prefixes one can quickly discover methods.<br />
+Once source/target&nbsp;are identified, following signature represents&nbsp;streaming pipeline:</p>
+
+<pre lang="cs">
+<strong>// &quot;...&quot; are operation specific parameters which we can ignore for this listing
+// &quot;XXX&quot; is the postfix of operation. VisualStudio IntelliSense will come handy to discover all :)
+
+//Pull based</strong>
+source.PullXXX( ... ).ThenXXX( ... ).ThenXXX( ... ) ... .AndXXX( ... );
+
+<strong>//Push based
+</strong>source.PushXXX( ... ).ThenXXX( ... ).ThenXXX( ... ) ... .AndXXX( ... );
+</pre>
+
+<p>All above methods have their equivalent <code>ASYNC</code> counterparts. But the chain signature does <u><strong>NOT</strong></u> change. Following image illustrate the idea of such pipeline at both sender side and at receiver side.</p>
+
+<p><img alt="dataflow_and_code_sender_rx" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/Sender_Rx_code_dataflow.PNG" style="width: 650px; height: 350px;" /></p>
+
+<h3><a id="METAPIPELINE" name="METAPIPELINE"></a>Meta-Pipelines</h3>
+
+<p>For the moment, we have been only talking about composing pipeline based on requirement. It is true that using such highly reusable and composable pipes, we are able to produce features fast, yet, for each feature we still need to write the pipe composition code. It is like adding a new GET endpoint to a REST service based on new requirement. But, it is tiring too, right? Thats why Facebook came up with the design of <a href="https://graphql.org/">GraphQL</a>! That means, we&nbsp;define something once and use it&#39;s sub-components again and again (i.e. Reusability in broad sense) as needed, using meta-models!</p>
+
+<p>With our API, creating something similar is possible too! And we call such pipelines Meta-Pipelines, i.e., pipelines whose behavior is driven by meta-data. Let&#39;s see consider following trivial problem&nbsp;statement:</p>
+
+<blockquote class="quote">
+<div class="op">Problem Statement:</div>
+
+<p>Giving a file path, if extension is .zip consider it is GZip compressed file, else a regular file. File contains array of records of some well known type &lt;T&gt;. Read those records from file and create List&lt;T&gt;.</p>
+</blockquote>
+
+<p>Based on the statement, we know that knowing whether file path terminates by &quot;.zip&quot; or not, we need to apply the compression. Except compression, remaining of the code is same in both cases.</p>
+
+<p>If you are still thinking of writing code using &quot;If-Else&quot;, forget it! Following is the way to write Meta-Pipeline with our APIs:</p>
+
+<pre lang="cs">
+<strong>//Meta Method to identify whether file is compressed or not</strong>
+public static bool UseZip(string filePathOrName)
+{
+&nbsp;   return filePathOrName.EndsWith(&quot;.zip&quot;);
+}
+
+<strong>//somewhere else in the code:</strong>
+fileInfo.Pull( ... )
+&nbsp;       .ThenDecompress( ... , <strong>include:UseZip(fileInfo.FullName)</strong>)
+&nbsp;       .AndParseJsonArray&lt;T&gt;(...);
+</pre>
+
+<p>Notice that whenever <code>UseZip</code> returns <code>false</code>; our pipeline bypasses Decompress pipe as if we wrote the code as: &quot;fileInfo.Pull( ... ).AndParseJsonArray&lt;T&gt;(...);&quot; (all thanks to Identity bahavior we explained above).</p>
+
+<p>Another example of such meta driven pipeline usage can be in Web&nbsp;based streaming applications, where meta information about compression, encryption, encoding etc can be obtained from Request Headers. One can construct a static pipeline with as many pipes attached in the pipeline as necessary; and, mask unrequired pipes based on such boolean during <a href="https://en.wikipedia.org/wiki/Content_negotiation">content-negotiation</a> phase <u><strong>at runtime</strong></u>.</p>
+
+<p>Knowing this, we can design meta-info based solution and remain confident about runtime behavior of the program.</p>
+
+<h3><a id="ElasticPipeline" name="ElasticPipeline"></a>Elastic Pipelines</h3>
+
+<p>We have already covered above, that only Source (.PullXXX or .PushXXX) and Target (.AndXXX) pipes are required pipes of our streaming pipeline. All the &quot;.ThenXXX&quot; pipes are optional; we can have zero or as many as we need it to build the pipeline. This make our API very flexible/elastic.</p>
+
+<p>Though, we have implemented&nbsp;many quotidian pipes (also two exotic one which we will discuss below) as a part of our library; we know our library is NOT exhaustive for every use case (for e.g. it does not contain pipe for&nbsp;<a href="https://docs.microsoft.com/en-us/dotnet/core/whats-new/dotnet-core-2-1#brotli-compression">Brotli compression</a>). Thus, we have keep all the ends open for ease of extension. If one need to create a new pipe to be used with our lib, below are the simple rules to follow during implementation a new pipe:</p>
+
+<ul>
+	<li>If pipe is PULL based
+	<ul>
+		<li>If pipe is on a new source (Lets say <code>TNew</code>): Create a function which accepts an instance of <code>TNew</code>&nbsp;and returns instance of <code>Func&lt;PullFuncStream&gt;</code> (similarly adapt for <code>async</code> counterparts)</li>
+		<li>If its intermediary pipe: Create a function which accepts an instance of <code>Func&lt;PullFuncStream&gt;</code>&nbsp;and returns instance of <code>Func&lt;PullFuncStream&gt;</code> (similarly adapt for <code>async</code> counterparts). Inside the implementation, read data from stream obtained from <code>Readable</code>&nbsp;property of input <code>PullFuncStream</code>.</li>
+		<li>If it is target pipe:&nbsp;Create a function which accepts an instance of <code>Func&lt;PullFuncStream&gt;</code>&nbsp;and returns TOut (or void).&nbsp;(similarly adapt for <code>async</code> counterparts)</li>
+	</ul>
+	</li>
+	<li>Similarly,&nbsp;if pipe is PUSH based
+	<ul>
+		<li>If pipe is on a new source (Lets say <code>TNew</code>): Create a function which accepts an instance of <code>TNew</code>&nbsp;and returns instance of <code>Func&lt;PushFuncStream&gt;</code> (similarly adapt for <code>async</code> counterparts)</li>
+		<li>If its intermediary pipe: Create a function which accepts an instance of <code>Func&lt;PushFuncStream&gt;</code>&nbsp;and returns instance of <code>Func&lt;PushFuncStream&gt;</code> (similarly adapt for <code>async</code> counterparts). Inside the implementation, read data from stream obtained from <code>Writable</code>&nbsp;property of input <code>PushFuncStream</code>.</li>
+		<li>If it is target pipe:&nbsp;Create a function which accepts an instance of <code>Func&lt;PushFuncStream&gt;</code>&nbsp;and returns TOut (or void).&nbsp;(similarly adapt for <code>async</code> counterparts)</li>
+	</ul>
+	</li>
+</ul>
+
+<p>Next, we discuss two (2) of such exotic pipe we have added in our library using elastic nature of the core API concept.</p>
+
+<h3><a id="TeeingNSuperTeeing" name="TeeingNSuperTeeing"></a>TEEing &amp; Super-TEEing</h3>
+
+<p>Like <a href="https://en.wikipedia.org/wiki/Pipeline_(Unix)">Unix Pipes</a> (&quot;|&quot;), <a href="https://en.wikipedia.org/wiki/Tee_(command)">Unix TEE</a> (command <code>tee</code>) is yet another famous operation. The basic concept of TEE is to read once and replicate (out) more than once (in loose sense). In other words, for each input, it can handle writing it on multiple targets. Some concept is illustrated in the image below.</p>
+
+<p><img alt="teeing" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/Teeing.PNG" style="width: 650px; height: 265px;" /></p>
+
+<p>TEEing is a very interesting use case in streaming application; replicating source stream, to write on multiple targets, has profound use-cases of Data replication, Data Broadcasting etc. You might have heard about <a href="https://kafka.apache.org/">Apache Kafka</a>, known MQs (like Rabbit MQ etc) or pub-sub systems like <a href="https://redis.io/">REDIS</a>.</p>
+
+<p>In our APIs, we have added an &quot;concurrent-writer&quot; (intermediary) pipe which exactly does the same. For evey received chunk <strong>it replicates data on connected streams&nbsp;concurrently</strong>! This pipe is <u><strong>ONLY</strong></u> available on <u><strong>PUSH</strong></u> based (writer) pipeline&nbsp;which make sense too. Nonetheless, as PULL-based&nbsp;pipeline can be converted to PUSH-based pipeline using our <a href="#CONVERTPUSHPULL">&quot;ThenConvertToPush&quot;</a>&nbsp;pipe, theoritically and practically, such concurrent writing can be done when consuming&nbsp;PUSH APIs.</p>
+
+<p>The signature of this this pipe is:</p>
+
+<pre lang="cs">
+<strong>//Intermediary concurrent writer 
+</strong>public static Func&lt;PushFuncStream, Task&gt; ThenConcurrentlyWriteTo(this Func&lt;PushFuncStream, Task&gt; src,
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;                                                      Stream writableStream,
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;                                                      ...)
+{
+&nbsp;   //writes concurrently on both PushFuncStream.Writable and
+&nbsp;   //supplied writableStream
+&nbsp;   return ...;
+}
+
+//////// USE-CASES
+
+//1. Single TEE (replicates someSource&#39;s byte representation to someStream and yetAnotherStream)
+await someSource.Push()
+&nbsp;               .ThenConcurrentlyWriteTo(someStream, ...)
+&nbsp;               .AndWriteStreamAsync(yetAnotherStream);
+
+//2. Concatenated TEE (replicates someSource&#39;s byte representation to someStream1, ..., someStreamN
+//                                                                    and yetAnotherStream)
+await someSource.Push()
+&nbsp;               .ThenConcurrentlyWriteTo(someStream1, ...)
+&nbsp;               .ThenConcurrentlyWriteTo(someStream2, ...)
+&nbsp;               ...
+&nbsp;               .ThenConcurrentlyWriteTo(someStreamN, ...)
+&nbsp;               .AndWriteStreamAsync(yetAnotherStream);
+</pre>
+
+<p>We coin the term &quot;Super-TEEs&quot; for the concatenated TEEs which can support stream replication along with some intermediary data mutation. Following image illustrate the idea:</p>
+
+<p><img alt="super_tees" src="https://raw.githubusercontent.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/Snaps/func_streaming/SuperTees.PNG" style="width: 650px; height: 307px;" /></p>
+
+<blockquote class="quote">
+<div class="op">Quote:</div>
+
+<p>Creating such Super TEEs are intuitive using our APIs. Consider a hypothetical case where:</p>
+</blockquote>
+
+<blockquote class="quote">
+<div class="op">Case Statement and Solution:</div>
+
+<p>We would like to json serialize a List&lt;T&gt;, save json to a local file; at the same time, stream GZipped bytes to web endpoint and, also,&nbsp;save that&nbsp;Gzip data&nbsp;on a shared&nbsp;disk after encryption.<br />
+=&gt;<br />
+await someList.PushJsonArray( ... )<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.ThenConcurrentlyWriteTo( localFileStream, ... )<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.ThenCompress( ...&nbsp;)<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.ThenConcurrentlyWriteTo( webStream, ... )<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.ThenEncrypt&lt;&gt;( ... )<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.ThenConcurrentlyWriteTo( sharedDiskStream, ... );</p>
+</blockquote>
+
+<h3><a id="ByteCounting" name="ByteCounting"></a>Byte Counting</h3>
+
+<p>Finally, we present one last of our exotic pipes implementation that simply counts the byte. The use-case is to perform such counting to embed as header values as response (for e.g. <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers">HTTP-Headers</a>) or to precalculate those to satisfy some meta queries (like <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods">HTTP Head method</a>). The signature of the pipe is:</p>
+
+<pre lang="cs">
+public static Func&lt;PushFuncStream, Task&gt; ThenCountBytes(this Func&lt;PushFuncStream, Task&gt; src,
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;                                             &nbsp; out IByteCounter byteCounter,
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;                                             ...)
+{
+&nbsp; &nbsp; return ...;
+}</pre>
+
+<p>Consider again following hypothetical requirement:</p>
+
+<blockquote class="quote">
+<div class="op">Problem Statement &amp; Solution:</div>
+
+<p>Read a file and save its contents as GZipped file and also compute compression ratio.<br />
+=&gt;<br />
+IByteCounter counter<strong>Before</strong>Compress;<br />
+IByteCounter counter<strong>After</strong>Compress;<br />
+await someFileInfo.Push( ... )<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;.ThenCountBytes(<strong>out</strong> counter<strong>Before</strong>Compress)<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .ThenCompress( ... )<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;.ThenCountBytes(<strong>out</strong> counter<strong>After</strong>Compress)<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .AndWriteFileAsync(targetFileInfo, ...);</p>
+
+<p>Console.WriteLine(&quot;Compression Ratio: &quot; + (counter<strong>After</strong>Compress.ByteCount / counter<strong>Before</strong>Compress.ByteCount * 100));</p>
+</blockquote>
+
+<p>This pipe is available on <strong>PUSH</strong> pipeline as both <code>.Then</code> (intermediary) and <code>.And</code> (target) pipes. However,&nbsp;on&nbsp;<strong>PULL</strong>&nbsp;pipeline as <code>.Then</code> (intermediary) pipe only.</p>
+
+<h2><a id="Commentary" name="Commentary"></a>Commentary</h2>
+
+<p>Based on above (long) discussion, finally we summarize the achieved goals:</p>
+
+<ul>
+	<li>We avoided in-Memory buffers to improve on runtime memory</li>
+	<li>Implement all intermediary pipes only with necessary fixed size buffers</li>
+	<li>Presented efficient pipeline with the help of end-to-end (i.e. source to target) chain of operations</li>
+	<li>Created&nbsp;an API that offers:
+	<ul>
+		<li><strong>Composability</strong>: All pipes (extension methods) are composable and chain can be constructed with zero or more intermediary pipes as deemed required</li>
+		<li><strong>Readability</strong>: All pipes are quite declarative in nature and expose only optional parameters</li>
+		<li><strong>Maintainability</strong>: Pipes are build keeping single responcibility principle in mind</li>
+		<li><strong>Elasticity</strong>:&nbsp;New (ordinary and exotic) pipes can be easily created and can be made an integral part of the existing API</li>
+		<li><strong>Reusability</strong>: Reusability (in ordinary sense) is achieved through composition &amp; recomposition of pipes. At the same time Reusability (in broad sense) is achieved by exploring the concept of <a href="#METAPIPELINE">Meta Pipeline</a>.</li>
+	</ul>
+	</li>
+</ul>
+
+<p>Happy coding!</p>
+
+<h2 style="text-align: right;"><a href="https://www.codeproject.com/Articles/1255313/In-Search-of-Streaming-Part-1-of-2">&lt;&lt; In Search of Streaming - PART 1</a></h2>
 
 </body>
 </html>
