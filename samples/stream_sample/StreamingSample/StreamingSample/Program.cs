@@ -9,7 +9,11 @@ namespace StreamingSample
         {
             try
             {
-                await ApiPerfCompare.PerfCompareNonStreamingWithStreamingAsync().ConfigureAwait(false);
+                //UNComment below method to RUN DevFast APIs vs in-memory buffer usage comparison
+                //await ApiPerfCompare.PerfCompareNonStreamingWithStreamingAsync().ConfigureAwait(false);
+
+                //UNcomment below method to run Random INT code with and without sugar!
+                await RandomFuncNumbers.GenerateRandomIntegers().ConfigureAwait(false);
             }
             catch (Exception e)
             {
