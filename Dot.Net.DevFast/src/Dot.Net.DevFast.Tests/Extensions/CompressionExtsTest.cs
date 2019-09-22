@@ -152,11 +152,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
                     var compressedData = mem.ToArray();
                     if (arrSize == 0)
                     {
-#if !NETSTANDARD2_0 && !NETCOREAPP2_0
                         Assert.True(compressedData.Length == 0);
-#else
-                        Assert.False(compressedData.Length == 0);
-#endif
                     }
                     else
                     {
