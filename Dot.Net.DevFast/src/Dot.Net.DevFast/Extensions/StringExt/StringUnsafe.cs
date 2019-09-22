@@ -9,6 +9,7 @@ using Dot.Net.DevFast.Extensions.Internals;
 
 namespace Dot.Net.DevFast.Extensions.StringExt
 {
+#pragma warning disable CS1580
     /// <summary>
     /// Extension method on UnSafe (possible exception or invalid results) string operations
     /// </summary>
@@ -441,4 +442,5 @@ namespace Dot.Net.DevFast.Extensions.StringExt
             targetStream.DisposeIfRequired(disposeTarget);
         }
     }
+#pragma warning restore CS1580
 }
