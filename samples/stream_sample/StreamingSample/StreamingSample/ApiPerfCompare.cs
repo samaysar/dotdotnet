@@ -24,7 +24,7 @@ namespace StreamingSample
             await Console.Out.WriteLineAsync("========================================").ConfigureAwait(false);
             await Console.Out.WriteLineAsync().ConfigureAwait(false);
             const int totalObjects = 10000;
-            var file = await GenerateRandomDataAsync(totalObjects).ConfigureAwait(false);
+            var file = await SampleGeneratingHelpers.GenerateRandomDataAsync(totalObjects).ConfigureAwait(false);
             await RunWithoutStreamingApiAsync(file, totalObjects).ConfigureAwait(false);
             await RunWithStreamingApiAsync(file, totalObjects).ConfigureAwait(false);
             await Console.Out.WriteLineAsync().ConfigureAwait(false);
@@ -121,44 +121,5 @@ namespace StreamingSample
                     .ConfigureAwait(false);
             }
         }
-
-        private static async Task<FileInfo> GenerateRandomDataAsync(int totalObjects)
-        {
-            var sw = Stopwatch.StartNew();
-            var folder = AppDomain.CurrentDomain.BaseDirectory.ToDirectoryInfo(new[] { "TestData" }, true);
-            var fileToWrite = folder.CreateFileInfo("StreamingSample-PerfComp.json.zip");
-            await Console.Out.WriteLineAsync($"Generating Random file data: {fileToWrite.FullName}").ConfigureAwait(false);
-            await GenerateTestObjects(totalObjects).PushJsonArray(new JsonSerializer
-                {
-                    Formatting = Formatting.Indented
-                }).ThenCompress().AndWriteFileAsync(fileToWrite)
-                .ConfigureAwait(false);
-            await Console.Out.WriteLineAsync($"Random Data gen successful. Time:{sw.ElapsedMilliseconds} ms").ConfigureAwait(false);
-            await Console.Out.WriteLineAsync().ConfigureAwait(false);
-            return fileToWrite;
-        }
-
-        private static IEnumerable<MyTestData> GenerateTestObjects(int total)
-        {
-            var rand = new Random();
-            for (var i = 0; i < total; i++)
-            {
-                var doub = rand.NextDouble();
-                var byteArr = new byte[i+1];
-                rand.NextBytes(byteArr);
-                yield return new MyTestData
-                {
-                    SomeDecimal = doub,
-                    ByteArray = byteArr
-                };
-            }
-        }
-    }
-
-    public class MyTestData
-    {
-        public string SomeLongString { get; set; } = @"I am a very very long string.";
-        public double SomeDecimal { get; set; }
-        public byte[] ByteArray { get; set; }
     }
 }

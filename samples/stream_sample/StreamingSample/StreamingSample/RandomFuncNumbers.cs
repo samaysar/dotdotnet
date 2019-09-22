@@ -23,15 +23,16 @@ namespace StreamingSample
             await Console.Out.WriteLineAsync().ConfigureAwait(false);
 
 
-            Action<int, int> print = (val, i) => Console.WriteLine($"{i + 1}th Value is:{val}");
+            void Print(int val, int i) => Console.WriteLine($"{i + 1}th Value is:{val}");
             await Console.Out.WriteLineAsync($"Generating {total} ODD Random Int WITH Sugar:").ConfigureAwait(false);
             var random = new Random();
             for (var i = 0; i < total; i++)
             {
+                var i1 = i;
                 random.GenerateInt(0, int.MaxValue - 1)
                     .If(x => !IsOdd(x))
                     .Then(AddOne)
-                    .And(v => print(v, i));
+                    .And(v => Print(v, i1));
             }
             await Console.Out.WriteLineAsync().ConfigureAwait(false);
 
@@ -64,15 +65,6 @@ namespace StreamingSample
             return value;
         }
 
-        private static T GenerateNumberAndApply<T>(Func<T> factory,
-            Func<T, bool> predicateFactory,
-            Func<T, T> whenTrue,
-            Func<T, T> whenFalse)
-        {
-            var value = factory();
-            return predicateFactory(value) ? whenTrue(value) : whenFalse(value);
-        }
-
         private static Func<int> GenerateInt(this Random value, int min, int max)
         {
             return () => value.Next(min, max);
@@ -97,6 +89,15 @@ namespace StreamingSample
         private static void And(this Func<int> func, Action<int> apply)
         {
             apply(func());
+        }
+
+        private static T GenerateNumberAndApply<T>(Func<T> factory,
+            Func<T, bool> predicateFactory,
+            Func<T, T> whenTrue,
+            Func<T, T> whenFalse)
+        {
+            var value = factory();
+            return predicateFactory(value) ? whenTrue(value) : whenFalse(value);
         }
     }
 }
