@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>In Search of Streaming...</title>
+<title>In Search of Streaming...Part 1 of 2</title>
 <meta http-equiv="content-language" content="en-US">
 <meta charset="UTF-8">
 <meta name="Description" CONTENT="Discussing about streams...about streaming...about functional streaming...and about time travel.">
@@ -10,8 +10,8 @@
 </head>
 
 <body>
-<h1 class="ttlpl">In Search of Streaming...</h1>
-<h5>Discussing about streams...about streaming...about functional streaming...and about time travel.</h5>
+<h1 class="ttlpl">In Search of Streaming... Part 1 of 2</h1>
+<h5>Discussing about streams...about streaming...about functional streaming...and nothing else.</h5>
 
 <p>Before we begin talking about streaming or any associated details, we would like to make a commentary on the the vocabulary used in this article, in order to avoid the state of confusion.</p>
 
@@ -24,44 +24,364 @@
 	<li>mutating&nbsp;and forwarding&nbsp;<code>byte</code>-sequences to next such stream in chain.</li>
 </ol>
 
-<p>As a matter of fact, we remain indifferent to the implementation complexity and source of such implementation (i.e. part of framework, an open source library or home-made recipe) as long as the desired results can be obtained. In effect, this assumption is so important, because, otherwise it would be impossible for us&nbsp;to obtain a truly context agnostic API that is capable to support virtually any operation on the underlying byte-streams (as we will see below).</p>
+<p>As a matter of fact, as we talk about those Stream implementation, we remain indifferent to the implementation complexity and source of such implementation (i.e. part of framework, an open source library or home-made recipe) as long as the desired results can be obtained. In effect, this assumption is so important, because, otherwise it would be impossible for us&nbsp;to obtain a truly context agnostic API that is capable to support virtually any operation on the underlying byte-streams (as we will see below).</p>
 
 <ul>
 	<li>We will use the word &quot;<strong>Streaming</strong>&quot;, to associate the flow of byte-sequences as they goes through such a stream based pipeline.</li>
 </ul>
 
-<p>In fact, as a special case of such declaration, when one of&nbsp;such streams in the pipeline is actually a network stream and the flowing byte contents are multimedia contents; we obtain the implementation of mutlimedia-streaming (or just streaming as it is widely known). Thus, it is important to remember that the we do NOT restrict the scope of the word &quot;streaming&quot; to mutimedia-streaming, during our discussion.</p>
+<p>In fact, as a special case of such declaration, when one of&nbsp;such streams in the pipeline is actually a network (HTTP) stream and the flowing byte contents are multimedia contents; we obtain the implementation of mutlimedia-streaming (or just streaming as it is widely known). Thus, it is important to remember that the we do NOT restrict the scope of the word &quot;streaming&quot; to mutimedia-streaming, during our discussion.</p>
 
-<h2>Trivia</h2>
+<h2>Relevant Trivia</h2>
 
-<p>Streams are, undoubtably, one of its kind and special-purpose&nbsp;breeded beasts.&nbsp;Though&nbsp;a&nbsp;stream&nbsp;can be thought as a&nbsp;sequence&nbsp;of bytes (like any other object); it unfolds its true power through its dynamics. Let us explain. In fact, at runtime, any other object be that <code>string</code>, <code>array</code>, data in a custom <code>class/</code><code>struct</code> objects, even the source code itself; are all sequence of bytes in memory residing somewhere. Even, a simple <code>interger</code> value can be thought as a sequence of 4 bytes (<a href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">for <code>int32</code> in .Net</a>). In addition, it is possible to extract a sub-sequence&nbsp;from these byte representation of these objects to perform some delicate operations; yet such byte sequences&nbsp;lack&nbsp;dynamics which streams exhibit out of the box. And, for our discussion, the notion of such flow, associated to bytes, comes handy as we start talking about our work on data-streaming. Going forward we will <strong>NOT ONLY</strong> make effort to explain this <code>buffer-mutate-forward (BMF)</code>&nbsp;phenomenon in details, <strong>BUT ALSO</strong>, will propose a completely novel APIs to deal with data&nbsp;streaming requirements.</p>
+<p>Streams are, undoubtably, one of its kind and special-purpose&nbsp;breeded beasts.&nbsp;Though&nbsp;a&nbsp;stream&nbsp;can be thought as generator&nbsp;of byte sequences; it unfolds its true power through its dynamics. Let us explain. In fact, at runtime, any other object be that <code>string</code>, <code>array</code>, data in a custom <code>class/</code><code>struct</code> objects, even the source code itself; are all sequence of bytes in memory residing somewhere. Even, a simple <code>interger</code> value can be thought as a sequence of 4 bytes (<a href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">for <code>int32</code> in .Net</a>). In addition, it is possible to extract a sub-sequence&nbsp;from these byte representation of these objects to perform some delicate operations; yet such byte sequences&nbsp;lack&nbsp;dynamics which streamimg&nbsp;exhibit out of the box. And, for our discussion, the notion of such flow, associated to bytes and runtime&nbsp;processing, comes handy as we start talking about our work on data-streaming. Going forward we will <strong>NOT ONLY</strong> make effort to explain this phenomenon in details, <strong>BUT ALSO</strong>, will propose a completely novel APIs to deal with data&nbsp;streaming requirements.</p>
 
-<p>As soon as we hear the word &quot;Streaming&quot;, many pictures comes to the mind, like watching a videos online, watching live telecast of an event, listening to a favorite song online etc. More or less, we almost immediately associate Multimedia contents like Audio &amp;&nbsp;Video with this word. Thus, it is important for us to switch the gear and set a platform and in order to do so , first,&nbsp;we would like to personalize the definition of Streaming, by expanding the Streaming universe in our definition, that can be written as plainly as:</p>
+<p>As soon as we hear the word &quot;Streaming&quot;, many pictures comes to the mind, like watching a videos online, watching live telecast of an event, listening to a favorite song online etc. More or less, we almost immediately associate Multimedia contents like Audio &amp;&nbsp;Video with this word. Thus, it is important for us to switch the gear and set a platform. In order to do so , first,&nbsp;we would like to personalize the definition of Streaming, by expanding the Streaming universe in our definition, that can be written as plainly as:</p>
 
-<p style="margin-left: 40px;"><strong>&quot;To send/transfer data<sup>1</sup>, potentially, as varying sized chunks of binary data&nbsp;continuously;&nbsp;at the same time, permitting the receiving end<sup>2</sup> to continuously process those chunks without any constraint&nbsp;to wait for the whole dataset to be available.&quot;</strong></p>
+<p style="margin-left: 40px"><strong>&quot;Sending/transfering data<sup>1</sup>, potentially&nbsp;as varying sized chunks of binary data, continuously;&nbsp;at the same time, permitting the receiving-end<sup>2</sup> to continuously process those chunks,&nbsp;whenever possible, in independent fashion (i.e. without buffering&nbsp;data<sup>1</sup>).&quot;</strong></p>
 
-<p><sup>1</sup>The term &quot;<strong>Data</strong>&quot; is contextual here (whatever defines as whole dataset at receiving end, i.e. whole video or just a 1 second clip of that video or simply a &quot;Hello World!&quot; string or a never ending data series)<br />
-<sup>2</sup>The term &quot;receiving-end&quot; is used to represent the data exit (or output) endpoint. It can be a client in a client-server architecture but NOT necessary.</p>
+<p><sup>1</sup>The term &quot;<strong>Data</strong>&quot; is contextual here. For us, it is whatever defines as whole dataset, i.e. whole video or just a 1 second clip of that video or simply a &quot;Hello World!&quot; string or a never ending data series.<br />
+<sup>2</sup>The term &quot;receiving-end&quot; is used to identify the next Stream in tandem.</p>
 
 <p>With such a definition at hand:</p>
 
 <ul>
-	<li>We are more interested in <code>BYTE</code> format of data instead of mediatype. Hence, we want to deal with any kind of data that is either promptly available as bytes or convertible (irrespective of complexity of conversion) to byte format.</li>
-	<li>We want to transfer data as it becomes available, and, hence, do&nbsp;not want to be dependent on chunk-size.</li>
+	<li>We are more interested in <code>BYTE</code> format of data instead of mediatype. Hence, we want to deal with any kind of data that is either promptly available as bytes or convertible (irrespective of complexity of conversion) to bytes.</li>
+	<li>We want to transfer data continuously, i.e. as it becomes available, and, potentially as&nbsp;chunks. Thus, we strive to not to buffer whole dataset, in memory, at any point during the streaming.</li>
 	<li>We are agnostic to underlying protocols/APIs, as long as we are able to send those data-chunks continuously.</li>
 	<li>We want to design a scheme/framework/mechanism that can support any such arbitrary data processing end-to-end.</li>
-	<li>And <strong>MOST IMPORTANTLY</strong>, we are receiver agnostic as long as it is&nbsp;able to accept such data-chunks (i.e. irrespective of its data-processing capabilities).</li>
+	<li>And, we are receiver agnostic as long as it is&nbsp;able to accept such data-chunks (i.e. irrespective of its data-processing capabilities).</li>
 </ul>
 
-<p>&nbsp;</p>
+<h3>Implementation Notes</h3>
 
-<h2>A New Beginning</h2>
+<ul>
+	<li>From a theoritical point of view, the article is generic in nature and may remain&nbsp;valid for several languages/frameworks; however, we have implemented our thoughts in C# .Net and we would be pitching some .Net code snippets throughout the discussion.</li>
+	<li>Readers who wants to compile the attached source code, as it is, in Visual studio&nbsp;should make sure that they have&nbsp;.Net Framework 4.7.2 SDKs installed and have C# language version 7.1 or above installed (as mentioned in <a href="https://blogs.msdn.microsoft.com/mazhou/2017/05/30/c-7-series-part-2-async-main/">MSDN blog</a>)</li>
+</ul>
 
-<p>Working.....</p>
+<p>NOTE: Statistics, presented in this article, are obtained with following system configuration:</p>
 
-<h2>Remember&nbsp;The Titans</h2>
+<p><img alt="Hardware_Config" height="192" src="d44593e9-8daa-4f0d-8565-ac7f9b2421de.Png" style="width: 350px; height: 106px" width="635" /></p>
 
-<p>Working.....</p>
+<p><img alt="Software_Config" height="186" src="0972caca-b094-4844-b97e-3d6d882e8a11.Png" style="width: 300px; height: 112px" width="500" /></p>
 
+<p><img alt="VS_CONFIG" height="183" src="65d5e944-7e36-4655-85bb-c3d466690f9c.Png" style="width: 400px; height: 100px" width="837" /></p>
+
+<h2>Reasons First</h2>
+
+<p>Before we try to understand why we thought of such an implementation, we should first understand the existing tools&nbsp;we have. Considering we have two <code>Stream</code>&nbsp;instances <code>_readableStream</code> and <code>_writableStream</code>; as the name suggests we can read from <code>_readableStream</code> and write to <code>_writableStream</code>. Further assume, we have&nbsp;a trivial task at hand which warrants us to copy data from <code>_readableStream</code> to <code>_writableStream</code>. Most of the languages/framework provides following&nbsp;implementation (more or less) to achieve it:</p>
+
+<p><a id="PSUEDOCODE" name="PSUEDOCODE"></a></p>
+
+<pre>
+<strong>/////////////////////
+//// PSUEDO CODE ////
+/////////////////////
+
+//define some temporary byte array as buffer
+</strong>byte[] buffer = new byte[buffer_size];
+
+<strong>//continuously read from readable stream 
+</strong>while ((readLength = _readableStream.read(buffer)) &gt; 0) 
+{
+<strong>&nbsp;  //write on writable stream as long as we read at least 1 byte
+</strong>&nbsp;  _writableStream.write(buffer, 0, readLength);
+}
+</pre>
+
+<p>From the above code snippet, we notice that by using a fixed size buffer (normally of a few KB in size), we achieve such stream-to-stream copy. Complexity is linear to the stream length and we dont consume much space;&nbsp;fair enough.</p>
+
+<p>But wait a moment, we made an assumption here&nbsp;that streams are associated to I/O devices (especially <code>_writableStream</code>) like file, network etc. But, what would happens when our <code>_writableStream</code> turns out to be an in-memory stream (<code>MemoryStream</code> in C# .Net), then we immediately increases the space complexity. And what if both (<code>_readableStream</code> and <code>_writableStream</code>) are in-memory streams. Then space requirement is doubled.</p>
+
+<p>But why we care so much about it? Simplistically speaking, It&#39;s sufficient to say&nbsp;that Memory is Cheap BUT not FREE and neither LIMITLess, nonetheless, the reason is NOT that simple. Thus, without adding any further verbosity; author invites readers to read an excellent article, titled &quot;<a href="https://www.codeproject.com/Articles/1191534/%2FArticles%2F1191534%2FTo-Heap-or-not-to-Heap-That-s-the-Large-Object-Que">To Heap or not to Heap; That&rsquo;s the Large Object Question?</a>&quot;, written by&nbsp;<a href="https://www.codeproject.com/script/Membership/View.aspx?mid=13259718" rel="author">Doug Duerner</a>,&nbsp;<a href="https://www.codeproject.com/script/Membership/View.aspx?mid=13259794" rel="author">Yeon-Chang Wang</a>, to understand those&nbsp;details related to increasing space complexity associated with large objects (such as strings, list or arrays in general).&nbsp;</p>
+
+<p>In general, reducing <strong>runtime memory</strong> is our first reason.&nbsp;On the same lines, our next reason is <strong>latency</strong> which can be reduced by re-using the same buffer (allocated once) during copy operations,&nbsp;without the need to spend precious CPU time in re-sizing/copying byte arrays (in memory) to buffer entire data.</p>
+
+<p>Though, normally less talked, our next reason is <strong>code organization </strong>(e.g. readability,testability, separation of concerns etc.); our goal is to prepare an API to perform streaming operations which is&nbsp;intuitive and expressive. Furthermore, we want to embed some sort of artificial intelligence in our APIs to allow us to bring <strong>runtime malleability</strong>&nbsp;(i.e. conditional plumbing of pipeline) in our chain of streams. In the end, we want to have a liberty to build&nbsp;pipelines to perform arbitrary operations (<strong>WILDCARD</strong>s) on the running chunks of byte without losing the associated benefits. As a matter of fact, we will build some specific streaming operations to demostrate such wildcard capabilities.</p>
+
+<h2>Being Pragmatic</h2>
+
+<p>If you have followed us until here, you might argue that streaming is NOT that significantly used in a regular application and even most of the applications do NOT go beyond&nbsp;file reading/writing.&nbsp;We cannot argue about&nbsp;that as it is experience based argument. However, following non-exhaustive list does provide usage of streaming:</p>
+
+<ul>
+	<li>WebAPIs</li>
+	<li>Base64 conversion</li>
+	<li>Object Seriailization</li>
+	<li>Data Encryption</li>
+	<li>Data Compression</li>
+	<li>Hash computing</li>
+	<li>File handling... so on and so forth...</li>
+</ul>
+
+<h4>Measuring performance of a trivial task</h4>
+
+<p>Before going into details, lets start with a simple&nbsp;example. Assume we have a following task at hand:</p>
+
+<blockquote class="quote">
+<div class="op">Definition:</div>
+
+<p>Give a path of a&nbsp;binary file, read all its bytes. First, decompress it using <a href="https://en.wikipedia.org/wiki/Gzip">GZip compression algorithm</a>, then deserialize data&nbsp;as a well-defined Object array (i.e. List&lt;T&gt; where T is known) using JSON serializer.</p>
+</blockquote>
+
+<p>From above statement, we can identify three (3) distinct operations, namely:</p>
+
+<ol>
+	<li>Read all bytes from the given file</li>
+	<li>Use GZip algorithm to decompress those&nbsp;bytes</li>
+	<li>With Json serializer create <code>List&lt;T&gt;</code> (<code>T</code> is known or it is a generic place holder it hardly matters) from decompressed bytes</li>
+</ol>
+
+<p>To maintain code readability and by neglecting any performance/code optimization (just for the moment), we consider implementation of following three (3) functions:</p>
+
+<pre lang="cs">
+public byte[] <strong>PullAllBytesFrom</strong>(FileInfo file)
+{
+&nbsp;    return File.ReadAllBytes(file.FullName);
+}
+
+public byte[] <strong>DecompressUsingGzip</strong>(byte[] compressedBytes)
+{
+&nbsp;    var unzippedData = new MemoryStream();
+     using (var unzipper = new GZipStream(new MemoryStream(compressedBytes), CompressionMode.Decompress, false))
+&nbsp; &nbsp; &nbsp;{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; unzipper.CopyTo(unzippedData);
+&nbsp; &nbsp; &nbsp;}
+&nbsp;    return unzippedData.ToArray();
+}
+
+public List&lt;T&gt; <strong>DeserializeAs</strong>&lt;T&gt;(byte[] data)
+{
+&nbsp;    <strong>// ===&gt; Using Newtonsoft.Json (we will call it with T = List&lt;T&gt;)</strong>
+&nbsp;    return JsonConvert.DeserializeObject&lt;T&gt;(new UTF8Encoding().GetString(data));
+}
+</pre>
+
+<p>We could have written the code in other way, however, the reason that we created all the three (3) operations&nbsp;separately is a subject for later discussion and we will speak of those in details there. For the moment, we just want to focus on the performance of following code:</p>
+
+<p><a id="CODEID1" name="CODEID1"></a></p>
+
+<pre lang="cs">
+<strong>////////////////
+//// CODE ID 1
+//// We will use this ID as reference below during our discussion
+/////////////// </strong>
+
+public List&lt;T&gt; DeserializeListFrom&lt;T&gt;(FileInfo compressedJsonFile)
+{
+&nbsp;    var fileBytes = <strong>PullAllBytesFrom</strong>(compressedJsonFile);
+&nbsp;    var uncompressedBytes = <strong>DecompressUsingGzip</strong>(fileBytes);
+&nbsp;    return <strong>DeserializeAs&lt;List&lt;T&gt;&gt;</strong>(uncompressedBytes);
+}
+</pre>
+
+<p>If you run similarly written code of &quot;DeserializeListFrom&quot; (if you have downloaded the attached source code from this article, you can run <code>PerfCompareNonStreamingWithStreamingAsync</code>&nbsp;method), you will see following similar performance graphs from the Visual Studio Diagnostic Tools (NOTE: API Method is our implementation and subject of this discussion and DeserializeListFrom is similarly written method as shown in above snippet):</p>
+
+<p><img alt="Image1_Perf_Visual" height="404" src="d9fe6dd7-fb48-4547-9c07-e14a4816873c.Png" style="width: 700px; height: 300px" width="921" /></p>
+
+<p>Looking at this image, we see there is a costly memory consuming operation going on during code execution and perhaps the byte array was re-allocated several time (hence, recopied). Overall, it&#39;s evident that we have an opportunity here to win big on memory and significantly on CPU time too. Thus, knowing the issue we can drill down further.</p>
+
+<h4>Defining Goals</h4>
+
+<p>Based on our discussion so far, we want to:</p>
+
+<ul>
+	<li>Avoid the usage of in-Memory buffers to improve on runtime memory</li>
+	<li>Work only with necessary fixed size buffers</li>
+	<li>be able to create efficient pipeline (chain of operations) end-to-end (source to target)</li>
+	<li>Create an API that offers:
+	<ul>
+		<li><strong>Composability</strong>: composition of operations</li>
+		<li><strong>Readability</strong>: composition are declarative</li>
+		<li><strong>Maintainability</strong>: promotes single responcibility principle for each underlying composed operation</li>
+		<li><strong>Elasticity</strong>:&nbsp;open to any exotic and/or regular data processing requirement</li>
+		<li><strong>Reusability</strong>: permits run-time mutation in a composed chain in a deterministic manner</li>
+	</ul>
+	</li>
+</ul>
+
+<p>Rest of the article is going to present the work we have done to achieve above listed goals.</p>
+
+<h2>Streams In General</h2>
+
+<p>On surface all streams looks alike and it&#39;s hard to put those in different bins. However, to exploit streaming capabilities we do need to understand different characteristics of those stream implementations.</p>
+
+<h5>Unidirectional Vs Bidirectional</h5>
+
+<p>Fortunately, in .Net there exists a well-defined interface for Streams (inside <code>System.IO</code> namespace, <code>Stream</code> is defined as Abstract class) and all stream implementations are inherited from it. We take a closer look at some of it&#39;s capabilities as shown below:</p>
+
+<pre lang="cs">
+// from https://referencesource.microsoft.com/#mscorlib/system/io/stream.cs
+
+public abstract class Stream : MarshalByRefObject, IDisposable
+{
+&nbsp; &nbsp; &nbsp; &nbsp; public abstract bool CanRead { get; }
+&nbsp; &nbsp; &nbsp; &nbsp; public abstract bool CanWrite { get; }
+
+&nbsp; &nbsp; &nbsp; &nbsp; public abstract int Read(byte[] buffer, int offset, int count);
+&nbsp; &nbsp; &nbsp; &nbsp; public abstract void Write(byte[] buffer, int offset, int count);
+
+&nbsp; &nbsp; &nbsp; &nbsp; /* ...
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;* Other methods and properties
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;* ...
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;*/
+}
+</pre>
+
+<p>Thus, apart from <code>Read</code> and <code>Write</code> methods, Stream exposes <code>CanRead</code> and <code>CanWrite</code> truth values; thus, if a stream supports Read operation it shall return true for CanRead and similarly if it supports Write operation it should be truthy for CanWrite. In fact, NOT all stream implementations return True for both of these properties. Thus, we can say when stream is either Readable or Writable (not both) it&#39;s unidirectional (e.g. <strong>FileStream</strong> with read access); similarly,&nbsp;when its both Readable &amp; writable at the same time it is bidirectional (e.g. <strong>MemoryStream</strong> with writable=true).</p>
+
+<h5><a id="OPENENDEDSTREAM" name="OPENENDEDSTREAM"></a>Open-Ended Vs Closed-Ended</h5>
+
+<p>Some stream implementations are in fact closed in the sense that they are bound to target device; for e.g. <code>FileStream</code> is bound to physical location on a disk. On the other hand, some stream implementation are open (agnostic) to the target involved in reading or writing operations, i.e., they operates on abstraction (e.g. abstract <strong>Stream</strong> class in .Net). Such streams, often, requires an instance of Stream at construction time (i.e. constrctor call); for e.g. GZipStream constructor accepts another <code>Stream</code>&#39;s instance for reading/writing operation during decompression/compression respectively,&nbsp;yet, agnostic to whether the given Stream is <code>MemoryStream</code> or <code>FileStream</code>. Though, given explanation (and stream classification) looks trivial in nature, <strong>it enable us to make a chain (pipeline) during streaming.</strong></p>
+
+<p>In fact, as we will see later, based on&nbsp;this distinct characterstics of Streams, our proposed API is able to create a chain of streaming operations in tandem without relying on intermediate full data-buffering between two independent streaming operations.</p>
+
+<h5>Specifics of MemoryStream</h5>
+
+<p>NOTE: Below listed concerns equally, more or less, apply to Byte[] (byte arrays) and List&lt;Byte&gt; (list of bytes)</p>
+
+<p><code>MemoryStream</code> is unique in its own way. Under the hood, it is a simple <strong>Byte</strong> array whose capacity is adjusted during write operations (in a similar way as if it is a List&lt;Byte&gt;, i.e. allocating bigger array and recopying bytes from existing array) and the array is traversed&nbsp;during read operations. Though, current implementation works just fine, nonetheless, those array (<code>buffer</code>) resizing operations do adds some pressure on CPU (memory allocation/data copying). Such operations can affect performance significantly if involved data (total bytes) size is large. Though, it would be hard to point out the data size limit as a single number; however, once the array reached 85000 bytes&nbsp;in size we would be touching <a href="https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap">Large Object Heap (LOH)</a> and any new call (during write operation) to resize this array to a bigger capacity will only end up dealing with LOH. In short, once <code>MemoryStream</code> is involved in any streaming related operation one should be careful.</p>
+
+<p>We have already seen above (<a href="#PSUEDOCODE">in pseudo code under the title &quot;Reasons First&quot;</a>), stream to stream copy employs a fixed size buffer&nbsp;and reuses buffer&nbsp;during its iterative copying operations (byte chunks limited to buffer capacity); instead of using <code>MemoryStream</code>&nbsp;(read everything in memory from source stream and then write everything to target stream). Furthermore, we know the MemoryStream is <strong>NOT</strong> <a href="https://en.wikipedia.org/wiki/Thread_safety">thread-safe</a>&nbsp;and it is&nbsp;not possible to write and read from it at the same time. Though, it is all the way possible to create a new thread-safe version of in-memory stream, yet such a painstaking&nbsp;effort might not necessarily bring fruits; especially in the case when writer that is writing on such memory stream is way too fast&nbsp;than the associated reader on the same stream (the internal array will eventually grow and may create a performance hit). Thus, we identify that any in-memory buffering of data (beyond fixed size buffers required for regular streaming operations) is not helpful for a streaming oriented API. And, down the lane we&#39;ll discuss,&nbsp;our approach&nbsp;avoids such usage of in-memory byte arrays.</p>
+
+<h2>Flow of Data</h2>
+
+<p>Roughly speaking, streaming data flow, based on the nature of source/target of the data, can be listed as:</p>
+
+<ul>
+	<li>One kind of byte representation to another kind of byte representation (e.g. text data in a file to a compressed file)</li>
+	<li>Memory data-structure to a byte representation, i.e. serialization + some additional stream processing (e.g. json serialization of a .Net class instance to an encrypted file on hard-disk)</li>
+	<li>From a byte-representation to a memory data-structure, i.e. deserialization + some additional stream processing</li>
+</ul>
+
+<p>Based on these flows, we&nbsp;identify data-structure which are most commonly encountered during streaming, and, potentially are responcible of those unwanted performance hits:</p>
+
+<ul>
+	<li><code>string</code>: Normally obtained during serializations, file reading, string concatenations, Base64 operations etc</li>
+	<li><code>byte[]</code>: Obtained normally from string encoding, use of in-memory stream, File reading etc</li>
+	<li><code>MemoryStream</code>: Normally appears due to misaligned stream pipeline</li>
+	<li><code>T[]</code> or <code>List&lt;T&gt;</code> or any similar collection of object, where T is a known serializable object: Normally targets of serialization/Deserialization operations.</li>
+</ul>
+
+<p>Furthermore, we identify most common streaming operations (also available as a part of the framework):</p>
+
+<ul>
+	<li>File handling</li>
+	<li>Byte encoding</li>
+	<li>Compression</li>
+	<li>Hash Computing</li>
+	<li>Base64 Conversion</li>
+	<li>Encryption/Decryption</li>
+</ul>
+
+<p>Finally, we also recognize a few following frequent requirements:</p>
+
+<ul>
+	<li>Stream Fan-out: When a given stream needs to be inputted to multiple targets, for e.g., in order to&nbsp;maintain data availability by mean of redundency, same data is copied to several files streams and/or send to remote services etc.</li>
+	<li>Stream Length: When interest is to obtain the data byte count based on choosen encoding and treatment.</li>
+</ul>
+
+<p>Overall, if we accumulate all these thoughts to prepare a mind-map, we come up with following naive illustration:<a id="DATAFLOW" name="DATAFLOW"></a></p>
+
+<p><img alt="flow_of_data" height="446" src="824362f8-5037-4a5c-927c-1202a74b3603.Png" style="width: 550px; height: 345px" width="710" /></p>
+
+<p>Academic interests aside, the presence of streaming makes sense when:</p>
+
+<ul>
+	<li>Data is persisted (e.g. as a file on hard disk) and when persisted data is consumed</li>
+	<li>Data is transferred to another entity/process (e.g. server to client)</li>
+</ul>
+
+<p>Irrespective of the use-case, the data-flow can be modeled as if the data publisher side (i.e. data producer) pushes the data at one end and the consumer side of the data pulls the data at another end. Depending upon the nature&nbsp;of data exchange, consumer either can run concurrently or sequentially. For e.g., in case of http communication, while sender is writing data on network during chunked transfer-encoding, receiver may recover&nbsp;payload data simultenously; whereas when&nbsp;sender writes the data to a file, receiver can&nbsp;consume (in absence of synchronization) the file&nbsp;only after file is persisted. Secondly, during these data push(es), whenever sender applies any data transformation,&nbsp;consumer, normally,&nbsp;requires to apply inverse transformations in reverse order to obtain the original data. These are the common streaming scenarios&nbsp;where performance can be optimized. Following diagram illustrates same idea.<a id="PIPELINEOPS" name="PIPELINEOPS"></a></p>
+
+<p><img alt="Sd_Rx_Flow_Of_Data" height="365" src="568f88d3-389c-467c-b151-dd245a43dd0e.Png" style="width: 800px; height: 271px" width="1083" /></p>
+
+<p>Thus, we see above, that all data transformation operations (shown by OP-) at sender side have corresponding inverse transformation (shown by INV-OP-) in reverse order (i.e. if sender applies OP-1 before OP-2 then receiver applies INV-OP-2 before INV-OP-1). Thus, lets say if sender first serialized data as json and then applied GZip-compression, then,&nbsp;in order to get back the equivalent original data in-memory representation, receiver first applies GZip decompression&nbsp;and then deserializes the JSON data.</p>
+
+<h5><strong>NOTE:</strong></h5>
+
+<p>Some data transformations are inherently non-reversable, i.e., once the data is transformed it is theoritically not possible to obtain the original data; for e.g., Cryptographic HASH compting. But of course, if the intend is to just send the HASH of the data to the receiver then it is already assumed that original data is NOT required at receiver&#39;s end. Thus, for these similar cases, above shown reverse chain won&#39;t be present at receiver side, nonetheless, streaming can still be used with all its benefits; for e.g. to obtain the hash of the data in its target byte representation.</p>
+
+<h2>Towards Implementation</h2>
+
+<p>We noticed above, in order to implement our trivial task (under the title &quot;Measuring performance of a trivial task&quot;), we wrote three (3) distinct functions. The idea behind having those dedicated function&#39;s was to achieve composibility, for e.g., if we have&nbsp;a new feature requirement that demands to read from json file and obtain a known object (not necessarily list), the resultant code may look like:</p>
+
+<pre lang="cs">
+public T DeserializeObjectFrom&lt;T&gt;(FileInfo uncompressedJsonFile)
+{
+ &nbsp; var uncompressedBytes = <strong>PullAllBytesFrom</strong>(uncompressedJsonFile);
+ &nbsp; return <strong>DeserializeAs&lt;T&gt;</strong>(uncompressedBytes);
+}
+</pre>
+
+<p>So without rewriting/modifying/breaking existing code, we immediately (almost) delivered a feature. Such innocent implementation honestly speaking fits well to <u><strong>S</strong></u>OLID (<a href="https://blog.cleancoder.com/uncle-bob/2014/05/08/SingleReponsibilityPrinciple.html">Single responcibility</a>). However, if we notice, at surface, these implementations look benign, however, as we start increasing the file byte size, we&nbsp;discover associate issues. We realize that&nbsp;the &quot;<code>File.ReadAllBytes</code>&quot; allocates&nbsp;byte array proportional to the size of the file, but what is less remarked is that, internally, &quot;<code>File.ReadAllBytes</code>&quot; still using a similar buffer copy loop, <a href="#PSUEDOCODE">as shown in Psuedo Code in the very beginning</a>. Once we realize that, using those &quot;fixed size buffer copying loop&quot; is one of the strengths (and perhaps the least understood/appreciated) of streaming, we can appreciate all that comes here onwards.</p>
+
+<p><a id="USINGUSING" name="USINGUSING"></a>Aware of this issue, we might be tempted to change the code in following way (in order&nbsp;to improve on the performance):</p>
+
+<pre lang="cs">
+public T DeserializeObjectFrom&lt;T&gt;(FileInfo uncompressedJsonFile)
+{
+ &nbsp; using(var fileStream = new FileStream(uncompressedJsonFile, ...))
+&nbsp;  {
+       using(var textReader = new TextReader(fileStream, ...))
+&nbsp;      {
+&nbsp;           //<strong>JsonReader of Newtonsoft.Json</strong>
+&nbsp;           using(var jsonReader = new JsonReader(textReader, ...))
+&nbsp;           {
+&nbsp;                //... your serialization code ...//
+&nbsp;           }
+&nbsp;      }
+&nbsp;  }
+}
+</pre>
+
+<p>But, with this code we again realize we complicate the code.&nbsp;<strong>Not only we reduced&nbsp;readability and punctured maintainability (in a way),&nbsp;but also, added unwanted code redundency</strong>; i.e. with such nested calls (of &quot;<code>using</code>&quot;) we need to re-write some (major) part of the code twice (one as listed above and another with GZip Compression). In fact, in long run, we will notice that we create redundancy everytime we write any stream related code (inside same project and across multiple projects). <strong>Aboveall, such implementations are neither composable nor elastic nor reusable</strong> (Note: reusable in broad sense)<strong>.</strong></p>
+
+<h3>Visualizing Implementation</h3>
+
+<p>Reading/interpreting such a verbose text is by no mean easy, thus, here we make an effort to provide some illustrations to have understanding of above written literature. Lets first try to understand what happens, at different moment in time, while our <a href="#CODEID1">&quot;Code Id&nbsp;1&quot; (from above &quot;Measuring performance of a trivial task&quot; title)</a> runs.</p>
+
+<p>For simplicity, let&#39;s assume following time-scale:</p>
+
+<ul>
+	<li>At T = 0, we call it Initiation point where we assume memory usage is <code>Nil</code> (zero) and code execution just waiting to execute&nbsp;&quot;<strong>PullAllBytesFrom</strong>&quot; line.</li>
+	<li>At T = t1, code &quot;var fileBytes = <strong>PullAllBytesFrom</strong>(compressedJsonFile);&quot; has been successfully executed and our <code>fileBytes</code>&nbsp;variable holds the reference to Byte array.</li>
+	<li>At T = t2, code &quot;var uncompressedBytes = <strong>DecompressUsingGzip</strong>(fileBytes);&quot;&nbsp;has been successfully executed and our <code>uncompressedBytes</code>&nbsp;variable holds the reference to uncompressed Byte array. &nbsp;</li>
+	<li>At T = t3, call to&nbsp;&quot;<strong>DeserializeAs&lt;List&lt;T&gt;&gt;</strong>(uncompressedBytes);&quot; is finished</li>
+</ul>
+
+<p>We make following assumptions to avoid complexity in visualization:</p>
+
+<ul>
+	<li>GC (Garbage collector) is NOT running until t3</li>
+	<li>Buffers used internally, by framework, are compatetively insignificant in size, thus, can be dropped from the visualization</li>
+	<li>We can use linear approximation for memory allocation/re-allocation</li>
+	<li>File size is 1 MBytes while decompressed data and DeserializedList both individually requires 2 MBytes each, hypothetically</li>
+</ul>
+
+<p><u><strong>NOTE</strong></u>: At T=t3, we assume&nbsp;final return statement will execute, GC will occur and Memory reduced to 2 Mbytes (hold by list)</p>
+
+<p>Based on above listed assumption, following is an approximate visualization:</p>
+
+<p><img alt="runtime-mem-viz-no-optim" height="475" src="8626717a-640b-4594-9967-5d55baf782a0.Png" style="width: 700px; height: 380px" width="916" /></p>
+
+<p>Even in this simple image, which ignores memory wastage (due to reallocation/copy), we clearly observe that we have unnecessarily consumed memory upto 5 Mbytes (peak at t3); as target state consumes only 2 MBytes of memory. Having realized this fact, it makes it easy to envision ideal target state which is consistent with following visualization:<a id="TARGETSTATEVISUAL" name="TARGETSTATEVISUAL"></a></p>
+
+<p><img alt="target_mem_viz_optim" height="473" src="f87a8db5-bbdc-4328-898a-5cf6bd74dd13.Png" style="width: 600px; height: 343px" width="811" /></p>
+
+<p>Comparing Image 4 and Image 5, immediately gives us insights on the gains we would like to make. Now, we are in position to actually discuss implementation details that helps us&nbsp;achieve our goals.</p>
+
+<h2>So Far, Not Far...</h2>
+
+<p>Until here, we have discussed associated issues related to stream operations and code implementations, and have identified the goals. In general, we have gathered material based on which&nbsp;we would like to assert the choices we have made during our implementation.</p>
+
+<p>We decided to split the whole article into 2 parts we did not want to just show the implementation but wanted to elaborate the &quot;why&quot; behind it. We are still working on the Part 2 of the article to complete our discussion and we would love to hear comments from our readers in order to improve on the quality of the material.</p>
+
+<p>We also invite our readers to check attached example code source and the implementation ahead in time:</p>
+
+<ul class="download">
+	<li><a href="https://github.com/samaysar/dotdotnet/tree/develop/samples/stream_sample/StreamingSample">Sample Source code</a></li>
+	<li><a href="https://github.com/samaysar/dotdotnet/tree/develop/Dot.Net.DevFast/src/Dot.Net.DevFast/Extensions/StreamPipeExt">API Source Code</a></li>
+</ul>
 </body>
 </html>

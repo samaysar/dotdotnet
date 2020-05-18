@@ -671,8 +671,10 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             //dirty way of doing it is to pass null jsonReader
             var bc = new BlockingCollection<string>();
             var cts = new CancellationTokenSource();
-            Assert.Throws<NullReferenceException>(
+            
+            var ae = Assert.Throws<AggregateException>(
                 () => nullreader.FromJsonArrayParallely(bc, consumerTokenSource: cts, disposeSource: false));
+            Assert.AreEqual(ae.InnerExceptions[0].GetType(), typeof(NullReferenceException));
             Assert.True(cts.IsCancellationRequested);
             Assert.True(bc.IsAddingCompleted);
         }

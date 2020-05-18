@@ -6,8 +6,6 @@ namespace Dot.Net.DevFast.Extensions.Internals
 {
     internal class WrappedStream : Stream
     {
-        public const string RemotingErrorTxt = "Remoting feature is inactive";
-
         private readonly Stream _stream;
         private readonly bool _dispose;
 
