@@ -479,10 +479,19 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
                     await mem2.Pull(false).ThenDecompress().AndParseJsonArrayAsync(
                         new Action<TestObject, CancellationToken>(
                             (o, t) => throw new Exception("Test"))).ConfigureAwait(false));
-
+            }
+            using (var mem2 = new MemoryStream())
+            {
+                await new Action<IProducerBuffer<TestObject>, CancellationToken>((b, t) =>
+                {
+                    for (var i = 0; i < total; i++)
+                    {
+                        b.Add(new TestObject(), t);
+                    }
+                }).PushJsonArray(autoFlush: true, enc: Encoding.ASCII).AndWriteStreamAsync(mem2).ConfigureAwait(false);
                 mem2.Seek(0, SeekOrigin.Begin);
                 Assert.ThrowsAsync<AggregateException>(async () =>
-                    await mem2.Pull(false).ThenDecompress().AndParseJsonArrayAsync(
+                    await mem2.Pull(false).AndParseJsonArrayAsync(
                         new Action<TestObject, CancellationToken>((o, t) => { }),
                         enc: Encoding.UTF32, detectEncodingFromBom: false).ConfigureAwait(false));
             }
