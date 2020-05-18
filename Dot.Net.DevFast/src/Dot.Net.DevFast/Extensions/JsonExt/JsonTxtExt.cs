@@ -581,13 +581,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             try
             {
                 if (new Func<bool>(source.ThrowIfTokenNotStartArray).ToAsync(true, TaskCreationOptions.None, token)()
-                    .Result) yield break;
+                    .GetAwaiter().GetResult()) yield break;
                 var nullHandledSerializer = serializer ?? source.AdaptedJsonSerializer();
                 while (new Func<bool>(source.NotAnEndArrayToken).ToAsync(true, TaskCreationOptions.None, token)()
-                    .Result)
+                    .GetAwaiter().GetResult())
                 {
                     yield return new Func<JsonSerializer, T>(source.FromJsonGetNext<T>)
-                        .ToAsync(true, TaskCreationOptions.None, token)(nullHandledSerializer).Result;
+                        .ToAsync(true, TaskCreationOptions.None, token)(nullHandledSerializer).GetAwaiter().GetResult();
                 }
             }
             finally
@@ -807,13 +807,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             try
             {
                 if (new Func<bool>(source.ThrowIfTokenNotStartArray).ToAsync(true, TaskCreationOptions.None, token)()
-                    .Result) return;
+                    .GetAwaiter().GetResult()) return;
                 var nullHandledSerializer = serializer ?? source.AdaptedJsonSerializer();
                 while (new Func<bool>(source.NotAnEndArrayToken).ToAsync(true, TaskCreationOptions.None, token)()
-                    .Result)
+                    .GetAwaiter().GetResult())
                 {
                     target.Add(new Func<JsonSerializer, T>(source.FromJsonGetNext<T>)
-                            .ToAsync(true, TaskCreationOptions.None, token)(nullHandledSerializer).Result,
+                            .ToAsync(true, TaskCreationOptions.None, token)(nullHandledSerializer).GetAwaiter().GetResult(),
                         token);
                 }
             }

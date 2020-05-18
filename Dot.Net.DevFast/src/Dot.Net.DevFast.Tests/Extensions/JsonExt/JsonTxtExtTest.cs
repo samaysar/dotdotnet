@@ -672,9 +672,8 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             var bc = new BlockingCollection<string>();
             var cts = new CancellationTokenSource();
             
-            var ae = Assert.Throws<AggregateException>(
+            Assert.Throws<NullReferenceException>(
                 () => nullreader.FromJsonArrayParallely(bc, consumerTokenSource: cts, disposeSource: false));
-            Assert.AreEqual(ae.InnerExceptions[0].GetType(), typeof(NullReferenceException));
             Assert.True(cts.IsCancellationRequested);
             Assert.True(bc.IsAddingCompleted);
         }
