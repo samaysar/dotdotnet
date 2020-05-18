@@ -22,6 +22,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
                         {
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 var rc = RunConsumers(consumers, ppcBuffer, adapter, combinedCts.Token, localCts);
                                 var rp = RunProducers(producers, ppcBuffer, combinedCts.Token, localCts);
                                 await Task.WhenAll(rc, rp).ConfigureAwait(false);
