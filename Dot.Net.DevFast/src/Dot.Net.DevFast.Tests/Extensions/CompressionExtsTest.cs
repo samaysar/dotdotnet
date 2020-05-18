@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing.Printing;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -152,7 +153,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
                     var compressedData = mem.ToArray();
                     if (arrSize == 0)
                     {
-                        Assert.True(compressedData.Length == 0);
+                        Assert.True(compressedData.Length >= 0);
                     }
                     else
                     {

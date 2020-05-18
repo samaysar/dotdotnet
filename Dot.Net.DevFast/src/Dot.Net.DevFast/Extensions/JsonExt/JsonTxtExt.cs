@@ -575,22 +575,12 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         {
             try
             {
-                if (source.ThrowIfTokenNotStartArray()) yield break;
+                if (new Func<bool>(source.ThrowIfTokenNotStartArray).ToAsync(token: token)().Result) yield break;
                 var nullHandledSerializer = serializer ?? source.AdaptedJsonSerializer();
-                if (token.CanBeCanceled)
+                while (new Func<bool>(source.NotAnEndArrayToken).ToAsync(token: token)().Result)
                 {
-                    while (source.NotAnEndArrayToken())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        yield return source.FromJsonGetNext<T>(nullHandledSerializer);
-                    }
-                }
-                else
-                {
-                    while (source.NotAnEndArrayToken())
-                    {
-                        yield return source.FromJsonGetNext<T>(nullHandledSerializer);
-                    }
+                    yield return new Func<JsonSerializer, T>(source.FromJsonGetNext<T>)
+                        .ToAsync(token: token)(nullHandledSerializer).Result;
                 }
             }
             finally
@@ -807,11 +797,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             var inerror = false;
             try
             {
-                if (source.ThrowIfTokenNotStartArray()) return;
+                if (new Func<bool>(source.ThrowIfTokenNotStartArray).ToAsync(token: token)().Result) return;
                 var nullHandledSerializer = serializer ?? source.AdaptedJsonSerializer();
-                while (source.NotAnEndArrayToken())
+                while (new Func<bool>(source.NotAnEndArrayToken).ToAsync(token: token)().Result)
                 {
-                    target.Add(source.FromJsonGetNext<T>(nullHandledSerializer), token);
+                    target.Add(new Func<JsonSerializer, T>(source.FromJsonGetNext<T>)
+                            .ToAsync(token: token)(nullHandledSerializer).Result,
+                        token);
                 }
             }
             catch
