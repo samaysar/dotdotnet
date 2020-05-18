@@ -1,3 +1,7 @@
+Changes to Dot.Net.DevFast 3.1.2
+
+ 1. Change/Fix - Cancellation token is usage extended for mid-air cancellation even for paused streams.
+
 Changes to Dot.Net.DevFast 3.1.1
 
  1. Change/Fix - For .Net Framework 4.7.2 dll, inside namespace Dot.Net.DevFast.Extensions.CreateExts, method CreateWrappedStream correctly returns an instance of Stream that wrappes the given Stream to control the Dispose behavior when passed to another stream.
