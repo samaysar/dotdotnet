@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.Internals;
 using Newtonsoft.Json;
@@ -65,7 +66,8 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// pass the source of cancellation token which producer is observing.</param>
         /// <param name="formatProvider">Format provider. If null, then <seealso cref="CultureInfo.CurrentCulture"/> is used</param>
         public static void ToJsonArrayParallely<T>(this BlockingCollection<T> source,
-            StringBuilder target, JsonSerializer serializer = null, CancellationToken token = default(CancellationToken),
+            StringBuilder target, JsonSerializer serializer = null,
+            CancellationToken token = default(CancellationToken),
             CancellationTokenSource producerTokenSource = null, IFormatProvider formatProvider = null)
         {
             source.ToJsonArrayParallely(target.CreateWriter(formatProvider), serializer, token,
@@ -97,7 +99,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         public static void ToJsonArrayParallely<T>(this BlockingCollection<T> source,
             Stream target, JsonSerializer serializer = null, CancellationToken token = default(CancellationToken),
             CancellationTokenSource producerTokenSource = null, Encoding enc = null,
-            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeTarget = true, 
+            int bufferSize = StdLookUps.DefaultBufferSize, bool disposeTarget = true,
             bool autoFlush = false)
         {
             using (var streamWriter = target.CreateWriter(enc, bufferSize, disposeTarget, autoFlush))
@@ -169,12 +171,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
                 {
                     nullHandledSerializer.Serialize(target, obj);
                 }
+
                 target.WriteEndArray();
                 target.Flush();
             }
             catch
             {
-                if(!token.IsCancellationRequested) producerTokenSource?.Cancel();
+                if (!token.IsCancellationRequested) producerTokenSource?.Cancel();
                 throw;
             }
             finally
@@ -301,6 +304,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
                         nullHandledSerializer.Serialize(target, obj);
                     }
                 }
+
                 target.WriteEndArray();
                 target.Flush();
             }
@@ -515,7 +519,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="source">source JSON String</param>
         /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.Serializer"/></param>
         /// <param name="token">Cancellation token to observe</param>
-        public static IEnumerable<T> FromJsonAsEnumerable<T>(this string source, JsonSerializer serializer = null, 
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this string source, JsonSerializer serializer = null,
             CancellationToken token = default(CancellationToken))
         {
             return source.CreateReader().FromJsonAsEnumerable<T>(serializer, token);
@@ -534,12 +538,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeSource">If true, <paramref name="source"/> is disposed after the deserialization</param>
         /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
-        public static IEnumerable<T> FromJsonAsEnumerable<T>(this Stream source, JsonSerializer serializer = null, 
-            CancellationToken token = default(CancellationToken), Encoding enc = null, 
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this Stream source, JsonSerializer serializer = null,
+            CancellationToken token = default(CancellationToken), Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeSource = true,
             bool detectEncodingFromBom = true)
         {
-            return source.CreateReader(enc, bufferSize, disposeSource, detectEncodingFromBom).FromJsonAsEnumerable<T>(serializer, token);
+            return source.CreateReader(enc, bufferSize, disposeSource, detectEncodingFromBom)
+                .FromJsonAsEnumerable<T>(serializer, token);
         }
 
         /// <summary>
@@ -552,7 +557,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.Serializer"/></param>
         /// <param name="token">Cancellation token to observe</param>
         /// <param name="disposeSource">If true, <paramref name="source"/> is disposed after the deserialization</param>
-        public static IEnumerable<T> FromJsonAsEnumerable<T>(this TextReader source, JsonSerializer serializer = null, 
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this TextReader source, JsonSerializer serializer = null,
             CancellationToken token = default(CancellationToken), bool disposeSource = true)
         {
             var nullHandledSerializer = serializer ?? CustomJson.Serializer();
@@ -570,17 +575,19 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.AdaptedJsonSerializer(JsonReader)"/></param>
         /// <param name="token">Cancellation token to observe</param>
         /// <param name="disposeSource">If true, <paramref name="source"/> is disposed after the deserialization</param>
-        public static IEnumerable<T> FromJsonAsEnumerable<T>(this JsonReader source, JsonSerializer serializer = null, 
+        public static IEnumerable<T> FromJsonAsEnumerable<T>(this JsonReader source, JsonSerializer serializer = null,
             CancellationToken token = default(CancellationToken), bool disposeSource = true)
         {
             try
             {
-                if (new Func<bool>(source.ThrowIfTokenNotStartArray).ToAsync(token: token)().Result) yield break;
+                if (new Func<bool>(source.ThrowIfTokenNotStartArray).ToAsync(true, TaskCreationOptions.None, token)()
+                    .Result) yield break;
                 var nullHandledSerializer = serializer ?? source.AdaptedJsonSerializer();
-                while (new Func<bool>(source.NotAnEndArrayToken).ToAsync(token: token)().Result)
+                while (new Func<bool>(source.NotAnEndArrayToken).ToAsync(true, TaskCreationOptions.None, token)()
+                    .Result)
                 {
                     yield return new Func<JsonSerializer, T>(source.FromJsonGetNext<T>)
-                        .ToAsync(token: token)(nullHandledSerializer).Result;
+                        .ToAsync(true, TaskCreationOptions.None, token)(nullHandledSerializer).Result;
                 }
             }
             finally
@@ -629,7 +636,8 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             bool closeTarget = true, bool forceCloseWhenError = true)
         {
             new SbReader(source)
-                .FromJsonArrayParallely(target, serializer, token, consumerTokenSource, closeTarget, forceCloseWhenError);
+                .FromJsonArrayParallely(target, serializer, token, consumerTokenSource, closeTarget,
+                    forceCloseWhenError);
         }
 
         /// <summary>
@@ -663,7 +671,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// adding irrespective of <paramref name="closeTarget"/> setting. When false, <paramref name="closeTarget"/>
         /// setting takes precedence.</param>
         public static void FromJsonArrayParallely<T>(this string source, BlockingCollection<T> target,
-            JsonSerializer serializer = null, CancellationToken token = default(CancellationToken), 
+            JsonSerializer serializer = null, CancellationToken token = default(CancellationToken),
             CancellationTokenSource consumerTokenSource = null,
             bool closeTarget = true, bool forceCloseWhenError = true)
         {
@@ -706,14 +714,15 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// setting takes precedence.</param>
         /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
         public static void FromJsonArrayParallely<T>(this Stream source, BlockingCollection<T> target,
-            JsonSerializer serializer = null, CancellationToken token = default(CancellationToken), 
+            JsonSerializer serializer = null, CancellationToken token = default(CancellationToken),
             CancellationTokenSource consumerTokenSource = null,
             Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeSource = true,
             bool closeTarget = true, bool forceCloseWhenError = true,
             bool detectEncodingFromBom = true)
         {
             source.CreateReader(enc, bufferSize, disposeSource, detectEncodingFromBom)
-                .FromJsonArrayParallely(target, serializer, token, consumerTokenSource, closeTarget, forceCloseWhenError);
+                .FromJsonArrayParallely(target, serializer, token, consumerTokenSource, closeTarget,
+                    forceCloseWhenError);
         }
 
         /// <summary>
@@ -797,12 +806,14 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             var inerror = false;
             try
             {
-                if (new Func<bool>(source.ThrowIfTokenNotStartArray).ToAsync(token: token)().Result) return;
+                if (new Func<bool>(source.ThrowIfTokenNotStartArray).ToAsync(true, TaskCreationOptions.None, token)()
+                    .Result) return;
                 var nullHandledSerializer = serializer ?? source.AdaptedJsonSerializer();
-                while (new Func<bool>(source.NotAnEndArrayToken).ToAsync(token: token)().Result)
+                while (new Func<bool>(source.NotAnEndArrayToken).ToAsync(true, TaskCreationOptions.None, token)()
+                    .Result)
                 {
                     target.Add(new Func<JsonSerializer, T>(source.FromJsonGetNext<T>)
-                            .ToAsync(token: token)(nullHandledSerializer).Result,
+                            .ToAsync(true, TaskCreationOptions.None, token)(nullHandledSerializer).Result,
                         token);
                 }
             }
