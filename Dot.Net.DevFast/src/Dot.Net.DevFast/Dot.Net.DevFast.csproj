@@ -8,6 +8,7 @@
   <PropertyGroup>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
+    <NoWarn>1701;1702;CS1580</NoWarn>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Dot.Net.DevFast.xml</DocumentationFile>
     <Title>DevFast</Title>
     <Authors>Divya Sarthi MAHESHWARI</Authors>
@@ -35,10 +36,6 @@
   
   <PropertyGroup Condition="'$(TargetFramework)' == 'net472'">
     <DefineConstants>NET472</DefineConstants>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>1701;1702;CS1580</NoWarn>
   </PropertyGroup>
   
   <ItemGroup>
