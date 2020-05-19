@@ -15,9 +15,9 @@
     <Owners>samaysar</Owners>
     <Description>A.K.A. Productivity! A powerful library to program .Net solutions in most declarative way; containing, simplest to use yet powerful, set of extensions to increase dev productivity. It exposes APIs for streaming, concurrent data processing and more. See also https://rawgit.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/articles/SimplyDevFast.html for DevFast related Articles.</Description>
     <Copyright>Copyright © Divya Sarthi MAHESHWARI 2018</Copyright>
-    <PackageLicenseFile>../../../LICENSE</PackageLicenseFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/samaysar/dotdotnet</PackageProjectUrl>
-    <PackageIcon>../../../nuspecs/pkgdt/ddn.ico</PackageIcon>
+    <PackageIcon>nuspecs/pkgdt/ddn.ico</PackageIcon>
     <RepositoryUrl>https://github.com/samaysar/dotdotnet</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>devfast fastdev dot.net stream-processing declarative-programming extension-methods fastdevelopement</PackageTags>
