@@ -328,6 +328,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             {
                 await new Action<IProducerBuffer<TJ>, CancellationToken>((pb, tkn) =>
                 {
+                    tkn.ThrowIfCancellationRequested();
                     while (bc.TryTake(out var outObj, Timeout.Infinite, tkn))
                     {
                         pb.Add(outObj, tkn);
@@ -393,7 +394,6 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             catch (Exception e)
             {
                 errList.Add(e);
-                Console.Out.WriteLine("Cancellation Token: " + token.IsCancellationRequested);
                 if (!token.IsCancellationRequested) pcts.Cancel();
             }
             finally

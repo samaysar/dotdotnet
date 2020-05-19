@@ -18,6 +18,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
                     using (var combinedCts = CancellationTokenSource
                         .CreateLinkedTokenSource(token, localCts.Token))
                     {
+                        token.ThrowIfCancellationRequested();
                         using (var ppcBuffer = new PpcBuffer<TP>(bufferSize, combinedCts.Token))
                         {
                             try
