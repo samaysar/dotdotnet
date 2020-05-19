@@ -578,21 +578,33 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         public static IEnumerable<T> FromJsonAsEnumerable<T>(this JsonReader source, JsonSerializer serializer = null,
             CancellationToken token = default(CancellationToken), bool disposeSource = true)
         {
-            try
+            var bc = new BlockingCollection<T>();
+            var populatingTask = new Action(() =>
             {
-                if (new Func<bool>(source.ThrowIfTokenNotStartArray).ToAsync(true, TaskCreationOptions.None, token)()
-                    .GetAwaiter().GetResult()) yield break;
-                var nullHandledSerializer = serializer ?? source.AdaptedJsonSerializer();
-                while (new Func<bool>(source.NotAnEndArrayToken).ToAsync(true, TaskCreationOptions.None, token)()
-                    .GetAwaiter().GetResult())
+                try
                 {
-                    yield return new Func<JsonSerializer, T>(source.FromJsonGetNext<T>)
-                        .ToAsync(true, TaskCreationOptions.None, token)(nullHandledSerializer).GetAwaiter().GetResult();
+                    token.ThrowIfCancellationRequested();
+                    if (source.ThrowIfTokenNotStartArray()) return;
+                    var nullHandledSerializer = serializer ?? source.AdaptedJsonSerializer();
+                    while (source.NotAnEndArrayToken())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        bc.Add(source.FromJsonGetNext<T>(nullHandledSerializer), token);
+                    }
                 }
-            }
-            finally
+                finally
+                {
+                    bc.CompleteAdding();
+                    source.DisposeIfRequired(disposeSource);
+                }
+            }).ToAsync(true, TaskCreationOptions.None, token)();
+            while (bc.TryTake(out var nxt, Timeout.Infinite, token))
             {
-                source.DisposeIfRequired(disposeSource);
+                yield return nxt;
+            }
+            using (bc)
+            {
+                populatingTask.GetAwaiter().GetResult();
             }
         }
 
@@ -803,32 +815,33 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             CancellationTokenSource consumerTokenSource = null,
             bool disposeSource = true, bool closeTarget = true, bool forceCloseWhenError = true)
         {
-            var inerror = false;
-            try
+            new Action(() =>
             {
-                if (new Func<bool>(source.ThrowIfTokenNotStartArray).ToAsync(true, TaskCreationOptions.None, token)()
-                    .GetAwaiter().GetResult()) return;
-                var nullHandledSerializer = serializer ?? source.AdaptedJsonSerializer();
-                while (new Func<bool>(source.NotAnEndArrayToken).ToAsync(true, TaskCreationOptions.None, token)()
-                    .GetAwaiter().GetResult())
+                var inErr = false;
+                try
                 {
-                    target.Add(new Func<JsonSerializer, T>(source.FromJsonGetNext<T>)
-                            .ToAsync(true, TaskCreationOptions.None, token)(nullHandledSerializer).GetAwaiter().GetResult(),
-                        token);
+                    token.ThrowIfCancellationRequested();
+                    if (source.ThrowIfTokenNotStartArray()) return;
+                    var nullHandledSerializer = serializer ?? source.AdaptedJsonSerializer();
+                    while (source.NotAnEndArrayToken())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        target.Add(source.FromJsonGetNext<T>(nullHandledSerializer), token);
+                    }
                 }
-            }
-            catch
-            {
-                inerror = true;
-                if (!token.IsCancellationRequested) consumerTokenSource?.Cancel();
-                throw;
-            }
-            finally
-            {
-                //obligation to close the collection.
-                if (closeTarget || (forceCloseWhenError && inerror)) target.CompleteAdding();
-                source.DisposeIfRequired(disposeSource);
-            }
+                catch
+                {
+                    inErr = true;
+                    if (!token.IsCancellationRequested) consumerTokenSource?.Cancel();
+                    throw;
+                }
+                finally
+                {
+                    //obligation to close the collection.
+                    if (closeTarget || (forceCloseWhenError && inErr)) target.CompleteAdding();
+                    source.DisposeIfRequired(disposeSource);
+                }
+            }).ToAsync(true, TaskCreationOptions.None, token)().GetAwaiter().GetResult();
         }
 
         #endregion FromJsonArrayParallely region

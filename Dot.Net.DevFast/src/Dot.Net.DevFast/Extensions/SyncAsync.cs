@@ -59,7 +59,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -110,7 +110,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -165,7 +165,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -216,7 +216,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -271,7 +271,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -322,7 +322,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -377,7 +377,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -428,7 +428,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -483,7 +483,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -534,7 +534,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -589,7 +589,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -641,7 +641,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -697,7 +697,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -749,7 +749,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -806,7 +806,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -859,7 +859,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -916,7 +916,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -969,7 +969,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -1026,7 +1026,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -1080,7 +1080,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -1138,7 +1138,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -1193,7 +1193,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -1251,7 +1251,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -1306,7 +1306,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -1364,7 +1364,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -1419,7 +1419,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -1477,7 +1477,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -1532,7 +1532,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -1590,7 +1590,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -1646,7 +1646,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -1706,7 +1706,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -1763,7 +1763,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -1823,7 +1823,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
@@ -1880,7 +1880,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         tcs.TrySetException(e);
                     }
-                }, token);
+                }, CancellationToken.None);
                 return tcs.Task;
             };
         }
