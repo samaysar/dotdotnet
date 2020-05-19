@@ -24,6 +24,8 @@
     <PackageReleaseNotes>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/ReleaseNotes.txt</PackageReleaseNotes>
     <NeutralLanguage />
 	<Version>1.0.0</Version>
+	<IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
  
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
