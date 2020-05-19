@@ -8,21 +8,24 @@
   <PropertyGroup>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
+    <NoWarn>1701;1702;CS1580</NoWarn>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Dot.Net.DevFast.xml</DocumentationFile>
     <Title>DevFast</Title>
     <Authors>Divya Sarthi MAHESHWARI</Authors>
     <Owners>samaysar</Owners>
     <Description>A.K.A. Productivity! A powerful library to program .Net solutions in most declarative way; containing, simplest to use yet powerful, set of extensions to increase dev productivity. It exposes APIs for streaming, concurrent data processing and more. See also https://rawgit.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/articles/SimplyDevFast.html for DevFast related Articles.</Description>
     <Copyright>Copyright © Divya Sarthi MAHESHWARI 2018</Copyright>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/LICENSE</PackageLicenseUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/samaysar/dotdotnet</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/nuspecs/pkgdt/ddn.ico</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/samaysar/dotdotnet</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>devfast fastdev dot.net stream-processing declarative-programming extension-methods fastdevelopement</PackageTags>
     <PackageReleaseNotes>https://raw.githubusercontent.com/samaysar/dotdotnet/develop/ReleaseNotes.txt</PackageReleaseNotes>
     <NeutralLanguage />
 	<Version>1.0.0</Version>
+	<IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
  
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
@@ -37,12 +40,10 @@
     <DefineConstants>NET472</DefineConstants>
   </PropertyGroup>
   
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>1701;1702;CS1580</NoWarn>
-  </PropertyGroup>
-  
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+	<None Include="..\..\..\icon.png" Pack="true" PackagePath=""/>
+	<None Include="..\..\..\LICENSE" Pack="true" Visible="false" PackagePath=""/>
   </ItemGroup>
   
 </Project>
