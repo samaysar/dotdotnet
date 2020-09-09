@@ -82,7 +82,12 @@ namespace Dot.Net.DevFast.Etc
         /// <summary>
         /// When unable to retrieve buffer of memory stream
         /// </summary>
-        UnableToGetMemoryStreamBuffer
+        UnableToGetMemoryStreamBuffer,
+
+        /// <summary>
+        /// String instance is empty or contains only whitespaces
+        /// </summary>
+        EmptyOrWhiteSpacedString
     }
 
     /// <summary>

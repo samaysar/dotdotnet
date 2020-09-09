@@ -34,5 +34,10 @@
         /// Extension for zip file.
         /// </summary>
         public const string ZipFileExt = ".zip";
+
+        /// <summary>
+        /// Default size of the heap.
+        /// </summary>
+        public const int DefaultHeapSize = 32;
     }
 }
