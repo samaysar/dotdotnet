@@ -38,6 +38,11 @@
         /// <summary>
         /// Default size of the heap.
         /// </summary>
-        public const int DefaultHeapSize = 32;
+        public const int DefaultHeapSize = 16;
+
+        /// <summary>
+        /// Default step size for the heap.
+        /// </summary>
+        public const int DefaultHeapResizeStep = 1;
     }
 }
