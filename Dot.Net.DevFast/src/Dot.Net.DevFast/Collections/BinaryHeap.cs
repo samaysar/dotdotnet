@@ -43,16 +43,10 @@ namespace Dot.Net.DevFast.Collections
         private readonly int _stepSize;
 
         /// <summary>
-        /// Ctor with <seealso cref="StdLookUps.DefaultHeapResizeStep"/> as default step value.
-        /// </summary>
-        public StepHeapResizing() : this(StdLookUps.DefaultHeapResizeStep)
-        {
-        }
-
-        /// <summary>
         /// Ctor with step size.
         /// </summary>
         /// <param name="stepSize">Step size for the increments.</param>
+        /// <exception cref="DdnDfException">When step size is zero (0) or negative.</exception>
         public StepHeapResizing(int stepSize)
         {
             _stepSize = stepSize.ThrowIfLess(1, $"{nameof(stepSize)} cannot be zero (0) or negative.");
@@ -88,6 +82,7 @@ namespace Dot.Net.DevFast.Collections
         /// </para>
         /// </summary>
         /// <param name="incrementPercentage">Percentage to use.</param>
+        /// <exception cref="DdnDfException">When given percentage is zero (0) or negative.</exception>
         public PercentHeapResizing(int incrementPercentage)
         {
             _multiplier =
@@ -118,63 +113,11 @@ namespace Dot.Net.DevFast.Collections
         /// Ctor with initial heap capacity.
         /// </summary>
         /// <param name="initialCapacity">Initial capacity of the heap.</param>
+        /// <exception cref="DdnDfException">When given capacity is negative.</exception>
         protected BinaryHeap(int initialCapacity)
         {
             _dataCollection = new T[initialCapacity.ThrowIfNegative($"{nameof(initialCapacity)} cannot be negative")];
             Count = 0;
-        }
-
-        /// <summary>
-        /// Returns the first element of the heap.
-        /// </summary>
-        /// <exception cref="IndexOutOfRangeException">When the heap is empty.</exception>
-        public T Peek()
-        {
-            if (TryPeek(out var item)) return item;
-            throw new IndexOutOfRangeException();
-        }
-
-        /// <summary>
-        /// Returns the truth value whether heap contains at least one (1) item and outs the first element of the heap.
-        /// </summary>
-        public bool TryPeek(out T item)
-        {
-            item = _dataCollection[0];
-            return !IsEmpty;
-        }
-
-        /// <summary>
-        /// Removes and returns the first element from the heap.
-        /// </summary>
-        /// <exception cref="IndexOutOfRangeException">When the heap is empty.</exception>
-        public T Pop()
-        {
-            if (TryPop(out var item)) return item;
-            throw new IndexOutOfRangeException();
-        }
-
-        /// <summary>
-        /// Returns the truth value whether the first heap element was successfully removed
-        /// and outs that element.
-        /// </summary>
-        public bool TryPop(out T item)
-        {
-            item = _dataCollection[0];
-            if (IsEmpty) return false;
-            _dataCollection[0] = _dataCollection[--Count];
-            PushDown();
-            return true;
-        }
-
-        /// <summary>
-        /// Adds given element to the heap.
-        /// </summary>
-        /// <param name="item">Element to add</param>
-        public void Add(T item)
-        {
-            EnsureCapacity();
-            _dataCollection[Count] = item;
-            BubbleUp(Count++);
         }
 
         /// <summary>
@@ -199,6 +142,70 @@ namespace Dot.Net.DevFast.Collections
 
         private static int LeftChildIndex(int elementIndex) => (elementIndex << 1) + 1;
         private static int ParentIndex(int elementIndex) => (elementIndex - 1) >> 1;
+
+        /// <summary>
+        /// Returns the first element of the heap.
+        /// </summary>
+        /// <exception cref="IndexOutOfRangeException">When the heap is empty.</exception>
+        public T Peek()
+        {
+            if (TryPeek(out var item)) return item;
+            throw new IndexOutOfRangeException();
+        }
+
+        /// <summary>
+        /// Returns the truth value whether heap contains at least one (1) item and outs the first element of the heap.
+        /// </summary>
+        public bool TryPeek(out T item)
+        {
+            if (IsEmpty)
+            {
+                item = default(T);
+                return false;
+            }
+            item = _dataCollection[0];
+            return true;
+        }
+
+        /// <summary>
+        /// Removes and returns the first element from the heap.
+        /// </summary>
+        /// <exception cref="IndexOutOfRangeException">When the heap is empty.</exception>
+        public T Pop()
+        {
+            if (TryPop(out var item)) return item;
+            throw new IndexOutOfRangeException();
+        }
+
+        /// <summary>
+        /// Returns the truth value whether the first heap element was successfully removed
+        /// and outs that element.
+        /// </summary>
+        public bool TryPop(out T item)
+        {
+            if (IsEmpty)
+            {
+                item = default(T);
+                return false;
+            }
+            item = _dataCollection[0];
+            _dataCollection[0] = _dataCollection[--Count];
+            PushDown();
+            return true;
+        }
+
+        /// <summary>
+        /// Adds given element to the heap.
+        /// </summary>
+        /// <param name="item">Element to add</param>
+        /// <exception cref="InvalidOperationException">When resizing is not allowed</exception>
+        /// <exception cref="DdnDfException">When unable to resize.</exception>
+        public void Add(T item)
+        {
+            EnsureCapacity();
+            _dataCollection[Count] = item;
+            BubbleUp(Count++);
+        }
 
         /// <summary>
         /// Internally allocated storage will be compacted to match the current <see cref="Count"/>.
