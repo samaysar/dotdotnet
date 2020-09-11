@@ -76,7 +76,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="consumable">consumable data instance</param>
         public bool TryGet(IConsumerBuffer<TP> producerDataFeed, CancellationToken token, out List<TC> consumable)
         {
-            consumable = default(List<TC>);
+            consumable = default;
             if (!producerDataFeed.TryGet(Timeout.Infinite, token, out var value)) return false;
             consumable = new List<TC>(_maxListSize) {Adapt(value, token)};
             return _millisecTimeout == Timeout.Infinite

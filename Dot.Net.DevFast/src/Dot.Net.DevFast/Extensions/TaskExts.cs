@@ -19,7 +19,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="repeatCount">number of times <paramref name="action"/> needs to be repeated (possible min value: 1)</param>
         /// <param name="token">Cancellation token, if any. This cancellation token is passed to <paramref name="action"/></param>
         public static Task WhenAll(this Action<int, CancellationToken> action, int repeatCount,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             return action.ToAsync(false).WhenAll(repeatCount, token);
         }
@@ -32,7 +32,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="repeatCount">number of times <paramref name="func"/> needs to be repeated (possible min value: 1)</param>
         /// <param name="token">Cancellation token, if any. This cancellation token is passed to <paramref name="func"/></param>
         public static Task WhenAll(this Func<int, CancellationToken, Task> func, int repeatCount,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             return func.Repeat(repeatCount.ThrowIfLess(1, "repeatation count value is less than 1"), token)
                 .WhenAll(repeatCount, CancellationToken.None);
@@ -62,7 +62,7 @@ namespace Dot.Net.DevFast.Extensions
         /// would stop. In any case, if <paramref name="errorHandler"/> is not supplied and at least one exception occurs
         /// then the await on this task would yield in exception, irrespective of the state of the those concurrent enumerations.</param>
         public static Task WhenAll(this IEnumerable<Action<CancellationToken>> actions,
-            int maxConcurrency, CancellationToken token = default(CancellationToken), bool stopOnCancel = true,
+            int maxConcurrency, CancellationToken token = default, bool stopOnCancel = true,
             Action<Exception> errorHandler = null)
         {
             return actions.Select(x => x.ToAsync(false)).WhenAll(maxConcurrency, token, stopOnCancel, errorHandler);
@@ -91,7 +91,7 @@ namespace Dot.Net.DevFast.Extensions
         /// would stop. In any case, if <paramref name="errorHandler"/> is not supplied and at least one exception occurs
         /// then the await on this task would yield in exception, irrespective of the state of the those concurrent enumerations.</param>
         public static Task WhenAll(this IEnumerable<Func<CancellationToken, Task>> funcs,
-            int maxConcurrency, CancellationToken token = default(CancellationToken), bool stopOnCancel = true, 
+            int maxConcurrency, CancellationToken token = default, bool stopOnCancel = true, 
             Action<Exception> errorHandler = null)
         {
             return funcs.Select(x => new Func<Task>(() => x(token)))
@@ -117,7 +117,7 @@ namespace Dot.Net.DevFast.Extensions
         /// would stop. In any case, if <paramref name="errorHandler"/> is not supplied and at least one exception occurs
         /// then the await on this task would yield in exception, irrespective of the state of the those concurrent enumerations.</param>
         public static Task WhenAll(this IEnumerable<Action> actions, int maxConcurrency,
-            CancellationToken token = default(CancellationToken), Action<Exception> errorHandler = null)
+            CancellationToken token = default, Action<Exception> errorHandler = null)
         {
             return actions.Select(x => x.ToAsync(false)).WhenAll(maxConcurrency, token, errorHandler);
         }
@@ -141,7 +141,7 @@ namespace Dot.Net.DevFast.Extensions
         /// would stop. In any case, if <paramref name="errorHandler"/> is not supplied and at least one exception occurs
         /// then the await on this task would yield in exception, irrespective of the state of the those concurrent enumerations.</param>
         public static Task WhenAll(this IEnumerable<Func<Task>> funcs, int maxConcurrency,
-            CancellationToken token = default(CancellationToken), Action<Exception> errorHandler = null)
+            CancellationToken token = default, Action<Exception> errorHandler = null)
         {
             maxConcurrency.ThrowIfLess(1, "concurrency value is less than 1");
             var etor = funcs.GetEnumerator();
@@ -205,7 +205,7 @@ namespace Dot.Net.DevFast.Extensions
                     return true;
                 }
 
-                obj = default(T);
+                obj = default;
                 return false;
             }
         }

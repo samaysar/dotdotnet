@@ -5,7 +5,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     /// <summary>
     /// This class is just a wrapper to recover the consumable item from
     /// the <seealso cref="IConsumerBuffer{TP}"/> in standard way. Actual
-    /// tranformation can be implemented inside <see cref="Adapt"/>.
+    /// transformation can be implemented inside <see cref="Adapt"/>.
     /// </summary>
     /// <typeparam name="TP">Produced item type</typeparam>
     /// <typeparam name="TC">Consumable item type</typeparam>
@@ -28,7 +28,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
                 return true;
             }
 
-            consumable = default(TC);
+            consumable = default;
             return false;
         }
 

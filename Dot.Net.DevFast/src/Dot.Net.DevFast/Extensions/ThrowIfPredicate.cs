@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using Dot.Net.DevFast.Etc;
 using System.Collections.Generic;
+using Dot.Net.DevFast.Extensions.StringExt;
 
 namespace Dot.Net.DevFast.Extensions
 {
@@ -167,6 +168,41 @@ namespace Dot.Net.DevFast.Extensions
         #region ThrowIfNullOrEmpty
 
         /// <summary>
+        /// Throws error if the string is empty or contains only whitespaces
+        /// else returns the original string value.
+        /// </summary>
+        /// <param name="val">Val to check</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.EmptyOrWhiteSpacedString"/></exception>
+        public static string ThrowIfNullOrEmpty(this string val)
+        {
+            return val.ThrowIfNullOrEmpty("String is either empty of contains only whitespaces.");
+        }
+
+        /// <summary>
+        /// Throws error if the string is empty or contains only whitespaces
+        /// else returns the original string value.
+        /// </summary>
+        /// <param name="val">Val to check</param>
+        /// <param name="errorMessage">Error message</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.EmptyOrWhiteSpacedString"/></exception>
+        public static string ThrowIfNullOrEmpty(this string val, string errorMessage)
+        {
+            return val.IsNows().ThrowIf(DdnDfErrorCode.EmptyOrWhiteSpacedString, errorMessage, val);
+        }
+
+        /// <summary>
+        /// Throws error if the string is empty or contains only whitespaces
+        /// else returns the original string value.
+        /// </summary>
+        /// <param name="val">Val to check</param>
+        /// <param name="errorMessageDelegate">Error message delegate</param>
+        /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.EmptyOrWhiteSpacedString"/></exception>
+        public static string ThrowIfNullOrEmpty(this string val, Func<string> errorMessageDelegate)
+        {
+            return val.IsNows().ThrowIf(DdnDfErrorCode.EmptyOrWhiteSpacedString, errorMessageDelegate, val);
+        }
+
+        /// <summary>
         /// Throws exception when provided array is either null or empty. Same object instance is returned
         /// to performed method chaining.
         /// </summary>
@@ -208,7 +244,7 @@ namespace Dot.Net.DevFast.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool ThrowIfNullOrEmptyPredicate<T>(T obj) where T : ICollection
         {
-            return (ReferenceEquals(obj, null) || obj.Count < 1);
+            return ReferenceEquals(obj, null) || obj.Count < 1;
         }
 
         #endregion

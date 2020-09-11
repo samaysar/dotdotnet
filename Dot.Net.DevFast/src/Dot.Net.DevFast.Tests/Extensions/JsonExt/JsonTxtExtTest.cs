@@ -185,7 +185,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.CreateJsonReader().FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out var _, Timeout.Infinite))
+            while (strbc.TryTake(out _, Timeout.Infinite))
             {
                 count++;
             }
@@ -196,7 +196,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.CreateJsonReader().FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out var _, Timeout.Infinite))
+            while (strbc.TryTake(out _, Timeout.Infinite))
             {
                 count++;
             }
@@ -306,7 +306,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.CreateReader().FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out var _, Timeout.Infinite))
+            while (strbc.TryTake(out _, Timeout.Infinite))
             {
                 count++;
             }
@@ -317,7 +317,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.CreateReader().FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out var _, Timeout.Infinite))
+            while (strbc.TryTake(out _, Timeout.Infinite))
             {
                 count++;
             }
@@ -432,7 +432,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out var _, Timeout.Infinite))
+            while (strbc.TryTake(out _, Timeout.Infinite))
             {
                 count++;
             }
@@ -443,7 +443,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out var _, Timeout.Infinite))
+            while (strbc.TryTake(out _, Timeout.Infinite))
             {
                 count++;
             }
@@ -527,7 +527,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             deserialjsontask = Task.Run(() => json.FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out var _, Timeout.Infinite))
+            while (strbc.TryTake(out _, Timeout.Infinite))
             {
                 count++;
             }
@@ -537,7 +537,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             deserialjsontask = Task.Run(() => "".FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out var _, Timeout.Infinite))
+            while (strbc.TryTake(out _, Timeout.Infinite))
             {
                 count++;
             }
@@ -645,7 +645,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out var _, Timeout.Infinite))
+            while (strbc.TryTake(out _, Timeout.Infinite))
             {
                 count++;
             }
@@ -656,7 +656,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.FromJsonArrayParallely(strbc));
             count = 0;
-            while (strbc.TryTake(out var _, Timeout.Infinite))
+            while (strbc.TryTake(out _, Timeout.Infinite))
             {
                 count++;
             }

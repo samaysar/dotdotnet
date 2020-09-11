@@ -28,7 +28,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <returns>True if parsing is successful else false</returns>
         public static bool TryTo(this string input, out Type value, bool ignoreCase = true)
         {
-            value = default(Type);
+            value = default;
             return !(input is null) &&
                    !((value = Type.GetType(input, false, ignoreCase)) is null);
         }

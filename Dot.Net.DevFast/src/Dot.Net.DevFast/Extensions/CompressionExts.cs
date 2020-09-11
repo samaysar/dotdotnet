@@ -27,7 +27,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="level">Compression level</param>
         /// <param name="disposeTarget">If true, <paramref name="target"/> is disposed after the operation.</param>
         public static Task CompressAsync(this ArraySegment<byte> source, Stream target, bool gzip = true,
-            CancellationToken token = default(CancellationToken), CompressionLevel level = CompressionLevel.Optimal,
+            CancellationToken token = default, CompressionLevel level = CompressionLevel.Optimal,
             bool disposeTarget = false)
         {
             return source.Array.CompressAsync(target, gzip, level, token, disposeTarget, source.Offset, source.Count);
@@ -46,7 +46,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="level">Compression level</param>
         /// <param name="disposeTarget">If true, <paramref name="target"/> is disposed after the operation.</param>
         public static Task CompressAsync(this byte[] source, Stream target, bool gzip = true,
-            CancellationToken token = default(CancellationToken), CompressionLevel level = CompressionLevel.Optimal,
+            CancellationToken token = default, CompressionLevel level = CompressionLevel.Optimal,
             bool disposeTarget = false)
         {
             return source.CompressAsync(target, gzip, level, token, disposeTarget, 0, source.Length);
@@ -67,7 +67,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="disposeSource">If true, <paramref name="source"/> is disposed after the operation.</param>
         /// <param name="disposeTarget">If true, <paramref name="target"/> is disposed after the operation.</param>
         public static Task CompressAsync(this Stream source, Stream target, bool gzip = true,
-            CancellationToken token = default(CancellationToken), CompressionLevel level = CompressionLevel.Optimal,
+            CancellationToken token = default, CompressionLevel level = CompressionLevel.Optimal,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeSource = false, bool disposeTarget = false)
         {
             return target.CreateCompressionStream(gzip, level, disposeTarget).
@@ -89,7 +89,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeTarget">If true, <paramref name="target"/> is disposed after the operation.</param>
         public static Task CompressAsync(this StringBuilder source, Stream target, bool gzip = true,
-            CancellationToken token = default(CancellationToken), CompressionLevel level = CompressionLevel.Optimal,
+            CancellationToken token = default, CompressionLevel level = CompressionLevel.Optimal,
             Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeTarget = false)
         {
             return target.CompressAsync(gzip, level, source.Length, enc, token, disposeTarget, bufferSize,
@@ -111,7 +111,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeTarget">If true, <paramref name="target"/> is disposed after the operation.</param>
         public static Task CompressAsync(this string source, Stream target, bool gzip = true,
-            CancellationToken token = default(CancellationToken), CompressionLevel level = CompressionLevel.Optimal,
+            CancellationToken token = default, CompressionLevel level = CompressionLevel.Optimal,
             Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeTarget = false)
         {
             return target.CompressAsync(gzip, level, source.Length, enc, token, disposeTarget, bufferSize,
@@ -131,7 +131,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeSource">If true, <paramref name="source"/> is disposed after the operation.</param>
         public static async Task<string> DecompressAsStringAsync(this Stream source, bool gzip = true,
-            CancellationToken token = default(CancellationToken), Encoding enc = null, 
+            CancellationToken token = default, Encoding enc = null, 
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeSource = false)
         {
             var strBuilder = new StringBuilder(StdLookUps.DefaultStringBuilderSize);
@@ -154,7 +154,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="disposeSource">If true, <paramref name="source"/> is disposed after the operation.</param>
         /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
         public static Task DecompressAsync(this Stream source, StringBuilder target, bool gzip = true,
-            CancellationToken token = default(CancellationToken), Encoding enc = null, 
+            CancellationToken token = default, Encoding enc = null, 
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeSource = false,
             bool detectEncodingFromBom = true)
         {
@@ -176,7 +176,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="disposeSource">If true, <paramref name="source"/> is disposed after the operation.</param>
         /// <param name="disposeTarget">If true, <paramref name="target"/> is disposed after the operation.</param>
         public static Task DecompressAsync(this Stream source, Stream target, bool gzip = true,
-            CancellationToken token = default(CancellationToken), int bufferSize = StdLookUps.DefaultBufferSize, 
+            CancellationToken token = default, int bufferSize = StdLookUps.DefaultBufferSize, 
             bool disposeSource = false, bool disposeTarget = false)
         {
             return source.CreateDecompressionStream(gzip, disposeSource)
@@ -194,7 +194,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeSource">If true, <paramref name="source"/> is disposed after the operation.</param>
         public static async Task<byte[]> DecompressAsync(this Stream source, bool gzip = true,
-            CancellationToken token = default(CancellationToken), int bufferSize = StdLookUps.DefaultBufferSize, 
+            CancellationToken token = default, int bufferSize = StdLookUps.DefaultBufferSize, 
             bool disposeSource = false)
         {
             return (await source.DecompressAsSegmentAsync(gzip, token, bufferSize, disposeSource)
@@ -212,7 +212,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeSource">If true, <paramref name="source"/> is disposed after the operation.</param>
         public static Task<ArraySegment<byte>> DecompressAsSegmentAsync(this Stream source, bool gzip = true,
-            CancellationToken token = default(CancellationToken), int bufferSize = StdLookUps.DefaultBufferSize,
+            CancellationToken token = default, int bufferSize = StdLookUps.DefaultBufferSize,
             bool disposeSource = false)
         {
             return source.CreateDecompressionStream(gzip, disposeSource)
