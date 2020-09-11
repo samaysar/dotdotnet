@@ -106,7 +106,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
             {
                 instance.Close();
-                Assert.False(instance.TryGet(Timeout.Infinite, CancellationToken.None, out var _));
+                Assert.False(instance.TryGet(Timeout.Infinite, CancellationToken.None, out _));
             }
         }
 
@@ -117,7 +117,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             {
                 instance.Dispose();
                 Assert.Throws<NullReferenceException>(() =>
-                    instance.TryGet(Timeout.Infinite, CancellationToken.None, out var _));
+                    instance.TryGet(Timeout.Infinite, CancellationToken.None, out _));
             }
         }
 
@@ -130,7 +130,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
                 {
                     Assert.Throws<OperationCanceledException>(() =>
-                        instance.TryGet(Timeout.Infinite, cts.Token, out var _));
+                        instance.TryGet(Timeout.Infinite, cts.Token, out _));
                 }
             }
         }

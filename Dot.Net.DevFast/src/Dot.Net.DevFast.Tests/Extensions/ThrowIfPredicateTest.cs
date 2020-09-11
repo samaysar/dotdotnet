@@ -357,6 +357,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
             Assert.True(ex.Message.Contains("some error message"));
         }
 
+        [Test]
         public void ThrowIfZero_ThrowsError_If_Value_Is_Zero()
         {
             const int intVal = 0;

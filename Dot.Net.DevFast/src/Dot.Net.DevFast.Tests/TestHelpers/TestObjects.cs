@@ -24,11 +24,11 @@ namespace Dot.Net.DevFast.Tests.TestHelpers
         public byte[] BytesProp { get; set; }
     }
 
-    public class BinaryTestHeap : BinaryHeap<int>
+    public class AbstractBinaryTestHeap : AbstractBinaryHeap<int>
     {
         private readonly Func<int, int, bool> _comparer;
 
-        public BinaryTestHeap(int initialCapacity,
+        public AbstractBinaryTestHeap(int initialCapacity,
             Func<int, int, bool> comparer) : base(initialCapacity)
         {
             _comparer = comparer;
