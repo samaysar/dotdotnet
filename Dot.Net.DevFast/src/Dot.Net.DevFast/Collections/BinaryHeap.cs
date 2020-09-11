@@ -14,7 +14,8 @@ namespace Dot.Net.DevFast.Collections
         /// Calculates the new size of the heap, based on the given value of current size.
         /// </summary>
         /// <param name="currentSize">Current size of the heap</param>
-        int NewSize(int currentSize);
+        /// <param name="newSize">New size</param>
+        bool TryComputeNewSize(int currentSize, out int newSize);
     }
 
     /// <inheritdoc />
@@ -24,13 +25,14 @@ namespace Dot.Net.DevFast.Collections
     public sealed class HeapNoResizing : IHeapResizing
     {
         /// <summary>
-        /// Calling this method will throw an exception as no resizing can be done.
+        /// Calling this method will always returns false.
         /// </summary>
         /// <param name="currentSize">Current size of the heap</param>
-        /// <exception cref="InvalidOperationException">Resizing heap is not possible.</exception>
-        public int NewSize(int currentSize)
+        /// <param name="newSize">Always outs Default int value</param>
+        public bool TryComputeNewSize(int currentSize, out int newSize)
         {
-            throw new InvalidOperationException("Heap has a fixed capacity that cannot be increased.");
+            newSize = default(int);
+            return false;
         }
     }
 
@@ -54,11 +56,14 @@ namespace Dot.Net.DevFast.Collections
 
         /// <summary>
         /// New size is simply the sum of the initial fixed step size and current capacity.
+        /// Returns false in case of overflow.
         /// </summary>
         /// <param name="currentSize">Current size of the heap</param>
-        public int NewSize(int currentSize)
+        /// <param name="newSize">outs new size</param>
+        public bool TryComputeNewSize(int currentSize, out int newSize)
         {
-            return _stepSize + currentSize;
+            newSize = _stepSize + currentSize;
+            return newSize > currentSize;
         }
     }
 
@@ -92,12 +97,15 @@ namespace Dot.Net.DevFast.Collections
 
         /// <summary>
         /// New size is multiplier increased (int cast), with lower bound to <paramref name="currentSize"/>+1.
+        /// Returns false in case of overflow.
         /// </summary>
         /// <param name="currentSize">Current size of the heap</param>
-        public int NewSize(int currentSize)
+        /// <param name="newSize">outs new size</param>
+        public bool TryComputeNewSize(int currentSize, out int newSize)
         {
-            var newSize = (int) (currentSize * _multiplier);
-            return newSize.Equals(currentSize) ? (currentSize + 1) : newSize;
+            newSize = (int) (currentSize * _multiplier);
+            newSize = newSize.Equals(currentSize) ? currentSize + 1 : newSize;
+            return newSize > currentSize;
         }
     }
 
@@ -198,13 +206,23 @@ namespace Dot.Net.DevFast.Collections
         /// Adds given element to the heap.
         /// </summary>
         /// <param name="item">Element to add</param>
-        /// <exception cref="InvalidOperationException">When resizing is not allowed</exception>
-        /// <exception cref="DdnDfException">When unable to resize.</exception>
+        /// <exception cref="IndexOutOfRangeException">When heap is already full.</exception>
         public void Add(T item)
         {
-            EnsureCapacity();
+            if(!TryAdd(item)) throw new IndexOutOfRangeException();
+        }
+
+        /// <summary>
+        /// Tries adding given element in the heap.
+        /// Returns the truth value whether it was successfully added or not.
+        /// </summary>
+        /// <param name="item">Element to add.</param>
+        public bool TryAdd(T item)
+        {
+            if (!EnsureCapacity()) return false;
             _dataCollection[Count] = item;
             BubbleUp(Count++);
+            return true;
         }
 
         /// <summary>
@@ -255,16 +273,22 @@ namespace Dot.Net.DevFast.Collections
             }
         }
 
-        private void EnsureCapacity()
-        {
-            if (!IsFull) return;
-            InternalCopyData(NewSize(Count)
-                .ThrowIfLess(Count + 1, "New heap size cannot be less than current heap size."));
+        /// <summary>
+        /// Ensures that there is a capacity to add an element.
+        /// </summary>
+        protected virtual bool EnsureCapacity() {
+            return !IsFull;
         }
 
-        private void InternalCopyData(int newSize)
+        /// <summary>
+        /// Replaces the internal array with a new array of a given <paramref name="size"/>.
+        /// </summary>
+        /// <param name="size">Size of the new array.</param>
+        /// <exception cref="DdnDfException">When the given size is less than current count.</exception>
+        protected void InternalCopyData(int size)
         {
-            var newCollection = new T[newSize];
+            size.ThrowIfLess(Count, $"{nameof(size)} is less than current {nameof(Count)}. Cannot resize.");
+            var newCollection = new T[size];
             Array.Copy(_dataCollection, newCollection, Count);
             _dataCollection = newCollection;
         }
@@ -276,12 +300,6 @@ namespace Dot.Net.DevFast.Collections
             _dataCollection[secondIndex] = temp;
             return secondIndex;
         }
-
-        /// <summary>
-        /// Computes the new heap size based on its current size.
-        /// </summary>
-        /// <param name="currentSize">Current size of the heap.</param>
-        protected abstract int NewSize(int currentSize);
 
         /// <summary>
         /// Returns the truth value whether given <paramref name="left"/> element precedes
@@ -316,10 +334,15 @@ namespace Dot.Net.DevFast.Collections
         }
 
         /// <summary>
-        /// Computes the new heap size based on supplied resizing strategy.
+        /// Apply resizing strategy when heap is full.
         /// </summary>
-        /// <param name="currentSize">Current size of the heap.</param>
-        protected sealed override int NewSize(int currentSize) => _heapResizing.NewSize(currentSize);
+        protected sealed override bool EnsureCapacity()
+        {
+            if (!IsFull) return true;
+            if (!_heapResizing.TryComputeNewSize(Count, out var newSize)) return false;
+            InternalCopyData(newSize);
+            return true;
+        }
 
         /// <summary>
         /// Calling this method will freeze the capacity (i.e. heap will not resize upon add).

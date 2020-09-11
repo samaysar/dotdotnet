@@ -16,10 +16,10 @@ namespace Dot.Net.DevFast.Tests.Collections
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void HeapNoResizing_Strategy_Always_Throws_Error(int size)
+        public void HeapNoResizing_Strategy_Always_Retruns_False(int size)
         {
-            Assert.Throws<InvalidOperationException>(() => new HeapNoResizing().NewSize(size))
-                .Message.Equals("Heap has a fixed capacity that cannot be increased.");
+            Assert.IsFalse(new HeapNoResizing().TryComputeNewSize(size, out var newSize));
+            Assert.AreEqual(newSize, default(int));
         }
 
         [Test]
@@ -28,10 +28,10 @@ namespace Dot.Net.DevFast.Tests.Collections
         [TestCase(int.MinValue)]
         public void StepHeapResizing_Ctor_Throws_Error_For_Invalid_Arguments(int step)
         {
-            Assert.Throws<DdnDfException>(() =>
+            Assert.IsTrue(Assert.Throws<DdnDfException>(() =>
             {
                 var _ = new StepHeapResizing(step);
-            }).ErrorCode.Equals(DdnDfErrorCode.ValueLessThanThreshold);
+            }).ErrorCode.Equals(DdnDfErrorCode.ValueLessThanThreshold));
         }
 
         [Test]
@@ -39,9 +39,19 @@ namespace Dot.Net.DevFast.Tests.Collections
         [TestCase(1, 10, 11)]
         [TestCase(10, 0, 10)]
         [TestCase(10, 10, 20)]
+        [TestCase(1, int.MaxValue-1, int.MaxValue)]
         public void StepHeapResizing_Calculates_Good_NewSize(int step, int current, int expected)
         {
-            Assert.AreEqual(new StepHeapResizing(step).NewSize(current), expected);
+            Assert.IsTrue(new StepHeapResizing(step).TryComputeNewSize(current, out var newSize));
+            Assert.AreEqual(newSize, expected);
+        }
+
+        [Test]
+        [TestCase(1, int.MaxValue)]
+        [TestCase(2, int.MaxValue-1)]
+        public void StepHeapResizing_Returns_False_When_Overflow_Occurs(int step, int current)
+        {
+            Assert.IsFalse(new StepHeapResizing(step).TryComputeNewSize(current, out _));
         }
 
         [Test]
@@ -50,10 +60,10 @@ namespace Dot.Net.DevFast.Tests.Collections
         [TestCase(int.MinValue)]
         public void PercentHeapResizing_Ctor_Throws_Error_For_Invalid_Arguments(int step)
         {
-            Assert.Throws<DdnDfException>(() =>
+            Assert.IsTrue(Assert.Throws<DdnDfException>(() =>
             {
                 var _ = new PercentHeapResizing(step);
-            }).ErrorCode.Equals(DdnDfErrorCode.ValueLessThanThreshold);
+            }).ErrorCode.Equals(DdnDfErrorCode.ValueLessThanThreshold));
         }
 
         [Test]
@@ -65,7 +75,8 @@ namespace Dot.Net.DevFast.Tests.Collections
         [TestCase(10, 1000, 1100)]
         public void PercentHeapResizing_Calculates_Good_NewSize(int percent, int current, int expected)
         {
-            Assert.AreEqual(new PercentHeapResizing(percent).NewSize(current), expected);
+            Assert.IsTrue(new PercentHeapResizing(percent).TryComputeNewSize(current, out var newSize));
+            Assert.AreEqual(newSize, expected);
         }
 
         [Test]
@@ -78,7 +89,7 @@ namespace Dot.Net.DevFast.Tests.Collections
                 var _ = Substitute.For<BinaryHeap<int>>(capacity);
             }).InnerException as DdnDfException;
             Assert.IsNotNull(ctorEx);
-            ctorEx.ErrorCode.Equals(DdnDfErrorCode.ValueLessThanThreshold);
+            Assert.IsTrue(ctorEx.ErrorCode.Equals(DdnDfErrorCode.ValueLessThanThreshold));
         }
 
         [Test]
@@ -110,6 +121,10 @@ namespace Dot.Net.DevFast.Tests.Collections
         public void BinaryHeap_Peek_N_TryPeek_Behaves_For_Non_Empty_Heap()
         {
             var instance = Substitute.For<BinaryHeap<int>>(1);
+            var ensureCapacityMethod = instance.GetType()
+                .GetMethod("EnsureCapacity", BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.NotNull(ensureCapacityMethod);
+            ensureCapacityMethod.Invoke(instance, new object[] { }).Returns(true);
             instance.Add(1);
             Assert.AreEqual(instance.Peek(), 1);
             Assert.True(instance.TryPeek(out var val) && val.Equals(1));
@@ -130,10 +145,29 @@ namespace Dot.Net.DevFast.Tests.Collections
         public void BinaryHeap_Pop_N_TryPop_Behaves_For_Non_Empty_Heap()
         {
             var instance = Substitute.For<BinaryHeap<int>>(2);
+            var ensureCapacityMethod = instance.GetType()
+                .GetMethod("EnsureCapacity", BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.NotNull(ensureCapacityMethod);
+            ensureCapacityMethod.Invoke(instance, new object[] { }).Returns(true);
             instance.Add(1);
             instance.Add(2);
             Assert.AreEqual(instance.Pop(), 1);
             Assert.True(instance.TryPop(out var val) && val.Equals(2));
+        }
+
+        [Test]
+        public void BinaryHeap_Add_N_Try_Add_Behaves_For_Empty_Heap()
+        {
+
+        }
+
+        [Test]
+        public void BinaryHeap_Compact_Behaves()
+        {
+            var instance = Substitute.For<BinaryHeap<int>>(2);
+            Assert.AreEqual(instance.Capacity, 2);
+            instance.Compact();
+            Assert.AreEqual(instance.Capacity, 0);
         }
     }
 }

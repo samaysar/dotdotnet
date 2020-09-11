@@ -87,7 +87,12 @@ namespace Dot.Net.DevFast.Etc
         /// <summary>
         /// String instance is empty or contains only whitespaces
         /// </summary>
-        EmptyOrWhiteSpacedString
+        EmptyOrWhiteSpacedString,
+
+        /// <summary>
+        /// When ask operation cannot be performed.
+        /// </summary>
+        InvalidOperation
     }
 
     /// <summary>
