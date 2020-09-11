@@ -158,7 +158,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [Test]
         [TestCase(int.MaxValue)]
         [TestCase(int.MinValue)]
-        public void ToEnumUncheckedOrDefault_Returns_Invalid_Value_For_Invalid_Parsable_Strings(int invalidInput)
+        public void ToEnumUncheckedOrDefault_Returns_Invalid_Value_For_Invalid_Parseable_Strings(int invalidInput)
         {
             Assert.True(
                 PerformToEnumUncheckedOrDefault(invalidInput.ToString(), DateTimeKind.Unspecified)
@@ -224,7 +224,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [Test]
         [TestCase(int.MaxValue)]
         [TestCase(int.MinValue)]
-        public void ToEnumOrDefault_Returns_Default_Value_For_Invalid_Parsable_Strings(int invalidInput)
+        public void ToEnumOrDefault_Returns_Default_Value_For_Invalid_Parseable_Strings(int invalidInput)
         {
             Assert.True(
                 PerformToEnumOrDefault(invalidInput.ToString(), DateTimeKind.Unspecified)

@@ -186,10 +186,10 @@ namespace Dot.Net.DevFast.Collections.Concurrent
     }
 
     /// <summary>
-    /// Implementation of Binary Max Heap.
+    /// Lock based Binary Max Heap implementation.
     /// </summary>
     /// <typeparam name="T">Heap type which also implements <seealso cref="IComparable{T}"/></typeparam>
-    public class ConcurrentMaxHeap<T> : LockBasedConcurrentHeap<T>
+    public sealed class ConcurrentMaxHeap<T> : LockBasedConcurrentHeap<T>
     {
         /// <summary>
         /// Ctor with initial capacity, comparer and resizing strategy.
