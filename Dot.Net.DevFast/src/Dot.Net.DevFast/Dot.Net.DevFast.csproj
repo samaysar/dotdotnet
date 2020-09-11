@@ -42,6 +42,12 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <Compile Remove="Collections\Concurrent\**" />
+    <EmbeddedResource Remove="Collections\Concurrent\**" />
+    <None Remove="Collections\Concurrent\**" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
 	<None Include="..\..\..\icon.png" Pack="true" PackagePath="" />
 	<None Include="..\..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
