@@ -85,14 +85,14 @@ namespace Dot.Net.DevFast.Etc
         UnableToGetMemoryStreamBuffer,
 
         /// <summary>
-        /// String instance is empty or contains only whitespaces
+        /// String instance is either null, empty or contains only whitespaces
         /// </summary>
         EmptyOrWhiteSpacedString,
 
         /// <summary>
-        /// When ask operation cannot be performed.
+        /// When asked operation cannot be performed.
         /// </summary>
-        InvalidOperation
+        DemandUnfulfilled
     }
 
     /// <summary>

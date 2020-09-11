@@ -26,6 +26,7 @@
 	<Version>1.0.0</Version>
 	<IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
  
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
@@ -42,8 +43,8 @@
   
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-	<None Include="..\..\..\icon.png" Pack="true" PackagePath=""/>
-	<None Include="..\..\..\LICENSE" Pack="true" Visible="false" PackagePath=""/>
+	<None Include="..\..\..\icon.png" Pack="true" PackagePath="" />
+	<None Include="..\..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
   
 </Project>

@@ -16,6 +16,11 @@ namespace Dot.Net.DevFast.Collections
         /// <param name="currentSize">Current size of the heap</param>
         /// <param name="newSize">New size</param>
         bool TryComputeNewSize(int currentSize, out int newSize);
+
+        /// <summary>
+        /// Gets the truth value whether new size can be computed.
+        /// </summary>
+        bool CanResize { get; }
     }
 
     /// <inheritdoc />
@@ -31,9 +36,12 @@ namespace Dot.Net.DevFast.Collections
         /// <param name="newSize">Always outs Default int value</param>
         public bool TryComputeNewSize(int currentSize, out int newSize)
         {
-            newSize = default(int);
+            newSize = 0;
             return false;
         }
+
+        /// <inheritdoc />
+        public bool CanResize => false;
     }
 
     /// <inheritdoc />
@@ -65,6 +73,9 @@ namespace Dot.Net.DevFast.Collections
             newSize = _stepSize + currentSize;
             return newSize > currentSize;
         }
+
+        /// <inheritdoc />
+        public bool CanResize => true;
     }
 
     /// <inheritdoc />
@@ -107,6 +118,9 @@ namespace Dot.Net.DevFast.Collections
             newSize = newSize.Equals(currentSize) ? currentSize + 1 : newSize;
             return newSize > currentSize;
         }
+
+        /// <inheritdoc />
+        public bool CanResize => true;
     }
 
     /// <summary>
@@ -206,10 +220,14 @@ namespace Dot.Net.DevFast.Collections
         /// Adds given element to the heap.
         /// </summary>
         /// <param name="item">Element to add</param>
-        /// <exception cref="IndexOutOfRangeException">When heap is already full.</exception>
+        /// <exception cref="DdnDfException">When element cannot be added.</exception>
         public void Add(T item)
         {
-            if(!TryAdd(item)) throw new IndexOutOfRangeException();
+            if (!TryAdd(item))
+            {
+                throw new DdnDfException(DdnDfErrorCode.DemandUnfulfilled,
+                    "Unable to add element in the heap.");
+            }
         }
 
         /// <summary>
@@ -276,9 +294,7 @@ namespace Dot.Net.DevFast.Collections
         /// <summary>
         /// Ensures that there is a capacity to add an element.
         /// </summary>
-        protected virtual bool EnsureCapacity() {
-            return !IsFull;
-        }
+        protected virtual bool EnsureCapacity()  => !IsFull;
 
         /// <summary>
         /// Replaces the internal array with a new array of a given <paramref name="size"/>.
@@ -321,16 +337,44 @@ namespace Dot.Net.DevFast.Collections
         private IHeapResizing _heapResizing;
 
         /// <summary>
+        /// Ctor with initial capacity. <seealso cref="HeapNoResizing"/> is used as sizing strategy.
+        /// </summary>
+        /// <param name="initialCapacity">Initial capacity of the heap</param>
+        /// <exception cref="DdnDfException">When given capacity is negative.</exception>
+        protected SizableBinaryHeap(int initialCapacity) : this(initialCapacity, new HeapNoResizing())
+        {
+        }
+
+        /// <summary>
         /// Ctor with initial capacity and resizing strategy.
         /// Different in-built resizing strategy are available (<seealso cref="HeapNoResizing"/>, <seealso cref="StepHeapResizing"/>
         /// and <seealso cref="PercentHeapResizing"/>).
         /// </summary>
         /// <param name="initialCapacity">Initial capacity of the heap</param>
-        /// <param name="heapResizing">Heap resizing strategy. If not provided, then <seealso cref="HeapNoResizing"/> will be internally used.</param>
-        protected SizableBinaryHeap(int initialCapacity,
-            IHeapResizing heapResizing = null) : base(initialCapacity)
+        /// <param name="heapResizing">Heap resizing strategy.</param>
+        /// <exception cref="DdnDfException">When given capacity is negative or resizing strategy is not provided.</exception>
+        protected SizableBinaryHeap(int initialCapacity, IHeapResizing heapResizing) : base(initialCapacity)
         {
-            _heapResizing = heapResizing ?? new HeapNoResizing();
+            _heapResizing = heapResizing.ThrowIfNull($"{nameof(heapResizing)} is not provided.");
+        }
+
+        /// <summary>
+        /// Gets the current truth value whether resizing is possible or not.
+        /// <para>
+        /// NOTE: After calling <see cref="FreezeCapacity"/>, it will always return false.
+        /// </para>
+        /// </summary>
+        public bool CanResize => _heapResizing.CanResize;
+
+        /// <summary>
+        /// Calling this method will freeze the capacity (i.e. heap will not resize upon add).
+        /// Also, runs compaction on the internally allocated storage based on <paramref name="compact"/> flag.
+        /// </summary>
+        /// <param name="compact">If true, internally allocated storage will be compacted. Careful it can induce some latency.</param>
+        public void FreezeCapacity(bool compact = false)
+        {
+            _heapResizing = new HeapNoResizing();
+            if (compact) Compact();
         }
 
         /// <summary>
@@ -342,17 +386,6 @@ namespace Dot.Net.DevFast.Collections
             if (!_heapResizing.TryComputeNewSize(Count, out var newSize)) return false;
             InternalCopyData(newSize);
             return true;
-        }
-
-        /// <summary>
-        /// Calling this method will freeze the capacity (i.e. heap will not resize upon add).
-        /// Also, runs compaction on the internally allocated storage based on <paramref name="compact"/> flag.
-        /// </summary>
-        /// <param name="compact">If true, internally allocated storage will be compacted. Careful it can induce some latency.</param>
-        public void FreezeCapacity(bool compact = false)
-        {
-            _heapResizing = new HeapNoResizing();
-            if (compact) Compact();
         }
     }
 
@@ -372,6 +405,7 @@ namespace Dot.Net.DevFast.Collections
         /// <param name="initialCapacity">Initial capacity of the heap</param>
         /// <param name="comparer">Comparer instance. If not provided, then <seealso cref="Comparer{T}.Default"/> will be used.</param>
         /// <param name="heapResizing">Heap resizing strategy. If not provided, then <seealso cref="HeapNoResizing"/> will be internally used.</param>
+        /// <exception cref="DdnDfException">When given capacity is negative.</exception>
         public MinHeap(int initialCapacity,
             IComparer<T> comparer = null,
             IHeapResizing heapResizing = null) : base(initialCapacity, heapResizing ?? new HeapNoResizing())
@@ -404,6 +438,7 @@ namespace Dot.Net.DevFast.Collections
         /// <param name="initialCapacity">Initial capacity of the heap</param>
         /// <param name="comparer">Comparer instance. If not provided, then <seealso cref="Comparer{T}.Default"/> will be used.</param>
         /// <param name="heapResizing">Heap resizing strategy. If not provided, then <seealso cref="HeapNoResizing"/> will be internally used.</param>
+        /// <exception cref="DdnDfException">When given capacity is negative.</exception>
         public MaxHeap(int initialCapacity,
             IComparer<T> comparer = null,
             IHeapResizing heapResizing = null) : base(initialCapacity, heapResizing ?? new HeapNoResizing())
