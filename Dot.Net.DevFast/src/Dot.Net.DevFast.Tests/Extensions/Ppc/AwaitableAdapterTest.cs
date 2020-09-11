@@ -13,7 +13,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         {
             var feed = Substitute.For<IConsumerBuffer<object>>();
             var instance = Substitute.For<AwaitableAdapter<object, object>>();
-            instance.TryGet(feed, CancellationToken.None, out var _);
+            instance.TryGet(feed, CancellationToken.None, out _);
             feed.Received(1).TryGet(Arg.Any<int>(), CancellationToken.None, out _);
         }
 
@@ -21,9 +21,9 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         public void TryGet_Calls_Adapt_When_Feed_Outputs_True()
         {
             var feed = Substitute.For<IConsumerBuffer<object>>();
-            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).Returns(x => true);
+            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out _).Returns(x => true);
             var instance = Substitute.For<AwaitableAdapter<object, object>>();
-            instance.TryGet(feed, CancellationToken.None, out var _);
+            instance.TryGet(feed, CancellationToken.None, out _);
             instance.Received(1).Adapt(Arg.Any<object>(), Arg.Any<CancellationToken>());
         }
 
@@ -31,9 +31,9 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         public void TryGet_Does_Not_Call_Adapt_When_Feed_Outputs_False()
         {
             var feed = Substitute.For<IConsumerBuffer<object>>();
-            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).Returns(x => false);
+            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out _).Returns(x => false);
             var instance = Substitute.For<AwaitableAdapter<object, object>>();
-            instance.TryGet(feed, CancellationToken.None, out var _);
+            instance.TryGet(feed, CancellationToken.None, out _);
             instance.Received(0).Adapt(Arg.Any<object>(), Arg.Any<CancellationToken>());
         }
     }
@@ -46,7 +46,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         {
             var feed = Substitute.For<IConsumerBuffer<object>>();
             var instance = IdentityAwaitableAdapter<object>.Default;
-            instance.TryGet(feed, CancellationToken.None, out var _);
+            instance.TryGet(feed, CancellationToken.None, out _);
             feed.Received(1).TryGet(Arg.Any<int>(), CancellationToken.None, out _);
         }
 
@@ -55,7 +55,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         {
             var obj = new object();
             var feed = Substitute.For<IConsumerBuffer<object>>();
-            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).Returns(x =>
+            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out _).Returns(x =>
             {
                 x[2] = obj;
                 return true;
@@ -69,7 +69,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         {
             var obj = new object();
             var feed = Substitute.For<IConsumerBuffer<object>>();
-            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out var _).Returns(x =>
+            feed.TryGet(Arg.Any<int>(), CancellationToken.None, out _).Returns(x =>
             {
                 x[2] = obj;
                 return false;

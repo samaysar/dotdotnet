@@ -1,4 +1,5 @@
 ﻿using System;
+using Dot.Net.DevFast.Collections;
 using Newtonsoft.Json;
 
 namespace Dot.Net.DevFast.Tests.TestHelpers
@@ -21,5 +22,21 @@ namespace Dot.Net.DevFast.Tests.TestHelpers
         public string StrProp { get; set; }
         public int IntProp { get; set; }
         public byte[] BytesProp { get; set; }
+    }
+
+    public class AbstractBinaryTestHeap : AbstractBinaryHeap<int>
+    {
+        private readonly Func<int, int, bool> _comparer;
+
+        public AbstractBinaryTestHeap(int initialCapacity,
+            Func<int, int, bool> comparer) : base(initialCapacity)
+        {
+            _comparer = comparer;
+        }
+
+        protected override bool LeftPrecedes(int left, int right)
+        {
+            return _comparer(left, right);
+        }
     }
 }

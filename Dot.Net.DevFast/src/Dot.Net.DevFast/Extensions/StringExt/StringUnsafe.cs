@@ -412,7 +412,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="disposeTarget">True to dispose <paramref name="targetStream"/>, false
         /// to leave it undisposed after the write.</param>
         public static async Task ToStreamAsync(this string input, Stream targetStream, Encoding enc = null,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeTarget = false)
         {
             await targetStream.CopyFromAsync(input.Length, enc ?? Encoding.UTF8,
@@ -433,7 +433,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <param name="disposeTarget">True to dispose <paramref name="targetStream"/>, false
         /// to leave it undisposed after the write.</param>
         public static async Task ToStreamAsync(this StringBuilder input, Stream targetStream,
-            Encoding enc = null, CancellationToken token = default(CancellationToken),
+            Encoding enc = null, CancellationToken token = default,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeTarget = false)
         {
             await targetStream.CopyFromAsync(input.Length, enc ?? Encoding.UTF8,

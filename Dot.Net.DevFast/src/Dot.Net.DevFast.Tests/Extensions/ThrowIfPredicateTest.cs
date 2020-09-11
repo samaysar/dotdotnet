@@ -70,6 +70,44 @@ namespace Dot.Net.DevFast.Tests.Extensions
 
         [Test]
         [TestCase(null)]
+        [TestCase("")]
+        [TestCase("        ")]
+        [TestCase("\t      \n")]
+        [TestCase("\t\n")]
+        [TestCase("\t\r\n")]
+        public void ThrowIfNullOrEmpty_ThrowsError_When_String_Is_NullOrEmpty(string val)
+        {
+            var ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNullOrEmpty("test message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.EmptyOrWhiteSpacedString);
+            Assert.True(ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNullOrEmpty());
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.EmptyOrWhiteSpacedString);
+            Assert.True(!ex.Message.Contains("test message"));
+
+            ex = Assert.Throws<DdnDfException>(() => val.ThrowIfNullOrEmpty(() => "some error message"));
+            Assert.True(ex.ErrorCode == DdnDfErrorCode.EmptyOrWhiteSpacedString);
+            Assert.True(ex.Message.Contains("some error message"));
+        }
+
+        [Test]
+        public void ThrowIfNullOrEmpty_Returns_Original_String_When_Not_NullOrEmpty()
+        {
+            Assert.AreEqual(" sOmthg ".ThrowIfNullOrEmpty(), " sOmthg ");
+            Assert.AreEqual("\t sOmthg \t".ThrowIfNullOrEmpty(), "\t sOmthg \t");
+            Assert.AreEqual("\t sO\t\r\nmthg ".ThrowIfNullOrEmpty(), "\t sO\t\r\nmthg ");
+            Assert.AreEqual(" sOmthg \r\n".ThrowIfNullOrEmpty(), " sOmthg \r\n");
+            Assert.AreEqual(" sOmthg \r\n".ThrowIfNullOrEmpty(), " sOmthg \r\n");
+
+            Assert.AreEqual(" sOmthg ".ThrowIfNullOrEmpty(() => ""), " sOmthg ");
+            Assert.AreEqual("\t sOmthg \t".ThrowIfNullOrEmpty(() => ""), "\t sOmthg \t");
+            Assert.AreEqual("\t sO\t\r\nmthg ".ThrowIfNullOrEmpty(() => ""), "\t sO\t\r\nmthg ");
+            Assert.AreEqual(" sOmthg \r\n".ThrowIfNullOrEmpty(() => ""), " sOmthg \r\n");
+            Assert.AreEqual(" sOmthg \r\n".ThrowIfNullOrEmpty(() => ""), " sOmthg \r\n");
+        }
+
+        [Test]
+        [TestCase(null)]
         public void ThrowIfNullOrEmpty_ThrowsError_When_Array_Is_NullOrEmpty(ICollection nullArr)
         {
             var ex = Assert.Throws<DdnDfException>(() => nullArr.ThrowIfNullOrEmpty("test message"));
@@ -319,6 +357,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
             Assert.True(ex.Message.Contains("some error message"));
         }
 
+        [Test]
         public void ThrowIfZero_ThrowsError_If_Value_Is_Zero()
         {
             const int intVal = 0;

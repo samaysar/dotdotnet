@@ -293,7 +293,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             JsonSerializer serializer = null,
             Encoding enc = null,
             int writerBuffer = StdLookUps.DefaultFileBufferSize,
-            CancellationTokenSource pcts = default(CancellationTokenSource),
+            CancellationTokenSource pcts = default,
             bool autoFlush = false)
         {
             return obj is BlockingCollection<T> collection
@@ -722,7 +722,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             string filename = null,
             int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
             FileOptions options = FileOptions.SequentialScan,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             return await src.AndWriteFileAsync(folder.ToDirectoryInfo(), filename, fileStreamBuffer, options, token)
                 .ConfigureAwait(false);
@@ -744,7 +744,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             string filename = null,
             int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
             FileOptions options = FileOptions.SequentialScan,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             var targetFile = folder.CreateFileInfo(filename ?? Guid.NewGuid().ToString("N"));
             await src.AndWriteFileAsync(targetFile, fileStreamBuffer, options, token).ConfigureAwait(false);
@@ -764,7 +764,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             FileInfo fileinfo,
             int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
             FileOptions options = FileOptions.SequentialScan,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             using (var strm = fileinfo.CreateStream(FileMode.Create, FileAccess.ReadWrite, FileShare.Read,
                 fileStreamBuffer, options))
@@ -782,7 +782,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="token">Cancellation token to observe</param>
         /// <param name="estimatedSize">Intial guess for the size of the byte array (optimization on resizing operation).</param>
         public static async Task<byte[]> AndWriteBytesAsync(this Func<PushFuncStream, Task> src,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             int estimatedSize = StdLookUps.DefaultBufferSize)
         {
             return (await src.AndWriteBufferAsync(token, false, estimatedSize).ConfigureAwait(false)).ToArray();
@@ -797,7 +797,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="seekToOrigin">If true, Seek with <seealso cref="SeekOrigin.Begin"/> is performed else not.</param>
         /// <param name="initialSize">Initial Memory buffer Size</param>
         public static async Task<MemoryStream> AndWriteBufferAsync(this Func<PushFuncStream, Task> src,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             bool seekToOrigin = false,
             int initialSize = StdLookUps.DefaultBufferSize)
         {
@@ -817,7 +817,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="token">Cancellation token to observe</param>
         public static async Task AndExecuteAsync(this Func<PushFuncStream, Task> src,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             await src.AndWriteStreamAsync(Stream.Null, false, token).ConfigureAwait(false);
         }
@@ -828,7 +828,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="token">Cancellation token to observe</param>
         public static async Task<long> AndCountBytesAsync(this Func<PushFuncStream, Task> src,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             var bcs = new ByteCountStream();
             await src.AndWriteStreamAsync(bcs, true, token).ConfigureAwait(false);
@@ -846,7 +846,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         public static async Task AndWriteStreamAsync(this Func<PushFuncStream, Task> src,
             Stream writableTarget,
             bool disposeTarget = false,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             await src(new PushFuncStream(writableTarget, disposeTarget, token)).StartIfNeeded().ConfigureAwait(false);
         }
