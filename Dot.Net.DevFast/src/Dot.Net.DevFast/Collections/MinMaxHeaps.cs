@@ -20,11 +20,11 @@ namespace Dot.Net.DevFast.Collections
         /// </summary>
         /// <param name="initialCapacity">Initial capacity of the heap</param>
         /// <param name="comparer">Comparer instance. If not provided, then <seealso cref="Comparer{T}.Default"/> will be used.</param>
-        /// <param name="heapResizing">Heap resizing strategy. If not provided, then <seealso cref="HeapNoResizing"/> will be internally used.</param>
+        /// <param name="resizeStrategy">Heap resizing strategy. If not provided, then <seealso cref="HeapNoResizing"/> will be internally used.</param>
         /// <exception cref="DdnDfException">When given capacity is negative.</exception>
         public MinHeap(int initialCapacity,
             IComparer<T> comparer = null,
-            IResizeStrategy heapResizing = null) : base(initialCapacity, heapResizing ?? new HeapNoResizing())
+            IResizeStrategy resizeStrategy = null) : base(initialCapacity, resizeStrategy ?? new HeapNoResizing())
         {
             _comparer = comparer ?? Comparer<T>.Default;
         }
@@ -42,7 +42,6 @@ namespace Dot.Net.DevFast.Collections
     /// </summary>
     /// <typeparam name="T">Heap type which also implements <seealso cref="IComparable{T}"/></typeparam>
     public class MaxHeap<T> : AbstractSizableBinaryHeap<T>
-        where T : IComparable<T>
     {
         private readonly IComparer<T> _comparer;
 
@@ -53,11 +52,11 @@ namespace Dot.Net.DevFast.Collections
         /// </summary>
         /// <param name="initialCapacity">Initial capacity of the heap</param>
         /// <param name="comparer">Comparer instance. If not provided, then <seealso cref="Comparer{T}.Default"/> will be used.</param>
-        /// <param name="heapResizing">Heap resizing strategy. If not provided, then <seealso cref="HeapNoResizing"/> will be internally used.</param>
+        /// <param name="resizeStrategy">Heap resizing strategy. If not provided, then <seealso cref="HeapNoResizing"/> will be internally used.</param>
         /// <exception cref="DdnDfException">When given capacity is negative.</exception>
         public MaxHeap(int initialCapacity,
             IComparer<T> comparer = null,
-            IResizeStrategy heapResizing = null) : base(initialCapacity, heapResizing ?? new HeapNoResizing())
+            IResizeStrategy resizeStrategy = null) : base(initialCapacity, resizeStrategy ?? new HeapNoResizing())
         {
             _comparer = comparer ?? Comparer<T>.Default;
         }

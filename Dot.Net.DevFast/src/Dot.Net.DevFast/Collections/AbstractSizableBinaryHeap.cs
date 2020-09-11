@@ -6,9 +6,12 @@ namespace Dot.Net.DevFast.Collections
 {
     /// <summary>
     /// Sizable binary heap abstract implementation.
+    /// Think of it as HeapBuilder (similar to StringBuilder) when
+    /// final size of the heap is not known in advance (e.g. data coming from db, network etc).
+    /// Once construction is done, capacity can be frozen, with ot without compaction.
     /// </summary>
     /// <typeparam name="T">Heap type</typeparam>
-    public abstract class AbstractSizableBinaryHeap<T> : AbstractBinaryHeap<T>
+    public abstract class AbstractSizableBinaryHeap<T> : AbstractBinaryHeap<T>, IResizableHeap
     {
         private IResizeStrategy _heapResizing;
 
@@ -34,27 +37,18 @@ namespace Dot.Net.DevFast.Collections
             _heapResizing = resizeStrategy.ThrowIfNull($"{nameof(resizeStrategy)} is not provided.");
         }
 
-        /// <summary>
-        /// Gets the current truth value whether resizing is possible or not.
-        /// <para>
-        /// NOTE: After calling <see cref="FreezeCapacity"/>, it will always return false.
-        /// </para>
-        /// </summary>
+        /// <inheritdoc />
         public bool CanResize => _heapResizing.CanResize;
 
-        /// <summary>
-        /// Calling this method will freeze the capacity (i.e. heap will not resize upon add).
-        /// Also, runs compaction on the internally allocated storage based on <paramref name="compact"/> flag.
-        /// </summary>
-        /// <param name="compact">If true, internally allocated storage will be compacted. Careful it can induce some latency.</param>
-        public void FreezeCapacity(bool compact = false)
+        /// <inheritdoc />
+        public void FreezeCapacity(bool compact)
         {
             _heapResizing = new HeapNoResizing();
             if (compact) Compact();
         }
 
         /// <summary>
-        /// Apply resizing strategy when heap is full.
+        /// Applies resizing strategy when heap is full.
         /// </summary>
         protected sealed override bool EnsureCapacity()
         {

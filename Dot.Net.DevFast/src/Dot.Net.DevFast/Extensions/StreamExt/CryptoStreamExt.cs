@@ -24,7 +24,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="token">Cancellation token</param>
         /// <param name="disposeOutput">If true, disposes <paramref name="output"/> upon operation completion, else leaves it open</param>
         public static Task TransformAsync(this ArraySegment<byte> source, ICryptoTransform transform,
-            Stream output, CancellationToken token = default(CancellationToken), bool disposeOutput = false)
+            Stream output, CancellationToken token = default, bool disposeOutput = false)
         {
             return source.Array.TransformAsync(transform, output, token, disposeOutput, source.Offset, source.Count);
         }
@@ -39,7 +39,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="token">Cancellation token</param>
         /// <param name="disposeOutput">If true, disposes <paramref name="output"/> upon operation completion, else leaves it open</param>
         public static Task TransformAsync(this byte[] source, ICryptoTransform transform,
-            Stream output, CancellationToken token = default(CancellationToken), bool disposeOutput = false)
+            Stream output, CancellationToken token = default, bool disposeOutput = false)
         {
             return source.TransformAsync(transform, output, token, disposeOutput, 0, source.Length);
         }
@@ -56,7 +56,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="disposeOutput">If true, disposes <paramref name="output"/> upon operation completion, else leaves it open</param>
         /// <param name="bufferSize">Buffer size</param>
         public static Task TransformAsync(this Stream input, ICryptoTransform transform,
-            Stream output, CancellationToken token = default(CancellationToken), bool disposeInput = false,
+            Stream output, CancellationToken token = default, bool disposeInput = false,
             bool disposeOutput = false, int bufferSize = StdLookUps.DefaultBufferSize)
         {
             return input.CreateCryptoStream(transform, CryptoStreamMode.Read, disposeInput)
@@ -76,7 +76,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="encoding">Encoding to use to get string bytes, if not supplied <seealso cref="Encoding.UTF8"/> is used</param>
         /// <param name="bufferSize">Buffer size</param>
         public static Task TransformAsync(this StringBuilder source, ICryptoTransform transform,
-            Stream output, CancellationToken token = default(CancellationToken), bool disposeOutput = false,
+            Stream output, CancellationToken token = default, bool disposeOutput = false,
             Encoding encoding = null, int bufferSize = StdLookUps.DefaultBufferSize)
         {
             return output.TransformChunksAsync(transform, source.Length, encoding, token, disposeOutput, bufferSize,
@@ -95,7 +95,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="encoding">Encoding to use to get string bytes, if not supplied <seealso cref="Encoding.UTF8"/> is used</param>
         /// <param name="bufferSize">Buffer size</param>
         public static Task TransformAsync(this string source, ICryptoTransform transform,
-            Stream output, CancellationToken token = default(CancellationToken), bool disposeOutput = false,
+            Stream output, CancellationToken token = default, bool disposeOutput = false,
             Encoding encoding = null, int bufferSize = StdLookUps.DefaultBufferSize)
         {
             return output.TransformChunksAsync(transform, source.Length, encoding, token, disposeOutput, bufferSize,
@@ -112,7 +112,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="disposeInput">If true, disposes <paramref name="input"/> upon operation completion, else leaves it open</param>
         /// <param name="bufferSize">Buffer size</param>
         public static async Task<byte[]> TransformAsync(this Stream input, ICryptoTransform transform,
-            CancellationToken token = default(CancellationToken), bool disposeInput = false,
+            CancellationToken token = default, bool disposeInput = false,
             int bufferSize = StdLookUps.DefaultBufferSize)
         {
             return (await input.TransformAsSegmentAsync(transform, token,
@@ -130,7 +130,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="disposeInput">If true, disposes <paramref name="input"/> upon operation completion, else leaves it open</param>
         /// <param name="bufferSize">Buffer size</param>
         public static Task<ArraySegment<byte>> TransformAsSegmentAsync(this Stream input,
-            ICryptoTransform transform, CancellationToken token = default(CancellationToken),
+            ICryptoTransform transform, CancellationToken token = default,
             bool disposeInput = false, int bufferSize = StdLookUps.DefaultBufferSize)
         {
             return input.CreateCryptoStream(transform, CryptoStreamMode.Read, disposeInput)
@@ -148,7 +148,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="encoding">Encoding to use to compose string characters, if not supplied <seealso cref="Encoding.UTF8"/> is used</param>
         /// <param name="bufferSize">Buffer size</param>
         public static async Task<string> TransformAsStringAsync(this Stream input, ICryptoTransform transform,
-            Encoding encoding = null, CancellationToken token = default(CancellationToken),
+            Encoding encoding = null, CancellationToken token = default,
             bool disposeInput = false, int bufferSize = StdLookUps.DefaultBufferSize)
         {
             var strBuilder = new StringBuilder(StdLookUps.DefaultStringBuilderSize);
@@ -170,7 +170,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
         public static Task TransformAsync(this Stream input, ICryptoTransform transform,
-            StringBuilder target, CancellationToken token = default(CancellationToken), bool disposeInput = false,
+            StringBuilder target, CancellationToken token = default, bool disposeInput = false,
             Encoding encoding = null, int bufferSize = StdLookUps.DefaultBufferSize,
             bool detectEncodingFromBom = true)
         {

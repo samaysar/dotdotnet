@@ -9,7 +9,7 @@ namespace Dot.Net.DevFast.Collections
     /// Abstract binary heap implementation.
     /// </summary>
     /// <typeparam name="T">Heap element type</typeparam>
-    public abstract class AbstractBinaryHeap<T> : IHeap<T>
+    public abstract class AbstractBinaryHeap<T> : IHeap<T>, ICompactAbleHeap
     {
         private T[] _dataCollection;
 
@@ -76,7 +76,7 @@ namespace Dot.Net.DevFast.Collections
         {
             if (IsEmpty)
             {
-                item = default(T);
+                item = default;
                 return false;
             }
             item = _dataCollection[0];
@@ -108,12 +108,7 @@ namespace Dot.Net.DevFast.Collections
             return true;
         }
 
-        /// <summary>
-        /// Internally allocated storage will be compacted to match the current <see cref="Count"/>.
-        /// <para>
-        /// CAREFUL: Compaction can induce some latency. Do NOT call if memory gain is insignificant.
-        /// </para>
-        /// </summary>
+        /// <inheritdoc />
         public void Compact()
         {
             InternalCopyData(Count);

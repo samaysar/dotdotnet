@@ -26,7 +26,7 @@ namespace Dot.Net.DevFast.Extensions
         /// inside the action body by other means.</param>
         public static Func<Task> ToAsync(this Action sync, bool runAsync = true,
             TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -81,7 +81,7 @@ namespace Dot.Net.DevFast.Extensions
         /// inside the func body by other means.</param>
         public static Func<Task<T0>> ToAsync<T0>(this Func<T0> sync, bool runAsync = true,
             TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -132,7 +132,7 @@ namespace Dot.Net.DevFast.Extensions
         /// inside the action body by other means.</param>
         public static Func<T0, Task> ToAsync<T0>(this Action<T0> sync, bool runAsync = true,
             TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -187,7 +187,7 @@ namespace Dot.Net.DevFast.Extensions
         /// inside the func body by other means.</param>
         public static Func<T0, Task<T1>> ToAsync<T0, T1>(this Func<T0, T1> sync, bool runAsync = true,
             TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -238,7 +238,7 @@ namespace Dot.Net.DevFast.Extensions
         /// inside the action body by other means.</param>
         public static Func<T0, T1, Task> ToAsync<T0, T1>(this Action<T0, T1> sync, bool runAsync = true,
             TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -293,7 +293,7 @@ namespace Dot.Net.DevFast.Extensions
         /// inside the func body by other means.</param>
         public static Func<T0, T1, Task<T2>> ToAsync<T0, T1, T2>(this Func<T0, T1, T2> sync, bool runAsync = true,
             TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -344,7 +344,7 @@ namespace Dot.Net.DevFast.Extensions
         /// inside the action body by other means.</param>
         public static Func<T0, T1, T2, Task> ToAsync<T0, T1, T2>(this Action<T0, T1, T2> sync,
             bool runAsync = true, TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -399,7 +399,7 @@ namespace Dot.Net.DevFast.Extensions
         /// inside the func body by other means.</param>
         public static Func<T0, T1, T2, Task<T3>> ToAsync<T0, T1, T2, T3>(this Func<T0, T1, T2, T3> sync,
             bool runAsync = true, TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -450,7 +450,7 @@ namespace Dot.Net.DevFast.Extensions
         /// inside the action body by other means.</param>
         public static Func<T0, T1, T2, T3, Task> ToAsync<T0, T1, T2, T3>(this Action<T0, T1, T2, T3> sync,
             bool runAsync = true, TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -505,7 +505,7 @@ namespace Dot.Net.DevFast.Extensions
         /// inside the func body by other means.</param>
         public static Func<T0, T1, T2, T3, Task<T4>> ToAsync<T0, T1, T2, T3, T4>(this Func<T0, T1, T2, T3, T4> sync,
             bool runAsync = true, TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -556,7 +556,7 @@ namespace Dot.Net.DevFast.Extensions
         /// inside the action body by other means.</param>
         public static Func<T0, T1, T2, T3, T4, Task> ToAsync<T0, T1, T2, T3, T4>(this Action<T0, T1, T2, T3, T4> sync,
             bool runAsync = true, TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -612,7 +612,7 @@ namespace Dot.Net.DevFast.Extensions
         public static Func<T0, T1, T2, T3, T4, Task<T5>> ToAsync<T0, T1, T2, T3, T4, T5>(
             this Func<T0, T1, T2, T3, T4, T5> sync, bool runAsync = true,
             TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -664,7 +664,7 @@ namespace Dot.Net.DevFast.Extensions
         public static Func<T0, T1, T2, T3, T4, T5, Task> ToAsync<T0, T1, T2, T3, T4, T5>(
             this Action<T0, T1, T2, T3, T4, T5> sync, bool runAsync = true,
             TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -720,7 +720,7 @@ namespace Dot.Net.DevFast.Extensions
         public static Func<T0, T1, T2, T3, T4, T5, Task<T6>> ToAsync<T0, T1, T2, T3, T4, T5, T6>(
             this Func<T0, T1, T2, T3, T4, T5, T6> sync, bool runAsync = true,
             TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -772,7 +772,7 @@ namespace Dot.Net.DevFast.Extensions
         public static Func<T0, T1, T2, T3, T4, T5, T6, Task> ToAsync<T0, T1, T2, T3, T4, T5, T6>(
             this Action<T0, T1, T2, T3, T4, T5, T6> sync, bool runAsync = true,
             TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -829,7 +829,7 @@ namespace Dot.Net.DevFast.Extensions
         public static Func<T0, T1, T2, T3, T4, T5, T6, Task<T7>> ToAsync<T0, T1, T2, T3, T4, T5, T6, T7>(
             this Func<T0, T1, T2, T3, T4, T5, T6, T7> sync, bool runAsync = true,
             TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -882,7 +882,7 @@ namespace Dot.Net.DevFast.Extensions
         public static Func<T0, T1, T2, T3, T4, T5, T6, T7, Task> ToAsync<T0, T1, T2, T3, T4, T5, T6, T7>(
             this Action<T0, T1, T2, T3, T4, T5, T6, T7> sync, bool runAsync = true,
             TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -939,7 +939,7 @@ namespace Dot.Net.DevFast.Extensions
         public static Func<T0, T1, T2, T3, T4, T5, T6, T7, Task<T8>> ToAsync<T0, T1, T2, T3, T4, T5, T6, T7, T8>(
             this Func<T0, T1, T2, T3, T4, T5, T6, T7, T8> sync, bool runAsync = true,
             TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -992,7 +992,7 @@ namespace Dot.Net.DevFast.Extensions
         public static Func<T0, T1, T2, T3, T4, T5, T6, T7, T8, Task> ToAsync<T0, T1, T2, T3, T4, T5, T6, T7, T8>(
             this Action<T0, T1, T2, T3, T4, T5, T6, T7, T8> sync, bool runAsync = true,
             TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -1050,7 +1050,7 @@ namespace Dot.Net.DevFast.Extensions
             ToAsync<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>(this Func<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9> sync,
                 bool runAsync = true,
                 TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-                CancellationToken token = default(CancellationToken))
+                CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -1104,7 +1104,7 @@ namespace Dot.Net.DevFast.Extensions
             ToAsync<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>(this Action<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9> sync,
                 bool runAsync = true,
                 TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-                CancellationToken token = default(CancellationToken))
+                CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -1162,7 +1162,7 @@ namespace Dot.Net.DevFast.Extensions
             ToAsync<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
                 this Func<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> sync, bool runAsync = true,
                 TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-                CancellationToken token = default(CancellationToken))
+                CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -1217,7 +1217,7 @@ namespace Dot.Net.DevFast.Extensions
             ToAsync<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
                 this Action<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> sync, bool runAsync = true,
                 TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-                CancellationToken token = default(CancellationToken))
+                CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -1275,7 +1275,7 @@ namespace Dot.Net.DevFast.Extensions
             ToAsync<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
                 this Func<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> sync, bool runAsync = true,
                 TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-                CancellationToken token = default(CancellationToken))
+                CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -1330,7 +1330,7 @@ namespace Dot.Net.DevFast.Extensions
             ToAsync<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
                 this Action<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> sync, bool runAsync = true,
                 TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-                CancellationToken token = default(CancellationToken))
+                CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -1388,7 +1388,7 @@ namespace Dot.Net.DevFast.Extensions
             ToAsync<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
                 this Func<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> sync, bool runAsync = true,
                 TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-                CancellationToken token = default(CancellationToken))
+                CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -1443,7 +1443,7 @@ namespace Dot.Net.DevFast.Extensions
             ToAsync<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
                 this Action<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> sync, bool runAsync = true,
                 TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-                CancellationToken token = default(CancellationToken))
+                CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -1501,7 +1501,7 @@ namespace Dot.Net.DevFast.Extensions
             ToAsync<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(
                 this Func<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> sync, bool runAsync = true,
                 TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-                CancellationToken token = default(CancellationToken))
+                CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -1556,7 +1556,7 @@ namespace Dot.Net.DevFast.Extensions
             ToAsync<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(
                 this Action<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> sync, bool runAsync = true,
                 TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-                CancellationToken token = default(CancellationToken))
+                CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -1615,7 +1615,7 @@ namespace Dot.Net.DevFast.Extensions
                 this Func<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> sync,
                 bool runAsync = true,
                 TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-                CancellationToken token = default(CancellationToken))
+                CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -1671,7 +1671,7 @@ namespace Dot.Net.DevFast.Extensions
                 this Action<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> sync,
                 bool runAsync = true,
                 TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-                CancellationToken token = default(CancellationToken))
+                CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -1731,7 +1731,7 @@ namespace Dot.Net.DevFast.Extensions
                 this Func<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> sync,
                 bool runAsync = true,
                 TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-                CancellationToken token = default(CancellationToken))
+                CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -1788,7 +1788,7 @@ namespace Dot.Net.DevFast.Extensions
                 this Action<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> sync,
                 bool runAsync = true,
                 TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-                CancellationToken token = default(CancellationToken))
+                CancellationToken token = default)
         {
             if (!runAsync)
             {
@@ -1848,7 +1848,7 @@ namespace Dot.Net.DevFast.Extensions
                 this Func<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> sync,
                 bool runAsync = true,
                 TaskCreationOptions options = TaskCreationOptions.RunContinuationsAsynchronously,
-                CancellationToken token = default(CancellationToken))
+                CancellationToken token = default)
         {
             if (!runAsync)
             {

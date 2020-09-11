@@ -738,7 +738,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             string filename = null,
             int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
             FileOptions options = FileOptions.SequentialScan,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             return await src.ToAsync(false).AndWriteFileAsync(folder, filename, fileStreamBuffer, options, token)
                 .ConfigureAwait(false);
@@ -760,7 +760,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             string filename = null,
             int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
             FileOptions options = FileOptions.SequentialScan,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             return await src.ToAsync(false).AndWriteFileAsync(folder, filename, fileStreamBuffer, options, token)
                 .ConfigureAwait(false);
@@ -779,7 +779,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             FileInfo fileinfo,
             int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
             FileOptions options = FileOptions.SequentialScan,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             await src.ToAsync(false).AndWriteFileAsync(fileinfo, fileStreamBuffer, options, token)
                 .ConfigureAwait(false);
@@ -794,7 +794,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="estimatedSize">Intial guess for the size of the byte array (optimization on resizing operation).</param>
         /// <param name="bufferSize">Buffer size for data-pull (copying) ops</param>
         public static async Task<byte[]> AndWriteBytesAsync(this Func<PullFuncStream> src,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             int estimatedSize = StdLookUps.DefaultBufferSize,
             int bufferSize = StdLookUps.DefaultBufferSize)
         {
@@ -810,7 +810,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="estimatedSize">Intial guess for the size of the byte array (optimization on resizing operation).</param>
         /// <param name="bufferSize">Buffer size for data-pull (copying) ops</param>
         public static async Task<ArraySegment<byte>> AndWriteByteSegAsync(this Func<PullFuncStream> src,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             int estimatedSize = StdLookUps.DefaultBufferSize,
             int bufferSize = StdLookUps.DefaultBufferSize)
         {
@@ -828,7 +828,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="initialSize">Initial Memory buffer Size</param>
         /// <param name="bufferSize">Buffer size for data-pull (copying) ops</param>
         public static async Task<MemoryStream> AndWriteBufferAsync(this Func<PullFuncStream> src,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             bool seekToOrigin = false,
             int initialSize = StdLookUps.DefaultBufferSize,
             int bufferSize = StdLookUps.DefaultBufferSize)
@@ -849,7 +849,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="token">Cancellation token to observe</param>
         public static async Task AndExecuteAsync(this Func<PullFuncStream> src,
             int bufferSize = StdLookUps.DefaultBufferSize,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             await src.ToAsync(false).AndExecuteAsync(bufferSize, token).ConfigureAwait(false);
         }
@@ -867,7 +867,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             Stream writableTarget,
             int bufferSize = StdLookUps.DefaultBufferSize,
             bool disposeTarget = false,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             await src.ToAsync(false).AndWriteStreamAsync(writableTarget, bufferSize, disposeTarget, token)
                 .ConfigureAwait(false);
@@ -890,7 +890,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             return await src.ToAsync(false)
                 .AndWriteStringAsync(initialSize, enc, detectEncodingFromBom, bufferSize, token).ConfigureAwait(false);
@@ -913,7 +913,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             return await src.ToAsync(false)
                 .AndWriteStringBuilderAsync(initialSize, enc, detectEncodingFromBom, bufferSize, token)
@@ -938,7 +938,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             await src.ToAsync(false)
                 .AndWriteStringBuilderAsync(sbToAppend, enc, detectEncodingFromBom, bufferSize, token)
@@ -988,7 +988,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             var data = src();
             return data.Readable.FromJsonAsEnumerable<T>(serializer, token, enc ?? new UTF8Encoding(false),
@@ -1016,7 +1016,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             Action<T, CancellationToken> consumerAction,
             JsonSerializer serializer = null,
             int ppcBufferSize = ConcurrentBuffer.StandardSize,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize)
@@ -1046,7 +1046,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             Func<T, CancellationToken, Task> consumerFunc,
             JsonSerializer serializer = null,
             int ppcBufferSize = ConcurrentBuffer.StandardSize,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize)
@@ -1076,7 +1076,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             IConsumer<T> consumer,
             JsonSerializer serializer = null,
             int ppcBufferSize = ConcurrentBuffer.StandardSize,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize)
@@ -1109,7 +1109,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             IDataAdapter<TJ, TC> adapter,
             JsonSerializer serializer = null,
             int ppcBufferSize = ConcurrentBuffer.StandardSize,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize)
@@ -1142,7 +1142,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             IDataAdapter<TJ, TC> adapter,
             JsonSerializer serializer = null,
             int ppcBufferSize = ConcurrentBuffer.StandardSize,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize)
@@ -1175,7 +1175,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             IDataAdapter<TJ, TC> adapter,
             JsonSerializer serializer = null,
             int ppcBufferSize = ConcurrentBuffer.StandardSize,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize)
@@ -1205,7 +1205,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             string filename = null,
             int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
             FileOptions options = FileOptions.SequentialScan,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             return await src.AndWriteFileAsync(folder.ToDirectoryInfo(), filename, fileStreamBuffer, options, token)
                 .ConfigureAwait(false);
@@ -1227,7 +1227,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             string filename = null,
             int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
             FileOptions options = FileOptions.SequentialScan,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             var targetFile = folder.CreateFileInfo(filename ?? Guid.NewGuid().ToString("N"));
             await src.AndWriteFileAsync(targetFile, fileStreamBuffer, options, token).ConfigureAwait(false);
@@ -1247,7 +1247,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             FileInfo fileinfo,
             int fileStreamBuffer = StdLookUps.DefaultFileBufferSize,
             FileOptions options = FileOptions.SequentialScan,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             using (var strm = fileinfo.CreateStream(FileMode.Create, FileAccess.ReadWrite, FileShare.Read,
                 fileStreamBuffer, options))
@@ -1266,7 +1266,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="estimatedSize">Intial guess for the size of the byte array (optimization on resizing operation).</param>
         /// <param name="bufferSize">Buffer size for data-pull (copying) ops</param>
         public static async Task<byte[]> AndWriteBytesAsync(this Func<Task<PullFuncStream>> src,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             int estimatedSize = StdLookUps.DefaultBufferSize,
             int bufferSize = StdLookUps.DefaultBufferSize)
         {
@@ -1283,7 +1283,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="estimatedSize">Intial guess for the size of the byte array (optimization on resizing operation).</param>
         /// <param name="bufferSize">Buffer size for data-pull (copying) ops</param>
         public static async Task<ArraySegment<byte>> AndWriteByteSegAsync(this Func<Task<PullFuncStream>> src,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             int estimatedSize = StdLookUps.DefaultBufferSize,
             int bufferSize = StdLookUps.DefaultBufferSize)
         {
@@ -1301,7 +1301,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="initialSize">Initial Memory buffer Size</param>
         /// <param name="bufferSize">Buffer size for data-pull (copying) ops</param>
         public static async Task<MemoryStream> AndWriteBufferAsync(this Func<Task<PullFuncStream>> src,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             bool seekToOrigin = false,
             int initialSize = StdLookUps.DefaultBufferSize,
             int bufferSize = StdLookUps.DefaultBufferSize)
@@ -1324,7 +1324,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="token">Cancellation token to observe</param>
         public static async Task AndExecuteAsync(this Func<Task<PullFuncStream>> src,
             int bufferSize = StdLookUps.DefaultBufferSize,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             var data = await src().StartIfNeeded().ConfigureAwait(false);
             try
@@ -1354,7 +1354,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             Stream writableTarget,
             int bufferSize = StdLookUps.DefaultBufferSize,
             bool disposeTarget = false,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             var data = await src().StartIfNeeded().ConfigureAwait(false);
             await data.Readable.CopyToAsync(writableTarget, bufferSize, token, data.Dispose, disposeTarget)
@@ -1378,7 +1378,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             return (await src.AndWriteStringBuilderAsync(initialSize, enc ?? new UTF8Encoding(false),
                     detectEncodingFromBom, bufferSize, token).ConfigureAwait(false)).ToString();
@@ -1401,7 +1401,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             var sb = new StringBuilder(initialSize);
             await src.AndWriteStringBuilderAsync(sb, enc ?? new UTF8Encoding(false), detectEncodingFromBom, bufferSize,
@@ -1426,7 +1426,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             var data = await src().StartIfNeeded().ConfigureAwait(false);
             await data.Readable.CopyToBuilderAsync(sbToAppend, token, enc ?? new UTF8Encoding(false), bufferSize,
@@ -1488,7 +1488,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         public static async Task AndParseJsonArrayAsync<T>(this Func<Task<PullFuncStream>> src,
             BlockingCollection<T> target, 
             JsonSerializer serializer = null,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             CancellationTokenSource observedTokenSource = null,
             Encoding enc = null,
             bool detectEncodingFromBom = true,
@@ -1523,7 +1523,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             Action<T, CancellationToken> consumerAction,
             JsonSerializer serializer = null,
             int ppcBufferSize = ConcurrentBuffer.StandardSize,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize)
@@ -1553,7 +1553,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             Func<T, CancellationToken, Task> consumerFunc,
             JsonSerializer serializer = null,
             int ppcBufferSize = ConcurrentBuffer.StandardSize,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize)
@@ -1583,7 +1583,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             IConsumer<T> consumer,
             JsonSerializer serializer = null,
             int ppcBufferSize = ConcurrentBuffer.StandardSize,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize)
@@ -1616,7 +1616,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             IDataAdapter<TJ, TC> adapter,
             JsonSerializer serializer = null,
             int ppcBufferSize = ConcurrentBuffer.StandardSize,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize)
@@ -1649,7 +1649,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             IDataAdapter<TJ, TC> adapter,
             JsonSerializer serializer = null,
             int ppcBufferSize = ConcurrentBuffer.StandardSize,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize)
@@ -1682,7 +1682,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             IDataAdapter<TJ, TC> adapter,
             JsonSerializer serializer = null,
             int ppcBufferSize = ConcurrentBuffer.StandardSize,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize)

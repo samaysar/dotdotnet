@@ -97,7 +97,7 @@ namespace Dot.Net.DevFast.Tests.Collections
             Assert.IsTrue(instance.TryAdd(1));
             Assert.True(instance.IsFull);
             Assert.AreEqual(instance.Count, 2);
-            instance.FreezeCapacity();
+            instance.FreezeCapacity(false);
             Assert.IsFalse(instance.TryAdd(1));
             Assert.True(instance.IsFull);
             Assert.AreEqual(instance.Count, 2);
