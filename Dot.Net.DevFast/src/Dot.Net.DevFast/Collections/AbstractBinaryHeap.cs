@@ -125,7 +125,7 @@ namespace Dot.Net.DevFast.Collections
             {
                 var parentIndex = ParentIndex(current);
                 if (!LeftPrecedes(_dataCollection[current], _dataCollection[parentIndex])) return;
-                current = Swap(current, parentIndex);
+                current = SwapNReturnLastParam(current, parentIndex);
             }
         }
 
@@ -146,7 +146,7 @@ namespace Dot.Net.DevFast.Collections
                 {
                     return;
                 }
-                current = Swap(current, swapWith);
+                current = SwapNReturnLastParam(current, swapWith);
                 leftIndex = LeftChildIndex(current);
             }
         }
@@ -169,7 +169,7 @@ namespace Dot.Net.DevFast.Collections
             _dataCollection = newCollection;
         }
 
-        private int Swap(int firstIndex, int secondIndex)
+        private int SwapNReturnLastParam(int firstIndex, int secondIndex)
         {
             var temp = _dataCollection[firstIndex];
             _dataCollection[firstIndex] = _dataCollection[secondIndex];

@@ -53,6 +53,29 @@ namespace Dot.Net.DevFast.Tests.Collections
         }
 
         [Test]
+        [TestCase(10)]
+        [TestCase(10000)]
+        public void MinHeap_Maintains_Ascending_Sorting_Order_Input_Sorted(int count)
+        {
+            var instance = new MinHeap<byte>(count);
+            Assert.False(instance.CanResize);
+            var input = new byte[count];
+            new Random().NextBytes(input);
+            Array.Sort(input);
+            foreach (var val in input)
+            {
+                Assert.True(instance.TryAdd(val));
+            }
+            Assert.True(instance.IsFull);
+            foreach (var next in input)
+            {
+                Assert.IsTrue(instance.TryPop(out var val) &&
+                              val.Equals(next));
+            }
+            Assert.True(instance.IsEmpty);
+        }
+
+        [Test]
         [TestCase(-1)]
         [TestCase(int.MinValue)]
         public void MaxHeap_Ctor_Throws_Error_For_Invalid_Arguments(int capacity)
@@ -88,6 +111,30 @@ namespace Dot.Net.DevFast.Tests.Collections
             Assert.True(instance.IsFull);
             Array.Sort(input);
             Array.Reverse(input);
+            foreach (var next in input)
+            {
+                Assert.IsTrue(instance.TryPop(out var val) &&
+                              val.Equals(next));
+            }
+            Assert.True(instance.IsEmpty);
+        }
+
+        [Test]
+        [TestCase(10)]
+        [TestCase(10000)]
+        public void MaxHeap_Maintains_Descending_Sorting_Order_Input_Sorted(int count)
+        {
+            var instance = new MaxHeap<byte>(count);
+            Assert.False(instance.CanResize);
+            var input = new byte[count];
+            new Random().NextBytes(input);
+            Array.Sort(input);
+            Array.Reverse(input);
+            foreach (var val in input)
+            {
+                Assert.True(instance.TryAdd(val));
+            }
+            Assert.True(instance.IsFull);
             foreach (var next in input)
             {
                 Assert.IsTrue(instance.TryPop(out var val) &&
