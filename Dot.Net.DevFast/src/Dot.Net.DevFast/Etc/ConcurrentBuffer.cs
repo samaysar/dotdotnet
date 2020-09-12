@@ -25,9 +25,11 @@ namespace Dot.Net.DevFast.Etc
 
         /// <summary>
         /// Created blocking collection with given buffer size.
+        /// NOTE: <see cref="Unbounded"/> is a special number to create unbounded buffer.
         /// </summary>
         /// <typeparam name="T">Collection type</typeparam>
         /// <param name="bufferSize">Size of buffer.</param>
+        /// <exception cref="DdnDfException">When given size is negative</exception>
         public static BlockingCollection<T> CreateBuffer<T>(int bufferSize)
         {
             return bufferSize.ThrowIfNegative($"Parallel Buffer size cannot be negative. (Value: {bufferSize})")
