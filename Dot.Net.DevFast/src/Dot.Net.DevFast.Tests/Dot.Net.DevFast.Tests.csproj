@@ -1,13 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks Condition="'$(LibraryFrameworks)'==''">net461;net472;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks Condition="'$(LibraryFrameworks)'==''">net461;net472;netcoreapp2.0;netcoreapp3.1</TargetFrameworks>
     <TargetFrameworks Condition="'$(LibraryFrameworks)'!=''">$(LibraryFrameworks)</TargetFrameworks>
-	<IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
-    <DefineConstants>NETCOREAPP2_0</DefineConstants>
+    <DefineConstants>NETCOREAPP2_0;NETCORE</DefineConstants>
+	<ReferringTargetFrameworkForProjectReferences>.NETStandard,Version=v2.0</ReferringTargetFrameworkForProjectReferences>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <DefineConstants>NETCOREAPP3_1;NETCORE</DefineConstants>
+	<ReferringTargetFrameworkForProjectReferences>.NETStandard,Version=v2.1</ReferringTargetFrameworkForProjectReferences>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
@@ -18,18 +23,50 @@
     <DefineConstants>NET472</DefineConstants>
   </PropertyGroup>
   
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="NSubstitute" Version="3.1.0" />
-    <PackageReference Include="NUnit" Version="3.10.1" />
-	<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.1" />
+  <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp2.0'">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NSubstitute" Version="4.2.2" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+	<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
 	<PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.2" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
   </ItemGroup>
   
-  <ItemGroup>
-    <ProjectReference Include="..\Dot.Net.DevFast\Dot.Net.DevFast.csproj" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+	<PackageReference Include="Microsoft.TestPlatform.TestHost" Version="16.2.0" />
+	<PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.3.0" />
+	<PackageReference Include="NuGet.Frameworks" Version="5.7.0" />
+	<PackageReference Include="Microsoft.CodeCoverage" Version="16.3.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NSubstitute" Version="4.2.2" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+	<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+	<PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
+    <ProjectReference Include="..\Dot.Net.DevFast\Dot.Net.DevFast.csproj" AdditionalProperties="TargetFramework=net461" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+    <ProjectReference Include="..\Dot.Net.DevFast\Dot.Net.DevFast.csproj" AdditionalProperties="TargetFramework=net472" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+    <ProjectReference Include="..\Dot.Net.DevFast\Dot.Net.DevFast.csproj" AdditionalProperties="TargetFramework=netstandard2.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <ProjectReference Include="..\Dot.Net.DevFast\Dot.Net.DevFast.csproj" AdditionalProperties="TargetFramework=netstandard2.1" />
   </ItemGroup>
   
 </Project>

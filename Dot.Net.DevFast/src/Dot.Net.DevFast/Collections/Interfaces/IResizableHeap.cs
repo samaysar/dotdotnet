@@ -3,7 +3,7 @@
     /// <summary>
     /// Interface to declare resizing operations contract.
     /// </summary>
-    public interface IResizableHeap
+    public interface IResizableHeap<T> : IHeap<T>, ICompactAbleHeap
     {
         /// <summary>
         /// Gets the current truth value whether resizing is possible or not.
@@ -17,7 +17,7 @@
         /// Calling this method will freeze the capacity (i.e. heap will not resize upon add).
         /// Also, runs compaction on the internally allocated storage based on <paramref name="compact"/> flag.
         /// </summary>
-        /// <param name="compact">If true, internally allocated storage will be compacted. Careful it can induce some latency.</param>
+        /// <param name="compact">If true, internally allocated storage will be compacted.</param>
         void FreezeCapacity(bool compact);
     }
 }

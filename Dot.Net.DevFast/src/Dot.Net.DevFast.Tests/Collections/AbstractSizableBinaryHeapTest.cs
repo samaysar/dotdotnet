@@ -13,7 +13,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         [Test]
         [TestCase(-1)]
         [TestCase(int.MinValue)]
-        public void AbstractSizableBinaryHeap_Ctor_Throws_Error_For_Invalid_Capacity(int capacity)
+        public void Ctor_Throws_Error_For_Invalid_Capacity(int capacity)
         {
             var ctorEx = Assert.Throws<TargetInvocationException>(() =>
             {
@@ -24,7 +24,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         }
 
         [Test]
-        public void AbstractSizableBinaryHeap_Ctor_Throws_Error_For_Missing_Strategy()
+        public void Ctor_Throws_Error_For_Missing_Strategy()
         {
             var ctorEx = Assert.Throws<TargetInvocationException>(() =>
             {
@@ -35,7 +35,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         }
 
         [Test]
-        public void AbstractSizableBinaryHeap_Ctor_Properly_Sets_Properties()
+        public void Ctor_Properly_Sets_Properties()
         {
             IResizeStrategy strategy = new HeapNoResizing();
             var instance = Substitute.For<AbstractSizableBinaryHeap<int>>(0);
@@ -52,7 +52,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         }
 
         [Test]
-        public void AbstractSizableBinaryHeap_FreezeCapacity_Behaves()
+        public void FreezeCapacity_Behaves()
         {
             foreach (var strategy in new IResizeStrategy[]
             {
@@ -73,7 +73,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         }
 
         [Test]
-        public void AbstractSizableBinaryHeap_UseStrategies_Properly()
+        public void UseStrategies_Properly()
         {
             var strategy = Substitute.For<IResizeStrategy>();
             strategy.TryComputeNewSize(Arg.Any<int>(), out _)

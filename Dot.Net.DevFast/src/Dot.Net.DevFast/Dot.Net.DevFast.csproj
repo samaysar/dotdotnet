@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks Condition="'$(LibraryFrameworks)'==''">net461;net472;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks Condition="'$(LibraryFrameworks)'==''">net461;net472;netstandard2.0;netstandard2.1</TargetFrameworks>
     <TargetFrameworks Condition="'$(LibraryFrameworks)'!=''">$(LibraryFrameworks)</TargetFrameworks>
   </PropertyGroup>
 
@@ -29,26 +29,28 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
  
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+    <AssemblyTitle>Dot.Net.DevFast .NET Standard 2.1</AssemblyTitle>
+    <DefineConstants>NETSTANDARD2_1;NETCORE;NETSTANDARD</DefineConstants>
+  </PropertyGroup>
+  
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <DefineConstants>NETSTANDARD2_0</DefineConstants>
+    <AssemblyTitle>Dot.Net.DevFast .NET Standard 2.0</AssemblyTitle>
+    <DefineConstants>NETSTANDARD2_0;NETCORE;NETSTANDARD</DefineConstants>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
+    <AssemblyTitle>Dot.Net.DevFast .NET 4.6.1</AssemblyTitle>
     <DefineConstants>NET461</DefineConstants>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(TargetFramework)' == 'net472'">
+    <AssemblyTitle>Dot.Net.DevFast .NET 4.7.2</AssemblyTitle>
     <DefineConstants>NET472</DefineConstants>
   </PropertyGroup>
   
   <ItemGroup>
-    <Compile Remove="Collections\Concurrent\**" />
-    <EmbeddedResource Remove="Collections\Concurrent\**" />
-    <None Remove="Collections\Concurrent\**" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 	<None Include="..\..\..\icon.png" Pack="true" PackagePath="" />
 	<None Include="..\..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>

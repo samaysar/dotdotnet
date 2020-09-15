@@ -983,16 +983,19 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="token">Cancellation token to observe</param>
+        /// <param name="objectBufferSize">Size of the intermediate object buffer in terms of number (count) of deserialized objects. NOTE: <see cref="ConcurrentBuffer.Unbounded"/> is a special number to create unbounded buffer.</param>
+        /// <exception cref="DdnDfException">When given size is negative</exception>
         public static IEnumerable<T> AndParseJsonArray<T>(this Func<PullFuncStream> src,
             JsonSerializer serializer = null,
             Encoding enc = null,
             bool detectEncodingFromBom = true,
             int bufferSize = StdLookUps.DefaultBufferSize,
-            CancellationToken token = default)
+            CancellationToken token = default,
+            int objectBufferSize = ConcurrentBuffer.MinSize)
         {
             var data = src();
             return data.Readable.FromJsonAsEnumerable<T>(serializer, token, enc ?? new UTF8Encoding(false),
-                bufferSize, data.Dispose, detectEncodingFromBom);
+                bufferSize, data.Dispose, detectEncodingFromBom, objectBufferSize);
         }
 
         /// <summary>
