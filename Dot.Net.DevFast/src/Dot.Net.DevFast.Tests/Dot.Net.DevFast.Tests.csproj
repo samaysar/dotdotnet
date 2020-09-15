@@ -7,14 +7,11 @@
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
     <DefineConstants>NETCOREAPP2_0;NETCORE</DefineConstants>
-	<ReferringTargetFrameworkForProjectReferences>.NETStandard,Version=v2.0</ReferringTargetFrameworkForProjectReferences>
 	<UseNETCoreGenerator>true</UseNETCoreGenerator>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
     <DefineConstants>NETCOREAPP3_1;NETCORE</DefineConstants>
-	<ReferringTargetFrameworkForProjectReferences>.NETStandard,Version=v2.1</ReferringTargetFrameworkForProjectReferences>
-	<UseNETCoreGenerator>true</UseNETCoreGenerator>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
@@ -40,14 +37,11 @@
   
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
 	<PackageReference Include="Microsoft.TestPlatform.TestHost" Version="16.2.0" />
 	<PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.3.0" />
 	<PackageReference Include="NuGet.Frameworks" Version="5.7.0" />
 	<PackageReference Include="Microsoft.CodeCoverage" Version="16.3.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NSubstitute" Version="4.2.2" />
     <PackageReference Include="NUnit" Version="3.12.0" />
