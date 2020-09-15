@@ -17,10 +17,9 @@ namespace Dot.Net.DevFast.Tests.Collections
         [TestCase(int.MinValue)]
         public void Ctor_Throws_Error_For_Invalid_Arguments(int capacity)
         {
-            var ctorEx = Assert.Throws<TargetInvocationException>(() =>
-            {
-                var _ = Substitute.For<AbstractBinaryHeap<int>>(capacity);
-            }).InnerException as DdnDfException;
+            var ctorEx =
+                Assert.Throws<TargetInvocationException>(() => Substitute.For<AbstractBinaryHeap<int>>(capacity))
+                    .InnerException as DdnDfException;
             Assert.IsNotNull(ctorEx);
             Assert.IsTrue(ctorEx.ErrorCode.Equals(DdnDfErrorCode.ValueLessThanThreshold));
         }

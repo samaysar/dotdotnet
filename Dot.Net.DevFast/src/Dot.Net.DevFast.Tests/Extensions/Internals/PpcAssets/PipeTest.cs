@@ -61,7 +61,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             }
             var cts = new CancellationTokenSource();
             cts.Cancel();
-            Assert.ThrowsAsync<TaskCanceledException>(() => Pipe<object, object>.Execute(cts.Token,
+            Assert.ThrowsAsync<OperationCanceledException>(() => Pipe<object, object>.Execute(cts.Token,
                 ConcurrentBuffer.MinSize, IdentityAwaitableAdapter<object>.Default, producers, consumers));
         }
 

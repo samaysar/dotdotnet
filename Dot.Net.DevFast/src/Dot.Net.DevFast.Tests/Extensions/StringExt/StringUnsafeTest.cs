@@ -23,7 +23,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         }
 
         [Test]
-        [TestCase(null, char.MinValue, char.MaxValue)]
+        [TestCase(null, char.MinValue, 'Z')]
         public void UnsafeTrim_With_TrimChars_Throws_Error_When_Input_Is_Null(string input,
             params char[] trimChars)
         {
@@ -52,7 +52,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [TestCase("    A   ,    ", "A", ' ', ',')]
         [TestCase("  , ,  A     B ,,, ", "A     B", ' ', ',', '\0')]
         [TestCase("    A,B  ", "A,B", ' ', ',')]
-        [TestCase("AB  ", "AB", ' ', char.MaxValue)]
+        [TestCase("AB  ", "AB", ' ')]
         [TestCase("    AB", "AB", ' ', char.MinValue)]
         public void UnsafeTrim_With_TrimChars_Gives_Consistent_Outcomes(string input, string expectation,
             params char[] trimChars)
