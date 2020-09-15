@@ -12,7 +12,11 @@ namespace Dot.Net.DevFast.Extensions.Internals
             int length, Encoding enc, CancellationToken token, int chunkSize,
             Action<int, char[], int, int> copyToAction, Stream writableInner)
         {
+#if OLDNETUSING
             using (writable)
+#else
+            await using (writable.ConfigureAwait(false))
+#endif 
             {
                 await writable.CopyFromAsync(length, enc, token, chunkSize, copyToAction)
                     .ConfigureAwait(false);
