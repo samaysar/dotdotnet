@@ -77,7 +77,7 @@ namespace Dot.Net.DevFast.IO
 
         /// <inheritdoc />
         /// <summary>
-        /// Calls <seealso cref="Stream.Read"/> on the inner stream and counts bytes.
+        /// Calls <seealso cref="Stream.Read(byte[], int, int)"/> on the inner stream and counts bytes.
         /// </summary>
         public override int Read(byte[] buffer, int offset, int count)
         {
@@ -98,7 +98,7 @@ namespace Dot.Net.DevFast.IO
 
         /// <inheritdoc />
         /// <summary>
-        /// Calls <seealso cref="Stream.Write"/> on the inner stream and counts bytes.
+        /// Calls <seealso cref="Stream.Write(byte[], int, int)"/> on the inner stream and counts bytes.
         /// </summary>
         public override void Write(byte[] buffer, int offset, int count)
         {

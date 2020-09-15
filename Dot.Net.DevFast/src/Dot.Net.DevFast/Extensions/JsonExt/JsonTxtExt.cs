@@ -504,10 +504,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="source">source JSON String builder</param>
         /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.Serializer"/></param>
         /// <param name="token">Cancellation token to observe</param>
+        /// <param name="objectBufferSize">Size of the intermediate object buffer in terms of number (count) of deserialized objects. NOTE: <see cref="ConcurrentBuffer.Unbounded"/> is a special number to create unbounded buffer.</param>
+        /// <exception cref="DdnDfException">When given size is negative</exception>
         public static IEnumerable<T> FromJsonAsEnumerable<T>(this StringBuilder source,
-            JsonSerializer serializer = null, CancellationToken token = default)
+            JsonSerializer serializer = null, CancellationToken token = default,
+            int objectBufferSize = ConcurrentBuffer.MinSize)
         {
-            return new SbReader(source).FromJsonAsEnumerable<T>(serializer, token);
+            return new SbReader(source).FromJsonAsEnumerable<T>(serializer, token, true, objectBufferSize);
         }
 
         /// <summary>
@@ -519,10 +522,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="source">source JSON String</param>
         /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.Serializer"/></param>
         /// <param name="token">Cancellation token to observe</param>
+        /// <param name="objectBufferSize">Size of the intermediate object buffer in terms of number (count) of deserialized objects. NOTE: <see cref="ConcurrentBuffer.Unbounded"/> is a special number to create unbounded buffer.</param>
+        /// <exception cref="DdnDfException">When given size is negative</exception>
         public static IEnumerable<T> FromJsonAsEnumerable<T>(this string source, JsonSerializer serializer = null,
-            CancellationToken token = default)
+            CancellationToken token = default,
+            int objectBufferSize = ConcurrentBuffer.MinSize)
         {
-            return source.CreateReader().FromJsonAsEnumerable<T>(serializer, token);
+            return source.CreateReader().FromJsonAsEnumerable<T>(serializer, token, true, objectBufferSize);
         }
 
         /// <summary>
@@ -538,13 +544,16 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="bufferSize">Buffer size</param>
         /// <param name="disposeSource">If true, <paramref name="source"/> is disposed after the deserialization</param>
         /// <param name="detectEncodingFromBom">If true, an attempt to detect encoding from BOM (byte order mark) is made</param>
+        /// <param name="objectBufferSize">Size of the intermediate object buffer in terms of number (count) of deserialized objects. NOTE: <see cref="ConcurrentBuffer.Unbounded"/> is a special number to create unbounded buffer.</param>
+        /// <exception cref="DdnDfException">When given size is negative</exception>
         public static IEnumerable<T> FromJsonAsEnumerable<T>(this Stream source, JsonSerializer serializer = null,
             CancellationToken token = default, Encoding enc = null,
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeSource = true,
-            bool detectEncodingFromBom = true)
+            bool detectEncodingFromBom = true,
+            int objectBufferSize = ConcurrentBuffer.MinSize)
         {
             return source.CreateReader(enc, bufferSize, disposeSource, detectEncodingFromBom)
-                .FromJsonAsEnumerable<T>(serializer, token);
+                .FromJsonAsEnumerable<T>(serializer, token, true, objectBufferSize);
         }
 
         /// <summary>
@@ -557,12 +566,15 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.Serializer"/></param>
         /// <param name="token">Cancellation token to observe</param>
         /// <param name="disposeSource">If true, <paramref name="source"/> is disposed after the deserialization</param>
+        /// <param name="objectBufferSize">Size of the intermediate object buffer in terms of number (count) of deserialized objects. NOTE: <see cref="ConcurrentBuffer.Unbounded"/> is a special number to create unbounded buffer.</param>
+        /// <exception cref="DdnDfException">When given size is negative</exception>
         public static IEnumerable<T> FromJsonAsEnumerable<T>(this TextReader source, JsonSerializer serializer = null,
-            CancellationToken token = default, bool disposeSource = true)
+            CancellationToken token = default, bool disposeSource = true,
+            int objectBufferSize = ConcurrentBuffer.MinSize)
         {
             var nullHandledSerializer = serializer ?? CustomJson.Serializer();
             return nullHandledSerializer.AdaptedJsonReader(source, disposeSource)
-                .FromJsonAsEnumerable<T>(nullHandledSerializer, token);
+                .FromJsonAsEnumerable<T>(nullHandledSerializer, token, true, objectBufferSize);
         }
 
         /// <summary>
@@ -575,10 +587,13 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// <param name="serializer">JSON serializer to use, if not supplied then internally uses <seealso cref="CustomJson.AdaptedJsonSerializer(JsonReader)"/></param>
         /// <param name="token">Cancellation token to observe</param>
         /// <param name="disposeSource">If true, <paramref name="source"/> is disposed after the deserialization</param>
+        /// <param name="objectBufferSize">Size of the intermediate object buffer in terms of number (count) of deserialized objects. NOTE: <see cref="ConcurrentBuffer.Unbounded"/> is a special number to create unbounded buffer.</param>
+        /// <exception cref="DdnDfException">When given size is negative</exception>
         public static IEnumerable<T> FromJsonAsEnumerable<T>(this JsonReader source, JsonSerializer serializer = null,
-            CancellationToken token = default, bool disposeSource = true)
+            CancellationToken token = default, bool disposeSource = true, 
+            int objectBufferSize = ConcurrentBuffer.MinSize)
         {
-            var bc = new BlockingCollection<T>();
+            var bc = ConcurrentBuffer.CreateBuffer<T>(objectBufferSize);
             var populatingTask = new Action(() =>
             {
                 try

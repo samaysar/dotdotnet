@@ -378,7 +378,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         {
             return async pfs =>
             {
-                using (var serialBc = new BlockingCollection<T>(ppcBufferSize))
+                using (var serialBc = ConcurrentBuffer.CreateBuffer<T>(ppcBufferSize))
                 {
                     using (var localCts = new CancellationTokenSource())
                     {

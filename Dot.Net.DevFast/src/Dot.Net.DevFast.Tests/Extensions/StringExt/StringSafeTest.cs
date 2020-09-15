@@ -77,7 +77,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [TestCase("    A   ,    ", "A", ' ', ',')]
         [TestCase("  , ,  A     B ,,, ", "A     B", ' ', ',', '\0')]
         [TestCase("    A,B  ", "A,B", ' ', ',')]
-        [TestCase("AB  ", "AB", ' ', char.MaxValue)]
+        [TestCase("AB  ", "AB", ' ')]
         [TestCase("    AB", "AB", ' ', char.MinValue)]
         public void SafeTrimOrEmpty_With_TrimChars_Gives_Consistent_Outcomes(string input, string expectation,
             params char[] trimChars)
@@ -108,7 +108,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [TestCase("    A   ,    ", "A", ' ', ',')]
         [TestCase("  , ,  A     B ,,, ", "A     B", ' ', ',', '\0')]
         [TestCase("    A,B  ", "A,B", ' ', ',')]
-        [TestCase("AB  ", "AB", ' ', char.MaxValue)]
+        [TestCase("AB  ", "AB", ' ')]
         [TestCase("    AB", "AB", ' ', char.MinValue)]
         public void SafeTrimOrNull_With_TrimChars_Gives_Consistent_Outcomes(string input, string expectation,
             params char[] trimChars)
@@ -139,7 +139,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [TestCase("    A   ,    ", "A", null, ' ', ',')]
         [TestCase("  , ,  A     B ,,, ", "A     B", null, ' ', ',', '\0')]
         [TestCase("    A,B  ", "A,B", null, ' ', ',')]
-        [TestCase("AB  ", "AB", null, ' ', char.MaxValue)]
+        [TestCase("AB  ", "AB", null, ' ')]
         [TestCase("    AB", "AB", null, ' ', char.MinValue)]
         public void SafeTrimOrDefault_With_TrimChars_Gives_Consistent_Outcomes(string input, string expectation,
             string defaultVal, params char[] trimChars)
@@ -158,7 +158,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [Test]
         [TestCase(int.MaxValue)]
         [TestCase(int.MinValue)]
-        public void ToEnumUncheckedOrDefault_Returns_Invalid_Value_For_Invalid_Parsable_Strings(int invalidInput)
+        public void ToEnumUncheckedOrDefault_Returns_Invalid_Value_For_Invalid_Parseable_Strings(int invalidInput)
         {
             Assert.True(
                 PerformToEnumUncheckedOrDefault(invalidInput.ToString(), DateTimeKind.Unspecified)
@@ -224,7 +224,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StringExt
         [Test]
         [TestCase(int.MaxValue)]
         [TestCase(int.MinValue)]
-        public void ToEnumOrDefault_Returns_Default_Value_For_Invalid_Parsable_Strings(int invalidInput)
+        public void ToEnumOrDefault_Returns_Default_Value_For_Invalid_Parseable_Strings(int invalidInput)
         {
             Assert.True(
                 PerformToEnumOrDefault(invalidInput.ToString(), DateTimeKind.Unspecified)

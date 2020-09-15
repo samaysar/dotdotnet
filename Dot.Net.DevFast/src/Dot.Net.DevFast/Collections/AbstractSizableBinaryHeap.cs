@@ -11,7 +11,7 @@ namespace Dot.Net.DevFast.Collections
     /// Once construction is done, capacity can be frozen, with ot without compaction.
     /// </summary>
     /// <typeparam name="T">Heap type</typeparam>
-    public abstract class AbstractSizableBinaryHeap<T> : AbstractBinaryHeap<T>, IResizableHeap
+    public abstract class AbstractSizableBinaryHeap<T> : AbstractBinaryHeap<T>, IResizableHeap<T>
     {
         private IResizeStrategy _heapResizing;
 

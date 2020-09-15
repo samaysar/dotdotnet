@@ -1,3 +1,11 @@
+Changes to Dot.Net.DevFast 4.0.0
+
+ 1. Change/Fix - Added optional objectBufferSize with default value in AndParseJsonArray in the streaming method
+ 2. Change/Fix - Added optional objectBufferSize with default value in FromJsonAsEnumerable in JSON deserialization extensions
+ 3. New feature - Adding Lock Based Concurrent Heap implementation under concurrent collection
+ 4. New feature - Adding Concurrent Min/Max Heap (lock based) implementation under concurrent collection
+ 5. New feature - Added .Net Standard 3.1 as Target Framework
+
 Changes to Dot.Net.DevFast 3.2.0
 
  1. New feature - Adding Abstract Binary Heap implementation under collection

@@ -15,12 +15,11 @@ namespace Dot.Net.DevFast.Tests.Collections
         [Test]
         [TestCase(-1)]
         [TestCase(int.MinValue)]
-        public void AbstractBinaryHeap_Ctor_Throws_Error_For_Invalid_Arguments(int capacity)
+        public void Ctor_Throws_Error_For_Invalid_Arguments(int capacity)
         {
-            var ctorEx = Assert.Throws<TargetInvocationException>(() =>
-            {
-                var _ = Substitute.For<AbstractBinaryHeap<int>>(capacity);
-            }).InnerException as DdnDfException;
+            var ctorEx =
+                Assert.Throws<TargetInvocationException>(() => Substitute.For<AbstractBinaryHeap<int>>(capacity))
+                    .InnerException as DdnDfException;
             Assert.IsNotNull(ctorEx);
             Assert.IsTrue(ctorEx.ErrorCode.Equals(DdnDfErrorCode.ValueLessThanThreshold));
         }
@@ -29,7 +28,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void AbstractBinaryHeap_Properties_Are_Well_Defined(int capacity)
+        public void Properties_Are_Well_Defined(int capacity)
         {
             IHeap<int> instance = Substitute.For<AbstractBinaryHeap<int>>(capacity);
             Assert.True(instance.IsEmpty);
@@ -40,7 +39,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         }
 
         [Test]
-        public void AbstractBinaryHeap_Add_N_Try_Add_Behaves_For_Empty_Heap()
+        public void Add_N_Try_Add_Behaves_For_Empty_Heap()
         {
             IHeap<int> instance = new AbstractBinaryTestHeap(0, (x, y) => x < y);
             Assert.IsFalse(instance.TryAdd(1));
@@ -51,7 +50,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         }
 
         [Test]
-        public void AbstractBinaryHeap_Add_N_Try_Add_Behaves_For_Non_Empty_Heap()
+        public void Add_N_Try_Add_Behaves_For_Non_Empty_Heap()
         {
             IHeap<int> instance = new AbstractBinaryTestHeap(1, (x, y) => x < y);
             Assert.True(instance.IsEmpty);
@@ -74,7 +73,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void AbstractBinaryHeap_Peek_N_TryPeek_Behaves_For_Empty_Heap(int capacity)
+        public void Peek_N_TryPeek_Behaves_For_Empty_Heap(int capacity)
         {
             IHeap<int> instance = Substitute.For<AbstractBinaryHeap<int>>(capacity);
             Assert.Throws<IndexOutOfRangeException>(() => instance.Peek());
@@ -82,7 +81,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         }
 
         [Test]
-        public void AbstractBinaryHeap_Peek_N_TryPeek_Behaves_For_Non_Empty_Heap()
+        public void Peek_N_TryPeek_Behaves_For_Non_Empty_Heap()
         {
             IHeap<int> instance = new AbstractBinaryTestHeap(1, (x, y) => x < y);
             instance.Add(1);
@@ -94,7 +93,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void AbstractBinaryHeap_Pop_N_TryPop_Behaves_For_Empty_Heap(int capacity)
+        public void Pop_N_TryPop_Behaves_For_Empty_Heap(int capacity)
         {
             IHeap<int> instance = Substitute.For<AbstractBinaryHeap<int>>(capacity);
             Assert.Throws<IndexOutOfRangeException>(() => instance.Pop());
@@ -102,7 +101,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         }
 
         [Test]
-        public void AbstractBinaryHeap_Pop_N_TryPop_Behaves_For_Non_Empty_Heap()
+        public void Pop_N_TryPop_Behaves_For_Non_Empty_Heap()
         {
             IHeap<int> instance = new AbstractBinaryTestHeap(5, (x, y) => x < y);
             instance.Add(3);
@@ -120,7 +119,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         }
 
         [Test]
-        public void AbstractBinaryHeap_Compact_Behaves()
+        public void Compact_Behaves()
         {
             var instance = Substitute.For<AbstractBinaryHeap<int>>(2);
             Assert.AreEqual(instance.Capacity, 2);

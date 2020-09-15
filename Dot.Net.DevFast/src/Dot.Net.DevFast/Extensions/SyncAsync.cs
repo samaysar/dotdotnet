@@ -51,6 +51,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             sync();
                             tcs.TrySetResult(null);
                         }
@@ -102,6 +103,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             var t = sync();
                             tcs.TrySetResult(t);
                         }
@@ -157,6 +159,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             sync(t0);
                             tcs.TrySetResult(null);
                         }
@@ -208,6 +211,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             var t = sync(t0);
                             tcs.TrySetResult(t);
                         }
@@ -263,6 +267,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             sync(t0, t1);
                             tcs.TrySetResult(null);
                         }
@@ -314,6 +319,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1);
                             tcs.TrySetResult(t);
                         }
@@ -369,6 +375,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2);
                             tcs.TrySetResult(null);
                         }
@@ -420,6 +427,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2);
                             tcs.TrySetResult(t);
                         }
@@ -475,6 +483,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3);
                             tcs.TrySetResult(null);
                         }
@@ -526,6 +535,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3);
                             tcs.TrySetResult(t);
                         }
@@ -581,6 +591,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4);
                             tcs.TrySetResult(null);
                         }
@@ -633,6 +644,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4);
                             tcs.TrySetResult(t);
                         }
@@ -689,6 +701,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5);
                             tcs.TrySetResult(null);
                         }
@@ -741,6 +754,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5);
                             tcs.TrySetResult(t);
                         }
@@ -798,6 +812,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6);
                             tcs.TrySetResult(null);
                         }
@@ -851,6 +866,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6);
                             tcs.TrySetResult(t);
                         }
@@ -908,6 +924,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6, t7);
                             tcs.TrySetResult(null);
                         }
@@ -961,6 +978,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6, t7);
                             tcs.TrySetResult(t);
                         }
@@ -1018,6 +1036,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6, t7, t8);
                             tcs.TrySetResult(null);
                         }
@@ -1072,6 +1091,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6, t7, t8);
                             tcs.TrySetResult(t);
                         }
@@ -1130,6 +1150,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9);
                             tcs.TrySetResult(null);
                         }
@@ -1185,6 +1206,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9);
                             tcs.TrySetResult(t);
                         }
@@ -1243,6 +1265,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10);
                             tcs.TrySetResult(null);
                         }
@@ -1298,6 +1321,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10);
                             tcs.TrySetResult(t);
                         }
@@ -1356,6 +1380,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11);
                             tcs.TrySetResult(null);
                         }
@@ -1411,6 +1436,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11);
                             tcs.TrySetResult(t);
                         }
@@ -1469,6 +1495,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12);
                             tcs.TrySetResult(null);
                         }
@@ -1524,6 +1551,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12);
                             tcs.TrySetResult(t);
                         }
@@ -1582,6 +1610,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13);
                             tcs.TrySetResult(null);
                         }
@@ -1638,6 +1667,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13);
                             tcs.TrySetResult(t);
                         }
@@ -1698,6 +1728,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14);
                             tcs.TrySetResult(null);
                         }
@@ -1755,6 +1786,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14);
                             tcs.TrySetResult(t);
                         }
@@ -1815,6 +1847,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15);
                             tcs.TrySetResult(null);
                         }
@@ -1872,6 +1905,7 @@ namespace Dot.Net.DevFast.Extensions
                     {
                         using (token.Register(() => tcs.TrySetCanceled(token)))
                         {
+                            token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15);
                             tcs.TrySetResult(t);
                         }
