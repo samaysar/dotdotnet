@@ -8,11 +8,13 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
     <DefineConstants>NETCOREAPP2_0;NETCORE</DefineConstants>
 	<ReferringTargetFrameworkForProjectReferences>.NETStandard,Version=v2.0</ReferringTargetFrameworkForProjectReferences>
+	<UseNETCoreGenerator>true</UseNETCoreGenerator>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
     <DefineConstants>NETCOREAPP3_1;NETCORE</DefineConstants>
 	<ReferringTargetFrameworkForProjectReferences>.NETStandard,Version=v2.1</ReferringTargetFrameworkForProjectReferences>
+	<UseNETCoreGenerator>true</UseNETCoreGenerator>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
@@ -24,6 +26,7 @@
   </PropertyGroup>
   
   <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp2.0'">
+    <PackageReference Include="System.Runtime" Version="4.2.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0">
       <PrivateAssets>all</PrivateAssets>
