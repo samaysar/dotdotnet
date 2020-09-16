@@ -8,7 +8,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     /// Consumer interface for parallel Producer consumer pattern.
     /// </summary>
     /// <typeparam name="T">Content type</typeparam>
+#if OLDNETUSING
     public interface IConsumer<in T> : IDisposable
+#else
+    public interface IConsumer<in T> : IAsyncDisposable
+#endif
     {
         /// <summary>
         /// This method is called ONCE before any call is made to <see cref="ConsumeAsync"/>.

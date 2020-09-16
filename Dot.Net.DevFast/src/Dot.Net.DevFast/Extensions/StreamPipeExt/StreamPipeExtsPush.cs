@@ -378,19 +378,12 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         {
             return async pfs =>
             {
-                using (var serialBc = ConcurrentBuffer.CreateBuffer<T>(ppcBufferSize))
-                {
-                    using (var localCts = new CancellationTokenSource())
-                    {
-                        using (var combinedCts =
-                            CancellationTokenSource.CreateLinkedTokenSource(pfs.Token, localCts.Token))
-                        {
-                            await serialBc.PushPpcJsonEnumeration(serializer, enc ?? new UTF8Encoding(false),
-                                writerBuffer, localCts, autoFlush,
-                                combinedCts.Token, pfs, producer, ppcBufferSize).ConfigureAwait(false);
-                        }
-                    }
-                }
+                using var serialBc = ConcurrentBuffer.CreateBuffer<T>(ppcBufferSize);
+                using var localCts = new CancellationTokenSource();
+                using var combinedCts = CancellationTokenSource.CreateLinkedTokenSource(pfs.Token, localCts.Token);
+                await serialBc.PushPpcJsonEnumeration(serializer, enc ?? new UTF8Encoding(false),
+                    writerBuffer, localCts, autoFlush,
+                    combinedCts.Token, pfs, producer, ppcBufferSize).ConfigureAwait(false);
             };
         }
 
@@ -766,8 +759,14 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             FileOptions options = FileOptions.SequentialScan,
             CancellationToken token = default)
         {
+#if OLDNETUSING
             using (var strm = fileinfo.CreateStream(FileMode.Create, FileAccess.ReadWrite, FileShare.Read,
                 fileStreamBuffer, options))
+#else
+            var strm = fileinfo.CreateStream(FileMode.Create, FileAccess.ReadWrite, FileShare.Read,
+                fileStreamBuffer, options);
+            await using (strm.ConfigureAwait(false))
+#endif
             {
                 await src.AndWriteStreamAsync(strm, false, token).ConfigureAwait(false);
                 await strm.FlushAsync(token).ConfigureAwait(false);

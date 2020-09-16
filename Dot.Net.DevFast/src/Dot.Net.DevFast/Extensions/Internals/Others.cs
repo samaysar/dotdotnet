@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
 
 namespace Dot.Net.DevFast.Extensions.Internals
@@ -14,6 +15,19 @@ namespace Dot.Net.DevFast.Extensions.Internals
                 //to dispose
             }
         }
+
+#if !OLDNETUSING
+        internal static async ValueTask DisposeIfRequiredAsync(this IAsyncDisposable disposable, bool dispose)
+        {
+            if (dispose)
+            {
+                await using (disposable.ConfigureAwait(false))
+                {
+                    //to dispose
+                }
+            }
+        }
+#endif
 
         internal static ArraySegment<byte> ThrowIfNoBuffer(this MemoryStream membuffer)
         {

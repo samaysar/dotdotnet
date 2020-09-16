@@ -79,7 +79,11 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 foreach (var consumer in consumers)
                 {
                     await consumer.Received(1).InitAsync().ConfigureAwait(false);
+#if OLDNETUSING
                     consumer.Received(1).Dispose();
+#else
+                    await consumer.Received(1).DisposeAsync();
+#endif
                     await consumer.Received(0).ConsumeAsync(Arg.Any<object>(), Arg.Any<CancellationToken>())
                         .ConfigureAwait(false);
                 }
@@ -98,7 +102,15 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 for (var i = 0; i < cc; i++)
                 {
                     consumers[i] = Substitute.For<IConsumer<object>>();
+#if OLDNETUSING
                     consumers[i].When(x => x.Dispose()).Do(x => countdownHandle.Signal());
+#else
+                    consumers[i].DisposeAsync().Returns(x =>
+                    {
+                        countdownHandle.Signal();
+                        return default;
+                    });
+#endif
                 }
 
                 var cts = new CancellationTokenSource();
@@ -144,7 +156,11 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 await consumer.Received(1).InitAsync().ConfigureAwait(false);
                 await consumer.Received(1).ConsumeAsync(Arg.Any<List<object>>(), Arg.Any<CancellationToken>())
                     .ConfigureAwait(false);
+#if OLDNETUSING
                 consumer.Received(1).Dispose();
+#else
+                await consumer.Received(1).DisposeAsync();
+#endif
             }
         }
     }

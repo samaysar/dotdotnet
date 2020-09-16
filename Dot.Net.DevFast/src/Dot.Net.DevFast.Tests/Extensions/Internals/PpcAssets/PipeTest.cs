@@ -33,7 +33,11 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 IdentityAwaitableAdapter<object>.Default, producers, consumers).ConfigureAwait(false);
             foreach (var consumer in consumers)
             {
+#if OLDNETUSING
                 consumer.Received(1).Dispose();
+#else
+                await consumer.Received(1).DisposeAsync();
+#endif
                 await consumer.Received(0)
                     .ConsumeAsync(Arg.Any<object>(), Arg.Any<CancellationToken>())
                     .ConfigureAwait(false);
