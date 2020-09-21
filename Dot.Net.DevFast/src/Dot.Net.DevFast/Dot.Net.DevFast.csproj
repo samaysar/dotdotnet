@@ -31,7 +31,7 @@
  
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
     <AssemblyTitle>Dot.Net.DevFast .NET Standard 2.1</AssemblyTitle>
-    <DefineConstants>NETSTANDARD2_1;NETCORE;NETSTANDARD</DefineConstants>
+    <DefineConstants>NETSTANDARD2_1;NETCORE;NETSTANDARD;NETHASHCRYPTO;NETASYNCDISPOSE</DefineConstants>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
@@ -46,7 +46,7 @@
   
   <PropertyGroup Condition="'$(TargetFramework)' == 'net472'">
     <AssemblyTitle>Dot.Net.DevFast .NET 4.7.2</AssemblyTitle>
-    <DefineConstants>NET472</DefineConstants>
+    <DefineConstants>NET472;NETHASHCRYPTO</DefineConstants>
   </PropertyGroup>
   
   <ItemGroup>

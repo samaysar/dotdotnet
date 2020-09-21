@@ -1,5 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using System.Threading;
+#if NETASYNCDISPOSE
+using System.Threading.Tasks;
+#endif
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.Ppc;
 
@@ -34,16 +37,22 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
 
         public bool TryAdd(T item, int millisecTimeout, CancellationToken token)
         {
-            using (var mergeToken = CancellationTokenSource.CreateLinkedTokenSource(token, _token))
-            {
-                return _collection.TryAdd(item, millisecTimeout, mergeToken.Token);
-            }
+            using var mergeToken = CancellationTokenSource.CreateLinkedTokenSource(token, _token);
+            return _collection.TryAdd(item, millisecTimeout, mergeToken.Token);
         }
 
         public void Close()
         {
             _collection.CompleteAdding();
         }
+
+#if NETASYNCDISPOSE
+        public ValueTask DisposeAsync()
+        {
+            Dispose();
+            return default;
+        }
+#endif
 
         public void Dispose()
         {

@@ -108,7 +108,7 @@ namespace Dot.Net.DevFast.Extensions.Internals
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && _dispose)
+            if (disposing && _dispose) 
             {
                 using (_stream)
                 {

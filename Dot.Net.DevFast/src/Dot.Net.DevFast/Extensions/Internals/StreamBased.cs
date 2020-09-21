@@ -12,7 +12,11 @@ namespace Dot.Net.DevFast.Extensions.Internals
             int length, Encoding enc, CancellationToken token, int chunkSize,
             Action<int, char[], int, int> copyToAction, Stream writableInner)
         {
+#if !NETASYNCDISPOSE
             using (writable)
+#else
+            await using (writable.ConfigureAwait(false))
+#endif 
             {
                 await writable.CopyFromAsync(length, enc, token, chunkSize, copyToAction)
                     .ConfigureAwait(false);
@@ -50,26 +54,24 @@ namespace Dot.Net.DevFast.Extensions.Internals
             StringBuilder target, CancellationToken token, Encoding encoding, int bufferSize,
             bool disposeReadable, bool detectEncodingFromBom = true)
         {
-            using (var reader = readable.CreateReader(encoding, bufferSize, disposeReadable, detectEncodingFromBom))
+            using var reader = readable.CreateReader(encoding, bufferSize, disposeReadable, detectEncodingFromBom);
+            var charBuffer = new char[bufferSize];
+            int charCnt;
+            if (token.CanBeCanceled)
             {
-                var charBuffer = new char[bufferSize];
-                int charCnt;
-                if (token.CanBeCanceled)
+                while ((charCnt = await reader.ReadBlockAsync(charBuffer, 0, bufferSize)
+                    .ConfigureAwait(false)) != 0)
                 {
-                    while ((charCnt = await reader.ReadBlockAsync(charBuffer, 0, bufferSize)
-                               .ConfigureAwait(false)) != 0)
-                    {
-                        target.Append(charBuffer, 0, charCnt);
-                        token.ThrowIfCancellationRequested();
-                    }
+                    target.Append(charBuffer, 0, charCnt);
+                    token.ThrowIfCancellationRequested();
                 }
-                else
+            }
+            else
+            {
+                while ((charCnt = await reader.ReadBlockAsync(charBuffer, 0, bufferSize)
+                    .ConfigureAwait(false)) != 0)
                 {
-                    while ((charCnt = await reader.ReadBlockAsync(charBuffer, 0, bufferSize)
-                               .ConfigureAwait(false)) != 0)
-                    {
-                        target.Append(charBuffer, 0, charCnt);
-                    }
+                    target.Append(charBuffer, 0, charCnt);
                 }
             }
         }
@@ -79,7 +81,11 @@ namespace Dot.Net.DevFast.Extensions.Internals
         {
             try
             {
+#if !NETASYNCDISPOSE
                 using (writable)
+#else
+                await using (writable.ConfigureAwait(false))
+#endif
                 {
                     await readable.CopyToAsync(writable, bufferSize, token).ConfigureAwait(false);
                     await writable.FlushAsync(token).ConfigureAwait(false);
@@ -88,7 +94,11 @@ namespace Dot.Net.DevFast.Extensions.Internals
             }
             finally
             {
+#if !NETASYNCDISPOSE
                 readable.DisposeIfRequired(disposeReadable);
+#else
+                await readable.DisposeIfRequiredAsync(disposeReadable).ConfigureAwait(false);
+#endif
             }
         }
 
@@ -97,7 +107,11 @@ namespace Dot.Net.DevFast.Extensions.Internals
         {
             try
             {
+#if !NETASYNCDISPOSE
                 using (from)
+#else
+                await using (from.ConfigureAwait(false))
+#endif
                 {
                     await from.CopyToAsync(to, bufferSize, token).ConfigureAwait(false);
                     await to.FlushAsync(token).ConfigureAwait(false);
@@ -105,14 +119,22 @@ namespace Dot.Net.DevFast.Extensions.Internals
             }
             finally
             {
+#if !NETASYNCDISPOSE
                 to.DisposeIfRequired(disposeTo);
+#else
+                await to.DisposeIfRequiredAsync(disposeTo).ConfigureAwait(false);
+#endif
             }
         }
 
         internal static async Task CopyFromWithDisposeAsync(this Stream writable, byte[] input,
             int byteOffset, int byteCount, CancellationToken token, Stream writableInner)
         {
+#if !NETASYNCDISPOSE
             using (writable)
+#else
+            await using (writable.ConfigureAwait(false))
+#endif
             {
                 await writable.WriteAsync(input, byteOffset, byteCount, token).ConfigureAwait(false);
                 await writable.FlushAsync(token).ConfigureAwait(false);
@@ -127,23 +149,41 @@ namespace Dot.Net.DevFast.Extensions.Internals
             {
                 await readable.CopyToAsync(writable, bufferSize, token).ConfigureAwait(false);
                 await writable.FlushAsync(token).ConfigureAwait(false);
+#if !NETASYNCDISPOSE
                 readable.DisposeIfRequired(disposeReadable);
+#else
+                await readable.DisposeIfRequiredAsync(disposeReadable).ConfigureAwait(false);
+#endif
             }
             finally
             {
+#if !NETASYNCDISPOSE
                 writable.DisposeIfRequired(disposeWritable);
+#else
+                await writable.DisposeIfRequiredAsync(disposeWritable).ConfigureAwait(false);
+#endif
             }
         }
 
         internal static async Task<ArraySegment<byte>> CopyToSegmentWithDisposeAsync(this Stream readable,
             int bufferSize, CancellationToken token)
         {
+#if !NETASYNCDISPOSE
             using (var localBuffer = new MemoryStream())
+#else
+            var localBuffer = new MemoryStream();
+            await using (localBuffer.ConfigureAwait(false))
+#endif
             {
+#if !NETASYNCDISPOSE
                 using (readable)
+#else
+                await using (readable.ConfigureAwait(false))
+#endif
                 {
                     await readable.CopyToAsync(localBuffer, bufferSize, token).ConfigureAwait(false);
                 }
+
                 return localBuffer.ThrowIfNoBuffer();
             }
         }
@@ -158,7 +198,11 @@ namespace Dot.Net.DevFast.Extensions.Internals
             }
             finally
             {
+#if !NETASYNCDISPOSE
                 writable.DisposeIfRequired(disposeWritable);
+#else
+                await writable.DisposeIfRequiredAsync(disposeWritable).ConfigureAwait(false);
+#endif
             }
         }
     }

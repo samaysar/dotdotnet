@@ -45,11 +45,19 @@ namespace Dot.Net.DevFast.Extensions
             return () =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             sync();
@@ -97,11 +105,19 @@ namespace Dot.Net.DevFast.Extensions
             return () =>
             {
                 var tcs = new TaskCompletionSource<T0>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             var t = sync();
@@ -153,11 +169,19 @@ namespace Dot.Net.DevFast.Extensions
             return t0 =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             sync(t0);
@@ -205,11 +229,19 @@ namespace Dot.Net.DevFast.Extensions
             return t0 =>
             {
                 var tcs = new TaskCompletionSource<T1>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             var t = sync(t0);
@@ -261,11 +293,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             sync(t0, t1);
@@ -313,11 +353,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1) =>
             {
                 var tcs = new TaskCompletionSource<T2>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1);
@@ -369,11 +417,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2);
@@ -421,11 +477,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2) =>
             {
                 var tcs = new TaskCompletionSource<T3>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2);
@@ -477,11 +541,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3);
@@ -529,11 +601,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3) =>
             {
                 var tcs = new TaskCompletionSource<T4>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3);
@@ -585,11 +665,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4);
@@ -638,11 +726,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4) =>
             {
                 var tcs = new TaskCompletionSource<T5>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4);
@@ -695,11 +791,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5);
@@ -748,11 +852,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5) =>
             {
                 var tcs = new TaskCompletionSource<T6>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5);
@@ -806,11 +918,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6);
@@ -860,11 +980,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6) =>
             {
                 var tcs = new TaskCompletionSource<T7>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6);
@@ -918,11 +1046,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6, t7);
@@ -972,11 +1108,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7) =>
             {
                 var tcs = new TaskCompletionSource<T8>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6, t7);
@@ -1030,11 +1174,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6, t7, t8);
@@ -1085,11 +1237,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8) =>
             {
                 var tcs = new TaskCompletionSource<T9>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6, t7, t8);
@@ -1144,11 +1304,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9);
@@ -1200,11 +1368,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9) =>
             {
                 var tcs = new TaskCompletionSource<T10>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9);
@@ -1259,11 +1435,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10);
@@ -1315,11 +1499,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10) =>
             {
                 var tcs = new TaskCompletionSource<T11>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10);
@@ -1374,11 +1566,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11);
@@ -1430,11 +1630,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11) =>
             {
                 var tcs = new TaskCompletionSource<T12>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11);
@@ -1489,11 +1697,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12);
@@ -1545,11 +1761,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12) =>
             {
                 var tcs = new TaskCompletionSource<T13>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12);
@@ -1604,11 +1828,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13);
@@ -1661,11 +1893,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13) =>
             {
                 var tcs = new TaskCompletionSource<T14>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13);
@@ -1722,11 +1962,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14);
@@ -1780,11 +2028,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14) =>
             {
                 var tcs = new TaskCompletionSource<T15>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14);
@@ -1841,11 +2097,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15);
@@ -1899,11 +2163,19 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15) =>
             {
                 var tcs = new TaskCompletionSource<T16>(options);
+#if !NETASYNCDISPOSE
                 Task.Run(() =>
+#else
+                Task.Run(async () =>
+#endif
                 {
                     try
                     {
+#if !NETASYNCDISPOSE
                         using (token.Register(() => tcs.TrySetCanceled(token)))
+#else
+                        await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
+#endif
                         {
                             token.ThrowIfCancellationRequested();
                             var t = sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15);

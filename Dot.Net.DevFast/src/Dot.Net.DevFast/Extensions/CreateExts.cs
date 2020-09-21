@@ -16,7 +16,7 @@ namespace Dot.Net.DevFast.Extensions
     /// </summary>
     public static class CreateExts
     {
-#if NET472
+#if NETHASHCRYPTO
         /// <summary>
         /// Using <seealso cref="Rfc2898DeriveBytes"/> creates the key and IV byte arrays.
         /// <para>NOTE: Key = tuple.Item1 and IV = tuple.Item2</para>
@@ -41,7 +41,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
 #endif
         public static Tuple<byte[], byte[]> CreateKeyAndIv(this string password, string salt,
-#if NET472
+#if NETHASHCRYPTO
             HashAlgorithmName hashName,
 #endif
             int byteLengthKey = 32,
@@ -49,16 +49,17 @@ namespace Dot.Net.DevFast.Extensions
             int loopCnt = 10000,
             Encoding enc = null)
         {
-            enc = enc ?? new UTF8Encoding(false);
-            using (var gen = new Rfc2898DeriveBytes(enc.GetBytes(password), enc.GetBytes(salt),
+
+            enc ??= new UTF8Encoding(false);
+            using var gen = new Rfc2898DeriveBytes(
+                enc.GetBytes(password), 
+                enc.GetBytes(salt),
                 loopCnt
-#if NET472
+#if NETHASHCRYPTO
                 , hashName
 #endif
-            ))
-            {
-                return new Tuple<byte[], byte[]>(gen.GetBytes(byteLengthKey), gen.GetBytes(byteLengthIv));
-            }
+            );
+            return new Tuple<byte[], byte[]>(gen.GetBytes(byteLengthKey), gen.GetBytes(byteLengthIv));
         }
 
         /// <summary>
@@ -415,7 +416,7 @@ namespace Dot.Net.DevFast.Extensions
         public static CryptoStream CreateCryptoStream(this Stream target, ICryptoTransform transform,
             CryptoStreamMode mode = CryptoStreamMode.Write, bool disposeTarget = false)
         {
-#if !NET472
+#if !NETHASHCRYPTO
             return new CryptoStream(target.CreateWrappedStream(disposeTarget), transform, mode);
 #else
             return new CryptoStream(target, transform, mode, !disposeTarget);
