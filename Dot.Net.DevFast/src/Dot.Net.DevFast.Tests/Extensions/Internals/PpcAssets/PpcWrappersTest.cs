@@ -20,7 +20,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                     Interlocked.Increment(ref called);
                     return Task.CompletedTask;
                 });
-#if OLDNETUSING
+#if !NETASYNCDISPOSE
             using (var producer = new AsyncProducer<object>(funcSubstitute))
 #else
             var producer = new AsyncProducer<object>(funcSubstitute);
@@ -42,7 +42,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 Interlocked.Increment(ref called);
                 return Task.CompletedTask;
             });
-#if OLDNETUSING
+#if !NETASYNCDISPOSE
             using (var producer = new AsyncConsumer<object>(funcSubstitute))
 #else
             var producer = new AsyncConsumer<object>(funcSubstitute);

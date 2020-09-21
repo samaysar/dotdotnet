@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Threading;
+using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.Ppc;
 
@@ -42,6 +43,14 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
         {
             _collection.CompleteAdding();
         }
+
+#if NETASYNCDISPOSE
+        public ValueTask DisposeAsync()
+        {
+            Dispose();
+            return default;
+        }
+#endif
 
         public void Dispose()
         {

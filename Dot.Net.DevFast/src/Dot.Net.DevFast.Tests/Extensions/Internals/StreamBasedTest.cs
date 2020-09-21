@@ -26,7 +26,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals
                     3, "123".CopyTo, mem).ConfigureAwait(false);
 
                 Assert.True(Encoding.UTF8.GetString(mem.ToArray()).Equals("123"));
-#if OLDNETUSING
+#if !NETASYNCDISPOSE
                 writable.Received(1).Dispose();
 #else
                 await writable.Received(1).DisposeAsync();

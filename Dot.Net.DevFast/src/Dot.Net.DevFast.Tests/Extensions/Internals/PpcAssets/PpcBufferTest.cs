@@ -11,23 +11,34 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
     public class PpcBufferTest
     {
         [Test]
-        public void Add_Throws_Error_When_Called_After_Close()
+        public async Task Add_Throws_Error_When_Called_After_Close()
         {
-            using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
+#if NETASYNCDISPOSE
+            var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
+            await using (instance.ConfigureAwait(false))
+#else
+            using (instance)
+#endif
             {
                 instance.Close();
                 Assert.Throws<InvalidOperationException>(() => instance.Add(new object(), CancellationToken.None));
             }
+
+            await Task.CompletedTask;
         }
 
         [Test]
-        public void Add_Throws_Error_When_Called_After_Dispose()
+        public async Task Add_Throws_Error_When_Called_After_Dispose()
         {
-            using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
-            {
-                instance.Dispose();
-                Assert.Throws<NullReferenceException>(() => instance.Add(new object(), CancellationToken.None));
-            }
+            var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
+#if NETASYNCDISPOSE
+            await instance.DisposeAsync().ConfigureAwait(false);
+#else
+            instance.Dispose();
+#endif
+            Assert.Throws<NullReferenceException>(() => instance.Add(new object(), CancellationToken.None));
+
+            await Task.CompletedTask;
         }
 
         [Test]

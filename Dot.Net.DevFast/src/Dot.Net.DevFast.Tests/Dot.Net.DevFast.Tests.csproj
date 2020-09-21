@@ -5,21 +5,21 @@
     <TargetFrameworks Condition="'$(LibraryFrameworks)'!=''">$(LibraryFrameworks)</TargetFrameworks>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
-    <DefineConstants>NETCOREAPP2_0;NETCORE;OLDNETUSING</DefineConstants>
-	<UseNETCoreGenerator>true</UseNETCoreGenerator>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <DefineConstants>NETCOREAPP3_1;NETCORE;NETHASHCRYPTO;NETASYNCDISPOSE</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <DefineConstants>NETCOREAPP3_1;NETCORE;NETCRYPTO</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+    <DefineConstants>NETCOREAPP2_0;NETCORE</DefineConstants>
+    <UseNETCoreGenerator>true</UseNETCoreGenerator>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
-    <DefineConstants>NET461;OLDNETUSING</DefineConstants>
+    <DefineConstants>NET461</DefineConstants>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(TargetFramework)' == 'net472'">
-    <DefineConstants>NET472;NETCRYPTO;OLDNETUSING</DefineConstants>
+    <DefineConstants>NET472;NETHASHCRYPTO</DefineConstants>
   </PropertyGroup>
   
   <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp2.0'">

@@ -15,19 +15,26 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             {
                 using var localCts = new CancellationTokenSource();
                 using var combinedCts = CancellationTokenSource.CreateLinkedTokenSource(token, localCts.Token);
-                using var ppcBuffer = new PpcBuffer<TP>(bufferSize, combinedCts.Token);
-                token.ThrowIfCancellationRequested();
-                try
+#if NETASYNCDISPOSE
+                var ppcBuffer = new PpcBuffer<TP>(bufferSize, combinedCts.Token);
+                await using (ppcBuffer.ConfigureAwait(false))
+#else
+                using (var ppcBuffer = new PpcBuffer<TP>(bufferSize, combinedCts.Token))
+#endif
                 {
-                    var rc = RunConsumers(consumers, ppcBuffer, adapter, combinedCts.Token, localCts);
-                    var rp = RunProducers(producers, ppcBuffer, combinedCts.Token, localCts);
-                    await Task.WhenAll(rc, rp).ConfigureAwait(false);
-                }
-                catch (Exception e)
-                {
-                    if (token.IsCancellationRequested)
-                        throw new OperationCanceledException("PpcCancelled", e, token);
-                    throw;
+                    token.ThrowIfCancellationRequested();
+                    try
+                    {
+                        var rc = RunConsumers(consumers, ppcBuffer, adapter, combinedCts.Token, localCts);
+                        var rp = RunProducers(producers, ppcBuffer, combinedCts.Token, localCts);
+                        await Task.WhenAll(rc, rp).ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        if (token.IsCancellationRequested)
+                            throw new OperationCanceledException("PpcCancelled", e, token);
+                        throw;
+                    }
                 }
             }, CancellationToken.None);
         }
@@ -47,11 +54,11 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
         {
             try
             {
-#if OLDNETUSING
+#if !NETASYNCDISPOSE
                 using (parallelConsumer)
 #else
                 await using (parallelConsumer.ConfigureAwait(false))
-#endif 
+#endif
                 {
                     await parallelConsumer.InitAsync().StartIfNeeded().ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
@@ -93,11 +100,11 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
         {
             try
             {
-#if OLDNETUSING
+#if !NETASYNCDISPOSE
                 using (parallelProducer)
 #else
                 await using (parallelProducer.ConfigureAwait(false))
-#endif 
+#endif
                 {
                     await parallelProducer.InitAsync().StartIfNeeded().ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();

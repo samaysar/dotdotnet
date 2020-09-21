@@ -1,4 +1,4 @@
-# dotdotnet
+# dotdotnet [Thanks JetBrains](https://www.jetbrains.com/?from=Dot.Net.DevFast)
 
 ## DevFast (.T to begin with...)
 ### Click [![Build status](https://ci.appveyor.com/api/projects/status/f7ben6w9ecd09tg3/branch/develop?svg=true)](https://ci.appveyor.com/project/samaysar/dotdotnet/branch/develop) for more infomation on build/tests

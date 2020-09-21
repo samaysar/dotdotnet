@@ -19,7 +19,11 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             consumers[0] = Substitute.For<IConsumer<object>>();
             var instance = new Pipeline<object, object>(consumers, IdentityAwaitableAdapter<object>.Default,
                 CancellationToken.None, 1);
+#if NETASYNCDISPOSE
+            await using (instance.ConfigureAwait(false))
+#else
             using (instance)
+#endif
             {
             }
 
@@ -79,7 +83,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 foreach (var consumer in consumers)
                 {
                     await consumer.Received(1).InitAsync().ConfigureAwait(false);
-#if OLDNETUSING
+#if !NETASYNCDISPOSE
                     consumer.Received(1).Dispose();
 #else
                     await consumer.Received(1).DisposeAsync();
@@ -102,7 +106,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 for (var i = 0; i < cc; i++)
                 {
                     consumers[i] = Substitute.For<IConsumer<object>>();
-#if OLDNETUSING
+#if !NETASYNCDISPOSE
                     consumers[i].When(x => x.Dispose()).Do(x => countdownHandle.Signal());
 #else
                     consumers[i].DisposeAsync().Returns(x =>
@@ -156,7 +160,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 await consumer.Received(1).InitAsync().ConfigureAwait(false);
                 await consumer.Received(1).ConsumeAsync(Arg.Any<List<object>>(), Arg.Any<CancellationToken>())
                     .ConfigureAwait(false);
-#if OLDNETUSING
+#if !NETASYNCDISPOSE
                 consumer.Received(1).Dispose();
 #else
                 await consumer.Received(1).DisposeAsync();

@@ -28,10 +28,17 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             _consumerTask = Pipe<TP, TC>.RunConsumers(consumers, _feed, adapter, token, _localCts);
         }
 
+#if NETASYNCDISPOSE
+        public async ValueTask DisposeAsync()
+        {
+            await TearDown().ConfigureAwait(false);
+        }
+#else
         public void Dispose()
         {
-            TearDown().Wait(CancellationToken.None);
+            TearDown().GetAwaiter().GetResult();
         }
+#endif
 
         public void Add(TP item, CancellationToken token)
         {
@@ -58,7 +65,11 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
                     {
                         using (_mergedCts)
                         {
+#if NETASYNCDISPOSE
+                            await using (_feed.ConfigureAwait(false))
+#else
                             using (_feed)
+#endif
                             {
                                 _localCts.Cancel();
                                 _feed.Close();

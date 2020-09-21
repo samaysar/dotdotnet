@@ -25,7 +25,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             return async pfs =>
             {
                 bcs.ResetWith(pfs.Writable, pfs.Dispose);
-#if OLDNETUSING
+#if !NETASYNCDISPOSE
                 using (bcs)
 #else
                 await using (bcs.ConfigureAwait(false))
@@ -47,7 +47,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         {
             return async pfs =>
             {
-#if OLDNETUSING
+#if !NETASYNCDISPOSE
                 using (var concurrentStream = new BroadcastStream(pfs, stream, disposeStream, errorHandler))
 #else
                 var concurrentStream = new BroadcastStream(pfs, stream, disposeStream, errorHandler);
@@ -70,7 +70,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             {
                 var s = pfs.Writable;
                 var t = pfs.Token;
-#if OLDNETUSING
+#if !NETASYNCDISPOSE
                 using (var compStrm = s.CreateCompressionStream(gzip, level, pfs.Dispose))
 #else
                 var compStrm = s.CreateCompressionStream(gzip, level, pfs.Dispose);
@@ -364,7 +364,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         #endregion PullFuncStream PRIVATE
 
         internal static T InitKeyNIv<T>(this T alg, string password, string salt,
-#if NETCRYPTO
+#if NETHASHCRYPTO
             HashAlgorithmName hashName,
 #endif
             int loopCnt,
@@ -372,7 +372,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             where T : SymmetricAlgorithm
         {
             var keyIv = password.CreateKeyAndIv(salt,
-#if NETCRYPTO
+#if NETHASHCRYPTO
                 hashName,
 #endif
                 alg.KeySize / 8, alg.BlockSize / 8, loopCnt, enc);

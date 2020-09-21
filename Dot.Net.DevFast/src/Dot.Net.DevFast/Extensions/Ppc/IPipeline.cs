@@ -6,7 +6,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     /// <summary>
     /// Interface to expose concurrent producer-consumer pipeline operations.
     /// </summary>
+#if NETASYNCDISPOSE
+    public interface IPipeline<in T> : IProducerBuffer<T>, IAsyncDisposable
+#else
     public interface IPipeline<in T> : IProducerBuffer<T>, IDisposable
+#endif
     {
         /// <summary>
         /// Retruns a running task that performs following operations:

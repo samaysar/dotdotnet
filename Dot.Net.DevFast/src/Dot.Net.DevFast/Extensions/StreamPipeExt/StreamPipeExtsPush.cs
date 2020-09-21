@@ -491,7 +491,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             return src.ThenTransform(new FromBase64Transform(mode), include);
         }
 
-#if NETCRYPTO
+#if NETHASHCRYPTO
         /// <summary>
         /// Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
         /// and returns a new pipe for chaining.
@@ -528,7 +528,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         public static Func<PushFuncStream, Task> ThenEncrypt<T>(this Func<PushFuncStream, Task> src,
             string password,
             string salt,
-#if NETCRYPTO
+#if NETHASHCRYPTO
             HashAlgorithmName hashName,
 #endif
             int loopCnt = 10000,
@@ -544,7 +544,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
                 Padding = padding
             };
             return src.ThenApply(s => s.ApplyCrypto(encAlg.InitKeyNIv(password, salt,
-#if NETCRYPTO
+#if NETHASHCRYPTO
                 hashName,
 #endif
                 loopCnt, enc ?? new UTF8Encoding(false)), true), include);
@@ -578,7 +578,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             }, true), include);
         }
 
-#if NETCRYPTO
+#if NETHASHCRYPTO
         /// <summary>
         /// Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
         /// and returns a new pipe for chaining.
@@ -615,7 +615,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         public static Func<PushFuncStream, Task> ThenDecrypt<T>(this Func<PushFuncStream, Task> src,
             string password,
             string salt,
-#if NETCRYPTO
+#if NETHASHCRYPTO
             HashAlgorithmName hashName,
 #endif
             int loopCnt = 10000,
@@ -631,7 +631,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
                 Padding = padding
             };
             return src.ThenApply(s => s.ApplyCrypto(encAlg.InitKeyNIv(password, salt,
-#if NETCRYPTO
+#if NETHASHCRYPTO
                 hashName,
 #endif
                 loopCnt, enc ?? new UTF8Encoding(false)), false), include);
@@ -759,7 +759,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             FileOptions options = FileOptions.SequentialScan,
             CancellationToken token = default)
         {
-#if OLDNETUSING
+#if !NETASYNCDISPOSE
             using (var strm = fileinfo.CreateStream(FileMode.Create, FileAccess.ReadWrite, FileShare.Read,
                 fileStreamBuffer, options))
 #else

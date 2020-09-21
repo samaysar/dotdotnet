@@ -262,7 +262,7 @@ namespace Dot.Net.DevFast.Extensions
             }
         }
 
-#if !OLDNETUSING
+#if NETASYNCDISPOSE
         /// <summary>
         /// Awaits on the given task and once task finishes (irrespective of its state), disposes
         /// the given disposable instance. Runs everything as a new task.

@@ -24,7 +24,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             await _producerFunc(feedToPopulate, cancellationToken).ConfigureAwait(false);
         }
 
-#if OLDNETUSING
+#if !NETASYNCDISPOSE
         public void Dispose()
         {
             
@@ -46,7 +46,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             _consumerFunc = consumerFunc;
         }
 
-#if OLDNETUSING
+#if !NETASYNCDISPOSE
         public void Dispose()
         {
             

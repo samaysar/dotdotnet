@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+#if NETASYNCDISPOSE
 using System.Threading.Tasks;
+#endif
 using Dot.Net.DevFast.Etc;
 
 namespace Dot.Net.DevFast.Extensions.Internals
@@ -16,7 +18,7 @@ namespace Dot.Net.DevFast.Extensions.Internals
             }
         }
 
-#if !OLDNETUSING
+#if NETASYNCDISPOSE
         internal static async ValueTask DisposeIfRequiredAsync(this IAsyncDisposable disposable, bool dispose)
         {
             if (dispose)

@@ -8,7 +8,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     /// Producer interface for parallel Producer consumer pattern.
     /// </summary>
     /// <typeparam name="T">Content type</typeparam>
-#if OLDNETUSING
+#if !NETASYNCDISPOSE
     public interface IProducer<out T> : IDisposable
 #else
     public interface IProducer<out T> : IAsyncDisposable

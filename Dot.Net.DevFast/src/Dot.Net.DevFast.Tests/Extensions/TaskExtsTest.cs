@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions;
@@ -135,24 +134,48 @@ namespace Dot.Net.DevFast.Tests.Extensions
         [Test]
         public async Task AwaitNDispose_Properly_Disposes_After_Await()
         {
+            var callCount = 0;
             var disposable = Substitute.For<IDisposable>();
-            var awaitable = new Task(disposable.Received(0).Dispose);
-            Assert.AreEqual(awaitable.Status, TaskStatus.Created);
+            var awaitable = Task.CompletedTask;
+            disposable.When(x => x.Dispose()).Do(x => Interlocked.Increment(ref callCount));
             await awaitable.AwaitNDispose(disposable).ConfigureAwait(false);
-            Assert.AreEqual(awaitable.Status, TaskStatus.RanToCompletion);
             //There will be 2 calls, one we made inside task and another by method
-            disposable.Received(2).Dispose();
-#if !OLDNETUSING
+            Assert.IsTrue(callCount.Equals(1));
+#if NETASYNCDISPOSE
+            callCount = 0;
             var asyncDisposable = Substitute.For<IAsyncDisposable>();
             var asyncAwaitable = Task.CompletedTask;
-            await asyncAwaitable.AwaitNDispose(asyncDisposable).ConfigureAwait(false);
-            Assert.AreEqual(asyncAwaitable.Status, TaskStatus.RanToCompletion);
-            //There will be ONLY 1 call due to caching mechanism of the framework 
-            await asyncDisposable.Received(1).DisposeAsync().ConfigureAwait(false);
-            foreach (var call in asyncDisposable.ReceivedCalls())
+            asyncDisposable.DisposeAsync().Returns(x =>
             {
-                Console.WriteLine(call.GetMethodInfo().Name);
-            }
+                Interlocked.Increment(ref callCount);
+                return default;
+            });
+            await asyncAwaitable.AwaitNDispose(asyncDisposable).ConfigureAwait(false);
+            Assert.IsTrue(callCount.Equals(1));
+#endif
+        }
+
+        [Test]
+        public async Task AwaitNDisposeAsync_Properly_Disposes_After_Await()
+        {
+            var callCount = 0;
+            var disposable = Substitute.For<IDisposable>();
+            var awaitable = Task.CompletedTask;
+            disposable.When(x => x.Dispose()).Do(x => Interlocked.Increment(ref callCount));
+            await awaitable.AwaitNDisposeAsync(disposable).ConfigureAwait(false);
+            //There will be 2 calls, one we made inside task and another by method
+            Assert.IsTrue(callCount.Equals(1));
+#if NETASYNCDISPOSE
+            callCount = 0;
+            var asyncDisposable = Substitute.For<IAsyncDisposable>();
+            var asyncAwaitable = Task.CompletedTask;
+            asyncDisposable.DisposeAsync().Returns(x =>
+            {
+                Interlocked.Increment(ref callCount);
+                return default;
+            });
+            await asyncAwaitable.AwaitNDisposeAsync(asyncDisposable).ConfigureAwait(false);
+            Assert.IsTrue(callCount.Equals(1));
 #endif
         }
 
