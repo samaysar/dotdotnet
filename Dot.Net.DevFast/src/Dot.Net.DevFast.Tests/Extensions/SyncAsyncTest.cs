@@ -2340,5 +2340,15 @@ namespace Dot.Net.DevFast.Tests.Extensions
             Assert.True((await funcToRun.ExecuteErrorWrappedAsync(ErrorHandler2).ConfigureAwait(false)).Equals(0));
             Assert.True(errorCnt.Equals(withError ? 2 : 0));
         }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase(1)]
+        [TestCase(true)]
+        [TestCase(1.0)]
+        public async Task AsTaskResultAsync_Returns_The_Supplied_Value(object val)
+        {
+            Assert.AreEqual(await val.AsTaskResultAsync().ConfigureAwait(false), val);
+        }
     }
 }

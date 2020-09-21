@@ -95,10 +95,10 @@ namespace Dot.Net.DevFast.Extensions
         {
             if (!runAsync)
             {
-                return () =>
+                return async () =>
                 {
                     token.ThrowIfCancellationRequested();
-                    return sync().ResultTask();
+                    return await sync().AsTaskResultAsync().ConfigureAwait(false);
                 };
             }
 
@@ -224,10 +224,10 @@ namespace Dot.Net.DevFast.Extensions
         {
             if (!runAsync)
             {
-                return t0 =>
+                return async t0 =>
                 {
                     token.ThrowIfCancellationRequested();
-                    return sync(t0).ResultTask();
+                    return await sync(t0).AsTaskResultAsync().ConfigureAwait(false);
                 };
             }
 
@@ -353,10 +353,10 @@ namespace Dot.Net.DevFast.Extensions
         {
             if (!runAsync)
             {
-                return (t0, t1) =>
+                return async (t0, t1) =>
                 {
                     token.ThrowIfCancellationRequested();
-                    return sync(t0, t1).ResultTask();
+                    return await sync(t0, t1).AsTaskResultAsync().ConfigureAwait(false);
                 };
             }
 
@@ -482,10 +482,10 @@ namespace Dot.Net.DevFast.Extensions
         {
             if (!runAsync)
             {
-                return (t0, t1, t2) =>
+                return async (t0, t1, t2) =>
                 {
                     token.ThrowIfCancellationRequested();
-                    return sync(t0, t1, t2).ResultTask();
+                    return await sync(t0, t1, t2).AsTaskResultAsync().ConfigureAwait(false);
                 };
             }
 
@@ -611,10 +611,10 @@ namespace Dot.Net.DevFast.Extensions
         {
             if (!runAsync)
             {
-                return (t0, t1, t2, t3) =>
+                return async (t0, t1, t2, t3) =>
                 {
                     token.ThrowIfCancellationRequested();
-                    return sync(t0, t1, t2, t3).ResultTask();
+                    return await sync(t0, t1, t2, t3).AsTaskResultAsync().ConfigureAwait(false);
                 };
             }
 
@@ -741,10 +741,10 @@ namespace Dot.Net.DevFast.Extensions
         {
             if (!runAsync)
             {
-                return (t0, t1, t2, t3, t4) =>
+                return async (t0, t1, t2, t3, t4) =>
                 {
                     token.ThrowIfCancellationRequested();
-                    return sync(t0, t1, t2, t3, t4).ResultTask();
+                    return await sync(t0, t1, t2, t3, t4).AsTaskResultAsync().ConfigureAwait(false);
                 };
             }
 
@@ -872,10 +872,10 @@ namespace Dot.Net.DevFast.Extensions
         {
             if (!runAsync)
             {
-                return (t0, t1, t2, t3, t4, t5) =>
+                return async (t0, t1, t2, t3, t4, t5) =>
                 {
                     token.ThrowIfCancellationRequested();
-                    return sync(t0, t1, t2, t3, t4, t5).ResultTask();
+                    return await sync(t0, t1, t2, t3, t4, t5).AsTaskResultAsync().ConfigureAwait(false);
                 };
             }
 
@@ -1004,10 +1004,10 @@ namespace Dot.Net.DevFast.Extensions
         {
             if (!runAsync)
             {
-                return (t0, t1, t2, t3, t4, t5, t6) =>
+                return async (t0, t1, t2, t3, t4, t5, t6) =>
                 {
                     token.ThrowIfCancellationRequested();
-                    return sync(t0, t1, t2, t3, t4, t5, t6).ResultTask();
+                    return await sync(t0, t1, t2, t3, t4, t5, t6).AsTaskResultAsync().ConfigureAwait(false);
                 };
             }
 
@@ -1137,10 +1137,10 @@ namespace Dot.Net.DevFast.Extensions
         {
             if (!runAsync)
             {
-                return (t0, t1, t2, t3, t4, t5, t6, t7) =>
+                return async (t0, t1, t2, t3, t4, t5, t6, t7) =>
                 {
                     token.ThrowIfCancellationRequested();
-                    return sync(t0, t1, t2, t3, t4, t5, t6, t7).ResultTask();
+                    return await sync(t0, t1, t2, t3, t4, t5, t6, t7).AsTaskResultAsync().ConfigureAwait(false);
                 };
             }
 
@@ -1271,10 +1271,10 @@ namespace Dot.Net.DevFast.Extensions
         {
             if (!runAsync)
             {
-                return (t0, t1, t2, t3, t4, t5, t6, t7, t8) =>
+                return async (t0, t1, t2, t3, t4, t5, t6, t7, t8) =>
                 {
                     token.ThrowIfCancellationRequested();
-                    return sync(t0, t1, t2, t3, t4, t5, t6, t7, t8).ResultTask();
+                    return await sync(t0, t1, t2, t3, t4, t5, t6, t7, t8).AsTaskResultAsync().ConfigureAwait(false);
                 };
             }
 
@@ -1406,10 +1406,10 @@ namespace Dot.Net.DevFast.Extensions
         {
             if (!runAsync)
             {
-                return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9) =>
+                return async (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9) =>
                 {
                     token.ThrowIfCancellationRequested();
-                    return sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9).ResultTask();
+                    return await sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9).AsTaskResultAsync().ConfigureAwait(false);
                 };
             }
 
@@ -1541,10 +1541,10 @@ namespace Dot.Net.DevFast.Extensions
         {
             if (!runAsync)
             {
-                return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10) =>
+                return async (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10) =>
                 {
                     token.ThrowIfCancellationRequested();
-                    return sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10).ResultTask();
+                    return await sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10).AsTaskResultAsync().ConfigureAwait(false);
                 };
             }
 
@@ -1676,10 +1676,10 @@ namespace Dot.Net.DevFast.Extensions
         {
             if (!runAsync)
             {
-                return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11) =>
+                return async (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11) =>
                 {
                     token.ThrowIfCancellationRequested();
-                    return sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11).ResultTask();
+                    return await sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11).AsTaskResultAsync().ConfigureAwait(false);
                 };
             }
 
@@ -1811,10 +1811,10 @@ namespace Dot.Net.DevFast.Extensions
         {
             if (!runAsync)
             {
-                return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12) =>
+                return async (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12) =>
                 {
                     token.ThrowIfCancellationRequested();
-                    return sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12).ResultTask();
+                    return await sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12).AsTaskResultAsync().ConfigureAwait(false);
                 };
             }
 
@@ -1947,10 +1947,10 @@ namespace Dot.Net.DevFast.Extensions
         {
             if (!runAsync)
             {
-                return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13) =>
+                return async (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13) =>
                 {
                     token.ThrowIfCancellationRequested();
-                    return sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13).ResultTask();
+                    return await sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13).AsTaskResultAsync().ConfigureAwait(false);
                 };
             }
 
@@ -2085,10 +2085,10 @@ namespace Dot.Net.DevFast.Extensions
         {
             if (!runAsync)
             {
-                return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14) =>
+                return async (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14) =>
                 {
                     token.ThrowIfCancellationRequested();
-                    return sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14).ResultTask();
+                    return await sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14).AsTaskResultAsync().ConfigureAwait(false);
                 };
             }
 
@@ -2224,10 +2224,10 @@ namespace Dot.Net.DevFast.Extensions
         {
             if (!runAsync)
             {
-                return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15) =>
+                return async (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15) =>
                 {
                     token.ThrowIfCancellationRequested();
-                    return sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15).ResultTask();
+                    return await sync(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15).AsTaskResultAsync().ConfigureAwait(false);
                 };
             }
 
@@ -2393,9 +2393,15 @@ namespace Dot.Net.DevFast.Extensions
             };
         }
 
-        private static Task<T> ResultTask<T>(this T obj)
+        /// <summary>
+        /// Converts the given object to result of an awaitable task.
+        /// </summary>
+        /// <typeparam name="T">Result Type</typeparam>
+        /// <param name="obj">instance</param>
+        public static async Task<T> AsTaskResultAsync<T>(this T obj)
         {
-            return Task.FromResult(obj);
+            await Task.CompletedTask.ConfigureAwait(false);
+            return obj;
         }
     }
 }
