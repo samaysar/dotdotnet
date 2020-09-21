@@ -102,11 +102,9 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             int bufferSize = StdLookUps.DefaultBufferSize, bool disposeTarget = true,
             bool autoFlush = false)
         {
-            using (var streamWriter = target.CreateWriter(enc, bufferSize, disposeTarget, autoFlush))
-            {
-                source.ToJsonArrayParallely(streamWriter, serializer, token, producerTokenSource, false);
-                target.Flush();
-            }
+            using var streamWriter = target.CreateWriter(enc, bufferSize, disposeTarget, autoFlush);
+            source.ToJsonArrayParallely(streamWriter, serializer, token, producerTokenSource, false);
+            target.Flush();
         }
 
         /// <summary>
@@ -133,11 +131,9 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             CancellationTokenSource producerTokenSource = null, bool disposeTarget = true)
         {
             var nullHandledSerializer = serializer ?? CustomJson.Serializer();
-            using (var jsonWriter = nullHandledSerializer.AdaptedJsonWriter(target, disposeTarget))
-            {
-                source.ToJsonArrayParallely(jsonWriter, nullHandledSerializer, token, producerTokenSource, false);
-                target.Flush();
-            }
+            using var jsonWriter = nullHandledSerializer.AdaptedJsonWriter(target, disposeTarget);
+            source.ToJsonArrayParallely(jsonWriter, nullHandledSerializer, token, producerTokenSource, false);
+            target.Flush();
         }
 
         /// <summary>
@@ -242,11 +238,9 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize, bool disposeTarget = true,
             bool autoFlush = false)
         {
-            using (var streamWriter = target.CreateWriter(enc, bufferSize, disposeTarget, autoFlush))
-            {
-                source.ToJsonArray(streamWriter, serializer, token, false);
-                target.Flush();
-            }
+            using var streamWriter = target.CreateWriter(enc, bufferSize, disposeTarget, autoFlush);
+            source.ToJsonArray(streamWriter, serializer, token, false);
+            target.Flush();
         }
 
         /// <summary>
@@ -264,11 +258,9 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             bool disposeTarget = true)
         {
             var nullHandledSerializer = serializer ?? CustomJson.Serializer();
-            using (var jsonWriter = nullHandledSerializer.AdaptedJsonWriter(target, disposeTarget))
-            {
-                source.ToJsonArray(jsonWriter, nullHandledSerializer, token, false);
-                target.Flush();
-            }
+            using var jsonWriter = nullHandledSerializer.AdaptedJsonWriter(target, disposeTarget);
+            source.ToJsonArray(jsonWriter, nullHandledSerializer, token, false);
+            target.Flush();
         }
 
         /// <summary>
@@ -364,11 +356,9 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             Encoding enc = null, int bufferSize = StdLookUps.DefaultBufferSize,
             bool disposeTarget = true, bool autoFlush = false)
         {
-            using (var textWriter = target.CreateWriter(enc, bufferSize, disposeTarget, autoFlush))
-            {
-                source.ToJson(textWriter, serializer, false);
-                target.Flush();
-            }
+            using var textWriter = target.CreateWriter(enc, bufferSize, disposeTarget, autoFlush);
+            source.ToJson(textWriter, serializer, false);
+            target.Flush();
         }
 
         /// <summary>
@@ -384,11 +374,9 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             bool disposeTarget = true)
         {
             var nullHandledSerializer = serializer ?? CustomJson.Serializer();
-            using (var jsonWriter = nullHandledSerializer.AdaptedJsonWriter(target, disposeTarget))
-            {
-                nullHandledSerializer.Serialize(jsonWriter, source);
-                target.Flush();
-            }
+            using var jsonWriter = nullHandledSerializer.AdaptedJsonWriter(target, disposeTarget);
+            nullHandledSerializer.Serialize(jsonWriter, source);
+            target.Flush();
         }
 
         /// <summary>

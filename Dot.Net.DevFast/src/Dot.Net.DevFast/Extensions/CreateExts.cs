@@ -49,17 +49,17 @@ namespace Dot.Net.DevFast.Extensions
             int loopCnt = 10000,
             Encoding enc = null)
         {
-            
+
             enc ??= new UTF8Encoding(false);
-            using (var gen = new Rfc2898DeriveBytes(enc.GetBytes(password), enc.GetBytes(salt),
+            using var gen = new Rfc2898DeriveBytes(
+                enc.GetBytes(password), 
+                enc.GetBytes(salt),
                 loopCnt
 #if NETCRYPTO
                 , hashName
 #endif
-            ))
-            {
-                return new Tuple<byte[], byte[]>(gen.GetBytes(byteLengthKey), gen.GetBytes(byteLengthIv));
-            }
+            );
+            return new Tuple<byte[], byte[]>(gen.GetBytes(byteLengthKey), gen.GetBytes(byteLengthIv));
         }
 
         /// <summary>

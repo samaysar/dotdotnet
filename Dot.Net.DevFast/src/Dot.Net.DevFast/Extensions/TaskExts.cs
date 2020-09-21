@@ -210,27 +210,89 @@ namespace Dot.Net.DevFast.Extensions
             }
         }
 
-        internal static Task<T> StartIfNeeded<T>(this Task<T> task)
+        /// <summary>
+        /// Starts the given task if not already started. Returns it back after starting for chaining or awaiting.
+        /// </summary>
+        /// <typeparam name="T">Task param type</typeparam>
+        /// <param name="task">Task to start</param>
+        public static Task<T> StartIfNeeded<T>(this Task<T> task)
         {
             if (task.Status == TaskStatus.Created) task.Start();
             return task;
         }
 
-        internal static Task StartIfNeeded(this Task task)
+        /// <summary>
+        /// Starts the given task if not already started. Returns it back after starting for chaining or awaiting.
+        /// </summary>
+        /// <param name="task">Task to start</param>
+        public static Task StartIfNeeded(this Task task)
         {
             if (task.Status == TaskStatus.Created) task.Start();
             return task;
         }
 
-        private static Task AwaitNDispose(this Task awaitOn, IDisposable disposeIt)
+        /// <summary>
+        /// Awaits on the given task and once task finishes (irrespective of its state), disposes
+        /// the given disposable instance. Runs everything as a new task.
+        /// </summary>
+        /// <param name="awaitOn">Task to await on. If not started, then it will started before it is awaited on.</param>
+        /// <param name="disposeIt">Disposable instance</param>
+        public static Task AwaitNDispose(this Task awaitOn, IDisposable disposeIt)
         {
             return Task.Run(async () =>
             {
                 using (disposeIt)
                 {
-                    await awaitOn.ConfigureAwait(false);
+                    await awaitOn.StartIfNeeded().ConfigureAwait(false);
                 }
             });
         }
+
+        /// <summary>
+        /// Awaits on the given task and once task finishes (irrespective of its state), disposes
+        /// the given disposable instance. New task is NOT created.
+        /// </summary>
+        /// <param name="awaitOn">Task to await on. If not started, then it will started before it is awaited on.</param>
+        /// <param name="disposeIt">Disposable instance</param>
+        public static async Task AwaitNDisposeAsync(this Task awaitOn, IDisposable disposeIt)
+        {
+            using (disposeIt)
+            {
+                await awaitOn.StartIfNeeded().ConfigureAwait(false);
+            }
+        }
+
+#if !OLDNETUSING
+        /// <summary>
+        /// Awaits on the given task and once task finishes (irrespective of its state), disposes
+        /// the given disposable instance. Runs everything as a new task.
+        /// </summary>
+        /// <param name="awaitOn">Task to await on. If not started, then it will started before it is awaited on.</param>
+        /// <param name="disposeIt">Disposable instance</param>
+        public static Task AwaitNDispose(this Task awaitOn, IAsyncDisposable disposeIt)
+        {
+            return Task.Run(async () =>
+            {
+                await using (disposeIt.ConfigureAwait(false))
+                {
+                    await awaitOn.StartIfNeeded().ConfigureAwait(false);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Awaits on the given task and once task finishes (irrespective of its state), disposes
+        /// the given disposable instance. New task is NOT created.
+        /// </summary>
+        /// <param name="awaitOn">Task to await on. If not started, then it will started before it is awaited on.</param>
+        /// <param name="disposeIt">Disposable instance</param>
+        public static async Task AwaitNDisposeAsync(this Task awaitOn, IAsyncDisposable disposeIt)
+        {
+            await using (disposeIt.ConfigureAwait(false))
+            {
+                await awaitOn.StartIfNeeded().ConfigureAwait(false);
+            }
+        }
+#endif
     }
 }

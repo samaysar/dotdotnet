@@ -34,10 +34,8 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
 
         public bool TryAdd(T item, int millisecTimeout, CancellationToken token)
         {
-            using (var mergeToken = CancellationTokenSource.CreateLinkedTokenSource(token, _token))
-            {
-                return _collection.TryAdd(item, millisecTimeout, mergeToken.Token);
-            }
+            using var mergeToken = CancellationTokenSource.CreateLinkedTokenSource(token, _token);
+            return _collection.TryAdd(item, millisecTimeout, mergeToken.Token);
         }
 
         public void Close()

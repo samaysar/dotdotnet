@@ -392,11 +392,9 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         /// <exception cref="DdnDfException">when <paramref name="input"/> is null</exception>
         public static ArraySegment<byte> ToByteSegment(this string input, Encoding enc = null)
         {
-            using (var membuffer = new MemoryStream())
-            {
-                input.ThrowIfNull("input string is null").ToStreamAsync(membuffer, enc).Wait();
-                return membuffer.ThrowIfNoBuffer();
-            }
+            using var membuffer = new MemoryStream();
+            input.ThrowIfNull("input string is null").ToStreamAsync(membuffer, enc).Wait();
+            return membuffer.ThrowIfNoBuffer();
         }
 
         /// <summary>

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace Dot.Net.DevFast.Tests.Extensions
@@ -128,6 +130,30 @@ namespace Dot.Net.DevFast.Tests.Extensions
             tt = tt.StartIfNeeded();
             Assert.True(tt.Status != TaskStatus.Created);
             Assert.True(ReferenceEquals(await tt.ConfigureAwait(false), o));
+        }
+
+        [Test]
+        public async Task AwaitNDispose_Properly_Disposes_After_Await()
+        {
+            var disposable = Substitute.For<IDisposable>();
+            var awaitable = new Task(disposable.Received(0).Dispose);
+            Assert.AreEqual(awaitable.Status, TaskStatus.Created);
+            await awaitable.AwaitNDispose(disposable).ConfigureAwait(false);
+            Assert.AreEqual(awaitable.Status, TaskStatus.RanToCompletion);
+            //There will be 2 calls, one we made inside task and another by method
+            disposable.Received(2).Dispose();
+#if !OLDNETUSING
+            var asyncDisposable = Substitute.For<IAsyncDisposable>();
+            var asyncAwaitable = Task.CompletedTask;
+            await asyncAwaitable.AwaitNDispose(asyncDisposable).ConfigureAwait(false);
+            Assert.AreEqual(asyncAwaitable.Status, TaskStatus.RanToCompletion);
+            //There will be ONLY 1 call due to caching mechanism of the framework 
+            await asyncDisposable.Received(1).DisposeAsync().ConfigureAwait(false);
+            foreach (var call in asyncDisposable.ReceivedCalls())
+            {
+                Console.WriteLine(call.GetMethodInfo().Name);
+            }
+#endif
         }
 
         private static IEnumerable<T> CreateEnumeration<T>(T obj, int count)
