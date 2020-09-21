@@ -1,6 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using System.Threading;
+#if NETASYNCDISPOSE
 using System.Threading.Tasks;
+#endif
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions.Ppc;
 

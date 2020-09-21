@@ -13,8 +13,8 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         [Test]
         public async Task Add_Throws_Error_When_Called_After_Close()
         {
-#if NETASYNCDISPOSE
             var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
+#if NETASYNCDISPOSE
             await using (instance.ConfigureAwait(false))
 #else
             using (instance)
@@ -42,45 +42,71 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         }
 
         [Test]
-        public void Add_Throws_Error_When_Cancellation_Is_Demanded_Through_Ctor_Token()
+        public async Task Add_Throws_Error_When_Cancellation_Is_Demanded_Through_Ctor_Token()
         {
             using (var cts = new CancellationTokenSource())
             {
                 cts.Cancel();
-                using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, cts.Token))
+                var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, cts.Token);
+#if NETASYNCDISPOSE
+            await using (instance.ConfigureAwait(false))
+#else
+                using (instance)
+#endif
                 {
                     Assert.Throws<OperationCanceledException>(() => instance.Add(new object(), CancellationToken.None));
                 }
+
+                await Task.CompletedTask;
             }
         }
 
         [Test]
-        public void Add_Throws_Error_When_Cancellation_Is_Demanded_Through_Param_Token()
+        public async Task Add_Throws_Error_When_Cancellation_Is_Demanded_Through_Param_Token()
         {
             using (var cts = new CancellationTokenSource())
             {
                 cts.Cancel();
-                using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
+                var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
+#if NETASYNCDISPOSE
+            await using (instance.ConfigureAwait(false))
+#else
+                using (instance)
+#endif
                 {
                     Assert.Throws<OperationCanceledException>(() => instance.Add(new object(), cts.Token));
                 }
+
+                await Task.CompletedTask;
             }
         }
 
         [Test]
-        public void TryAdd_Returns_False_After_Timeout_When_Buffer_Is_Full()
+        public async Task TryAdd_Returns_False_After_Timeout_When_Buffer_Is_Full()
         {
-            using (var instance = new PpcBuffer<object>(ConcurrentBuffer.MinSize, CancellationToken.None))
+            var instance = new PpcBuffer<object>(ConcurrentBuffer.MinSize, CancellationToken.None);
+#if NETASYNCDISPOSE
+            await using (instance.ConfigureAwait(false))
+#else
+            using (instance)
+#endif
             {
                 instance.Add(new object(), CancellationToken.None);
                 Assert.False(instance.TryAdd(new object(), 0, CancellationToken.None));
             }
+
+            await Task.CompletedTask;
         }
 
         [Test]
-        public void TryGet_And_Add_Harmonize()
+        public async Task TryGet_And_Add_Harmonize()
         {
-            using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
+            var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
+#if NETASYNCDISPOSE
+            await using (instance.ConfigureAwait(false))
+#else
+            using (instance)
+#endif
             {
                 var obj = new object();
                 instance.Add(obj, CancellationToken.None);
@@ -88,61 +114,89 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                             ReferenceEquals(newObj, obj));
                 instance.Close();
             }
+
+            await Task.CompletedTask;
         }
 
         [Test]
         public async Task TryGet_Blocks_The_Call_If_Close_Not_Called_Returns_Added_Element_If_Available()
         {
             var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
-            var obj = new object();
-            object outObj = null;
-            var tryGetTask = Task.Run(() => instance.TryGet(Timeout.Infinite, CancellationToken.None, out outObj));
-            Assert.True(tryGetTask.Status != TaskStatus.RanToCompletion);
-            instance.Add(obj, CancellationToken.None);
-            Assert.True(await tryGetTask.ConfigureAwait(false) && ReferenceEquals(outObj, obj));
-            tryGetTask = Task.Run(() => instance.TryGet(Timeout.Infinite, CancellationToken.None, out outObj));
-            Assert.True(tryGetTask.Status != TaskStatus.RanToCompletion);
-            instance.Close();
-            Assert.False(await tryGetTask.ConfigureAwait(false));
-            Assert.True(instance.Finished);
+#if NETASYNCDISPOSE
+            await using (instance.ConfigureAwait(false))
+#else
             using (instance)
+#endif
             {
-                //to dispose.
+                var obj = new object();
+                object outObj = null;
+                var tryGetTask = Task.Run(() => instance.TryGet(Timeout.Infinite, CancellationToken.None, out outObj));
+                Assert.True(tryGetTask.Status != TaskStatus.RanToCompletion);
+                instance.Add(obj, CancellationToken.None);
+                Assert.True(await tryGetTask.ConfigureAwait(false) && ReferenceEquals(outObj, obj));
+                tryGetTask = Task.Run(() => instance.TryGet(Timeout.Infinite, CancellationToken.None, out outObj));
+                Assert.True(tryGetTask.Status != TaskStatus.RanToCompletion);
+                instance.Close();
+                Assert.False(await tryGetTask.ConfigureAwait(false));
+                Assert.True(instance.Finished);
             }
+
+            await Task.CompletedTask;
         }
 
         [Test]
-        public void TryGet_Returns_False_After_Close()
+        public async Task TryGet_Returns_False_After_Close()
         {
-            using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
+            var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
+#if NETASYNCDISPOSE
+            await using (instance.ConfigureAwait(false))
+#else
+            using (instance)
+#endif
             {
                 instance.Close();
                 Assert.False(instance.TryGet(Timeout.Infinite, CancellationToken.None, out _));
             }
+
+            await Task.CompletedTask;
         }
 
         [Test]
-        public void TryGet_Throws_Error_After_Dispose()
+        public async Task TryGet_Throws_Error_After_Dispose()
         {
-            using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
+            var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
+#if NETASYNCDISPOSE
+            await using (instance.ConfigureAwait(false))
+#else
+            using (instance)
+#endif
             {
                 instance.Dispose();
                 Assert.Throws<NullReferenceException>(() =>
                     instance.TryGet(Timeout.Infinite, CancellationToken.None, out _));
             }
+
+            await Task.CompletedTask;
         }
 
         [Test]
-        public void TryGet_Throws_Error_When_Cancellation_Is_Demanded_Through_Method_Token()
+        public async Task TryGet_Throws_Error_When_Cancellation_Is_Demanded_Through_Method_Token()
         {
             using (var cts = new CancellationTokenSource())
             {
                 cts.Cancel();
-                using (var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None))
+                var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
+#if NETASYNCDISPOSE
+                await using (instance.ConfigureAwait(false))
+#else
+                using (instance)
+#endif
                 {
                     Assert.Throws<OperationCanceledException>(() =>
                         instance.TryGet(Timeout.Infinite, cts.Token, out _));
                 }
+
+                await Task.CompletedTask;
             }
         }
     }

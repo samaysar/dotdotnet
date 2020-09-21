@@ -36,31 +36,37 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         }
 
         [Test]
-        public void TryAdd_Returns_False_On_Timeout_When_Unable_To_Add_Item()
+        public async Task TryAdd_Returns_False_On_Timeout_When_Unable_To_Add_Item()
         {
             using (var handle = new ManualResetEventSlim(false))
             {
-                using (var consumerhandle = new ManualResetEventSlim(false))
+                using (var consumerHandle = new ManualResetEventSlim(false))
                 {
                     var consumers = new IConsumer<object>[1];
                     consumers[0] = Substitute.For<IConsumer<object>>();
                     consumers[0].ConsumeAsync(Arg.Any<object>(), Arg.Any<CancellationToken>())
                         .Returns(x =>
                         {
-                            consumerhandle.Set();
+                            consumerHandle.Set();
                             handle.Wait();
                             return Task.CompletedTask;
                         });
-
-                    using (var instance = new Pipeline<object, object>(consumers,
-                        IdentityAwaitableAdapter<object>.Default, CancellationToken.None, 1))
+                    var instance = new Pipeline<object, object>(consumers, IdentityAwaitableAdapter<object>.Default,
+                        CancellationToken.None, 1);
+#if NETASYNCDISPOSE
+                    await using (instance.ConfigureAwait(false))
+#else
+                    using (instance)
+#endif
                     {
                         instance.Add(new object(), CancellationToken.None); //this one will reach consumer
-                        consumerhandle.Wait();
+                        consumerHandle.Wait();
                         instance.Add(new object(), CancellationToken.None); //this one will stay in buffer
                         Assert.False(instance.TryAdd(new object(), 0, CancellationToken.None)); //this one we wont be able to add
                         handle.Set();
                     }
+
+                    await Task.CompletedTask;
                 }
             }
         }
@@ -76,8 +82,13 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 consumers[i] = Substitute.For<IConsumer<object>>();
             }
 
-            using (var instance = new Pipeline<object, object>(consumers, IdentityAwaitableAdapter<object>.Default,
-                CancellationToken.None, 1))
+            var instance = new Pipeline<object, object>(consumers, IdentityAwaitableAdapter<object>.Default,
+                CancellationToken.None, 1);
+#if NETASYNCDISPOSE
+            await using (instance.ConfigureAwait(false))
+#else
+            using (instance)
+#endif
             {
                 await instance.TearDown().ConfigureAwait(false);
                 foreach (var consumer in consumers)
@@ -99,7 +110,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         [TestCase(2)]
         public void When_Token_Is_Canceled_The_Consumers_Are_Disposed_Pipeline_Remains_Alive_But_Accept_Throws_OpCancelErr(int cc)
         {
-            Assert.True(Assert.ThrowsAsync<AggregateException>(async () =>
+            Assert.ThrowsAsync<OperationCanceledException>(async () =>
             {
                 var countdownHandle = new CountdownEvent(cc);
                 var consumers = new IConsumer<object>[cc];
@@ -120,21 +131,25 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 var cts = new CancellationTokenSource();
                 var instance = new Pipeline<object, object>(consumers, IdentityAwaitableAdapter<object>.Default,
                     cts.Token, 1);
-                cts.Cancel();
-                //we wait before checking received calls...! it means our dispose counts are correct!
-                countdownHandle.Wait(CancellationToken.None);
-                foreach (var consumer in consumers)
-                {
-                    await consumer.Received(1).InitAsync().ConfigureAwait(false);
-                    await consumer.Received(0).ConsumeAsync(Arg.Any<object>(), Arg.Any<CancellationToken>())
-                        .ConfigureAwait(false);
-                }
-                Assert.Throws<OperationCanceledException>(() => instance.Add(new object(), CancellationToken.None));
-
+#if NETASYNCDISPOSE
+                await using (instance.ConfigureAwait(false))
+#else
                 using (instance)
+#endif
                 {
+                    cts.Cancel();
+                    //we wait before checking received calls...! it means our dispose counts are correct!
+                    countdownHandle.Wait(CancellationToken.None);
+                    foreach (var consumer in consumers)
+                    {
+                        await consumer.Received(1).InitAsync().ConfigureAwait(false);
+                        await consumer.Received(0).ConsumeAsync(Arg.Any<object>(), Arg.Any<CancellationToken>())
+                            .ConfigureAwait(false);
+                    }
+
+                    Assert.Throws<OperationCanceledException>(() => instance.Add(new object(), CancellationToken.None));
                 }
-            }).InnerExceptions[0] is TaskCanceledException);
+            });
             //task cancel error is thrown due to TearDown call!
         }
 
@@ -145,8 +160,13 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             var consumers = new IConsumer<List<object>>[1];
             consumers[0] = Substitute.For<IConsumer<List<object>>>();
 
-            using (var instance = new Pipeline<object, List<object>>(consumers,
-                new IdentityAwaitableListAdapter<object>(2, 0), CancellationToken.None, 1))
+            var instance = new Pipeline<object, List<object>>(consumers,
+                new IdentityAwaitableListAdapter<object>(2, 0), CancellationToken.None, 1);
+#if NETASYNCDISPOSE
+            await using (instance.ConfigureAwait(false))
+#else
+            using (instance)
+#endif
             {
                 Assert.True(instance.UnconsumedCount == 0);
                 instance.Add(new object(), CancellationToken.None);
