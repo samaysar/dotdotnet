@@ -9,7 +9,7 @@ namespace Dot.Net.DevFast.IO
     /// Data structure to facilitate Push based functional streaming,
     /// i.e., 1st Pipe writes on 2nd that writes on 3rd and so on and so forth...
     /// </summary>
-    public struct PushFuncStream
+    public readonly struct PushFuncStream
     {
         /// <summary>
         /// Writable stream

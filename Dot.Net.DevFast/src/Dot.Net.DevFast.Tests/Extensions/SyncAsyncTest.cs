@@ -223,6 +223,114 @@ namespace Dot.Net.DevFast.Tests.Extensions
         }
 
         [Test]
+        public void Action_ToAsyncFunc_WithoutDelegation_Throws_Error_If_Cancellation_Is_Demanded_Before()
+        {
+            //Here we want to just Assert that no matter when we await on the
+            //Async Task it will always execute in line when delegation is set to false.
+
+            var cts = new CancellationTokenSource();
+            cts.Cancel();
+            // testing Action with 0 generics
+            Action sync0 = () => { };
+            var async0 = sync0.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async0().GetAwaiter().GetResult());
+
+            // testing Action with 1 generics
+            Action<int> sync1 = (t0) => { };
+            var async1 = sync1.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async1(1).GetAwaiter().GetResult());
+
+            // testing Action with 2 generics
+            Action<int, int> sync2 = (t0, t1) => { };
+            var async2 = sync2.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async2(1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 3 generics
+            Action<int, int, int> sync3 = (t0, t1, t2) => { };
+            var async3 = sync3.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async3(1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 4 generics
+            Action<int, int, int, int> sync4 = (t0, t1, t2, t3) => { };
+            var async4 = sync4.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async4(1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 5 generics
+            Action<int, int, int, int, int> sync5 = (t0, t1, t2, t3, t4) => { };
+            var async5 = sync5.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async5(1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 6 generics
+            Action<int, int, int, int, int, int> sync6 = (t0, t1, t2, t3, t4, t5) => { };
+            var async6 = sync6.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async6(1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 7 generics
+            Action<int, int, int, int, int, int, int> sync7 = (t0, t1, t2, t3, t4, t5, t6) => { };
+            var async7 = sync7.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async7(1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 8 generics
+            Action<int, int, int, int, int, int, int, int> sync8 = (t0, t1, t2, t3, t4, t5, t6, t7) => { };
+            var async8 = sync8.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async8(1, 1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 9 generics
+            Action<int, int, int, int, int, int, int, int, int> sync9 = (t0, t1, t2, t3, t4, t5, t6, t7, t8) => { };
+            var async9 = sync9.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async9(1, 1, 1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 10 generics
+            Action<int, int, int, int, int, int, int, int, int, int> sync10 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9) => { };
+            var async10 = sync10.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() =>
+                async10(1, 1, 1, 1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 11 generics
+            Action<int, int, int, int, int, int, int, int, int, int, int> sync11 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10) => { };
+            var async11 = sync11.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() =>
+                async11(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 12 generics
+            Action<int, int, int, int, int, int, int, int, int, int, int, int> sync12 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11) => { };
+            var async12 = sync12.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() =>
+                async12(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 13 generics
+            Action<int, int, int, int, int, int, int, int, int, int, int, int, int> sync13 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12) => { };
+            var async13 = sync13.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() =>
+                async13(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 14 generics
+            Action<int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync14 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13) => { };
+            var async14 = sync14.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() =>
+                async14(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 15 generics
+            Action<int, int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync15 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14) => { };
+            var async15 = sync15.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() =>
+                async15(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 16 generics
+            Action<int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync16 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15) => { };
+            var async16 = sync16.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() =>
+                async16(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+        }
+
+        [Test]
         public async Task Func_ToAsyncFunc_WithoutDelegation_Works_As_Expected()
         {
             //Here we want to just Assert that no matter when we await on the
@@ -422,6 +530,114 @@ namespace Dot.Net.DevFast.Tests.Extensions
             actTs = await awaitAfter.ConfigureAwait(false);
             Assert.True(currentTicks >= actTs);
             Assert.True(actTs != 0);
+        }
+
+        [Test]
+        public void Func_ToAsyncFunc_WithoutDelegation_Throws_Error_If_Cancellation_Is_Demanded_Before()
+        {
+            //Here we want to just Assert that no matter when we await on the
+            //Async Task it will always execute in line when delegation is set to false.
+
+            var cts = new CancellationTokenSource();
+            cts.Cancel();
+            // testing Action with 0 generics
+            Func<int> sync0 = () => 0;
+            var async0 = sync0.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async0().GetAwaiter().GetResult());
+
+            // testing Action with 1 generics
+            Func<int, int> sync1 = (t0) => 0;
+            var async1 = sync1.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async1(1).GetAwaiter().GetResult());
+
+            // testing Action with 2 generics
+            Func<int, int, int> sync2 = (t0, t1) => 0;
+            var async2 = sync2.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async2(1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 3 generics
+            Func<int, int, int, int> sync3 = (t0, t1, t2) => 0;
+            var async3 = sync3.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async3(1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 4 generics
+            Func<int, int, int, int, int> sync4 = (t0, t1, t2, t3) => 0;
+            var async4 = sync4.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async4(1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 5 generics
+            Func<int, int, int, int, int, int> sync5 = (t0, t1, t2, t3, t4) => 0;
+            var async5 = sync5.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async5(1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 6 generics
+            Func<int, int, int, int, int, int, int> sync6 = (t0, t1, t2, t3, t4, t5) => 0;
+            var async6 = sync6.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async6(1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 7 generics
+            Func<int, int, int, int, int, int, int, int> sync7 = (t0, t1, t2, t3, t4, t5, t6) => 0;
+            var async7 = sync7.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async7(1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 8 generics
+            Func<int, int, int, int, int, int, int, int, int> sync8 = (t0, t1, t2, t3, t4, t5, t6, t7) => 0;
+            var async8 = sync8.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async8(1, 1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 9 generics
+            Func<int, int, int, int, int, int, int, int, int, int> sync9 = (t0, t1, t2, t3, t4, t5, t6, t7, t8) => 0;
+            var async9 = sync9.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() => async9(1, 1, 1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 10 generics
+            Func<int, int, int, int, int, int, int, int, int, int, int> sync10 = (t0, t1, t2, t3, t4, t5, t6, t7, t8,
+                t9) => 0;
+            var async10 = sync10.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() =>
+                async10(1, 1, 1, 1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 11 generics
+            Func<int, int, int, int, int, int, int, int, int, int, int, int> sync11 = (t0, t1, t2, t3, t4, t5, t6, t7,
+                t8, t9, t10) => 0;
+            var async11 = sync11.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() =>
+                async11(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 12 generics
+            Func<int, int, int, int, int, int, int, int, int, int, int, int, int> sync12 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11) => 0;
+            var async12 = sync12.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() =>
+                async12(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 13 generics
+            Func<int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync13 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12) => 0;
+            var async13 = sync13.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() =>
+                async13(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 14 generics
+            Func<int, int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync14 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13) => 0;
+            var async14 = sync14.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() =>
+                async14(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 15 generics
+            Func<int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync15 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14) => 0;
+            var async15 = sync15.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() =>
+                async15(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
+
+            // testing Action with 16 generics
+            Func<int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int> sync16 =
+                (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15) => 0;
+            var async16 = sync16.ToAsync(false, token: cts.Token);
+            Assert.Throws<OperationCanceledException>(() =>
+                async16(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1).GetAwaiter().GetResult());
         }
 
         [Test]

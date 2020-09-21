@@ -46,7 +46,8 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 
         internal IdentityAwaitableAdapter()
         {
-            //singleton as methods are pure
+            //singleton as methods are pure, cannot declare as private due to
+            //access in tests
         }
 
         public override T Adapt(T produced, CancellationToken token)
