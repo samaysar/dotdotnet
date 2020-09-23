@@ -81,7 +81,7 @@ namespace Dot.Net.DevFast.IO
         /// </summary>
         public override int Read(byte[] buffer, int offset, int count)
         {
-            return ReadAsync(buffer, offset, count, CancellationToken.None).Result;
+            return ReadAsync(buffer, offset, count, CancellationToken.None).GetAwaiter().GetResult();
         }
 
         /// <inheritdoc />
@@ -102,7 +102,7 @@ namespace Dot.Net.DevFast.IO
         /// </summary>
         public override void Write(byte[] buffer, int offset, int count)
         {
-            WriteAsync(buffer, offset, count, CancellationToken.None).Wait();
+            WriteAsync(buffer, offset, count, CancellationToken.None).GetAwaiter().GetResult();
         }
 
         /// <inheritdoc />

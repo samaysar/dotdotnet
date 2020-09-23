@@ -818,33 +818,30 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             CancellationTokenSource consumerTokenSource = null,
             bool disposeSource = true, bool closeTarget = true, bool forceCloseWhenError = true)
         {
-            new Action(() =>
+            var inErr = false;
+            try
             {
-                var inErr = false;
-                try
+                token.ThrowIfCancellationRequested();
+                if (source.ThrowIfTokenNotStartArray()) return;
+                var nullHandledSerializer = serializer ?? source.AdaptedJsonSerializer();
+                while (source.NotAnEndArrayToken())
                 {
                     token.ThrowIfCancellationRequested();
-                    if (source.ThrowIfTokenNotStartArray()) return;
-                    var nullHandledSerializer = serializer ?? source.AdaptedJsonSerializer();
-                    while (source.NotAnEndArrayToken())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        target.Add(source.FromJsonGetNext<T>(nullHandledSerializer), token);
-                    }
+                    target.Add(source.FromJsonGetNext<T>(nullHandledSerializer), token);
                 }
-                catch
-                {
-                    inErr = true;
-                    if (!token.IsCancellationRequested) consumerTokenSource?.Cancel();
-                    throw;
-                }
-                finally
-                {
-                    //obligation to close the collection.
-                    if (closeTarget || (forceCloseWhenError && inErr)) target.CompleteAdding();
-                    source.DisposeIfRequired(disposeSource);
-                }
-            }).ToAsync(true, TaskCreationOptions.None, token)().GetAwaiter().GetResult();
+            }
+            catch
+            {
+                inErr = true;
+                if (!token.IsCancellationRequested) consumerTokenSource?.Cancel();
+                throw;
+            }
+            finally
+            {
+                //obligation to close the collection.
+                if (closeTarget || (forceCloseWhenError && inErr)) target.CompleteAdding();
+                source.DisposeIfRequired(disposeSource);
+            }
         }
 
         #endregion FromJsonArrayParallely region

@@ -121,24 +121,24 @@ namespace Dot.Net.DevFast.Tests.IO
             using (var instance = new ByteCountStream())
             {
                 //null buff
-                var err = Assert.Throws<AggregateException>(() => instance.Write(nullBuff, 0, 0)).InnerExceptions[0];
-                Assert.True(err is DdnDfException);
-                Assert.True(((DdnDfException) err).ErrorCode == DdnDfErrorCode.NullObject);
+                var err = Assert.Throws<DdnDfException>(() => instance.Write(nullBuff, 0, 0));
+                Assert.NotNull(err);
+                Assert.True(err.ErrorCode == DdnDfErrorCode.NullObject);
 
                 // -ve offset
-                err = Assert.Throws<AggregateException>(() => instance.Write(new byte[0], -1, 0)).InnerExceptions[0];
-                Assert.True(err is DdnDfException);
-                Assert.True(((DdnDfException)err).ErrorCode == DdnDfErrorCode.ValueLessThanThreshold);
+                err = Assert.Throws<DdnDfException>(() => instance.Write(new byte[0], -1, 0));
+                Assert.NotNull(err);
+                Assert.True(err.ErrorCode == DdnDfErrorCode.ValueLessThanThreshold);
 
                 // -ve count
-                err = Assert.Throws<AggregateException>(() => instance.Write(new byte[0], 0, -1)).InnerExceptions[0];
-                Assert.True(err is DdnDfException);
-                Assert.True(((DdnDfException)err).ErrorCode == DdnDfErrorCode.ValueLessThanThreshold);
+                err = Assert.Throws<DdnDfException>(() => instance.Write(new byte[0], 0, -1));
+                Assert.NotNull(err);
+                Assert.True(err.ErrorCode == DdnDfErrorCode.ValueLessThanThreshold);
 
                 // buff length < offset + count
-                err = Assert.Throws<AggregateException>(() => instance.Write(new byte[0], 0, 1)).InnerExceptions[0];
-                Assert.True(err is DdnDfException);
-                Assert.True(((DdnDfException)err).ErrorCode == DdnDfErrorCode.ValueLessThanThreshold);
+                err = Assert.Throws<DdnDfException>(() => instance.Write(new byte[0], 0, 1));
+                Assert.NotNull(err);
+                Assert.True(err.ErrorCode == DdnDfErrorCode.ValueLessThanThreshold);
 
                 //this would pass
                 instance.Write(new byte[0], 0, 0);
