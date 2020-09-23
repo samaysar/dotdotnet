@@ -56,7 +56,11 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         bool TryAdd(T item, int millisecTimeout, CancellationToken token);
     }
 
+#if NETASYNCDISPOSE
+    internal interface IPpcFeed<T> : IProducerBuffer<T>, IConsumerBuffer<T>, IAsyncDisposable
+#else
     internal interface IPpcFeed<T> : IProducerBuffer<T>, IConsumerBuffer<T>, IDisposable
+#endif
     {
     }
 }

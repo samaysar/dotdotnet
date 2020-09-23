@@ -8,8 +8,21 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     /// Producer interface for parallel Producer consumer pattern.
     /// </summary>
     /// <typeparam name="T">Content type</typeparam>
+#if !NETASYNCDISPOSE
     public interface IProducer<out T> : IDisposable
+#else
+    public interface IProducer<out T> : IAsyncDisposable
+#endif
     {
+#if NETASYNCDISPOSE
+        /// <summary>
+        /// This method is called ONCE before any call is made to <see cref="ProduceAsync"/>.
+        /// <para>Similarly, <seealso cref="IAsyncDisposable.DisposeAsync"/> will be called after
+        /// the call to <see cref="ProduceAsync"/> are done.</para>
+        /// <para>If this method results in an exception, running consumers will be signaled to quit consuming
+        /// as soon as possible and the whole pipeline will be destroyed.</para>
+        /// </summary>
+#else
         /// <summary>
         /// This method is called ONCE before any call is made to <see cref="ProduceAsync"/>.
         /// <para>Similarly, <seealso cref="IDisposable.Dispose"/> will be called after
@@ -17,8 +30,24 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <para>If this method results in an exception, running consumers will be signaled to quit consuming
         /// as soon as possible and the whole pipeline will be destroyed.</para>
         /// </summary>
+#endif
         Task InitAsync();
 
+#if NETASYNCDISPOSE
+        /// <summary>
+        /// Call to this method MUST start the data production.
+        /// <para>NOTE: This method is called just ONCE after calling <see cref="InitAsync"/> 
+        /// this method call must return ONLY WHEN EITHER all the data 
+        /// production is done OR any error has occurred.</para>
+        /// <para>Upon returning from this function, call to <seealso cref="IAsyncDisposable.DisposeAsync"/>
+        /// will be made.</para>
+        /// <para>If this method results in an exception, running consumers will be signaled to quit consuming
+        /// as soon as possible and the whole pipeline will be destroyed.</para>
+        /// </summary>
+        /// <param name="feedToPopulate">All produced data intances must be added to 
+        /// <paramref name="feedToPopulate"/> instance, in order to pass on to associated consumers.</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+#else
         /// <summary>
         /// Call to this method MUST start the data production.
         /// <para>NOTE: This method is called just ONCE after calling <see cref="InitAsync"/> 
@@ -32,6 +61,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// <param name="feedToPopulate">All produced data intances must be added to 
         /// <paramref name="feedToPopulate"/> instance, in order to pass on to associated consumers.</param>
         /// <param name="cancellationToken">Cancellation token</param>
+#endif
         Task ProduceAsync(IProducerBuffer<T> feedToPopulate, CancellationToken cancellationToken);
     }
 }

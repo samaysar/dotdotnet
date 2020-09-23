@@ -9,7 +9,7 @@ namespace Dot.Net.DevFast.Extensions.Internals
         private StringBuilder _sb;
         private int _position;
         private int _length;
-
+                                                   
         public SbReader(StringBuilder s)
         {
             _sb = s.ThrowIfNull($"{nameof(StringBuilder)} null");
@@ -92,24 +92,26 @@ namespace Dot.Net.DevFast.Extensions.Internals
             return null;
         }
 
-        public override Task<string> ReadLineAsync()
+        public override async Task<string> ReadLineAsync()
         {
-            return Task.FromResult(ReadLine());
+            return await new ValueTask<string>(ReadLine()).ConfigureAwait(false);
+
         }
 
-        public override Task<string> ReadToEndAsync()
+        public override async Task<string> ReadToEndAsync()
         {
-            return Task.FromResult(ReadToEnd());
+            return await new ValueTask<string>(ReadToEnd()).ConfigureAwait(false);
         }
 
-        public override Task<int> ReadBlockAsync(char[] buffer, int index, int count)
+        public override async Task<int> ReadBlockAsync(char[] buffer, int index, int count)
         {
-            return Task.FromResult(ReadBlock(buffer, index, count));
+            // ReSharper disable once MethodHasAsyncOverload
+            return await new ValueTask<int>(ReadBlock(buffer, index, count)).ConfigureAwait(false);
         }
 
-        public override Task<int> ReadAsync(char[] buffer, int index, int count)
+        public override async Task<int> ReadAsync(char[] buffer, int index, int count)
         {
-            return Task.FromResult(Read(buffer, index, count));
+            return await new ValueTask<int>(Read(buffer, index, count)).ConfigureAwait(false);
         }
     }
 }

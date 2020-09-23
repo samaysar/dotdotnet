@@ -63,7 +63,7 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         }
 
         /// <summary>
-        /// Converts the <paramref name="base64"/> to unencoded byte array.
+        /// Converts the <paramref name="base64"/> to string for given encoding.
         /// </summary>
         /// <param name="base64">Base64 string</param>
         /// <param name="encoding">Encoding to use during byte to string transformations.
@@ -71,15 +71,10 @@ namespace Dot.Net.DevFast.Extensions.StreamExt
         /// to detect encoding from byte order mark.</para></param>
         public static string FromBase64(this string base64, Encoding encoding)
         {
-            if (encoding != null)
-            {
-                return encoding.GetString(base64.FromBase64());
-            }
+            if (encoding != null) return encoding.GetString(base64.FromBase64());
             var memStrm = new MemoryStream(base64.FromBase64());
-            using (var reader = new StreamReader(memStrm, Encoding.UTF8, true, StdLookUps.DefaultBufferSize, false))
-            {
-                return reader.ReadToEnd();
-            }
+            using var reader = new StreamReader(memStrm, Encoding.UTF8, true, StdLookUps.DefaultBufferSize, false);
+            return reader.ReadToEnd();
         }
 
         /// <summary>

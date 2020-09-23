@@ -25,7 +25,11 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             return async pfs =>
             {
                 bcs.ResetWith(pfs.Writable, pfs.Dispose);
+#if !NETASYNCDISPOSE
                 using (bcs)
+#else
+                await using (bcs.ConfigureAwait(false))
+#endif
                 {
                     var t = pfs.Token;
                     await pipe(new PushFuncStream(bcs, false, t)).StartIfNeeded()
@@ -43,7 +47,12 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         {
             return async pfs =>
             {
+#if !NETASYNCDISPOSE
                 using (var concurrentStream = new BroadcastStream(pfs, stream, disposeStream, errorHandler))
+#else
+                var concurrentStream = new BroadcastStream(pfs, stream, disposeStream, errorHandler);
+                await using (concurrentStream.ConfigureAwait(false))
+#endif
                 {
                     var t = pfs.Token;
                     await pipe(new PushFuncStream(concurrentStream, false, t)).StartIfNeeded()
@@ -61,7 +70,12 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             {
                 var s = pfs.Writable;
                 var t = pfs.Token;
+#if !NETASYNCDISPOSE
                 using (var compStrm = s.CreateCompressionStream(gzip, level, pfs.Dispose))
+#else
+                var compStrm = s.CreateCompressionStream(gzip, level, pfs.Dispose);
+                await using (compStrm.ConfigureAwait(false))
+#endif
                 {
                     await pipe(new PushFuncStream(compStrm, false, t)).StartIfNeeded().ConfigureAwait(false);
                     await compStrm.FlushAsync(t).ConfigureAwait(false);
@@ -78,13 +92,10 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             {
                 using (encAlg)
                 {
-                    var cryptor = encrypt
+                    using var cryptor = encrypt
                         ? encAlg.CreateEncryptor(encAlg.Key, encAlg.IV)
                         : encAlg.CreateDecryptor(encAlg.Key, encAlg.IV);
-                    using (cryptor)
-                    {
-                        await pipe.ApplyTransform(cryptor)(pfs).ConfigureAwait(false);
-                    }
+                    await pipe.ApplyTransform(cryptor)(pfs).ConfigureAwait(false);
                 }
             };
         }
@@ -274,17 +285,11 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             int bufferSize, 
             int ppcBuffSize)
         {
-            using (var bc = ConcurrentBuffer.CreateBuffer<TJ>(ConcurrentBuffer.MinSize))
-            {
-                using (var localCts = new CancellationTokenSource())
-                {
-                    using (var combinedCts = CancellationTokenSource.CreateLinkedTokenSource(token, localCts.Token))
-                    {
-                        await data.ApplyPpcParseJsonArray(consumer, adapter, serializer, combinedCts.Token, enc,
-                            detectEncodingFromBom, bufferSize, bc, localCts, ppcBuffSize).ConfigureAwait(false);
-                    }
-                }
-            }
+            using var bc = ConcurrentBuffer.CreateBuffer<TJ>(ConcurrentBuffer.MinSize);
+            using var localCts = new CancellationTokenSource();
+            using var combinedCts = CancellationTokenSource.CreateLinkedTokenSource(token, localCts.Token);
+            await data.ApplyPpcParseJsonArray(consumer, adapter, serializer, combinedCts.Token, enc,
+                detectEncodingFromBom, bufferSize, bc, localCts, ppcBuffSize).ConfigureAwait(false);
         }
 
         internal static async Task ApplyPpcParseJsonArray<TJ, TC>(this PullFuncStream data,
@@ -359,7 +364,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         #endregion PullFuncStream PRIVATE
 
         internal static T InitKeyNIv<T>(this T alg, string password, string salt,
-#if NET472
+#if NETHASHCRYPTO
             HashAlgorithmName hashName,
 #endif
             int loopCnt,
@@ -367,7 +372,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             where T : SymmetricAlgorithm
         {
             var keyIv = password.CreateKeyAndIv(salt,
-#if NET472
+#if NETHASHCRYPTO
                 hashName,
 #endif
                 alg.KeySize / 8, alg.BlockSize / 8, loopCnt, enc);

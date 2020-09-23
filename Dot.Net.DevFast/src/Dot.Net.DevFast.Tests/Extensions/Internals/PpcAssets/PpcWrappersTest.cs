@@ -20,7 +20,12 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                     Interlocked.Increment(ref called);
                     return Task.CompletedTask;
                 });
+#if !NETASYNCDISPOSE
             using (var producer = new AsyncProducer<object>(funcSubstitute))
+#else
+            var producer = new AsyncProducer<object>(funcSubstitute);
+            await using (producer.ConfigureAwait(false))
+#endif
             {
                 Assert.True(producer.InitAsync().Equals(Task.CompletedTask));
                 await producer.ProduceAsync(Substitute.For<IProducerBuffer<object>>(), CancellationToken.None);
@@ -37,7 +42,12 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 Interlocked.Increment(ref called);
                 return Task.CompletedTask;
             });
+#if !NETASYNCDISPOSE
             using (var producer = new AsyncConsumer<object>(funcSubstitute))
+#else
+            var producer = new AsyncConsumer<object>(funcSubstitute);
+            await using (producer.ConfigureAwait(false))
+#endif
             {
                 Assert.True(producer.InitAsync().Equals(Task.CompletedTask));
                 await producer.ConsumeAsync(null, CancellationToken.None);

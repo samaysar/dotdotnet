@@ -24,10 +24,17 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             await _producerFunc(feedToPopulate, cancellationToken).ConfigureAwait(false);
         }
 
+#if !NETASYNCDISPOSE
         public void Dispose()
         {
             
         }
+#else
+        public ValueTask DisposeAsync()
+        {
+            return default;
+        }
+#endif
     }
 
     internal sealed class AsyncConsumer<T> : IConsumer<T>
@@ -39,10 +46,17 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             _consumerFunc = consumerFunc;
         }
 
+#if !NETASYNCDISPOSE
         public void Dispose()
         {
             
         }
+#else
+        public ValueTask DisposeAsync()
+        {
+            return default;
+        }
+#endif
 
         public Task InitAsync()
         {

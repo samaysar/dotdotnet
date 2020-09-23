@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace Dot.Net.DevFast.Tests.Extensions
@@ -128,6 +129,54 @@ namespace Dot.Net.DevFast.Tests.Extensions
             tt = tt.StartIfNeeded();
             Assert.True(tt.Status != TaskStatus.Created);
             Assert.True(ReferenceEquals(await tt.ConfigureAwait(false), o));
+        }
+
+        [Test]
+        public async Task AwaitNDispose_Properly_Disposes_After_Await()
+        {
+            var callCount = 0;
+            var disposable = Substitute.For<IDisposable>();
+            var awaitable = Task.CompletedTask;
+            disposable.When(x => x.Dispose()).Do(x => Interlocked.Increment(ref callCount));
+            await awaitable.AwaitNDispose(disposable).ConfigureAwait(false);
+            //There will be 2 calls, one we made inside task and another by method
+            Assert.IsTrue(callCount.Equals(1));
+#if NETASYNCDISPOSE
+            callCount = 0;
+            var asyncDisposable = Substitute.For<IAsyncDisposable>();
+            var asyncAwaitable = Task.CompletedTask;
+            asyncDisposable.DisposeAsync().Returns(x =>
+            {
+                Interlocked.Increment(ref callCount);
+                return default;
+            });
+            await asyncAwaitable.AwaitNDispose(asyncDisposable).ConfigureAwait(false);
+            Assert.IsTrue(callCount.Equals(1));
+#endif
+        }
+
+        [Test]
+        public async Task AwaitNDisposeAsync_Properly_Disposes_After_Await()
+        {
+            var callCount = 0;
+            var disposable = Substitute.For<IDisposable>();
+            var awaitable = Task.CompletedTask;
+            disposable.When(x => x.Dispose()).Do(x => Interlocked.Increment(ref callCount));
+            await awaitable.AwaitNDisposeAsync(disposable).ConfigureAwait(false);
+            //There will be 2 calls, one we made inside task and another by method
+            Assert.IsTrue(callCount.Equals(1));
+#if NETASYNCDISPOSE
+            callCount = 0;
+            var asyncDisposable = Substitute.For<IAsyncDisposable>();
+            var asyncAwaitable = Task.CompletedTask;
+            asyncDisposable.DisposeAsync().Returns(x =>
+            {
+                Interlocked.Increment(ref callCount);
+                return default;
+            });
+            await asyncAwaitable.AwaitNDisposeAsync(asyncDisposable).ConfigureAwait(false);
+            Assert.IsTrue(callCount.Equals(1));
+#endif
         }
 
         private static IEnumerable<T> CreateEnumeration<T>(T obj, int count)

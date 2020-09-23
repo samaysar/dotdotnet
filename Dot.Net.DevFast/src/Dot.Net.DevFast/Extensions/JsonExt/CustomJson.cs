@@ -14,7 +14,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         /// </summary>
         public static JsonSerializer Serializer()
         {
-            return new JsonSerializer()
+            return new JsonSerializer
             {
                 Culture = CultureInfo.CurrentCulture,
                 DateFormatHandling = DateFormatHandling.IsoDateFormat,
@@ -47,7 +47,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
             var serializer = Serializer();
             serializer.Culture = writer.Culture;
             serializer.DateFormatHandling = writer.DateFormatHandling;
-            serializer.DateFormatString = writer.DateFormatString;
+            serializer.DateFormatString = writer.DateFormatString ?? serializer.DateFormatString;
             serializer.DateTimeZoneHandling = writer.DateTimeZoneHandling;
             serializer.FloatFormatHandling = writer.FloatFormatHandling;
             serializer.Formatting = writer.Formatting;
@@ -64,7 +64,7 @@ namespace Dot.Net.DevFast.Extensions.JsonExt
         {
             var serializer = Serializer();
             serializer.Culture = reader.Culture;
-            serializer.DateFormatString = reader.DateFormatString;
+            serializer.DateFormatString = reader.DateFormatString ?? serializer.DateFormatString;
             serializer.DateTimeZoneHandling = reader.DateTimeZoneHandling;
             serializer.FloatParseHandling = reader.FloatParseHandling;
             serializer.DateParseHandling = reader.DateParseHandling;

@@ -7,7 +7,7 @@ namespace Dot.Net.DevFast.IO
     /// <summary>
     /// Data structure to facilitate Pull based functional streaming,
     /// i.e., 2ndst Pipe reads from 1st, 3rd reads from 2nd and so on and so forth... /// </summary>
-    public struct PullFuncStream
+    public readonly struct PullFuncStream
     {
         /// <summary>
         /// Readable stream

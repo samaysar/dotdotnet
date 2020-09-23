@@ -1,3 +1,4 @@
+<img src="Dot.Net.DevFast/spon_logo/jetbrains.png" width="100" height="100" />[Thanks JetBrains](https://www.jetbrains.com/?from=Dot.Net.DevFast) for supporting this project. 
 # dotdotnet
 
 ## DevFast (.T to begin with...)

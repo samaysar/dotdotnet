@@ -122,7 +122,11 @@ namespace Dot.Net.DevFast.Tests.IO
                 new BroadcastStream(new PushFuncStream(stm1, true, CancellationToken.None), stm2, true, null))
             {
                 var bytes = new byte[0];
-                Assert.Throws<AggregateException>(() => instance.Write(bytes, 0, 0));
+                var ex = Assert.Throws<Exception>(() => instance.Write(bytes, 0, 0));
+                Assert.AreEqual(ex.Message, "Error during Concurrent streaming.");
+                ex = ex.InnerException;
+                Assert.NotNull(ex);
+                Assert.AreEqual(ex.Message, "Test");
             }
         }
 

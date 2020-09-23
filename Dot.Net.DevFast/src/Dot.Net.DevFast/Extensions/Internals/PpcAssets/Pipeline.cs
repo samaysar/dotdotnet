@@ -28,10 +28,17 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             _consumerTask = Pipe<TP, TC>.RunConsumers(consumers, _feed, adapter, token, _localCts);
         }
 
+#if NETASYNCDISPOSE
+        public async ValueTask DisposeAsync()
+        {
+            await TearDown().ConfigureAwait(false);
+        }
+#else
         public void Dispose()
         {
-            TearDown().Wait(CancellationToken.None);
+            TearDown().GetAwaiter().GetResult();
         }
+#endif
 
         public void Add(TP item, CancellationToken token)
         {
@@ -47,31 +54,32 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             return _feed.TryAdd(item, millisecTimeout, token);
         }
 
-        public Task TearDown()
+        public async Task TearDown()
         {
-            return Task.Run(async () =>
+            if (_localCts == null) return;
+            try
             {
-                if (_localCts == null) return;
-                try
+                using (_localCts)
                 {
-                    using (_localCts)
+                    using (_mergedCts)
                     {
-                        using (_mergedCts)
+#if NETASYNCDISPOSE
+                        await using (_feed.ConfigureAwait(false))
+#else
+                        using (_feed)
+#endif
                         {
-                            using (_feed)
-                            {
-                                _localCts.Cancel();
-                                _feed.Close();
-                                await _consumerTask.ConfigureAwait(false);
-                            }
+                            _localCts.Cancel();
+                            _feed.Close();
+                            await _consumerTask.ConfigureAwait(false);
                         }
                     }
                 }
-                finally
-                {
-                    _localCts = null;
-                }
-            });
+            }
+            finally
+            {
+                _localCts = null;
+            }
         }
 
         public int UnconsumedCount => _feed.Unprocessed;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Dot.Net.DevFast.Extensions.Ppc;
 using NUnit.Framework;
 
@@ -11,95 +12,237 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         //inside ConcurrentPipeline implementation!
 
         [Test]
-        public void Single_Consumer_Based_Pipeline_Harmonizes()
+        public async Task Single_Consumer_Based_Pipeline_Harmonizes()
         {
-            using (PipeExtsTest.Consumer<object>().Pipeline())
+#if NETASYNCDISPOSE
+            await 
+#endif
+            using (
+                PipeExtsTest.Consumer<object>().Pipeline()
+#if NETASYNCDISPOSE
+            .ConfigureAwait(false)
+#endif
+                )
             {
             }
 
-            using (PipeExtsTest.Consumer<List<object>>().Pipeline(2, 0))
+#if NETASYNCDISPOSE
+            await
+#endif
+                using (
+                    PipeExtsTest.Consumer<List<object>>().Pipeline(2, 0)
+#if NETASYNCDISPOSE
+                        .ConfigureAwait(false)
+#endif
+                )
             {
             }
 
-            using (PipeExtsTest.Consumer<object>().Pipeline(IdentityAwaitableAdapter<object>.Default))
+#if NETASYNCDISPOSE
+            await
+#endif
+                using (
+                    PipeExtsTest.Consumer<object>().Pipeline(IdentityAwaitableAdapter<object>.Default)
+#if NETASYNCDISPOSE
+                        .ConfigureAwait(false)
+#endif
+                )
             {
             }
 
-            using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>())
-                .Pipeline())
+#if NETASYNCDISPOSE
+            await
+#endif
+                using (
+                    PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>()).Pipeline()
+#if NETASYNCDISPOSE
+                        .ConfigureAwait(false)
+#endif
+                )
             {
             }
 
-            using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<List<object>>())
-                .Pipeline(2, 0))
+#if NETASYNCDISPOSE
+            await
+#endif
+                using (
+                    PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<List<object>>()).Pipeline(2, 0)
+#if NETASYNCDISPOSE
+                        .ConfigureAwait(false)
+#endif
+                )
             {
             }
 
-            using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>())
-                .Pipeline(IdentityAwaitableAdapter<object>.Default))
+#if NETASYNCDISPOSE
+            await
+#endif
+                using (
+                    PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>())
+                        .Pipeline(IdentityAwaitableAdapter<object>.Default)
+#if NETASYNCDISPOSE
+                        .ConfigureAwait(false)
+#endif
+                )
             {
             }
 
-            using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>())
-                .Pipeline())
+#if NETASYNCDISPOSE
+            await
+#endif
+                using (
+                    PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>()).Pipeline()
+#if NETASYNCDISPOSE
+                        .ConfigureAwait(false)
+#endif
+                )
             {
             }
 
-            using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<List<object>>())
-                .Pipeline(2, 0))
+#if NETASYNCDISPOSE
+            await
+#endif
+                using (
+                    PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<List<object>>()).Pipeline(2, 0)
+#if NETASYNCDISPOSE
+                        .ConfigureAwait(false)
+#endif
+                )
             {
             }
 
-            using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>())
-                .Pipeline(IdentityAwaitableAdapter<object>.Default))
+#if NETASYNCDISPOSE
+            await
+#endif
+                using (
+                    PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>())
+                        .Pipeline(IdentityAwaitableAdapter<object>.Default)
+#if NETASYNCDISPOSE
+                        .ConfigureAwait(false)
+#endif
+                )
             {
             }
+
+            await Task.CompletedTask;
         }
 
         [Test]
-        public void Multiple_Consumer_Based_Pipeline_Harmonizes()
+        public async Task Multiple_Consumer_Based_Pipeline_Harmonizes()
         {
-            using (PipeExtsTest.Consumer<object>(2).Pipeline())
+#if NETASYNCDISPOSE
+            await
+#endif
+                using (
+                    PipeExtsTest.Consumer<object>(2).Pipeline()
+#if NETASYNCDISPOSE
+                        .ConfigureAwait(false)
+#endif
+                )
             {
             }
 
-            using (PipeExtsTest.Consumer<List<object>>(2).Pipeline(2, 0))
+#if NETASYNCDISPOSE
+            await
+#endif
+                using (
+                    PipeExtsTest.Consumer<List<object>>(2).Pipeline(2, 0)
+#if NETASYNCDISPOSE
+                        .ConfigureAwait(false)
+#endif
+                )
             {
             }
 
-            using (PipeExtsTest.Consumer<object>(2).Pipeline(IdentityAwaitableAdapter<object>.Default))
+#if NETASYNCDISPOSE
+            await
+#endif
+                using (
+                    PipeExtsTest.Consumer<object>(2).Pipeline(IdentityAwaitableAdapter<object>.Default)
+#if NETASYNCDISPOSE
+                        .ConfigureAwait(false)
+#endif
+                )
             {
             }
 
-            using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>(2))
-                .Pipeline())
+#if NETASYNCDISPOSE
+            await
+#endif
+                using (
+                    PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>(2))
+                        .Pipeline()
+#if NETASYNCDISPOSE
+                        .ConfigureAwait(false)
+#endif
+                )
             {
             }
 
-            using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<List<object>>(2))
-                .Pipeline(2, 0))
+#if NETASYNCDISPOSE
+            await
+#endif
+                using (
+                    PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<List<object>>(2))
+                        .Pipeline(2, 0)
+#if NETASYNCDISPOSE
+                        .ConfigureAwait(false)
+#endif
+                )
             {
             }
 
-            using (PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>(2))
-                .Pipeline(IdentityAwaitableAdapter<object>.Default))
+#if NETASYNCDISPOSE
+            await
+#endif
+                using (
+                    PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>(2))
+                        .Pipeline(IdentityAwaitableAdapter<object>.Default)
+#if NETASYNCDISPOSE
+                        .ConfigureAwait(false)
+#endif
+                )
             {
             }
 
-            using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>(2))
-                .Pipeline())
+#if NETASYNCDISPOSE
+            await
+#endif
+                using (
+                    PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>(2)).Pipeline()
+#if NETASYNCDISPOSE
+                        .ConfigureAwait(false)
+#endif
+                )
             {
             }
 
-            using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<List<object>>(2))
-                .Pipeline(2, 0))
+#if NETASYNCDISPOSE
+            await
+#endif
+                using (
+                    PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<List<object>>(2)).Pipeline(2, 0)
+#if NETASYNCDISPOSE
+                        .ConfigureAwait(false)
+#endif
+                )
             {
             }
 
-            using (PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>(2))
-                .Pipeline(IdentityAwaitableAdapter<object>.Default))
+#if NETASYNCDISPOSE
+            await
+#endif
+                using (
+                    PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>(2))
+                        .Pipeline(IdentityAwaitableAdapter<object>.Default)
+#if NETASYNCDISPOSE
+                        .ConfigureAwait(false)
+#endif
+                )
             {
             }
+
+            await Task.CompletedTask;
         }
     }
 }

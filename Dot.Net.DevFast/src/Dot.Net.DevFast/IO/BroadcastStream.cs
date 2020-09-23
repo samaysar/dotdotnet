@@ -54,7 +54,7 @@ namespace Dot.Net.DevFast.IO
         /// </summary>
         public override void Flush()
         {
-            FlushAsync(CancellationToken.None).Wait();
+            FlushAsync(CancellationToken.None).GetAwaiter().GetResult();
         }
 
         /// <inheritdoc />
@@ -102,7 +102,7 @@ namespace Dot.Net.DevFast.IO
         /// <inheritdoc />
         public override void Write(byte[] buffer, int offset, int count)
         {
-            WriteAsync(buffer, offset, count, CancellationToken.None).Wait();
+            WriteAsync(buffer, offset, count, CancellationToken.None).GetAwaiter().GetResult();
         }
 
         /// <inheritdoc />
