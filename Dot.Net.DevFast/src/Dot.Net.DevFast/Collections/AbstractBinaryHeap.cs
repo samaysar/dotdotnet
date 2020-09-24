@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Dot.Net.DevFast.Collections.Interfaces;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions;
@@ -109,10 +110,40 @@ namespace Dot.Net.DevFast.Collections
         }
 
         /// <inheritdoc />
+        public IEnumerable<T> PopAll()
+        {
+            while (TryPop(out var item))
+            {
+                yield return item;
+            }
+        }
+
+        /// <inheritdoc />
+        public int AddAll(IEnumerable<T> items)
+        {
+            var count = 0;
+            foreach (var item in items)
+            {
+                if (!TryAdd(item)) return count;
+                count++;
+            }
+
+            return count;
+        }
+
+        /// <inheritdoc />
         public void Compact()
         {
             InternalCopyData(Count);
         }
+
+        internal List<T> PopAllConsistent()
+        {
+            var results = new List<T>(Count);
+            results.AddRange(PopAll());
+            return results;
+        }
+
 
         private void BubbleUp(int current)
         {

@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Threading;
 using Dot.Net.DevFast.Collections;
 using Newtonsoft.Json;
+using NUnit.Framework;
 
 namespace Dot.Net.DevFast.Tests.TestHelpers
 {
     [JsonObject(MemberSerialization.OptOut)]
     public class TestObject
     {
-        [JsonIgnore]
-        private static readonly Random Ran = new Random();
+        [JsonIgnore] private static readonly Random Ran = new Random();
 
         [JsonConstructor]
         public TestObject()
@@ -24,11 +25,11 @@ namespace Dot.Net.DevFast.Tests.TestHelpers
         public byte[] BytesProp { get; set; }
     }
 
-    public class AbstractBinaryTestHeap : AbstractBinaryHeap<int>
+    public class TestAbstractBinaryHeap : AbstractBinaryHeap<int>
     {
         private readonly Func<int, int, bool> _comparer;
 
-        public AbstractBinaryTestHeap(int initialCapacity,
+        public TestAbstractBinaryHeap(int initialCapacity,
             Func<int, int, bool> comparer) : base(initialCapacity)
         {
             _comparer = comparer;
