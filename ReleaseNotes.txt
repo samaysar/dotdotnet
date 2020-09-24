@@ -1,3 +1,8 @@
+Changes to Dot.Net.DevFast 5.0.1
+
+ 1. Change/Fix - Added PopAll and AddAll methods on IHeap interface
+ 2. New feature - LockBasedConcurrentHeap additionally exposes PopAllConsistent method.
+ 
 Changes to Dot.Net.DevFast 5.0.0
 
  1. Change/Fix - IConsumer interface extends IAsyncDisposable in .Net Standard 2.1 and IDisposable in older .Net Frameworks
