@@ -1,4 +1,6 @@
-﻿namespace Dot.Net.DevFast.Collections.Interfaces
+﻿using System.Collections.Generic;
+
+namespace Dot.Net.DevFast.Collections.Interfaces
 {
     /// <summary>
     /// Heap data structure interface.
@@ -62,5 +64,17 @@
         /// </summary>
         /// <param name="item">Element to add.</param>
         bool TryAdd(T item);
+
+        /// <summary>
+        /// Removes all the elements from the heap.
+        /// </summary>
+        IEnumerable<T> PopAll();
+
+        /// <summary>
+        /// Adds all elements of the given enumeration to the heap.
+        /// Returns the count of the elements that were successfully added.
+        /// </summary>
+        /// <param name="items">Enumeration of the Elements to add.</param>
+        int AddAll(IEnumerable<T> items);
     }
 }
