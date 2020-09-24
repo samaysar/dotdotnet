@@ -42,7 +42,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         [Test]
         public void Add_N_Try_Add_Behaves_For_Empty_Heap()
         {
-            IHeap<int> instance = new AbstractBinaryTestHeap(0, (x, y) => x < y);
+            IHeap<int> instance = new TestAbstractBinaryHeap(0, (x, y) => x < y);
             Assert.IsFalse(instance.TryAdd(1));
             var ex = Assert.Throws<DdnDfException>(() => instance.Add(1));
             Assert.NotNull(ex);
@@ -53,7 +53,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         [Test]
         public void Add_N_Try_Add_Behaves_For_Non_Empty_Heap()
         {
-            IHeap<int> instance = new AbstractBinaryTestHeap(1, (x, y) => x < y);
+            IHeap<int> instance = new TestAbstractBinaryHeap(1, (x, y) => x < y);
             Assert.True(instance.IsEmpty);
             Assert.IsTrue(instance.TryAdd(1));
             Assert.IsFalse(instance.TryAdd(1));
@@ -61,7 +61,7 @@ namespace Dot.Net.DevFast.Tests.Collections
             Assert.NotNull(ex);
             Assert.IsTrue(ex.ErrorCode.Equals(DdnDfErrorCode.DemandUnfulfilled));
             Assert.IsTrue(ex.Message.Equals("(DemandUnfulfilled) Unable to add element in the heap."));
-            instance = new AbstractBinaryTestHeap(3, (x, y) => x < y);
+            instance = new TestAbstractBinaryHeap(3, (x, y) => x < y);
             instance.Add(3);
             Assert.False(instance.IsFull);
             instance.Add(2);
@@ -74,10 +74,10 @@ namespace Dot.Net.DevFast.Tests.Collections
         public void AddAll_Properly_Adds_All_Elements_And_Returns_The_Count()
         {
             var items = new[] {2, 4, 0, 1, 2};
-            Assert.IsTrue(new AbstractBinaryTestHeap(0, (x, y) => x < y).AddAll(items).Equals(0));
-            Assert.IsTrue(new AbstractBinaryTestHeap(3, (x, y) => x < y).AddAll(items).Equals(3));
-            Assert.IsTrue(new AbstractBinaryTestHeap(5, (x, y) => x < y).AddAll(items).Equals(5));
-            Assert.IsTrue(new AbstractBinaryTestHeap(10, (x, y) => x < y).AddAll(items).Equals(5));
+            Assert.IsTrue(new TestAbstractBinaryHeap(0, (x, y) => x < y).AddAll(items).Equals(0));
+            Assert.IsTrue(new TestAbstractBinaryHeap(3, (x, y) => x < y).AddAll(items).Equals(3));
+            Assert.IsTrue(new TestAbstractBinaryHeap(5, (x, y) => x < y).AddAll(items).Equals(5));
+            Assert.IsTrue(new TestAbstractBinaryHeap(10, (x, y) => x < y).AddAll(items).Equals(5));
         }
 
         [Test]
@@ -85,7 +85,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         {
             var items = new[] { 2, 4, 0, 1, 2 };
             var expected = new[] {0, 1, 2, 2, 4};
-            var instance = new AbstractBinaryTestHeap(10, (x, y) => x < y);
+            var instance = new TestAbstractBinaryHeap(10, (x, y) => x < y);
             instance.AddAll(items);
             var poppedItems = instance.PopAll().ToList();
             Assert.IsTrue(poppedItems.Count.Equals(5));
@@ -111,7 +111,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         [Test]
         public void Peek_N_TryPeek_Behaves_For_Non_Empty_Heap()
         {
-            IHeap<int> instance = new AbstractBinaryTestHeap(1, (x, y) => x < y);
+            IHeap<int> instance = new TestAbstractBinaryHeap(1, (x, y) => x < y);
             instance.Add(1);
             Assert.AreEqual(instance.Peek(), 1);
             Assert.True(instance.TryPeek(out var val) && val.Equals(1));
@@ -131,7 +131,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         [Test]
         public void Pop_N_TryPop_Behaves_For_Non_Empty_Heap()
         {
-            IHeap<int> instance = new AbstractBinaryTestHeap(5, (x, y) => x < y);
+            IHeap<int> instance = new TestAbstractBinaryHeap(5, (x, y) => x < y);
             instance.Add(3);
             instance.Add(2);
             instance.Add(1);
