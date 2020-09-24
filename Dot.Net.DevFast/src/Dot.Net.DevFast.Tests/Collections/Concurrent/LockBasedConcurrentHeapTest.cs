@@ -1,8 +1,11 @@
-﻿using System.Threading;
+﻿using System;
+using System.Linq;
+using System.Threading;
 using Dot.Net.DevFast.Collections;
 using Dot.Net.DevFast.Collections.Concurrent;
 using Dot.Net.DevFast.Collections.Interfaces;
 using Dot.Net.DevFast.Etc;
+using Dot.Net.DevFast.Tests.TestHelpers;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -100,6 +103,18 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
                 Assert.IsTrue(Monitor.IsEntered(syncRoot));
                 return true;
             });
+            var addThis = new[] {1, 2};
+            heap.AddAll(addThis).Returns(x =>
+            {
+                Assert.IsTrue(Monitor.IsEntered(syncRoot));
+                return default;
+            });
+            var popAllVals = new[] {1, 2, 3, 4};
+            heap.PopAll().Returns(x =>
+            {
+                Assert.IsTrue(Monitor.IsEntered(syncRoot));
+                return popAllVals;
+            });
             heap.When(x => x.Compact()).Do(x => Assert.IsTrue(Monitor.IsEntered(syncRoot)));
             heap.When(x => x.FreezeCapacity(true)).Do(x => Assert.IsTrue(Monitor.IsEntered(syncRoot)));
 
@@ -110,6 +125,8 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
             Assert.IsTrue(instance.TryPop(out var val2) && val2.Equals(2));
             instance.Add(1);
             Assert.IsTrue(instance.TryAdd(1));
+            Assert.AreEqual(instance.AddAll(addThis), 0);
+            Assert.AreEqual(instance.PopAllConsistent(), popAllVals);
             instance.Compact();
             instance.FreezeCapacity(true);
             heap.Received(1).Pop();
@@ -119,7 +136,23 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
             heap.Received(1).Add(1);
             heap.Received(1).TryAdd(1);
             heap.Received(1).Compact();
+            heap.Received(1).AddAll(addThis);
+            heap.Received(1).PopAll();
             heap.Received(1).FreezeCapacity(true);
+            // PopAll separated as it reuses TryPop!--------------->
+            heap.ClearReceivedCalls();
+            var popRetVal = 0;
+            heap.TryPop(out Arg.Any<int>()).Returns(x =>
+            {
+                Assert.IsTrue(Monitor.IsEntered(syncRoot));
+                x[0] = 10;
+                return Interlocked.Increment(ref popRetVal) <= 2;
+            });
+            var allPopped = instance.PopAll().ToArray();
+            Assert.AreEqual(allPopped, new[] {10, 10});
+            heap.Received(3).TryPop(out Arg.Any<int>());
+            Assert.IsTrue(new LockBasedConcurrentHeap<int>(new MinHeap<int>(0), syncRoot).PopAllConsistent().Count
+                .Equals(0));
         }
     }
 }
