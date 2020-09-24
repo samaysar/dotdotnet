@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Dot.Net.DevFast.Collections;
 using Dot.Net.DevFast.Collections.Interfaces;
@@ -67,6 +68,33 @@ namespace Dot.Net.DevFast.Tests.Collections
             Assert.False(instance.IsFull);
             Assert.IsTrue(instance.TryAdd(1));
             Assert.True(instance.IsFull);
+        }
+
+        [Test]
+        public void AddAll_Properly_Adds_All_Elements_And_Returns_The_Count()
+        {
+            var items = new[] {2, 4, 0, 1, 2};
+            Assert.IsTrue(new AbstractBinaryTestHeap(0, (x, y) => x < y).AddAll(items).Equals(0));
+            Assert.IsTrue(new AbstractBinaryTestHeap(3, (x, y) => x < y).AddAll(items).Equals(3));
+            Assert.IsTrue(new AbstractBinaryTestHeap(5, (x, y) => x < y).AddAll(items).Equals(5));
+            Assert.IsTrue(new AbstractBinaryTestHeap(10, (x, y) => x < y).AddAll(items).Equals(5));
+        }
+
+        [Test]
+        public void PopAll_Properly_Maintains_Order_And_Sequence()
+        {
+            var items = new[] { 2, 4, 0, 1, 2 };
+            var expected = new[] {0, 1, 2, 2, 4};
+            var instance = new AbstractBinaryTestHeap(10, (x, y) => x < y);
+            instance.AddAll(items);
+            var poppedItems = instance.PopAll().ToList();
+            Assert.IsTrue(poppedItems.Count.Equals(5));
+            Assert.AreEqual(poppedItems, expected);
+            poppedItems = instance.PopAll().ToList();
+            Assert.IsTrue(poppedItems.Count.Equals(0));
+            instance.AddAll(items);
+            poppedItems = instance.PopAll().ToList();
+            Assert.IsTrue(poppedItems.Count.Equals(5));
         }
 
         [Test]

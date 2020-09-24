@@ -202,8 +202,8 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         {
             lock (_syncRoot)
             {
-                return _heap is AbstractBinaryHeap<T> castedHeap
-                    ? castedHeap.PopAllConsistent()
+                return _heap is AbstractBinaryHeap<T> abstractHeap
+                    ? abstractHeap.PopAllConsistent()
                     : _heap.PopAll().ToList();
             }
         }
