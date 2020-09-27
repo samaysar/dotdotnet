@@ -31,7 +31,7 @@
  
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
     <AssemblyTitle>Dot.Net.DevFast .NET Standard 2.1</AssemblyTitle>
-    <DefineConstants>NETSTANDARD2_1;NETCORE;NETSTANDARD;NETHASHCRYPTO;NETASYNCDISPOSE</DefineConstants>
+    <DefineConstants>NETSTANDARD2_1;NETCORE;NETSTANDARD;NETHASHCRYPTO;NETASYNCDISPOSE;NETSPAN</DefineConstants>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">

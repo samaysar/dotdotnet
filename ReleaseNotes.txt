@@ -1,3 +1,8 @@
+Changes to Dot.Net.DevFast 5.0.2
+
+ 1. Change/Fix - TryAdd, TryPeek and TryPop methods are now virtual.
+ 2. New feature - AbstractLimitHeap, along with MinLimitHeap and MaxLimitHeap, is available.
+ 
 Changes to Dot.Net.DevFast 5.0.1
 
  1. Change/Fix - Added PopAll and AddAll methods on IHeap interface
