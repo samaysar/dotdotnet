@@ -154,5 +154,36 @@ namespace Dot.Net.DevFast.Tests.Collections
             instance.Compact();
             Assert.AreEqual(instance.Capacity, 0);
         }
+
+        [Test]
+        public void GetFirstUnsafe_Throws_Error_When_Capacity_Is_Zero()
+        {
+            var instance = Substitute.For<AbstractBinaryHeap<int>>(0);
+            Assert.Throws<IndexOutOfRangeException>(() => instance.GetFirstUnsafe());
+        }
+
+        [Test]
+        public void GetFirstUnsafe_Blindly_Returns_Whatever_At_0Th_Index_Irrespective_Of_Count()
+        {
+            var instance = new TestAbstractBinaryHeap(5, (x, y) => x < y);
+            Assert.IsTrue(instance.GetFirstUnsafe().Equals(0));
+            instance.Add(0);
+            Assert.IsTrue(instance.GetFirstUnsafe().Equals(0));
+            instance.Add(-1);
+            Assert.IsTrue(instance.GetFirstUnsafe().Equals(-1));
+        }
+
+#if NETSPAN
+        [Test]
+        public void GetInternalState_Exposes_Internal_Buffer()
+        {
+            var instance = new TestAbstractBinaryHeap(5, (x, y) => x < y);
+            Assert.True(instance.GetInternalState().IsEmpty);
+            instance.AddAll(new[] {0, 1});
+            Assert.True(instance.GetInternalState().Length.Equals(2));
+            Assert.True(instance.GetInternalState()[0].Equals(0));
+            Assert.True(instance.GetInternalState()[1].Equals(1));
+        }
+#endif
     }
 }

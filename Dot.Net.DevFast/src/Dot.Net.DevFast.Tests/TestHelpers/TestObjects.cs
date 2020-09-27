@@ -40,4 +40,16 @@ namespace Dot.Net.DevFast.Tests.TestHelpers
             return _comparer(left, right);
         }
     }
+
+    public class TestAbstractLimitHeap : AbstractLimitHeap<int>
+    {
+        public TestAbstractLimitHeap(int heapSize) : base(heapSize)
+        {
+        }
+
+        protected override bool LeftPrecedes(int left, int right)
+        {
+            return left > right;
+        }
+    }
 }

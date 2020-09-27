@@ -7,9 +7,9 @@ namespace Dot.Net.DevFast.Collections
     /// <summary>
     /// Binary heap based limited element abstract heap, i.e. k-heap on N elements.
     /// That means unlimited of elements (N) can be added, but, only limited number of elements (k) can be popped out.
-    /// It will maintain the order on the added elements (before each pop) without consuming extra space.
+    /// It will maintain heap state on the added elements (before each pop) without consuming extra space.
     /// <example>
-    /// When among long list of numbers, but we are interested to find only TOP/BOTTOM k
+    /// When among long list of numbers, but we are interested to find only HIGHEST/LOWEST k
     /// elements, this abstract class is the right choice.
     /// </example>
     /// </summary>
@@ -26,12 +26,29 @@ namespace Dot.Net.DevFast.Collections
         {
         }
 
-        /// <inheritdoc />
-        public override bool TryAdd(T item)
+        /// <summary>
+        /// It ALWAYS returns true. Prefer using the overload <see cref="TryAdd(T,out T)"/>.
+        /// </summary>
+        /// <param name="item">Item to add</param>
+        public sealed override bool TryAdd(T item)
         {
-            if (base.TryAdd(item)) return true;
-            if (!LeftPrecedes(GetFirstUnsafe(), item)) return false;
-            Pop();
+            TryAdd(item, out _);
+            return true;
+        }
+
+        /// <summary>
+        /// Returns false, if item has been added without replacing existing item
+        /// or the given item cannot be added (not part of k-heap).
+        /// When returns true, also outs the item that was popped (removed) from heap to
+        /// keep the given item.
+        /// </summary>
+        /// <param name="item">Item to add</param>
+        /// <param name="popped">Popped item, if any, that added item has been replaced with</param>
+        public bool TryAdd(T item, out T popped)
+        {
+            popped = default;
+            if (base.TryAdd(item) || !LeftPrecedes(GetFirstUnsafe(), item)) return false;
+            popped = Pop();
             return base.TryAdd(item);
         }
     }
@@ -39,11 +56,14 @@ namespace Dot.Net.DevFast.Collections
     /// <summary>
     /// Binary heap based limited element min heap, i.e. k-min heap on N elements.
     /// That means unlimited of elements (N) can be added, but, only limited number of elements (k) can be popped out.
-    /// It will maintain the order on the added elements (before each pop) without consuming extra space.
+    /// It will maintain heap state on the added elements (before each pop) without consuming extra space.
     /// <example>
-    /// When among long list of numbers, but we are interested to find only MINIMUM k
-    /// elements, this class is the right choice.
+    /// When among long list of numbers, but we are interested to find only LOWEST k
+    /// elements, this abstract class is the right choice.
     /// </example>
+    /// <para>
+    /// NOTE: During pop, order is NOT guaranteed, however, it should NOT matter.
+    /// </para>
     /// </summary>
     /// <typeparam name="T">Element type</typeparam>
     public sealed class MinLimitHeap<T> : AbstractLimitHeap<T>
@@ -69,11 +89,14 @@ namespace Dot.Net.DevFast.Collections
     /// <summary>
     /// Binary heap based limited element min heap, i.e. k-max heap on N elements.
     /// That means unlimited of elements (N) can be added, but, only limited number of elements (k) can be popped out.
-    /// It will maintain the order on the added elements (before each pop) without consuming extra space.
+    /// It will maintain heap state on the added elements (before each pop) without consuming extra space.
     /// <example>
-    /// When among long list of numbers, but we are interested to find only MAXIMUM k
+    /// When among long list of numbers, but we are interested to find only HIGHEST k
     /// elements, this class is the right choice.
     /// </example>
+    /// <para>
+    /// NOTE: During pop, order is NOT guaranteed, however, it should NOT matter.
+    /// </para>
     /// </summary>
     /// <typeparam name="T">Element type</typeparam>
     public sealed class MaxLimitHeap<T> : AbstractLimitHeap<T>

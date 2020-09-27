@@ -148,15 +148,15 @@ namespace Dot.Net.DevFast.Collections
             return _heapData[0];
         }
 
+#if NETSPAN
         /// <summary>
-        /// Returns its internal element collection. Any modification
-        /// made to this collection, externally, may make the heap unstable.
-        /// Normally, no operation should be performed after calling this.
+        /// Returns read-only internal state.
         /// </summary>
-        internal T[] GetInternalState()
+        public ReadOnlySpan<T> GetInternalState()
         {
-            return _heapData;
+            return new ReadOnlySpan<T>(_heapData, 0, Count);
         }
+#endif
 
         internal List<T> PopAllConsistent()
         {
@@ -166,6 +166,7 @@ namespace Dot.Net.DevFast.Collections
         }
 
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void BubbleUp(int current)
         {
             while (!current.Equals(0))
@@ -176,6 +177,7 @@ namespace Dot.Net.DevFast.Collections
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void PushDown()
         {
             var current = 0;
@@ -201,6 +203,7 @@ namespace Dot.Net.DevFast.Collections
         /// <summary>
         /// Ensures that there is a capacity to add an element.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected virtual bool EnsureCapacity()  => !IsFull;
 
         /// <summary>
@@ -208,6 +211,7 @@ namespace Dot.Net.DevFast.Collections
         /// </summary>
         /// <param name="size">Size of the new array.</param>
         /// <exception cref="DdnDfException">When the given size is less than current count.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void InternalCopyData(int size)
         {
             size.ThrowIfLess(Count, $"{nameof(size)} is less than current {nameof(Count)}. Cannot resize.");
