@@ -52,7 +52,7 @@ namespace Dot.Net.DevFast.Collections
         }
 
         /// <inheritdoc />
-        public bool TryPeek(out T item)
+        public virtual bool TryPeek(out T item)
         {
             if (IsEmpty)
             {
@@ -74,7 +74,7 @@ namespace Dot.Net.DevFast.Collections
         }
 
         /// <inheritdoc />
-        public bool TryPop(out T item)
+        public virtual bool TryPop(out T item)
         {
             if (IsEmpty)
             {
@@ -152,6 +152,7 @@ namespace Dot.Net.DevFast.Collections
         /// <summary>
         /// Returns read-only internal state.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<T> GetInternalState()
         {
             return new ReadOnlySpan<T>(_heapData, 0, Count);

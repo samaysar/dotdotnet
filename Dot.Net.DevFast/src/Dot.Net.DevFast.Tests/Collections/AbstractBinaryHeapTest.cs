@@ -103,7 +103,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         [TestCase(10)]
         public void Peek_N_TryPeek_Behaves_For_Empty_Heap(int capacity)
         {
-            IHeap<int> instance = Substitute.For<AbstractBinaryHeap<int>>(capacity);
+            IHeap<int> instance = Substitute.ForPartsOf<AbstractBinaryHeap<int>>(capacity);
             Assert.Throws<IndexOutOfRangeException>(() => instance.Peek());
             Assert.False(instance.TryPeek(out _));
         }
@@ -123,7 +123,7 @@ namespace Dot.Net.DevFast.Tests.Collections
         [TestCase(10)]
         public void Pop_N_TryPop_Behaves_For_Empty_Heap(int capacity)
         {
-            IHeap<int> instance = Substitute.For<AbstractBinaryHeap<int>>(capacity);
+            IHeap<int> instance = Substitute.ForPartsOf<AbstractBinaryHeap<int>>(capacity);
             Assert.Throws<IndexOutOfRangeException>(() => instance.Pop());
             Assert.False(instance.TryPop(out _));
         }
