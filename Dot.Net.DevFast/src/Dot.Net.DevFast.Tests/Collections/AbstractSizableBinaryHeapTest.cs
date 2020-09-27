@@ -81,14 +81,14 @@ namespace Dot.Net.DevFast.Tests.Collections
                     x[1] = 0;
                     return false;
                 });
-            var instance = Substitute.For<AbstractSizableBinaryHeap<int>>(0,
+            var instance = Substitute.ForPartsOf<AbstractSizableBinaryHeap<int>>(0,
                 strategy);
             Assert.True(instance.IsFull);
             Assert.IsFalse(instance.TryAdd(1));
             strategy.Received(1).TryComputeNewSize(0, out _);
 
             strategy = new StepHeapResizing(1);
-            instance = Substitute.For<AbstractSizableBinaryHeap<int>>(1, strategy);
+            instance = Substitute.ForPartsOf<AbstractSizableBinaryHeap<int>>(1, strategy);
             Assert.AreEqual(instance.Count, 0);
             Assert.False(instance.IsFull);
             Assert.IsTrue(instance.TryAdd(1));

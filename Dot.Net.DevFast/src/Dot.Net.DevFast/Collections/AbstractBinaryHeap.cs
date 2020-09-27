@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Dot.Net.DevFast.Collections.Interfaces;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions;
@@ -12,7 +13,7 @@ namespace Dot.Net.DevFast.Collections
     /// <typeparam name="T">Heap element type</typeparam>
     public abstract class AbstractBinaryHeap<T> : IHeap<T>, ICompactAbleHeap
     {
-        private T[] _dataCollection;
+        private T[] _heapData;
 
         /// <summary>
         /// Ctor with initial heap capacity.
@@ -21,7 +22,7 @@ namespace Dot.Net.DevFast.Collections
         /// <exception cref="DdnDfException">When given capacity is negative.</exception>
         protected AbstractBinaryHeap(int initialCapacity)
         {
-            _dataCollection = new T[initialCapacity.ThrowIfNegative($"{nameof(initialCapacity)} cannot be negative")];
+            _heapData = new T[initialCapacity.ThrowIfNegative($"{nameof(initialCapacity)} cannot be negative")];
             Count = 0;
         }
 
@@ -35,7 +36,7 @@ namespace Dot.Net.DevFast.Collections
         public int Count { get; private set; }
 
         /// <inheritdoc />
-        public int Capacity => _dataCollection.Length;
+        public int Capacity => _heapData.Length;
 
         private static int LeftChildIndex(int elementIndex) => (elementIndex << 1) + 1;
         private static int ParentIndex(int elementIndex) => (elementIndex - 1) >> 1;
@@ -58,7 +59,7 @@ namespace Dot.Net.DevFast.Collections
                 item = default;
                 return false;
             }
-            item = _dataCollection[0];
+            item = _heapData[0];
             return true;
         }
 
@@ -80,8 +81,8 @@ namespace Dot.Net.DevFast.Collections
                 item = default;
                 return false;
             }
-            item = _dataCollection[0];
-            _dataCollection[0] = _dataCollection[--Count];
+            item = _heapData[0];
+            _heapData[0] = _heapData[--Count];
             PushDown();
             return true;
         }
@@ -101,10 +102,10 @@ namespace Dot.Net.DevFast.Collections
         }
 
         /// <inheritdoc />
-        public bool TryAdd(T item)
+        public virtual bool TryAdd(T item)
         {
             if (!EnsureCapacity()) return false;
-            _dataCollection[Count] = item;
+            _heapData[Count] = item;
             BubbleUp(Count++);
             return true;
         }
@@ -137,6 +138,26 @@ namespace Dot.Net.DevFast.Collections
             InternalCopyData(Count);
         }
 
+        /// <summary>
+        /// Its an unsafe getter. !!! Does not check for the presence of the element
+        /// at 0th index. !!!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal T GetFirstUnsafe()
+        {
+            return _heapData[0];
+        }
+
+        /// <summary>
+        /// Returns its internal element collection. Any modification
+        /// made to this collection, externally, may make the heap unstable.
+        /// Normally, no operation should be performed after calling this.
+        /// </summary>
+        internal T[] GetInternalState()
+        {
+            return _heapData;
+        }
+
         internal List<T> PopAllConsistent()
         {
             var results = new List<T>(Count);
@@ -150,7 +171,7 @@ namespace Dot.Net.DevFast.Collections
             while (!current.Equals(0))
             {
                 var parentIndex = ParentIndex(current);
-                if (!LeftPrecedes(_dataCollection[current], _dataCollection[parentIndex])) return;
+                if (!LeftPrecedes(_heapData[current], _heapData[parentIndex])) return;
                 current = SwapNReturnLastParam(current, parentIndex);
             }
         }
@@ -164,11 +185,11 @@ namespace Dot.Net.DevFast.Collections
                 var swapWith = leftIndex;
                 var rightIndex = leftIndex + 1;
                 if (rightIndex < Count &&
-                    LeftPrecedes(_dataCollection[rightIndex], _dataCollection[leftIndex]))
+                    LeftPrecedes(_heapData[rightIndex], _heapData[leftIndex]))
                 {
                     swapWith = rightIndex;
                 }
-                if (!LeftPrecedes(_dataCollection[swapWith], _dataCollection[current]))
+                if (!LeftPrecedes(_heapData[swapWith], _heapData[current]))
                 {
                     return;
                 }
@@ -191,15 +212,15 @@ namespace Dot.Net.DevFast.Collections
         {
             size.ThrowIfLess(Count, $"{nameof(size)} is less than current {nameof(Count)}. Cannot resize.");
             var newCollection = new T[size];
-            Array.Copy(_dataCollection, newCollection, Count);
-            _dataCollection = newCollection;
+            Array.Copy(_heapData, newCollection, Count);
+            _heapData = newCollection;
         }
 
         private int SwapNReturnLastParam(int firstIndex, int secondIndex)
         {
-            var temp = _dataCollection[firstIndex];
-            _dataCollection[firstIndex] = _dataCollection[secondIndex];
-            _dataCollection[secondIndex] = temp;
+            var temp = _heapData[firstIndex];
+            _heapData[firstIndex] = _heapData[secondIndex];
+            _heapData[secondIndex] = temp;
             return secondIndex;
         }
 
