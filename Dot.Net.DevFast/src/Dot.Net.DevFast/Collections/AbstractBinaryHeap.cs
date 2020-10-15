@@ -148,22 +148,16 @@ namespace Dot.Net.DevFast.Collections
             return _heapData[0];
         }
 
-#if NETSPAN
-        /// <summary>
-        /// Returns read-only internal state.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlySpan<T> GetInternalState()
-        {
-            return new ReadOnlySpan<T>(_heapData, 0, Count);
-        }
-#endif
-
         internal List<T> PopAllConsistent()
         {
             var results = new List<T>(Count);
             results.AddRange(PopAll());
             return results;
+        }
+
+        internal IEnumerable<T> InternalStateAsEnumerable()
+        {
+            return new ArraySegment<T>(_heapData, 0, Count);
         }
 
 

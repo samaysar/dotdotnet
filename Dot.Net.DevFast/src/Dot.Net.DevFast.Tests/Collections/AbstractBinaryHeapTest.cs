@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Dot.Net.DevFast.Collections;
@@ -173,17 +174,18 @@ namespace Dot.Net.DevFast.Tests.Collections
             Assert.IsTrue(instance.GetFirstUnsafe().Equals(-1));
         }
 
-#if NETSPAN
         [Test]
-        public void GetInternalState_Exposes_Internal_Buffer()
+        public void InternalStateAsEnumerable_Exposes_Internal_Buffer()
         {
-            var instance = new TestAbstractBinaryHeap(5, (x, y) => x < y);
-            Assert.True(instance.GetInternalState().IsEmpty);
-            instance.AddAll(new[] {0, 1});
-            Assert.True(instance.GetInternalState().Length.Equals(2));
-            Assert.True(instance.GetInternalState()[0].Equals(0));
-            Assert.True(instance.GetInternalState()[1].Equals(1));
+            var instance = new TestAbstractBinaryHeap(10, (x, y) => x < y);
+            Assert.True(instance.InternalStateAsEnumerable().ToList().Count.Equals(0));
+            var items = new[] {100, -58, 0, -52, 1, 10};
+            instance.AddAll(items);
+            var internalState = new HashSet<int>(instance.InternalStateAsEnumerable());
+            foreach (var item in items)
+            {
+                Assert.IsTrue(internalState.Contains(item));
+            }
         }
-#endif
     }
 }
