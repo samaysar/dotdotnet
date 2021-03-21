@@ -1,3 +1,10 @@
+Changes to Dot.Net.DevFast 6.0.0
+
+ 1. Change/Fix - Removing .Net Standard 2.1/.Net Core 2.0 support 
+ 2. New feature - Adding HasElements extension on ICollection
+ 3. New feature - Inside Dot.Net.DevFast.Extensions, Adding ToPpcEnumerableWithException and ToPpcEnumerable extension on BlockingCollection
+
+
 Changes to Dot.Net.DevFast 5.0.3
 
  1. New feature - FindMaximums and FindMinimums extension methods are defined on IEnumerable.
