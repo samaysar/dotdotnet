@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
 using Dot.Net.DevFast.Etc;
 using Dot.Net.DevFast.Extensions;
 using NUnit.Framework;
@@ -9,6 +11,66 @@ namespace Dot.Net.DevFast.Tests.Extensions
     [TestFixture]
     public class MiscExtsTest
     {
+        [Test]
+        public void ToPpcEnumerableWithException_ThrowsError_And_Cancels_TokenSource()
+        {
+            using (var toCancel = new CancellationTokenSource())
+            {
+                using (var bc = new BlockingCollection<int>())
+                {
+                    bc.Add(1, CancellationToken.None);
+                    var gotError = false;
+                    var obtainedValue = 0;
+                    try
+                    {
+                        foreach (var next in bc.ToPpcEnumerableWithException(toCancel.Token, toCancel))
+                        {
+                            obtainedValue = next;
+                            using (bc)
+                            {
+                                //this will raise error
+                            }
+                        }
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        gotError = true;
+                    }
+
+                    Assert.True(gotError);
+                    Assert.AreEqual(1, obtainedValue);
+                    Assert.IsTrue(toCancel.IsCancellationRequested);
+                }
+            }
+        }
+
+        [Test]
+        public void ToPpcEnumerable_DoesNot_ThrowError_But_Cancels_TokenSource()
+        {
+            var errors = new List<Exception>();
+            using (var toCancel = new CancellationTokenSource())
+            {
+                using (var bc = new BlockingCollection<int>())
+                {
+                    bc.Add(1, CancellationToken.None);
+                    var obtainedValue = 0;
+                    foreach (var next in bc.ToPpcEnumerable(toCancel.Token, toCancel, errors.Add))
+                    {
+                        obtainedValue = next;
+                        using (bc)
+                        {
+                            //this will raise error
+                        }
+                    }
+
+                    Assert.AreEqual(errors.Count, 1);
+                    Assert.AreEqual(1, obtainedValue);
+                    Assert.IsTrue(errors[0] is ObjectDisposedException);
+                    Assert.IsTrue(toCancel.IsCancellationRequested);
+                }
+            }
+        }
+
         [Test]
         [TestCase(0)]
         [TestCase(-1)]
