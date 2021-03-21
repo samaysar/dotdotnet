@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
@@ -11,6 +12,27 @@ namespace Dot.Net.DevFast.Tests.Extensions
     [TestFixture]
     public class MiscExtsTest
     {
+        [Test]
+        public void ToPpcEnumerableWithException_WorksFine_In_Absence_Of_Errors()
+        {
+            using (var toCancel = new CancellationTokenSource())
+            {
+                using (var bc = new BlockingCollection<int>())
+                {
+                    bc.Add(1, CancellationToken.None);
+                    var obtainedValue = 0;
+                    foreach (var next in bc.ToPpcEnumerableWithException(toCancel.Token, toCancel))
+                    {
+                        obtainedValue = next;
+                        bc.CompleteAdding();
+                    }
+
+                    Assert.AreEqual(1, obtainedValue);
+                    Assert.IsFalse(toCancel.IsCancellationRequested);
+                }
+            }
+        }
+
         [Test]
         public void ToPpcEnumerableWithException_ThrowsError_And_Cancels_TokenSource()
         {
@@ -42,6 +64,15 @@ namespace Dot.Net.DevFast.Tests.Extensions
                     Assert.IsTrue(toCancel.IsCancellationRequested);
                 }
             }
+        }
+
+        [Test]
+        [TestCase(null)]
+        public void HasElements_Gives_Correct_Results(ICollection nullValue)
+        {
+            Assert.IsFalse(nullValue.HasElements());
+            Assert.IsFalse(Array.Empty<int>().HasElements());
+            Assert.IsTrue((new[] {1}).HasElements());
         }
 
         [Test]
