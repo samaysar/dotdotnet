@@ -205,7 +205,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             return src.ThenTransform(new FromBase64Transform(mode), include);
         }
 
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER
         /// <summary>
         /// Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
         /// and returns a new pipe for chaining.
@@ -242,7 +242,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         public static Func<PullFuncStream> ThenEncrypt<T>(this Func<PullFuncStream> src,
             string password,
             string salt,
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER
             HashAlgorithmName hashName,
 #endif
             int loopCnt = 10000,
@@ -258,7 +258,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
                 Padding = padding
             };
             return src.ThenApply(s => s.ApplyCrypto(encAlg.InitKeyNIv(password, salt,
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER
                 hashName,
 #endif
                 loopCnt, enc ?? new UTF8Encoding(false)), true), include);
@@ -292,7 +292,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             }, true), include);
         }
 
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER
         /// <summary>
         /// Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
         /// and returns a new pipe for chaining.
@@ -329,7 +329,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         public static Func<PullFuncStream> ThenDecrypt<T>(this Func<PullFuncStream> src,
             string password,
             string salt,
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER
             HashAlgorithmName hashName,
 #endif
             int loopCnt = 10000,
@@ -345,7 +345,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
                 Padding = padding
             };
             return src.ThenApply(s => s.ApplyCrypto(encAlg.InitKeyNIv(password, salt,
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER
                 hashName,
 #endif
                 loopCnt, enc ?? new UTF8Encoding(false)), false), include);
@@ -486,7 +486,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             return src.ThenTransform(new FromBase64Transform(mode), include);
         }
 
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER
         /// <summary>
         /// Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
         /// and returns a new pipe for chaining.
@@ -523,7 +523,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         public static Func<Task<PullFuncStream>> ThenEncrypt<T>(this Func<Task<PullFuncStream>> src,
             string password,
             string salt,
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER
             HashAlgorithmName hashName,
 #endif
             int loopCnt = 10000,
@@ -539,7 +539,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
                 Padding = padding
             };
             return src.ThenApply(s => s.ApplyCrypto(encAlg.InitKeyNIv(password, salt,
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER
                 hashName,
 #endif
                 loopCnt, enc ?? new UTF8Encoding(false)), true), include);
@@ -573,7 +573,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             }, true), include);
         }
 
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER
         /// <summary>
         /// Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="SymmetricAlgorithm"/>,
         /// and returns a new pipe for chaining.
@@ -610,7 +610,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         public static Func<Task<PullFuncStream>> ThenDecrypt<T>(this Func<Task<PullFuncStream>> src,
             string password,
             string salt,
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER
             HashAlgorithmName hashName,
 #endif
             int loopCnt = 10000,
@@ -626,7 +626,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
                 Padding = padding
             };
             return src.ThenApply(s => s.ApplyCrypto(encAlg.InitKeyNIv(password, salt,
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER
                 hashName,
 #endif
                 loopCnt, enc ?? new UTF8Encoding(false)), false), include);
@@ -1252,7 +1252,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             FileOptions options = FileOptions.SequentialScan,
             CancellationToken token = default)
         {
-#if !NETASYNCDISPOSE
+#if NETFRAMEWORK
             using (var strm = fileinfo.CreateStream(FileMode.Create, FileAccess.ReadWrite, FileShare.Read,
                 fileStreamBuffer, options))
 #else
@@ -1346,7 +1346,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             }
             finally
             {
-#if !NETASYNCDISPOSE
+#if NETFRAMEWORK
                 data.Readable.DisposeIfRequired(data.Dispose);
 #else
                 await data.Readable.DisposeIfRequiredAsync(data.Dispose).ConfigureAwait(false);

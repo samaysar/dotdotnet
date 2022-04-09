@@ -248,21 +248,7 @@ namespace Dot.Net.DevFast.Extensions
             });
         }
 
-        /// <summary>
-        /// Awaits on the given task and once task finishes (irrespective of its state), disposes
-        /// the given disposable instance. New task is NOT created.
-        /// </summary>
-        /// <param name="awaitOn">Task to await on. If not started, then it will started before it is awaited on.</param>
-        /// <param name="disposeIt">Disposable instance</param>
-        public static async Task AwaitNDisposeAsync(this Task awaitOn, IDisposable disposeIt)
-        {
-            using (disposeIt)
-            {
-                await awaitOn.StartIfNeeded().ConfigureAwait(false);
-            }
-        }
-
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK
         /// <summary>
         /// Awaits on the given task and once task finishes (irrespective of its state), disposes
         /// the given disposable instance. Runs everything as a new task.
@@ -279,7 +265,23 @@ namespace Dot.Net.DevFast.Extensions
                 }
             });
         }
+#endif
 
+        /// <summary>
+        /// Awaits on the given task and once task finishes (irrespective of its state), disposes
+        /// the given disposable instance. New task is NOT created.
+        /// </summary>
+        /// <param name="awaitOn">Task to await on. If not started, then it will started before it is awaited on.</param>
+        /// <param name="disposeIt">Disposable instance</param>
+        public static async Task AwaitNDisposeAsync(this Task awaitOn, IDisposable disposeIt)
+        {
+            using (disposeIt)
+            {
+                await awaitOn.StartIfNeeded().ConfigureAwait(false);
+            }
+        }
+
+#if !NETFRAMEWORK
         /// <summary>
         /// Awaits on the given task and once task finishes (irrespective of its state), disposes
         /// the given disposable instance. New task is NOT created.

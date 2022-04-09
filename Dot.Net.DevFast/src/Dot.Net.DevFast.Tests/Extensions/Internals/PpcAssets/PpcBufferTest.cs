@@ -14,7 +14,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         public async Task Add_Throws_Error_When_Called_After_Close()
         {
             var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK
             await using (instance.ConfigureAwait(false))
 #else
             using (instance)
@@ -31,7 +31,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         public async Task Add_Throws_Error_When_Called_After_Dispose()
         {
             var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK
             await instance.DisposeAsync().ConfigureAwait(false);
 #else
             instance.Dispose();
@@ -48,7 +48,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             {
                 cts.Cancel();
                 var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, cts.Token);
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK
             await using (instance.ConfigureAwait(false))
 #else
                 using (instance)
@@ -68,7 +68,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             {
                 cts.Cancel();
                 var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK
             await using (instance.ConfigureAwait(false))
 #else
                 using (instance)
@@ -85,7 +85,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         public async Task TryAdd_Returns_False_After_Timeout_When_Buffer_Is_Full()
         {
             var instance = new PpcBuffer<object>(ConcurrentBuffer.MinSize, CancellationToken.None);
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK
             await using (instance.ConfigureAwait(false))
 #else
             using (instance)
@@ -102,7 +102,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         public async Task TryGet_And_Add_Harmonize()
         {
             var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK
             await using (instance.ConfigureAwait(false))
 #else
             using (instance)
@@ -122,7 +122,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         public async Task TryGet_Blocks_The_Call_If_Close_Not_Called_Returns_Added_Element_If_Available()
         {
             var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK
             await using (instance.ConfigureAwait(false))
 #else
             using (instance)
@@ -148,7 +148,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         public async Task TryGet_Returns_False_After_Close()
         {
             var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK
             await using (instance.ConfigureAwait(false))
 #else
             using (instance)
@@ -165,7 +165,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
         public async Task TryGet_Throws_Error_After_Dispose()
         {
             var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK
             await using (instance.ConfigureAwait(false))
 #else
             using (instance)
@@ -186,7 +186,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             {
                 cts.Cancel();
                 var instance = new PpcBuffer<object>(ConcurrentBuffer.Unbounded, CancellationToken.None);
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK
                 await using (instance.ConfigureAwait(false))
 #else
                 using (instance)
