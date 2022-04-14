@@ -415,7 +415,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         {
             await targetStream.CopyFromAsync(input.Length, enc ?? Encoding.UTF8,
                 token, bufferSize, input.CopyTo).ConfigureAwait(false);
-#if !NETASYNCDISPOSE
+#if NETFRAMEWORK
             targetStream.DisposeIfRequired(disposeTarget);
 #else
             await targetStream.DisposeIfRequiredAsync(disposeTarget).ConfigureAwait(false);
@@ -440,7 +440,7 @@ namespace Dot.Net.DevFast.Extensions.StringExt
         {
             await targetStream.CopyFromAsync(input.Length, enc ?? Encoding.UTF8,
                 token, bufferSize, input.CopyTo).ConfigureAwait(false);
-#if !NETASYNCDISPOSE
+#if NETFRAMEWORK
             targetStream.DisposeIfRequired(disposeTarget);
 #else
             await targetStream.DisposeIfRequiredAsync(disposeTarget).ConfigureAwait(false);

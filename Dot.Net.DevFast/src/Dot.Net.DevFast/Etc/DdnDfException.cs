@@ -92,7 +92,12 @@ namespace Dot.Net.DevFast.Etc
         /// <summary>
         /// When asked operation cannot be performed.
         /// </summary>
-        DemandUnfulfilled
+        DemandUnfulfilled,
+
+        /// <summary>
+        /// When allocation requires more memory than specified.
+        /// </summary>
+        AllocationBreached
     }
 
     /// <summary>

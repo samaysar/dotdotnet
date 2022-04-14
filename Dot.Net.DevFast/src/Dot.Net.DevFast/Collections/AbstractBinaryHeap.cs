@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Dot.Net.DevFast.Collections.Interfaces;
@@ -232,5 +233,25 @@ namespace Dot.Net.DevFast.Collections
         /// <param name="left">Left element</param>
         /// <param name="right">Right element</param>
         protected abstract bool LeftPrecedes(T left, T right);
+
+        /// <inheritdoc/>
+        public T[] All()
+        {
+            var newCollection = new T[Count];
+            if (Count != 0) Array.Copy(_heapData, newCollection, Count);
+            return newCollection;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerator<T> GetEnumerator()
+        {
+            return InternalStateAsEnumerable().GetEnumerator();
+        }
+
+        /// <inheritdoc/>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.Serialization;
+#if !NET5_0_OR_GREATER
 using System.Security.Permissions;
+#endif
 using Dot.Net.DevFast.Extensions;
 
 namespace Dot.Net.DevFast.Etc
@@ -49,12 +51,19 @@ namespace Dot.Net.DevFast.Etc
             ErrorCode = errorCode;
         }
 
+        /// <inheritdoc/>
+        protected DdnException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
+#if !NET5_0_OR_GREATER
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+#endif
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
@@ -103,12 +112,19 @@ namespace Dot.Net.DevFast.Etc
             Reason = reason;
         }
 
+        /// <inheritdoc/>
+        protected DdnException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {           
+        }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
+#if !NET5_0_OR_GREATER
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+#endif
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.ThrowIfNull($"{nameof(SerializationInfo)} object is null").AddValue("ErrorReason", Reason);
