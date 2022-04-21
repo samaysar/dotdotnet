@@ -526,13 +526,26 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="cryptoProvider">lambda that provides the crypto instance</param>
+        /// <param name="key">key byte array</param>
+        /// <param name="iv">iv byte array</param>
+        /// <param name="cipher">Cipher mode to use</param>
+        /// <param name="padding">Padding mode to use</param>
         /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         public static Func<PushFuncStream, Task> ThenEncrypt<T>(this Func<PushFuncStream, Task> src,
             Func<T> cryptoProvider,
+            byte[] key,
+            byte[] iv,
+            CipherMode cipher = CipherMode.CBC,
+            PaddingMode padding = PaddingMode.PKCS7,
             bool include = true)
             where T : SymmetricAlgorithm
         {
-            return src.ThenApply(s => s.ApplyCrypto(cryptoProvider(), true), include);
+            var crypto = cryptoProvider();
+            crypto.Mode = cipher;
+            crypto.Padding = padding;
+            crypto.Key = key;
+            crypto.IV = iv;
+            return src.ThenApply(s => s.ApplyCrypto(crypto, true), include);
         }
 
         /// <summary>
@@ -572,13 +585,26 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="cryptoProvider">lambda that provides the crypto instance</param>
+        /// <param name="key">key byte array</param>
+        /// <param name="iv">iv byte array</param>
+        /// <param name="cipher">Cipher mode to use</param>
+        /// <param name="padding">Padding mode to use</param>
         /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         public static Func<PushFuncStream, Task> ThenDecrypt<T>(this Func<PushFuncStream, Task> src,
             Func<T> cryptoProvider,
+            byte[] key,
+            byte[] iv,
+            CipherMode cipher = CipherMode.CBC,
+            PaddingMode padding = PaddingMode.PKCS7,
             bool include = true)
             where T : SymmetricAlgorithm
         {
-            return src.ThenApply(s => s.ApplyCrypto(cryptoProvider(), false), include);
+            var crypto = cryptoProvider();
+            crypto.Mode = cipher;
+            crypto.Padding = padding;
+            crypto.Key = key;
+            crypto.IV = iv;
+            return src.ThenApply(s => s.ApplyCrypto(crypto, false), include);
         }
 
 #else

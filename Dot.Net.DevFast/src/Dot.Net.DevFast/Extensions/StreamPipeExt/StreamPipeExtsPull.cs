@@ -220,6 +220,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="hashName">Hash algorithm to use</param>
         /// <param name="loopCnt">Loop count</param>
         /// <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
+        /// <param name="cipher">Cipher mode to use</param>
+        /// <param name="padding">Padding mode to use</param>
         /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         public static Func<PullFuncStream> ThenEncrypt<T>(this Func<PullFuncStream> src,
             Func<T> cryptoProvider,
@@ -228,10 +230,15 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             HashAlgorithmName hashName,
             int loopCnt = 10000,
             Encoding enc = null,
+            CipherMode cipher = CipherMode.CBC,
+            PaddingMode padding = PaddingMode.PKCS7,
             bool include = true)
             where T : SymmetricAlgorithm
         {
-            return src.ThenApply(s => s.ApplyCrypto(cryptoProvider().InitKeyNIv(password, salt,
+            var crypto = cryptoProvider();
+            crypto.Mode = cipher;
+            crypto.Padding = padding;
+            return src.ThenApply(s => s.ApplyCrypto(crypto.InitKeyNIv(password, salt,
                 hashName,
                 loopCnt, enc ?? new UTF8Encoding(false)), true), include);
         }
@@ -243,13 +250,26 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="cryptoProvider">lambda that provides the crypto instance</param>
+        /// <param name="key">key byte array</param>
+        /// <param name="iv">iv byte array</param>
+        /// <param name="cipher">Cipher mode to use</param>
+        /// <param name="padding">Padding mode to use</param>
         /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         public static Func<PullFuncStream> ThenEncrypt<T>(this Func<PullFuncStream> src,
             Func<T> cryptoProvider,
+            byte[] key,
+            byte[] iv,
+            CipherMode cipher = CipherMode.CBC,
+            PaddingMode padding = PaddingMode.PKCS7,
             bool include = true)
             where T : SymmetricAlgorithm
         {
-            return src.ThenApply(s => s.ApplyCrypto(cryptoProvider(), true), include);
+            var crypto = cryptoProvider();
+            crypto.Mode = cipher;
+            crypto.Padding = padding;
+            crypto.Key = key;
+            crypto.IV = iv;
+            return src.ThenApply(s => s.ApplyCrypto(crypto, true), include);
         }
 
         /// <summary>
@@ -266,6 +286,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="hashName">Hash algorithm to use</param>
         /// <param name="loopCnt">Loop count</param>
         /// <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
+        /// <param name="cipher">Cipher mode to use</param>
+        /// <param name="padding">Padding mode to use</param>
         /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         public static Func<PullFuncStream> ThenDecrypt<T>(this Func<PullFuncStream> src,
             Func<T> cryptoProvider,
@@ -274,10 +296,15 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             HashAlgorithmName hashName,
             int loopCnt = 10000,
             Encoding enc = null,
+            CipherMode cipher = CipherMode.CBC,
+            PaddingMode padding = PaddingMode.PKCS7,
             bool include = true)
             where T : SymmetricAlgorithm
         {
-            return src.ThenApply(s => s.ApplyCrypto(cryptoProvider().InitKeyNIv(password, salt,
+            var crypto = cryptoProvider();
+            crypto.Mode = cipher;
+            crypto.Padding = padding;
+            return src.ThenApply(s => s.ApplyCrypto(crypto.InitKeyNIv(password, salt,
                 hashName,
                 loopCnt, enc ?? new UTF8Encoding(false)), false), include);
         }
@@ -289,13 +316,26 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="cryptoProvider">lambda that provides the crypto instance</param>
+        /// <param name="key">key byte array</param>
+        /// <param name="iv">iv byte array</param>
+        /// <param name="cipher">Cipher mode to use</param>
+        /// <param name="padding">Padding mode to use</param>
         /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         public static Func<PullFuncStream> ThenDecrypt<T>(this Func<PullFuncStream> src,
             Func<T> cryptoProvider,
+            byte[] key,
+            byte[] iv,
+            CipherMode cipher = CipherMode.CBC,
+            PaddingMode padding = PaddingMode.PKCS7,
             bool include = true)
             where T : SymmetricAlgorithm
         {
-            return src.ThenApply(s => s.ApplyCrypto(cryptoProvider(), false), include);
+            var crypto = cryptoProvider();
+            crypto.Mode = cipher;
+            crypto.Padding = padding;
+            crypto.Key = key;
+            crypto.IV = iv;
+            return src.ThenApply(s => s.ApplyCrypto(crypto, false), include);
         }
 
 #else
@@ -596,6 +636,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="hashName">Hash algorithm to use</param>
         /// <param name="loopCnt">Loop count</param>
         /// <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
+        /// <param name="cipher">Cipher mode to use</param>
+        /// <param name="padding">Padding mode to use</param>
         /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         public static Func<Task<PullFuncStream>> ThenEncrypt<T>(this Func<Task<PullFuncStream>> src,
             Func<T> cryptoProvider,
@@ -604,10 +646,15 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             HashAlgorithmName hashName,
             int loopCnt = 10000,
             Encoding enc = null,
+            CipherMode cipher = CipherMode.CBC,
+            PaddingMode padding = PaddingMode.PKCS7,
             bool include = true)
             where T : SymmetricAlgorithm
         {
-            return src.ThenApply(s => s.ApplyCrypto(cryptoProvider().InitKeyNIv(password, salt,
+            var crypto = cryptoProvider();
+            crypto.Mode = cipher;
+            crypto.Padding = padding; 
+            return src.ThenApply(s => s.ApplyCrypto(crypto.InitKeyNIv(password, salt,
                 hashName,
                 loopCnt, enc ?? new UTF8Encoding(false)), true), include);
         }
@@ -619,13 +666,26 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="cryptoProvider">lambda that provides the crypto instance</param>
+        /// <param name="key">key byte array</param>
+        /// <param name="iv">iv byte array</param>
+        /// <param name="cipher">Cipher mode to use</param>
+        /// <param name="padding">Padding mode to use</param>
         /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         public static Func<Task<PullFuncStream>> ThenEncrypt<T>(this Func<Task<PullFuncStream>> src,
             Func<T> cryptoProvider,
+            byte[] key,
+            byte[] iv,
+            CipherMode cipher = CipherMode.CBC,
+            PaddingMode padding = PaddingMode.PKCS7,
             bool include = true)
             where T : SymmetricAlgorithm
         {
-            return src.ThenApply(s => s.ApplyCrypto(cryptoProvider(), true), include);
+            var crypto = cryptoProvider();
+            crypto.Mode = cipher;
+            crypto.Padding = padding;
+            crypto.Key = key;
+            crypto.IV = iv;
+            return src.ThenApply(s => s.ApplyCrypto(crypto, true), include);
         }
 
         /// <summary>
@@ -642,6 +702,8 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <param name="hashName">Hash algorithm to use</param>
         /// <param name="loopCnt">Loop count</param>
         /// <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
+        /// <param name="cipher">Cipher mode to use</param>
+        /// <param name="padding">Padding mode to use</param>
         /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         public static Func<Task<PullFuncStream>> ThenDecrypt<T>(this Func<Task<PullFuncStream>> src,
             Func<T> cryptoProvider,
@@ -650,10 +712,15 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             HashAlgorithmName hashName,
             int loopCnt = 10000,
             Encoding enc = null,
+            CipherMode cipher = CipherMode.CBC,
+            PaddingMode padding = PaddingMode.PKCS7,
             bool include = true)
             where T : SymmetricAlgorithm
         {
-            return src.ThenApply(s => s.ApplyCrypto(cryptoProvider().InitKeyNIv(password, salt,
+            var crypto = cryptoProvider();
+            crypto.Mode = cipher;
+            crypto.Padding = padding;
+            return src.ThenApply(s => s.ApplyCrypto(crypto.InitKeyNIv(password, salt,
                 hashName,
                 loopCnt, enc ?? new UTF8Encoding(false)), false), include);
         }
@@ -665,13 +732,26 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         /// <typeparam name="T">Type of <seealso cref="SymmetricAlgorithm"/> to apply</typeparam>
         /// <param name="src">Current pipe of the pipeline</param>
         /// <param name="cryptoProvider">lambda that provides the crypto instance</param>
+        /// <param name="key">key byte array</param>
+        /// <param name="iv">iv byte array</param>
+        /// <param name="cipher">Cipher mode to use</param>
+        /// <param name="padding">Padding mode to use</param>
         /// <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         public static Func<Task<PullFuncStream>> ThenDecrypt<T>(this Func<Task<PullFuncStream>> src,
             Func<T> cryptoProvider,
+            byte[] key,
+            byte[] iv,
+            CipherMode cipher = CipherMode.CBC,
+            PaddingMode padding = PaddingMode.PKCS7,
             bool include = true)
             where T : SymmetricAlgorithm
         {
-            return src.ThenApply(s => s.ApplyCrypto(cryptoProvider(), false), include);
+            var crypto = cryptoProvider();
+            crypto.Mode = cipher;
+            crypto.Padding = padding;
+            crypto.Key = key;
+            crypto.IV = iv;
+            return src.ThenApply(s => s.ApplyCrypto(crypto, false), include);
         }
 #else
 #if NET472_OR_GREATER || !NETFRAMEWORK
