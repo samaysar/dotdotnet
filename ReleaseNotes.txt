@@ -1,3 +1,10 @@
+Changes to Dot.Net.DevFast 6.1.0
+
+ 1. Change/Fix - Adding IEnumerable on all implementation of Heaps
+ 2. New feature - Adding extension methods on IEnumerable/IAsyncEnumerables
+ 3. New feature - Extensions on Type and MethodInfo to perform reflection based invocations
+ 4. New feature - Adding .NetStandard2.0
+
 Changes to Dot.Net.DevFast 6.0.0
 
  1. Change/Fix - Removing .Net Standard 2.0/.Net Core 2.0 support 
