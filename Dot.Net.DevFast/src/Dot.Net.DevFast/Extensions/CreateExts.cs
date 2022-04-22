@@ -16,7 +16,7 @@ namespace Dot.Net.DevFast.Extensions
     /// </summary>
     public static class CreateExts
     {
-#if NET472_OR_GREATER
+#if NET472_OR_GREATER || !NETFRAMEWORK
         /// <summary>
         /// Using <seealso cref="Rfc2898DeriveBytes"/> creates the key and IV byte arrays.
         /// <para>NOTE: Key = tuple.Item1 and IV = tuple.Item2</para>
@@ -41,7 +41,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
 #endif
         public static Tuple<byte[], byte[]> CreateKeyAndIv(this string password, string salt,
-#if NET472_OR_GREATER
+#if NET472_OR_GREATER || !NETFRAMEWORK
             HashAlgorithmName hashName,
 #endif
             int byteLengthKey = 32,
@@ -55,7 +55,7 @@ namespace Dot.Net.DevFast.Extensions
                 enc.GetBytes(password), 
                 enc.GetBytes(salt),
                 loopCnt
-#if NET472_OR_GREATER
+#if NET472_OR_GREATER || !NETFRAMEWORK
                 , hashName
 #endif
             );

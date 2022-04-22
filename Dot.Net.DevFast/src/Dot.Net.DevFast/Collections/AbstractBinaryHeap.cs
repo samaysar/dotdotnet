@@ -235,10 +235,10 @@ namespace Dot.Net.DevFast.Collections
         protected abstract bool LeftPrecedes(T left, T right);
 
         /// <inheritdoc/>
-        public IEnumerable<T> All()
+        public T[] All()
         {
             var newCollection = new T[Count];
-            Array.Copy(_heapData, newCollection, Count);
+            if (Count != 0) Array.Copy(_heapData, newCollection, Count);
             return newCollection;
         }
 
@@ -246,6 +246,12 @@ namespace Dot.Net.DevFast.Collections
         public IEnumerator<T> GetEnumerator()
         {
             return InternalStateAsEnumerable().GetEnumerator();
+        }
+
+        /// <inheritdoc/>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

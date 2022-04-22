@@ -354,7 +354,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
         public void CreateKeyAndIv_Works_As_Expected()
         {
             var keyIv = TestValues.FixedCryptoPass.CreateKeyAndIv(TestValues.FixedCryptoSalt
-#if NET472_OR_GREATER
+#if NET472_OR_GREATER || !NETFRAMEWORK
                 , HashAlgorithmName.SHA1
 #endif
             );
@@ -365,7 +365,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
             //proof of concept if future version changes values of default params
             //lets say by mistake 10000 is changed to 1K
             keyIv = TestValues.FixedCryptoPass.CreateKeyAndIv(TestValues.FixedCryptoSalt
-#if NET472_OR_GREATER
+#if NET472_OR_GREATER || !NETFRAMEWORK
                 , HashAlgorithmName.SHA1
 #endif
             , 32, 16, 1000);

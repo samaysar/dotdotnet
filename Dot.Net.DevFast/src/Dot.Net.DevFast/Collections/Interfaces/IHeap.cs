@@ -81,6 +81,6 @@ namespace Dot.Net.DevFast.Collections.Interfaces
         /// Returns a copy of the internal collection without removing elements from it.
         /// </summary>
         /// <returns></returns>
-        IEnumerable<T> All();
+        T[] All();
     }
 }

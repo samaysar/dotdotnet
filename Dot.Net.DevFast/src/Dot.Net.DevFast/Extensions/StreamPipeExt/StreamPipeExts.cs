@@ -364,7 +364,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         #endregion PullFuncStream PRIVATE
 
         internal static T InitKeyNIv<T>(this T alg, string password, string salt,
-#if NET472_OR_GREATER
+#if NET472_OR_GREATER || !NETFRAMEWORK
             HashAlgorithmName hashName,
 #endif
             int loopCnt,
@@ -372,7 +372,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             where T : SymmetricAlgorithm
         {
             var keyIv = password.CreateKeyAndIv(salt,
-#if NET472_OR_GREATER
+#if NET472_OR_GREATER || !NETFRAMEWORK
                 hashName,
 #endif
                 alg.KeySize / 8, alg.BlockSize / 8, loopCnt, enc);
