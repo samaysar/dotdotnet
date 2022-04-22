@@ -1,22 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks Condition="'$(LibraryFrameworks)'==''">net461;net472;netstandard2.1;net5.0;net6.0</TargetFrameworks>
-    <TargetFrameworks Condition="'$(LibraryFrameworks)'!=''">$(LibraryFrameworks)</TargetFrameworks>
-  </PropertyGroup>
-
-  <PropertyGroup>
+    <TargetFrameworks>net461;net472;netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
-    <NoWarn>1701;1702;1580</NoWarn>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Dot.Net.DevFast.xml</DocumentationFile>
+    <NoWarn />
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>Dot.Net.DevFast.xml</DocumentationFile>
     <Title>DevFast</Title>
-    <Version Condition="'$(version)'==''">1.0.0</Version>
-    <Version Condition="'$(version)'!=''">1.0.0</Version>
-    <PackageVersion Condition="'$(version)'==''">1.0.0</PackageVersion>
-    <PackageVersion Condition="'$(version)'!=''">1.0.0</PackageVersion>
+    <Company>samaysar</Company>
+    <Version Condition="'$(vNugetPack)'==''">1.0.0</Version>
+    <Version Condition="'$(vNugetPack)'!=''">$(vNugetPack)</Version>
+    <PackageVersion Condition="'$(vNugetPack)'==''">1.0.0-alpha</PackageVersion>
+    <PackageVersion Condition="'$(vNugetPack)'!=''">$(vNugetPack)</PackageVersion>
+    <FileVersion Condition="'$(Version)'==''">1.0.0.0</FileVersion>
+    <FileVersion Condition="'$(Version)'!=''">$(Version)</FileVersion>
+    <AssemblyVersion Condition="'$(Version)'==''">1.0.0.0</AssemblyVersion>
+    <AssemblyVersion Condition="'$(Version)'!=''">$(Version)</AssemblyVersion>
+    <InformationalVersion Condition="'$(vNugetPack)'==''">1.0.0-alpha.0</InformationalVersion>
+    <InformationalVersion Condition="'$(vNugetPack)'!=''">$(vNugetPack).0</InformationalVersion>
+    <AssemblyTitle>Dot.Net.DevFast (TargetFramework: $(TargetFramework))</AssemblyTitle>
     <Authors>Divya Sarthi MAHESHWARI</Authors>
-    <Owners>samaysar</Owners>
     <Description>A.K.A. Productivity! A powerful library to program .Net solutions in most declarative way; containing, simplest to use yet powerful, set of extensions to increase dev productivity. It exposes APIs for streaming, concurrent data processing and more. See also https://rawgit.com/samaysar/dotdotnet/develop/Dot.Net.DevFast/articles/SimplyDevFast.html for DevFast related Articles.</Description>
     <Copyright>Copyright © Divya Sarthi MAHESHWARI 2022</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -30,12 +34,20 @@
 	  <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <LangVersion>latest</LangVersion>
-    <SonarQubeExclude>True</SonarQubeExclude>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
 	  <None Include="..\..\..\icon.png" Pack="true" PackagePath="" />
 	  <None Include="..\..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
+	  <None Include="..\..\..\README.md" Pack="true" PackagePath="" />
+    <Content Include="Dot.Net.DevFast.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <BuildAction>None</BuildAction>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -47,6 +59,10 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net472'">
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
   </ItemGroup>
 

@@ -62,7 +62,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
                 {
                     using (_mergedCts)
                     {
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETSTANDARD2_0
                         await using (_feed.ConfigureAwait(false))
 #else
                         using (_feed)

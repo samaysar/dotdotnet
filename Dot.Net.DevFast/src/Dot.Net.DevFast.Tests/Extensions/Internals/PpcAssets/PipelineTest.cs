@@ -19,7 +19,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
             consumers[0] = Substitute.For<IConsumer<object>>();
             var instance = new Pipeline<object, object>(consumers, IdentityAwaitableAdapter<object>.Default,
                 CancellationToken.None, 1);
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await using (instance.ConfigureAwait(false))
 #else
             using (instance)
@@ -54,7 +54,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                         });
                     var instance = new Pipeline<object, object>(consumers, IdentityAwaitableAdapter<object>.Default,
                         CancellationToken.None, 1);
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                     await using (instance.ConfigureAwait(false))
 #else
                     using (instance)
@@ -85,7 +85,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
 
             var instance = new Pipeline<object, object>(consumers, IdentityAwaitableAdapter<object>.Default,
                 CancellationToken.None, 1);
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await using (instance.ConfigureAwait(false))
 #else
             using (instance)
@@ -95,7 +95,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 foreach (var consumer in consumers)
                 {
                     await consumer.Received(1).InitAsync().ConfigureAwait(false);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETCOREAPP2_2
                     consumer.Received(1).Dispose();
 #else
                     await consumer.Received(1).DisposeAsync();
@@ -118,7 +118,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 for (var i = 0; i < cc; i++)
                 {
                     consumers[i] = Substitute.For<IConsumer<object>>();
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETCOREAPP2_2
                     consumers[i].When(x => x.Dispose()).Do(x => countdownHandle.Signal());
 #else
                     consumers[i].DisposeAsync().Returns(x =>
@@ -132,7 +132,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 var cts = new CancellationTokenSource();
                 var instance = new Pipeline<object, object>(consumers, IdentityAwaitableAdapter<object>.Default,
                     cts.Token, 1);
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                 await using (instance.ConfigureAwait(false))
 #else
                 using (instance)
@@ -163,7 +163,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
 
             var instance = new Pipeline<object, List<object>>(consumers,
                 new IdentityAwaitableListAdapter<object>(2, 0), CancellationToken.None, 1);
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await using (instance.ConfigureAwait(false))
 #else
             using (instance)
@@ -181,7 +181,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 await consumer.Received(1).InitAsync().ConfigureAwait(false);
                 await consumer.Received(1).ConsumeAsync(Arg.Any<List<object>>(), Arg.Any<CancellationToken>())
                     .ConfigureAwait(false);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETCOREAPP2_2
                 consumer.Received(1).Dispose();
 #else
                 await consumer.Received(1).DisposeAsync();

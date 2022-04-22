@@ -11,7 +11,8 @@ namespace Dot.Net.DevFast.Extensions
     {
         /// <summary>
         /// Finds Generic method using <paramref name="methodName"/> inside <paramref name="declaringType"/>,
-        /// invokes it and awaits on the invocation.
+        /// then, invokes it using given <paramref name="classInstance"/>
+        /// and <paramref name="methodParameters"/> and finally awaits on the invocation.
         /// See also <seealso cref="InvokeNonValueMethodAsync(MethodInfo, object[], object)"/>.
         /// <para>
         /// Method MUST return either <see langword="void"/> or a <see cref="Task"/>.
@@ -77,8 +78,9 @@ namespace Dot.Net.DevFast.Extensions
         }
 
         /// <summary>
-        /// Finds generic method using <paramref name="methodName"/> inside <paramref name="declaringType"/>
-        /// and invokes it.
+        /// Finds generic method using <paramref name="methodName"/> inside <paramref name="declaringType"/>,
+        /// then, invokes it using given <paramref name="classInstance"/>
+        /// and <paramref name="methodParameters"/> and finally awaits on the invocation.
         /// See also <seealso cref="InvokeValueMethodAsync{TResult}(MethodInfo, object[], object)"/>.
         /// <para>
         /// Method MUST return either a <see cref="Task{TResult}"/> OR
@@ -163,6 +165,7 @@ namespace Dot.Net.DevFast.Extensions
             object[] parameters)
             where TIn : TOut
         {
+            // ReSharper disable once PossibleNullReferenceException
             return await ((Task<TIn>)method.Invoke(instance, parameters)).ConfigureAwait(false);
         }
 

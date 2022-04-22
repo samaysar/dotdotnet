@@ -18,7 +18,7 @@ namespace Dot.Net.DevFast.Extensions.Internals
             }
         }
 
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETSTANDARD2_0
         internal static async ValueTask DisposeIfRequiredAsync(this IAsyncDisposable disposable, bool dispose)
         {
             if (dispose)

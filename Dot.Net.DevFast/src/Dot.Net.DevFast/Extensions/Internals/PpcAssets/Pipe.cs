@@ -15,7 +15,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             {
                 using var localCts = new CancellationTokenSource();
                 using var combinedCts = CancellationTokenSource.CreateLinkedTokenSource(token, localCts.Token);
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETSTANDARD2_0
                 var ppcBuffer = new PpcBuffer<TP>(bufferSize, combinedCts.Token);
                 await using (ppcBuffer.ConfigureAwait(false))
 #else
@@ -54,7 +54,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
         {
             try
             {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 using (parallelConsumer)
 #else
                 await using (parallelConsumer.ConfigureAwait(false))
@@ -100,7 +100,7 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
         {
             try
             {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 using (parallelProducer)
 #else
                 await using (parallelProducer.ConfigureAwait(false))

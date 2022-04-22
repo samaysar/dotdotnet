@@ -877,7 +877,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             FileOptions options = FileOptions.SequentialScan,
             CancellationToken token = default)
         {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
             using (var strm = fileinfo.CreateStream(FileMode.Create, FileAccess.ReadWrite, FileShare.Read,
                 fileStreamBuffer, options))
 #else

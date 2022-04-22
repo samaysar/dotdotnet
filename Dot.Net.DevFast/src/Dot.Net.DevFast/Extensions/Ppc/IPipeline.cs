@@ -6,7 +6,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     /// <summary>
     /// Interface to expose concurrent producer-consumer pipeline operations.
     /// </summary>
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETSTANDARD2_0
     public interface IPipeline<in T> : IProducerBuffer<T>, IAsyncDisposable, IDisposable
 #else
     public interface IPipeline<in T> : IProducerBuffer<T>, IDisposable

@@ -46,7 +46,7 @@ namespace Dot.Net.DevFast.Extensions
             return () =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -54,7 +54,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -110,7 +110,7 @@ namespace Dot.Net.DevFast.Extensions
             return () =>
             {
                 var tcs = new TaskCompletionSource<T0>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -118,7 +118,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -175,7 +175,7 @@ namespace Dot.Net.DevFast.Extensions
             return t0 =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -183,7 +183,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -239,7 +239,7 @@ namespace Dot.Net.DevFast.Extensions
             return t0 =>
             {
                 var tcs = new TaskCompletionSource<T1>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -247,7 +247,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -304,7 +304,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -312,7 +312,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -368,7 +368,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1) =>
             {
                 var tcs = new TaskCompletionSource<T2>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -376,7 +376,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -433,7 +433,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -441,7 +441,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -497,7 +497,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2) =>
             {
                 var tcs = new TaskCompletionSource<T3>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -505,7 +505,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -562,7 +562,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -570,7 +570,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -626,7 +626,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3) =>
             {
                 var tcs = new TaskCompletionSource<T4>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -634,7 +634,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -691,7 +691,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -699,7 +699,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -756,7 +756,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4) =>
             {
                 var tcs = new TaskCompletionSource<T5>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -764,7 +764,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -822,7 +822,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -830,7 +830,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -887,7 +887,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5) =>
             {
                 var tcs = new TaskCompletionSource<T6>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -895,7 +895,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -954,7 +954,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -962,7 +962,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -1020,7 +1020,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6) =>
             {
                 var tcs = new TaskCompletionSource<T7>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -1028,7 +1028,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -1087,7 +1087,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -1095,7 +1095,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -1153,7 +1153,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7) =>
             {
                 var tcs = new TaskCompletionSource<T8>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -1161,7 +1161,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -1220,7 +1220,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -1228,7 +1228,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -1287,7 +1287,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8) =>
             {
                 var tcs = new TaskCompletionSource<T9>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -1295,7 +1295,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -1355,7 +1355,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -1363,7 +1363,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -1422,7 +1422,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9) =>
             {
                 var tcs = new TaskCompletionSource<T10>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -1430,7 +1430,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -1490,7 +1490,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -1498,7 +1498,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -1557,7 +1557,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10) =>
             {
                 var tcs = new TaskCompletionSource<T11>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -1565,7 +1565,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -1625,7 +1625,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -1633,7 +1633,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -1692,7 +1692,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11) =>
             {
                 var tcs = new TaskCompletionSource<T12>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -1700,7 +1700,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -1760,7 +1760,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -1768,7 +1768,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -1827,7 +1827,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12) =>
             {
                 var tcs = new TaskCompletionSource<T13>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -1835,7 +1835,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -1895,7 +1895,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -1903,7 +1903,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -1963,7 +1963,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13) =>
             {
                 var tcs = new TaskCompletionSource<T14>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -1971,7 +1971,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -2033,7 +2033,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -2041,7 +2041,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -2102,7 +2102,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14) =>
             {
                 var tcs = new TaskCompletionSource<T15>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -2110,7 +2110,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -2172,7 +2172,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15) =>
             {
                 var tcs = new TaskCompletionSource<object>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -2180,7 +2180,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))
@@ -2241,7 +2241,7 @@ namespace Dot.Net.DevFast.Extensions
             return (t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15) =>
             {
                 var tcs = new TaskCompletionSource<T16>(options);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 Task.Run(() =>
 #else
                 Task.Run(async () =>
@@ -2249,7 +2249,7 @@ namespace Dot.Net.DevFast.Extensions
                 {
                     try
                     {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                         using (token.Register(() => tcs.TrySetCanceled(token)))
 #else
                         await using (token.Register(() => tcs.TrySetCanceled(token)).ConfigureAwait(false))

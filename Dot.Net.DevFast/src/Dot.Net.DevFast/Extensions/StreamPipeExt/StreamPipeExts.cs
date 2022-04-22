@@ -25,7 +25,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             return async pfs =>
             {
                 bcs.ResetWith(pfs.Writable, pfs.Dispose);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 using (bcs)
 #else
                 await using (bcs.ConfigureAwait(false))
@@ -47,7 +47,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
         {
             return async pfs =>
             {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 using (var concurrentStream = new BroadcastStream(pfs, stream, disposeStream, errorHandler))
 #else
                 var concurrentStream = new BroadcastStream(pfs, stream, disposeStream, errorHandler);
@@ -70,7 +70,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             {
                 var s = pfs.Writable;
                 var t = pfs.Token;
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 using (var compStrm = s.CreateCompressionStream(gzip, level, pfs.Dispose))
 #else
                 var compStrm = s.CreateCompressionStream(gzip, level, pfs.Dispose);

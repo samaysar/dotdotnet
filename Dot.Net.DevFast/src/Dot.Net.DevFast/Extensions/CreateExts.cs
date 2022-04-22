@@ -55,7 +55,7 @@ namespace Dot.Net.DevFast.Extensions
                 enc.GetBytes(password), 
                 enc.GetBytes(salt),
                 loopCnt
-#if NET472_OR_GREATER || !NETFRAMEWORK
+#if NET472_OR_GREATER || (!NETFRAMEWORK && !NETSTANDARD2_0)
                 , hashName
 #endif
             );

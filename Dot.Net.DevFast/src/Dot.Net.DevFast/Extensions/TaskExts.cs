@@ -248,7 +248,7 @@ namespace Dot.Net.DevFast.Extensions
             });
         }
 
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETSTANDARD2_0
         /// <summary>
         /// Awaits on the given task and once task finishes (irrespective of its state), disposes
         /// the given disposable instance. Runs everything as a new task.
@@ -281,7 +281,7 @@ namespace Dot.Net.DevFast.Extensions
             }
         }
 
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETSTANDARD2_0
         /// <summary>
         /// Awaits on the given task and once task finishes (irrespective of its state), disposes
         /// the given disposable instance. New task is NOT created.

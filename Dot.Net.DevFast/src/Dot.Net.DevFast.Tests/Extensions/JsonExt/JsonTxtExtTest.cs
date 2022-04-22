@@ -184,23 +184,13 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
 
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.CreateJsonReader().FromJsonArrayParallely(strbc));
-            count = 0;
-            while (strbc.TryTake(out _, Timeout.Infinite))
-            {
-                count++;
-            }
-            Assert.True(count == 0);
+            Assert.False(strbc.TryTake(out _, Timeout.Infinite));
             await jsontask.ConfigureAwait(false);
 
             sb.Clear();
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.CreateJsonReader().FromJsonArrayParallely(strbc));
-            count = 0;
-            while (strbc.TryTake(out _, Timeout.Infinite))
-            {
-                count++;
-            }
-            Assert.True(count == 0);
+            Assert.False(strbc.TryTake(out _, Timeout.Infinite));
             await jsontask.ConfigureAwait(false);            
         }
 
@@ -305,23 +295,13 @@ namespace Dot.Net.DevFast.Tests.Extensions.JsonExt
 
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.CreateReader().FromJsonArrayParallely(strbc));
-            count = 0;
-            while (strbc.TryTake(out _, Timeout.Infinite))
-            {
-                count++;
-            }
-            Assert.True(count == 0);
+            Assert.False(strbc.TryTake(out _, Timeout.Infinite));
             await jsontask.ConfigureAwait(false);
 
             sb.Clear();
             strbc = new BlockingCollection<string>(1);
             jsontask = Task.Run(() => sb.CreateReader().FromJsonArrayParallely(strbc));
-            count = 0;
-            while (strbc.TryTake(out _, Timeout.Infinite))
-            {
-                count++;
-            }
-            Assert.True(count == 0);
+            Assert.False(strbc.TryTake(out _, Timeout.Infinite));
             await jsontask.ConfigureAwait(false);
         }
 

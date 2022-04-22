@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Dot.Net.DevFast.Extensions
 {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
     /// <summary>
     /// Contains extension methods on <see cref="IEnumerable{T}"/>, <see cref="IEnumerable"/>.
     /// </summary>
@@ -104,7 +104,7 @@ namespace Dot.Net.DevFast.Extensions
             }
         }
 
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETSTANDARD2_0
         /// <summary>
         /// Applies provided <paramref name="action"/> on every item of the given enumerable while observing for cancellation.
         /// </summary>

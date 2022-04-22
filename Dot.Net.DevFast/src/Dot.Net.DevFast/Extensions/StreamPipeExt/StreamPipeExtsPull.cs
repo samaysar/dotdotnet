@@ -1521,7 +1521,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             FileOptions options = FileOptions.SequentialScan,
             CancellationToken token = default)
         {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
             using (var strm = fileinfo.CreateStream(FileMode.Create, FileAccess.ReadWrite, FileShare.Read,
                 fileStreamBuffer, options))
 #else
@@ -1615,7 +1615,7 @@ namespace Dot.Net.DevFast.Extensions.StreamPipeExt
             }
             finally
             {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
                 data.Readable.DisposeIfRequired(data.Dispose);
 #else
                 await data.Readable.DisposeIfRequiredAsync(data.Dispose).ConfigureAwait(false);

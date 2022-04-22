@@ -72,7 +72,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
             Assert.AreEqual(6, called);
         }
 
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETCOREAPP2_2
         private async IAsyncEnumerable<ValueHolder> GenerateAsyncEnumerable()
         {
             await Task.CompletedTask;

@@ -8,7 +8,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     /// Consumer interface for parallel Producer consumer pattern.
     /// </summary>
     /// <typeparam name="T">Content type</typeparam>
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
     public interface IConsumer<in T> : IDisposable
 #else
     public interface IConsumer<in T> : IAsyncDisposable, IDisposable
@@ -23,7 +23,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
         /// </summary>
         Task InitAsync();
 
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETSTANDARD2_0
         /// <summary>
         /// Expect multiple calls to this function as calls are made whenever some data is 
         /// available from <seealso cref="IProducer{T}"/>.
