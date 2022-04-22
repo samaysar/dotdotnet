@@ -34,13 +34,13 @@
 	  <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <LangVersion>latest</LangVersion>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile>README-nuget.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
 	  <None Include="..\..\..\icon.png" Pack="true" PackagePath="" />
 	  <None Include="..\..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
-	  <None Include="..\..\..\README.md" Pack="true" PackagePath="" />
+	  <None Include="..\..\..\README-nuget.md" Pack="true" PackagePath="" />
     <Content Include="Dot.Net.DevFast.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
