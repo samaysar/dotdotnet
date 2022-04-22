@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -195,8 +196,9 @@ namespace Dot.Net.DevFast.Tests.Collections
             Assert.True(instance.ToList().Count.Equals(0));
             var items = new[] { 100, -58, 0, -52, 1, 10 };
             instance.AddAll(items);
-            var internalState = new HashSet<int>(instance.ToList());
-            var all = instance.All();
+            var internalState = new HashSet<int>(instance.All());
+            var asEnumerable = instance as IEnumerable;
+            var all = asEnumerable.Cast<object>().ToList();
             foreach (var item in items)
             {
                 Assert.IsTrue(internalState.Contains(item));

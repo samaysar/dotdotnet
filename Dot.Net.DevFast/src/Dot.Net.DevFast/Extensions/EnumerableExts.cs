@@ -3,12 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 #if !NETFRAMEWORK
 using System.Runtime.CompilerServices;
+using Dot.Net.DevFast.Etc;
 #endif
 using System.Threading;
-using Dot.Net.DevFast.Etc;
-#if !NETFRAMEWORK
 using System.Threading.Tasks;
-#endif
 
 namespace Dot.Net.DevFast.Extensions
 {
@@ -83,6 +81,25 @@ namespace Dot.Net.DevFast.Extensions
             foreach (var item in items)
             {
                 action(item, token);
+                token.ThrowIfCancellationRequested();
+            }
+        }
+
+        /// <summary>
+        /// Applies provided async <paramref name="action"/> on every item of the given enumerable,
+        /// asynchronously, while observing for cancellation.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items">Items</param>
+        /// <param name="action">Action to apply</param>
+        /// <param name="token">Cancellation token to observe</param>
+        public static async Task ForEachAsync<T>(this IEnumerable<T> items,
+            Func<T, CancellationToken, Task> action,
+            CancellationToken token = default)
+        {
+            foreach (var item in items)
+            {
+                await action(item, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
             }
         }
@@ -226,7 +243,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="limit">Max. items in the list</param>
         /// <param name="token">Token to observe</param>
         /// <exception cref="DdnDfException">When enumeration returns more elements than the <paramref name="limit"/> count.
-        /// Exception ErrorCode is <see cref="DdnDfErrorCode.AllocationBreached"/></exception>
+        /// Exception ErrorCode is <see cref="DdnDfErrorCode.OverAllocationDemanded"/></exception>
         public static async Task<List<T>> ToListAsync<T>(this IAsyncEnumerable<T> items,
             int limit,
             CancellationToken token = default)
@@ -237,7 +254,7 @@ namespace Dot.Net.DevFast.Extensions
             await foreach (var item in items.WithCancellation(token).ConfigureAwait(false))
             {
                 (count++ >= limit)
-                    .ThrowIf(DdnDfErrorCode.AllocationBreached, $"Limit of {limit} breached.", token)
+                    .ThrowIf(DdnDfErrorCode.OverAllocationDemanded, $"Limit of {limit} breached.", token)
                     .ThrowIfCancellationRequested();
                 results.Add(item);
             }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.Serialization;
+using Dot.Net.DevFast.Extensions;
 
 namespace Dot.Net.DevFast.Etc
 {
@@ -97,7 +99,7 @@ namespace Dot.Net.DevFast.Etc
         /// <summary>
         /// When allocation requires more memory than specified.
         /// </summary>
-        AllocationBreached
+        OverAllocationDemanded
     }
 
     /// <summary>
@@ -129,7 +131,13 @@ namespace Dot.Net.DevFast.Etc
         /// <param name="errorCode">Associated Error code</param>
         /// <param name="message">message text</param>
         /// <param name="inner">Inner exception</param>
-        public DdnDfException(DdnDfErrorCode errorCode, string message, Exception inner) : base(errorCode, message, inner)
+        public DdnDfException(DdnDfErrorCode errorCode, string message, Exception inner) : base(errorCode, message,
+            inner)
+        {
+        }
+
+        /// <inheritdoc/>
+        public DdnDfException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }
