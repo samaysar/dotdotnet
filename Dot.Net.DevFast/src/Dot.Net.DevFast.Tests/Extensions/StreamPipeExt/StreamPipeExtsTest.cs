@@ -142,9 +142,14 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
                 File.WriteAllText(file.FullName, TestValues.BigString, new UTF8Encoding(false));
                 encryptedCompressedFile = await file.Directory
                     .Push($"{fileName}.txt")
-                    .ThenEncrypt<AesManaged>(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt
-#if NETHASHCRYPTO
+#if NET5_0_OR_GREATER
+                    .ThenEncrypt(Aes.Create, TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt
                         , HashAlgorithmName.SHA512
+#else
+                    .ThenEncrypt<AesManaged>(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt
+#if NET472_OR_GREATER || !NETFRAMEWORK
+                        , HashAlgorithmName.SHA512
+#endif
 #endif
                     )
                     .ThenCompress()
@@ -152,9 +157,14 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
                 var fileRevOps = await encryptedCompressedFile.Directory
                     .Pull(encryptedCompressedFile.Name)
                     .ThenDecompress()
-                    .ThenDecrypt<AesManaged>(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt
-#if NETHASHCRYPTO
+#if NET5_0_OR_GREATER
+                    .ThenDecrypt(Aes.Create, TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt
                         , HashAlgorithmName.SHA512
+#else
+                    .ThenDecrypt<AesManaged>(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt
+#if NET472_OR_GREATER || !NETFRAMEWORK
+                        , HashAlgorithmName.SHA512
+#endif
 #endif
                     )
                     .AndWriteFileAsync(file.DirectoryName, file.Name).ConfigureAwait(false);
@@ -163,10 +173,16 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
                 fileRevOps = await encryptedCompressedFile.Directory
                     .Pull(encryptedCompressedFile.Name)
                     .ThenDecompress()
+#if NET5_0_OR_GREATER
+                    .ThenDecrypt(Aes.Create, TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt
+                        , HashAlgorithmName.SHA512
+#else
                     .ThenDecrypt<AesManaged>(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER || !NETFRAMEWORK
                         , HashAlgorithmName.SHA512
 #endif
+#endif
+
                     )
                     .AndWriteFileAsync(file.Directory, file.Name).ConfigureAwait(false);
                 Assert.True(TestValues.BigString.Equals(File.ReadAllText(fileRevOps.FullName)));
@@ -183,14 +199,24 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
         [Test]
         public async Task Encrypt_Decrypt_Harmonize()
         {
+#if NET5_0_OR_GREATER
+            await Encrypt_Decrypt_Harmonize(Aes.Create).ConfigureAwait(false);
+            await Encrypt_Decrypt_Harmonize(DES.Create).ConfigureAwait(false);
+            await Encrypt_Decrypt_Harmonize(TripleDES.Create).ConfigureAwait(false);
+            await Encrypt_Decrypt_Harmonize(RC2.Create).ConfigureAwait(false);
+#if NET5_0
+            await Encrypt_Decrypt_Harmonize(Rijndael.Create).ConfigureAwait(false);
+#endif
+#else
             await Encrypt_Decrypt_Harmonize<AesManaged>().ConfigureAwait(false);
             await Encrypt_Decrypt_Harmonize<DESCryptoServiceProvider>().ConfigureAwait(false);
             await Encrypt_Decrypt_Harmonize<TripleDESCryptoServiceProvider>().ConfigureAwait(false);
             await Encrypt_Decrypt_Harmonize<RijndaelManaged>().ConfigureAwait(false);
             await Encrypt_Decrypt_Harmonize<RC2CryptoServiceProvider>().ConfigureAwait(false);
-#if NET472
+#if NET472_OR_GREATER
             await Encrypt_Decrypt_Harmonize<AesCng>().ConfigureAwait(false);
             await Encrypt_Decrypt_Harmonize<TripleDESCng>().ConfigureAwait(false);
+#endif
 #endif
         }
 
@@ -487,6 +513,143 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
             }
         }
 
+#if NET5_0_OR_GREATER
+        private static async Task Encrypt_Decrypt_Harmonize<T>(Func<T> cryptoProvider)
+            where T : SymmetricAlgorithm
+        {
+            //////////////// =========== PUSH
+
+            var md51 = MD5.Create();
+            var sha1 = SHA256.Create();
+            var md52 = MD5.Create();
+            var sha2 = SHA256.Create();
+            var pipeOutcome = await TestValues.BigString.Push()
+                .ThenComputeHash(md51)
+                .ThenComputeHash(sha1)
+                .ThenEncrypt<T>(cryptoProvider,
+                    TestValues.FixedCryptoPass, 
+                    TestValues.FixedCryptoSalt,
+                    HashAlgorithmName.SHA512,
+                    20)
+                .ThenComputeHash(md52)
+                .ThenComputeHash(sha2)
+                .ThenDecrypt<T>(cryptoProvider,
+                    TestValues.FixedCryptoPass, 
+                    TestValues.FixedCryptoSalt,
+                    HashAlgorithmName.SHA512,
+                    20)
+                .AndWriteBytesAsync().ConfigureAwait(false);
+            Assert.True(new UTF8Encoding(false).GetString(pipeOutcome).Equals(TestValues.BigString));
+            Assert.False(md51.Hash.ToBase64().Equals(md52.Hash.ToBase64()));
+            Assert.False(sha1.Hash.ToBase64().Equals(sha2.Hash.ToBase64()));
+
+            md51 = MD5.Create();
+            sha1 = SHA256.Create();
+            md52 = MD5.Create();
+            sha2 = SHA256.Create();
+            using var tins = cryptoProvider();
+            tins.InitKeyNIv(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt,
+                HashAlgorithmName.SHA512,
+                20, null);
+            pipeOutcome = (await Task.FromResult(TestValues.BigString).Push()
+                .ThenComputeHash(md51)
+                .ThenComputeHash(sha1)
+                .ThenEncrypt(cryptoProvider, tins.Key, tins.IV)
+                .ThenComputeHash(md52)
+                .ThenComputeHash(sha2)
+                .ThenDecrypt(cryptoProvider, tins.Key, tins.IV)
+                .AndWriteBufferAsync(seekToOrigin: true).ConfigureAwait(false)).ToArray();
+            Assert.True(new UTF8Encoding(false).GetString(pipeOutcome).Equals(TestValues.BigString));
+            Assert.False(md51.Hash.ToBase64().Equals(md52.Hash.ToBase64()));
+            Assert.False(sha1.Hash.ToBase64().Equals(sha2.Hash.ToBase64()));
+
+            //////////////// =========== PULL - No TASK
+
+            md51 = MD5.Create();
+            sha1 = SHA256.Create();
+            md52 = MD5.Create();
+            sha2 = SHA256.Create();
+            pipeOutcome = await new ArraySegment<byte>(pipeOutcome, 0, pipeOutcome.Length).Pull()
+                .ThenComputeHash(md51)
+                .ThenComputeHash(sha1)
+                .ThenEncrypt(cryptoProvider,
+                    TestValues.FixedCryptoPass,
+                    TestValues.FixedCryptoSalt,
+                    HashAlgorithmName.SHA512,
+                    20)
+                .ThenComputeHash(md52)
+                .ThenComputeHash(sha2)
+                .ThenDecrypt(cryptoProvider,
+                    TestValues.FixedCryptoPass,
+                    TestValues.FixedCryptoSalt,
+                    HashAlgorithmName.SHA512,
+                    20)
+                .AndWriteBytesAsync().ConfigureAwait(false);
+            Assert.True(new UTF8Encoding(false).GetString(pipeOutcome).Equals(TestValues.BigString));
+            Assert.False(md51.Hash.ToBase64().Equals(md52.Hash.ToBase64()));
+            Assert.False(sha1.Hash.ToBase64().Equals(sha2.Hash.ToBase64()));
+
+            md51 = MD5.Create();
+            sha1 = SHA256.Create();
+            md52 = MD5.Create();
+            sha2 = SHA256.Create();
+            var pipeSeg = await new ArraySegment<byte>(pipeOutcome, 0, pipeOutcome.Length).Pull()
+                .ThenComputeHash(md51)
+                .ThenComputeHash(sha1)
+                .ThenEncrypt(cryptoProvider, tins.Key, tins.IV)
+                .ThenComputeHash(md52)
+                .ThenComputeHash(sha2)
+                .ThenDecrypt(cryptoProvider, tins.Key, tins.IV)
+                .AndWriteByteSegAsync().ConfigureAwait(false);
+            pipeOutcome = new MemoryStream(pipeSeg.Array, pipeSeg.Offset, pipeSeg.Count).ToArray();
+            Assert.True(new UTF8Encoding(false).GetString(pipeOutcome).Equals(TestValues.BigString));
+            Assert.False(md51.Hash.ToBase64().Equals(md52.Hash.ToBase64()));
+            Assert.False(sha1.Hash.ToBase64().Equals(sha2.Hash.ToBase64()));
+
+            //////////////// =========== PULL - TASK
+
+            md51 = MD5.Create();
+            sha1 = SHA256.Create();
+            md52 = MD5.Create();
+            sha2 = SHA256.Create();
+            pipeOutcome = await Task.FromResult(new ArraySegment<byte>(pipeOutcome, 0, pipeOutcome.Length)).Pull()
+                .ThenComputeHash(md51)
+                .ThenComputeHash(sha1)
+                .ThenEncrypt(cryptoProvider,
+                    TestValues.FixedCryptoPass, 
+                    TestValues.FixedCryptoSalt,
+                    HashAlgorithmName.SHA512,
+                    20)
+                .ThenComputeHash(md52)
+                .ThenComputeHash(sha2)
+                .ThenDecrypt(cryptoProvider, 
+                    TestValues.FixedCryptoPass, 
+                    TestValues.FixedCryptoSalt,
+                    HashAlgorithmName.SHA512,
+                    20)
+                .AndWriteBytesAsync().ConfigureAwait(false);
+            Assert.True(new UTF8Encoding(false).GetString(pipeOutcome).Equals(TestValues.BigString));
+            Assert.False(md51.Hash.ToBase64().Equals(md52.Hash.ToBase64()));
+            Assert.False(sha1.Hash.ToBase64().Equals(sha2.Hash.ToBase64()));
+
+            md51 = MD5.Create();
+            sha1 = SHA256.Create();
+            md52 = MD5.Create();
+            sha2 = SHA256.Create();
+            pipeSeg = await Task.FromResult(new ArraySegment<byte>(pipeOutcome, 0, pipeOutcome.Length)).Pull()
+                .ThenComputeHash(md51)
+                .ThenComputeHash(sha1)
+                .ThenEncrypt(cryptoProvider, tins.Key, tins.IV)
+                .ThenComputeHash(md52)
+                .ThenComputeHash(sha2)
+                .ThenDecrypt(cryptoProvider, tins.Key, tins.IV)
+                .AndWriteByteSegAsync().ConfigureAwait(false);
+            pipeOutcome = new MemoryStream(pipeSeg.Array, pipeSeg.Offset, pipeSeg.Count).ToArray();
+            Assert.True(new UTF8Encoding(false).GetString(pipeOutcome).Equals(TestValues.BigString));
+            Assert.False(md51.Hash.ToBase64().Equals(md52.Hash.ToBase64()));
+            Assert.False(sha1.Hash.ToBase64().Equals(sha2.Hash.ToBase64()));
+        }
+#else
         private static async Task Encrypt_Decrypt_Harmonize<T>()
             where T : SymmetricAlgorithm, new()
         {
@@ -500,14 +663,14 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
                 .ThenComputeHash(md51)
                 .ThenComputeHash(sha1)
                 .ThenEncrypt<T>(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt,
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER || !NETFRAMEWORK
                     HashAlgorithmName.SHA512,
 #endif
                     20)
                 .ThenComputeHash(md52)
                 .ThenComputeHash(sha2)
                 .ThenDecrypt<T>(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt,
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER || !NETFRAMEWORK
                     HashAlgorithmName.SHA512,
 #endif
                     20)
@@ -522,7 +685,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
             sha2 = SHA256.Create();
             var tins = new T();
             tins.InitKeyNIv(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt,
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER || !NETFRAMEWORK
                 HashAlgorithmName.SHA512,
 #endif
                 20, null);
@@ -548,14 +711,14 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
                 .ThenComputeHash(md51)
                 .ThenComputeHash(sha1)
                 .ThenEncrypt<T>(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt,
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER || !NETFRAMEWORK
                     HashAlgorithmName.SHA512,
 #endif
                     20)
                 .ThenComputeHash(md52)
                 .ThenComputeHash(sha2)
                 .ThenDecrypt<T>(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt,
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER || !NETFRAMEWORK
                     HashAlgorithmName.SHA512,
 #endif
                     20)
@@ -591,14 +754,14 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
                 .ThenComputeHash(md51)
                 .ThenComputeHash(sha1)
                 .ThenEncrypt<T>(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt,
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER || !NETFRAMEWORK
                     HashAlgorithmName.SHA512,
 #endif
                     20)
                 .ThenComputeHash(md52)
                 .ThenComputeHash(sha2)
                 .ThenDecrypt<T>(TestValues.FixedCryptoPass, TestValues.FixedCryptoSalt,
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER || !NETFRAMEWORK
                     HashAlgorithmName.SHA512,
 #endif
                     20)
@@ -624,7 +787,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamPipeExt
             Assert.False(md51.Hash.ToBase64().Equals(md52.Hash.ToBase64()));
             Assert.False(sha1.Hash.ToBase64().Equals(sha2.Hash.ToBase64()));
         }
-
+#endif
         private static void AssertOnValueEquality(TestObject obj, TestObject postStream)
         {
             Assert.True(obj.IntProp.Equals(postStream.IntProp));

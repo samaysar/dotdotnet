@@ -18,7 +18,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
             const string original = "Here is some d@t@ to encrypt!";
             var segement = original.ToByteSegment();
 
-            using (var rijndael = new RijndaelManaged())
+            using (var rijndael = Aes.Create())
             {
                 rijndael.GenerateKey();
                 rijndael.GenerateIV();
@@ -46,7 +46,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
             const string original = "Here is some d@t@ to encrypt!";
             var segement = original.ToBytes();
 
-            using (var rijndael = new RijndaelManaged())
+            using (var rijndael = Aes.Create())
             {
                 rijndael.GenerateKey();
                 rijndael.GenerateIV();
@@ -76,7 +76,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
             {
                 await original.ToStreamAsync(inputBuff).ConfigureAwait(false);
                 inputBuff.Seek(0, SeekOrigin.Begin);
-                using (var rijndael = new RijndaelManaged())
+                using (var rijndael = Aes.Create())
                 {
                     rijndael.GenerateKey();
                     rijndael.GenerateIV();
@@ -104,7 +104,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.StreamExt
         {
             const string original = "Here is some d@t@ to encrypt!";
 
-            using (var rijndael = new RijndaelManaged())
+            using (var rijndael = Aes.Create())
             {
                 rijndael.GenerateKey();
                 rijndael.GenerateIV();

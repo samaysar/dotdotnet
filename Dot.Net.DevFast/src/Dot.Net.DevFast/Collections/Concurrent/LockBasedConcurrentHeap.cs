@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Dot.Net.DevFast.Collections.Interfaces;
@@ -241,6 +242,27 @@ namespace Dot.Net.DevFast.Collections.Concurrent
             {
                 _heap.FreezeCapacity(compact);
             }
+        }
+
+        /// <inheritdoc />
+        public T[] All()
+        {
+            lock (_syncRoot)
+            {
+                return _heap.All();
+            }
+        }
+
+        /// <inheritdoc />
+        public IEnumerator<T> GetEnumerator()
+        {
+            return All().AsEnumerable().GetEnumerator();
+        }
+
+        /// <inheritdoc />
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

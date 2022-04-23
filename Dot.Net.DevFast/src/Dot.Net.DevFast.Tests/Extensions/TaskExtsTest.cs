@@ -141,7 +141,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
             await awaitable.AwaitNDispose(disposable).ConfigureAwait(false);
             //There will be 2 calls, one we made inside task and another by method
             Assert.IsTrue(callCount.Equals(1));
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             callCount = 0;
             var asyncDisposable = Substitute.For<IAsyncDisposable>();
             var asyncAwaitable = Task.CompletedTask;
@@ -165,7 +165,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
             await awaitable.AwaitNDisposeAsync(disposable).ConfigureAwait(false);
             //There will be 2 calls, one we made inside task and another by method
             Assert.IsTrue(callCount.Equals(1));
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             callCount = 0;
             var asyncDisposable = Substitute.For<IAsyncDisposable>();
             var asyncAwaitable = Task.CompletedTask;

@@ -8,13 +8,13 @@ namespace Dot.Net.DevFast.Extensions.Ppc
     /// Producer interface for parallel Producer consumer pattern.
     /// </summary>
     /// <typeparam name="T">Content type</typeparam>
-#if !NETASYNCDISPOSE
+#if NETFRAMEWORK || NETSTANDARD2_0
     public interface IProducer<out T> : IDisposable
 #else
-    public interface IProducer<out T> : IAsyncDisposable
+    public interface IProducer<out T> : IAsyncDisposable, IDisposable
 #endif
     {
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETSTANDARD2_0
         /// <summary>
         /// This method is called ONCE before any call is made to <see cref="ProduceAsync"/>.
         /// <para>Similarly, <seealso cref="IAsyncDisposable.DisposeAsync"/> will be called after
@@ -33,7 +33,7 @@ namespace Dot.Net.DevFast.Extensions.Ppc
 #endif
         Task InitAsync();
 
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETSTANDARD2_0
         /// <summary>
         /// Call to this method MUST start the data production.
         /// <para>NOTE: This method is called just ONCE after calling <see cref="InitAsync"/> 

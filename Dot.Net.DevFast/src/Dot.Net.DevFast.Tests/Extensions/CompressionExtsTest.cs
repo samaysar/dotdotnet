@@ -43,7 +43,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
                 var compressedData = mem.ToArray();
                 if (segSize == 0)
                 {
-#if !NETCORE
+#if NETFRAMEWORK
                     Assert.True(compressedData.Length == 0);
 #else
                     Assert.False(compressedData.Length == 0);
@@ -99,7 +99,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
                 var compressedData = mem.ToArray();
                 if (arrSize == 0)
                 {
-#if !NETCORE
+#if NETFRAMEWORK
                     Assert.True(compressedData.Length == 0);
 #else
                     Assert.False(compressedData.Length == 0);
@@ -184,7 +184,6 @@ namespace Dot.Net.DevFast.Tests.Extensions
         [Test]
         [TestCase(null, true)]
         [TestCase("utf-8", true)]
-        [TestCase("utf-7", true)]
         [TestCase("utf-32BE", true)]
         [TestCase("utf-32LE", true)]
         [TestCase("utf-32", true)]
@@ -194,7 +193,6 @@ namespace Dot.Net.DevFast.Tests.Extensions
         [TestCase("us-ascii", true)]
         [TestCase(null, false)]
         [TestCase("utf-8", false)]
-        [TestCase("utf-7", false)]
         [TestCase("utf-32BE", false)]
         [TestCase("utf-32LE", false)]
         [TestCase("utf-32", false)]
@@ -220,7 +218,6 @@ namespace Dot.Net.DevFast.Tests.Extensions
         [Test]
         [TestCase(null, true)]
         [TestCase("utf-8", true)]
-        [TestCase("utf-7", true)]
         [TestCase("utf-32BE", true)]
         [TestCase("utf-32LE", true)]
         [TestCase("utf-32", true)]
@@ -230,7 +227,6 @@ namespace Dot.Net.DevFast.Tests.Extensions
         [TestCase("us-ascii", true)]
         [TestCase(null, false)]
         [TestCase("utf-8", false)]
-        [TestCase("utf-7", false)]
         [TestCase("utf-32BE", false)]
         [TestCase("utf-32LE", false)]
         [TestCase("utf-32", false)]

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK
 using System.Threading.Tasks;
 #endif
 using Dot.Net.DevFast.Etc;
@@ -18,7 +18,7 @@ namespace Dot.Net.DevFast.Extensions.Internals
             }
         }
 
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETSTANDARD2_0
         internal static async ValueTask DisposeIfRequiredAsync(this IAsyncDisposable disposable, bool dispose)
         {
             if (dispose)

@@ -14,110 +14,110 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         [Test]
         public async Task Single_Consumer_Based_Pipeline_Harmonizes()
         {
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await 
 #endif
             using (
                 PipeExtsTest.Consumer<object>().Pipeline()
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             .ConfigureAwait(false)
 #endif
                 )
             {
             }
 
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await
 #endif
-                using (
+            using (
                     PipeExtsTest.Consumer<List<object>>().Pipeline(2, 0)
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                         .ConfigureAwait(false)
 #endif
                 )
             {
             }
 
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await
 #endif
-                using (
+            using (
                     PipeExtsTest.Consumer<object>().Pipeline(IdentityAwaitableAdapter<object>.Default)
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                         .ConfigureAwait(false)
 #endif
                 )
             {
             }
 
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await
 #endif
-                using (
+            using (
                     PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>()).Pipeline()
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                         .ConfigureAwait(false)
 #endif
                 )
             {
             }
 
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await
 #endif
-                using (
+            using (
                     PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<List<object>>()).Pipeline(2, 0)
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                         .ConfigureAwait(false)
 #endif
                 )
             {
             }
 
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await
 #endif
-                using (
+            using (
                     PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>())
                         .Pipeline(IdentityAwaitableAdapter<object>.Default)
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                         .ConfigureAwait(false)
 #endif
                 )
             {
             }
 
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await
 #endif
-                using (
+            using (
                     PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>()).Pipeline()
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                         .ConfigureAwait(false)
 #endif
                 )
             {
             }
 
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await
 #endif
-                using (
+            using (
                     PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<List<object>>()).Pipeline(2, 0)
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                         .ConfigureAwait(false)
 #endif
                 )
             {
             }
 
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await
 #endif
-                using (
+            using (
                     PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>())
                         .Pipeline(IdentityAwaitableAdapter<object>.Default)
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                         .ConfigureAwait(false)
 #endif
                 )
@@ -130,112 +130,112 @@ namespace Dot.Net.DevFast.Tests.Extensions.Ppc
         [Test]
         public async Task Multiple_Consumer_Based_Pipeline_Harmonizes()
         {
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await
 #endif
-                using (
+            using (
                     PipeExtsTest.Consumer<object>(2).Pipeline()
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                         .ConfigureAwait(false)
 #endif
                 )
             {
             }
 
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await
 #endif
-                using (
+            using (
                     PipeExtsTest.Consumer<List<object>>(2).Pipeline(2, 0)
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                         .ConfigureAwait(false)
 #endif
                 )
             {
             }
 
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await
 #endif
-                using (
+            using (
                     PipeExtsTest.Consumer<object>(2).Pipeline(IdentityAwaitableAdapter<object>.Default)
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                         .ConfigureAwait(false)
 #endif
                 )
             {
             }
 
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await
 #endif
-                using (
+            using (
                     PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>(2))
                         .Pipeline()
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                         .ConfigureAwait(false)
 #endif
                 )
             {
             }
 
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await
 #endif
-                using (
+            using (
                     PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<List<object>>(2))
                         .Pipeline(2, 0)
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                         .ConfigureAwait(false)
 #endif
                 )
             {
             }
 
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await
 #endif
-                using (
+            using (
                     PipeExtsTest.ConsumerFunc(PipeExtsTest.Consumer<object>(2))
                         .Pipeline(IdentityAwaitableAdapter<object>.Default)
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                         .ConfigureAwait(false)
 #endif
                 )
             {
             }
 
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await
 #endif
-                using (
+            using (
                     PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>(2)).Pipeline()
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                         .ConfigureAwait(false)
 #endif
                 )
             {
             }
 
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await
 #endif
-                using (
+            using (
                     PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<List<object>>(2)).Pipeline(2, 0)
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                         .ConfigureAwait(false)
 #endif
                 )
             {
             }
 
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
             await
 #endif
-                using (
+            using (
                     PipeExtsTest.ConsumerAction(PipeExtsTest.Consumer<object>(2))
                         .Pipeline(IdentityAwaitableAdapter<object>.Default)
-#if NETASYNCDISPOSE
+#if !NETFRAMEWORK && !NETCOREAPP2_2
                         .ConfigureAwait(false)
 #endif
                 )

@@ -6,7 +6,7 @@ namespace Dot.Net.DevFast.Collections.Interfaces
     /// Heap data structure interface.
     /// </summary>
     /// <typeparam name="T">Heap element type</typeparam>
-    public interface IHeap<T>
+    public interface IHeap<T> : IEnumerable<T>
     {
         /// <summary>
         /// Gets the truth value whether the heap is empty or not.
@@ -76,5 +76,11 @@ namespace Dot.Net.DevFast.Collections.Interfaces
         /// </summary>
         /// <param name="items">Enumeration of the Elements to add.</param>
         int AddAll(IEnumerable<T> items);
+
+        /// <summary>
+        /// Returns a copy of the internal collection without removing elements from it.
+        /// </summary>
+        /// <returns></returns>
+        T[] All();
     }
 }

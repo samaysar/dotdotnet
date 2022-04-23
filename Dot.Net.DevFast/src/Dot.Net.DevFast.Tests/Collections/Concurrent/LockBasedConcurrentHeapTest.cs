@@ -1,9 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Dot.Net.DevFast.Collections;
 using Dot.Net.DevFast.Collections.Concurrent;
 using Dot.Net.DevFast.Collections.Interfaces;
 using Dot.Net.DevFast.Etc;
+using Dot.Net.DevFast.Extensions;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -23,6 +26,21 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
             Assert.NotNull(ex);
             Assert.IsTrue(ex.ErrorCode.Equals(DdnDfErrorCode.NullObject));
             Assert.True(new LockBasedConcurrentHeap<int>(new ConcurrentMinHeap<int>(0)).IsEmpty);
+        }
+
+        [Test]
+        public void IEnumerable_Is_Well_Implemented()
+        {
+            var instance = new LockBasedConcurrentHeap<int>(new MinHeap<int>(3))
+            {
+                1,
+                2,
+                3
+            };
+            Assert.IsFalse(instance.TryAdd(4));
+            var results = new HashSet<int> { 1, 2, 3 };
+            ((IEnumerable)instance).ForEach(x => results.Remove((int)x));
+            Assert.IsTrue(results.Count == 0);
         }
 
         [Test]

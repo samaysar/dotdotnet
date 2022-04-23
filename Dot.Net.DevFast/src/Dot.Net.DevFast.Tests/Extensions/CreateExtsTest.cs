@@ -124,7 +124,6 @@ namespace Dot.Net.DevFast.Tests.Extensions
                 Assert.True(jsonReader.DateParseHandling.Equals(DateParseHandling.DateTime));
                 Assert.True(jsonReader.DateTimeZoneHandling.Equals(DateTimeZoneHandling.Utc));
                 Assert.True(jsonReader.FloatParseHandling.Equals(FloatParseHandling.Double));
-                Assert.True(jsonReader.MaxDepth.Equals(null));
                 Assert.True(jsonReader.CloseInput);
                 Assert.False(jsonReader.Read());
             }
@@ -203,7 +202,6 @@ namespace Dot.Net.DevFast.Tests.Extensions
                 Assert.True(jsonReader.DateParseHandling.Equals(DateParseHandling.DateTime));
                 Assert.True(jsonReader.DateTimeZoneHandling.Equals(DateTimeZoneHandling.Utc));
                 Assert.True(jsonReader.FloatParseHandling.Equals(FloatParseHandling.Double));
-                Assert.True(jsonReader.MaxDepth.Equals(null));
                 Assert.True(jsonReader.CloseInput);
                 Assert.True(jsonReader.Read());
                 Assert.True(jsonReader.TokenType.Equals(JsonToken.StartArray));
@@ -217,7 +215,6 @@ namespace Dot.Net.DevFast.Tests.Extensions
                 Assert.True(jsonReader.DateParseHandling.Equals(DateParseHandling.DateTime));
                 Assert.True(jsonReader.DateTimeZoneHandling.Equals(DateTimeZoneHandling.Utc));
                 Assert.True(jsonReader.FloatParseHandling.Equals(FloatParseHandling.Double));
-                Assert.True(jsonReader.MaxDepth.Equals(null));
                 Assert.True(jsonReader.CloseInput);
                 Assert.True(jsonReader.Read());
                 Assert.True(jsonReader.TokenType.Equals(JsonToken.StartArray));
@@ -252,7 +249,6 @@ namespace Dot.Net.DevFast.Tests.Extensions
                 Assert.True(jsonReader.DateParseHandling.Equals(DateParseHandling.DateTime));
                 Assert.True(jsonReader.DateTimeZoneHandling.Equals(DateTimeZoneHandling.Utc));
                 Assert.True(jsonReader.FloatParseHandling.Equals(FloatParseHandling.Double));
-                Assert.True(jsonReader.MaxDepth.Equals(null));
                 Assert.True(jsonReader.CloseInput);
                 Assert.False(jsonReader.Read());
             }
@@ -358,7 +354,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
         public void CreateKeyAndIv_Works_As_Expected()
         {
             var keyIv = TestValues.FixedCryptoPass.CreateKeyAndIv(TestValues.FixedCryptoSalt
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER || !NETFRAMEWORK
                 , HashAlgorithmName.SHA1
 #endif
             );
@@ -369,7 +365,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
             //proof of concept if future version changes values of default params
             //lets say by mistake 10000 is changed to 1K
             keyIv = TestValues.FixedCryptoPass.CreateKeyAndIv(TestValues.FixedCryptoSalt
-#if NETHASHCRYPTO
+#if NET472_OR_GREATER || !NETFRAMEWORK
                 , HashAlgorithmName.SHA1
 #endif
             , 32, 16, 1000);

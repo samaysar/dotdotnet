@@ -1,5 +1,8 @@
-﻿using System.Runtime.Serialization;
+﻿using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using Dot.Net.DevFast.Etc;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace Dot.Net.DevFast.Tests.Etc
@@ -57,7 +60,8 @@ namespace Dot.Net.DevFast.Tests.Etc
             var ddndfEx = new DdnDfException(DdnDfErrorCode.JsonIsNotAnArray);
 
             ddndfEx.GetObjectData(sinfo, sctxt);
-            Assert.True(sinfo.GetValue("ErrorReason", typeof(string)).Equals(DdnDfErrorCode.JsonIsNotAnArray.ToString()));
+            var copy = new DdnDfException(sinfo, sctxt);
+            Assert.AreEqual(copy.Reason, DdnDfErrorCode.JsonIsNotAnArray.ToString());
         }
     }
 }

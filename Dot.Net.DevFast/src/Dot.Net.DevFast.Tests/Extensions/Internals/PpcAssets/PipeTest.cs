@@ -33,7 +33,7 @@ namespace Dot.Net.DevFast.Tests.Extensions.Internals.PpcAssets
                 IdentityAwaitableAdapter<object>.Default, producers, consumers).ConfigureAwait(false);
             foreach (var consumer in consumers)
             {
-#if !NETASYNCDISPOSE
+#if NETFRAMEWORK || NETCOREAPP2_2
                 consumer.Received(1).Dispose();
 #else
                 await consumer.Received(1).DisposeAsync();

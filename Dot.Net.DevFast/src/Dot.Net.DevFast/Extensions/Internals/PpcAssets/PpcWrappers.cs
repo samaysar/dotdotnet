@@ -24,12 +24,11 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             await _producerFunc(feedToPopulate, cancellationToken).ConfigureAwait(false);
         }
 
-#if !NETASYNCDISPOSE
         public void Dispose()
         {
-            
+            //do nothing
         }
-#else
+#if !NETFRAMEWORK
         public ValueTask DisposeAsync()
         {
             return default;
@@ -46,12 +45,11 @@ namespace Dot.Net.DevFast.Extensions.Internals.PpcAssets
             _consumerFunc = consumerFunc;
         }
 
-#if !NETASYNCDISPOSE
         public void Dispose()
         {
-            
+            //do nothing
         }
-#else
+#if !NETFRAMEWORK
         public ValueTask DisposeAsync()
         {
             return default;
