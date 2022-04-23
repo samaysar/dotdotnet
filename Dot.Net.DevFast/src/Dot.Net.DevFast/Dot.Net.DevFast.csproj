@@ -5,6 +5,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <NoWarn />
+    <Deterministic>true</Deterministic>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile>Dot.Net.DevFast.xml</DocumentationFile>
     <Title>DevFast</Title>
