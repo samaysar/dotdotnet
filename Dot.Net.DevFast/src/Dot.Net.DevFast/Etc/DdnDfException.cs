@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using Dot.Net.DevFast.Extensions;
 
 namespace Dot.Net.DevFast.Etc
 {

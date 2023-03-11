@@ -40,6 +40,8 @@ namespace Dot.Net.DevFast.Tests.Extensions
             Assert.IsFalse(((List<object>)null).EqualsItemWise(null));
             Assert.IsFalse(new List<int>{1}.EqualsItemWise(Array.Empty<int>()));
             Assert.IsFalse(new List<int> { 2 }.EqualsItemWise(new[] { 1 }));
+            Assert.IsFalse(new List<int> { 2, 2, 1 }.EqualsItemWise(new[] { 1, 1, 2 }));
+            Assert.IsFalse(new List<int> { 2, 2, 1 }.EqualsItemWise(new[] { 1, 2, 2 }, sameItemOrder: true));
         }
 
         [Test]
@@ -50,6 +52,8 @@ namespace Dot.Net.DevFast.Tests.Extensions
             Assert.IsTrue(
                 new List<ValueHolder> { new() { Val = 1 } }.EqualsItemWise(new[]
                     { new ValueHolder { Val = 1 } }));
+            Assert.IsTrue(new List<int> { 2, 2, 1 }.EqualsItemWise(new[] { 1, 2, 2 }));
+            Assert.IsTrue(new List<int> { 2, 2, 1 }.EqualsItemWise(new[] { 2, 2, 1 }, sameItemOrder: true));
         }
 
         [Test]

@@ -31,15 +31,57 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="first">First collection</param>
         /// <param name="second">Second collection</param>
         /// <param name="equalityComparer">Equality comparator of T, if any.</param>
+        /// <param name="sameItemOrder">If <see langword="true"/> then item order is taken into account.</param>
         public static bool EqualsItemWise<T>(this ICollection<T> first,
             ICollection<T> second,
-            IEqualityComparer<T> equalityComparer = null)
+            IEqualityComparer<T> equalityComparer = null,
+            bool sameItemOrder = false)
         {
             if (first == null || second == null) return false;
             if (ReferenceEquals(first, second)) return true;
             if (first.Count != second.Count) return false;
-            var hash = new HashSet<T>(second, equalityComparer);
-            return new HashSet<T>(first, equalityComparer).All(x => hash.Remove(x));
+            if (sameItemOrder)
+            {
+                equalityComparer ??= EqualityComparer<T>.Default;
+                using var c1 = first.GetEnumerator();
+                using var c2 = second.GetEnumerator();
+                while (c1.MoveNext() && c2.MoveNext())
+                {
+                    if (!equalityComparer.Equals(c1.Current, c2.Current))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            var hash = new Dictionary<T, int>(second.Count, equalityComparer);
+            second.ForEach(x =>
+            {
+                if (hash.TryGetValue(x, out var count))
+                {
+                    hash[x] = count + 1;
+                }
+                else
+                {
+                    hash[x] = 1;
+                }
+            });
+            return first.All(x =>
+            {
+                if (!hash.TryGetValue(x, out var count)) return false;
+                if (count == 1)
+                {
+                    hash.Remove(x);
+                }
+                else
+                {
+                    hash[x] = count - 1;
+                }
+
+                return true;
+            });
         }
 
         /// <summary>
