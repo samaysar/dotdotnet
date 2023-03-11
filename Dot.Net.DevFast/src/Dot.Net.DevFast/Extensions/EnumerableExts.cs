@@ -31,14 +31,15 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="first">First collection</param>
         /// <param name="second">Second collection</param>
         /// <param name="equalityComparer">Equality comparator of T, if any.</param>
-        public static bool EqualsItemWise<T>(this ICollection<T> first, ICollection<T> second,
+        public static bool EqualsItemWise<T>(this ICollection<T> first,
+            ICollection<T> second,
             IEqualityComparer<T> equalityComparer = null)
         {
-            if(first == null || second == null) return false;
-            if(ReferenceEquals(first, second)) return true;
-            if(first.Count != second.Count) return false;
+            if (first == null || second == null) return false;
+            if (ReferenceEquals(first, second)) return true;
+            if (first.Count != second.Count) return false;
             var hash = new HashSet<T>(second, equalityComparer);
-            return new HashSet<T>(second, equalityComparer).All(x => hash.Remove(x));
+            return new HashSet<T>(first, equalityComparer).All(x => hash.Remove(x));
         }
 
         /// <summary>

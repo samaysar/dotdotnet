@@ -11822,15 +11822,7 @@
         </member>
     </members>
 </doc>
-untStream.ResetWith(System.IO.Stream,System.Boolean)">
-            <summary>
-            This is a workaround to support out param in streaming APIs.
-            </summary>
-        </member>
-        <member name="M:Dot.Net.DevFast.IO.ByteCountStream.Flush">
-            <inheritdoc />
-            <summary>
-            Calls the <seealso cref="M:System.IO.Stream.Flush"/> on the inner stream.
+ls the <seealso cref="M:System.IO.Stream.Flush"/> on the inner stream.
             </summary>
         </member>
         <member name="M:Dot.Net.DevFast.IO.ByteCountStream.Seek(System.Int64,System.IO.SeekOrigin)">
@@ -11963,6 +11955,13 @@ untStream.ResetWith(System.IO.Stream,System.Boolean)">
             Ctor.
             </summary>
             <param name="writable">writable stream</param>
+            <param name="dispose">true to dispose at the end of streaming else false</param>
+            <param name="token">Cancellation token to observe</param>
+            <exception cref="T:Dot.Net.DevFast.Etc.DdnDfException"></exception>
+        </member>
+    </members>
+</doc>
+name="writable">writable stream</param>
             <param name="dispose">true to dispose at the end of streaming else false</param>
             <param name="token">Cancellation token to observe</param>
             <exception cref="T:Dot.Net.DevFast.Etc.DdnDfException"></exception>
