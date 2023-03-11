@@ -150,5 +150,31 @@ namespace Dot.Net.DevFast.Extensions
                     throw new ArgumentOutOfRangeException(nameof(sorting), sorting, "Sorting not implemented");
             }
         }
+
+        /// <summary>
+        /// Simply creates an instance of <see cref="Tuple{T1, T2}"/> and sets <paramref name="t1"/> as <see cref="Tuple{T1, T2}.Item1"/>
+        /// and <paramref name="t2"/> as <see cref="Tuple{T1, T2}.Item2"/>.
+        /// </summary>
+        /// <typeparam name="T1"></typeparam>
+        /// <typeparam name="T2"></typeparam>
+        /// <param name="t1">T1 Instance</param>
+        /// <param name="t2">T2 Instance</param>
+        public static Tuple<T1, T2> ToTuple<T1, T2>(this T1 t1, T2 t2)
+        {
+            return new Tuple<T1, T2>(t1, t2);
+        }
+
+        /// <summary>
+        /// Simply creates an instance of <see cref="KeyValuePair{TKey, TValue}"/> and sets <paramref name="key"/> as <see cref="KeyValuePair{TKey, TValue}.Key"/>
+        /// and <paramref name="value"/> as <see cref="KeyValuePair{TKey, TValue}.Value"/>.
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="key">TKey Instance</param>
+        /// <param name="value">TValue Instance</param>
+        public static KeyValuePair<TKey, TValue> ToKvp<TKey, TValue>(this TKey key, TValue value)
+        {
+            return new KeyValuePair<TKey, TValue>(key, value);
+        }
     }
 }

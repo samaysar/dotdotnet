@@ -36,6 +36,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <LangVersion>latest</LangVersion>
     <PackageReadmeFile>README-nuget.md</PackageReadmeFile>
+    <RunSettingsFilePath>D:\git\dotdotnet\Dot.Net.DevFast\src\Dot.Net.DevFast\bin\Debug\net461\fine-code-coverage\coverage-tool-output\Dot.Net.DevFast %28net461%29-fcc-mscodecoverage-generated.runsettings</RunSettingsFilePath>
   </PropertyGroup>
 
   <ItemGroup>
