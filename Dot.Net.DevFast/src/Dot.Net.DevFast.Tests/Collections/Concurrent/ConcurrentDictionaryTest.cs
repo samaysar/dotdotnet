@@ -16,7 +16,7 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
         public void Perf_Test()
         {
             var proc = Environment.ProcessorCount;
-            var perT = 100000;
+            var perT = 250000;
             var h = new HashSet<int>();
             var r = new Random();
             while (h.Count != proc*perT)
