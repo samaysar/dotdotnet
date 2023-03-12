@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Collections.Concurrent;
@@ -14,6 +15,14 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
         [Test]
         public void Perf_Test()
         {
+            var h = new HashSet<int>();
+            var r = new Random();
+            while (h.Count != 4000000)
+            {
+                h.Add(r.Next());
+            }
+
+            var ll = h.ToList();
             var devDico = new ConcurrentDictionary<int, int>();
             for (int i = 0; i < 10; i++)
             {
@@ -22,10 +31,11 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
 
             Console.WriteLine(devDico.Count);
             devDico.Clear();
-            var l = new CountdownEvent(8);
+            var proc = Environment.ProcessorCount;
+            var l = new CountdownEvent(proc);
             var sw = new Stopwatch();
             var init = GC.GetTotalMemory(true);
-            Parallel.For(0, 8, ii =>
+            Parallel.For(0, proc, ii =>
             {
                 var start = ii * 500000;
                 var stop = start + 500000;
@@ -38,17 +48,17 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
                     sw.Restart();
                 }
 
-                for (int i = start; i < stop; i++) devDico[i] = i;
+                for (int i = start; i < stop; i++) devDico[ll[i]] = i;
             });
 
             sw.Stop();
             Console.WriteLine(devDico.Count + ", " + sw.ElapsedMilliseconds + ", " + (GC.GetTotalMemory(true) - init));
             devDico.Clear();
 
-            l = new CountdownEvent(8); 
+            l = new CountdownEvent(proc); 
             sw = Stopwatch.StartNew();
             init = GC.GetTotalMemory(true);
-            Parallel.For(0, 8, ii =>
+            Parallel.For(0, proc, ii =>
             {
                 var start = ii * 500000;
                 var stop = start + 500000;
@@ -61,17 +71,17 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
                     sw.Restart();
                 }
 
-                for (int i = start; i < stop; i++) devDico[i] = i;
+                for (int i = start; i < stop; i++) devDico[ll[i]] = i;
             });
 
             sw.Stop();
             Console.WriteLine(devDico.Count + ", " + sw.ElapsedMilliseconds + ", " + (GC.GetTotalMemory(true) - init));
             devDico.Clear();
 
-            l = new CountdownEvent(8);
+            l = new CountdownEvent(proc);
             sw = Stopwatch.StartNew();
             init = GC.GetTotalMemory(true);
-            Parallel.For(0, 8, ii =>
+            Parallel.For(0, proc, ii =>
             {
                 var start = ii * 500000;
                 var stop = start + 500000;
@@ -84,7 +94,7 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
                     sw.Restart();
                 }
 
-                for (int i = start; i < stop; i++) devDico[i] = i;
+                for (int i = start; i < stop; i++) devDico[ll[i]] = i;
             });
 
             sw.Stop();
@@ -99,10 +109,10 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
 
             Console.WriteLine(msDico.Count);
             msDico.Clear();
-            l = new CountdownEvent(8);
+            l = new CountdownEvent(proc);
             sw = Stopwatch.StartNew();
             init = GC.GetTotalMemory(true);
-            Parallel.For(0, 8, ii =>
+            Parallel.For(0, proc, ii =>
             {
                 var start = ii * 500000;
                 var stop = start + 500000;
@@ -115,17 +125,17 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
                     sw.Restart();
                 }
 
-                for (int i = start; i < stop; i++) msDico[i] = i;
+                for (int i = start; i < stop; i++) msDico[ll[i]] = i;
             });
 
             sw.Stop();
             Console.WriteLine(msDico.Count + ", " + sw.ElapsedMilliseconds + ", " + (GC.GetTotalMemory(true) - init));
             msDico.Clear();
 
-            l = new CountdownEvent(8);
+            l = new CountdownEvent(proc);
             sw = Stopwatch.StartNew();
             init = GC.GetTotalMemory(true);
-            Parallel.For(0, 8, ii =>
+            Parallel.For(0, proc, ii =>
             {
                 var start = ii * 500000;
                 var stop = start + 500000;
@@ -138,17 +148,17 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
                     sw.Restart();
                 }
 
-                for (int i = start; i < stop; i++) msDico[i] = i;
+                for (int i = start; i < stop; i++) msDico[ll[i]] = i;
             });
 
             sw.Stop();
             Console.WriteLine(msDico.Count + ", " + sw.ElapsedMilliseconds + ", " + (GC.GetTotalMemory(true) - init));
             msDico.Clear();
 
-            l = new CountdownEvent(8);
+            l = new CountdownEvent(proc);
             sw = Stopwatch.StartNew();
             init = GC.GetTotalMemory(true);
-            Parallel.For(0, 8, ii =>
+            Parallel.For(0, proc, ii =>
             {
                 var start = ii * 500000;
                 var stop = start + 500000;
@@ -161,7 +171,7 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
                     sw.Restart();
                 }
 
-                for (int i = start; i < stop; i++) msDico[i] = i;
+                for (int i = start; i < stop; i++) msDico[ll[i]] = i;
             });
 
             sw.Stop();
