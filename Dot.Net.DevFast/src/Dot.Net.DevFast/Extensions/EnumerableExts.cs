@@ -85,17 +85,17 @@ namespace Dot.Net.DevFast.Extensions
         }
 
         /// <summary>
-        /// Creates and returns an instance of <see cref="OneToManyDictionary{TKey, TValue}"/> from <paramref name="collection"/> items
+        /// Creates and returns an instance of <see cref="OneToManyDictionary{TKey, T}"/> from <paramref name="collection"/> items
         /// using <paramref name="keyFinder"/> lambda and provided key <paramref name="comparer"/> (if any).
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <typeparam name="TKey"></typeparam>
-        /// <typeparam name="TValue"></typeparam>
         /// <param name="collection">Collection of Value items</param>
         /// <param name="keyFinder">Key finder lambda</param>
         /// <param name="comparer">Key comparer</param>
-        public static OneToManyDictionary<TKey, TValue> ToOneToManyDictionary<TKey, TValue>(
-            this IEnumerable<TValue> collection, 
-            Func<TValue, TKey> keyFinder, 
+        public static OneToManyDictionary<TKey, T> ToOneToManyDictionary<T, TKey>(
+            this IEnumerable<T> collection, 
+            Func<T, TKey> keyFinder, 
             IEqualityComparer<TKey> comparer = null)
         {
             return collection.ToOneToManyDictionary(keyFinder, x => x, comparer);
@@ -123,6 +123,49 @@ namespace Dot.Net.DevFast.Extensions
             return instance;
         }
 
+        /// <summary>
+        /// Creates and returns an instance of <see cref="OneToUniqueManyDictionary{TKey, T}"/> from <paramref name="collection"/> items
+        /// using <paramref name="keyFinder"/> lambda and provided key <paramref name="comparer"/> (if any).
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="collection">Collection of Value items</param>
+        /// <param name="keyFinder">Key finder lambda</param>
+        /// <param name="comparer">Key comparer</param>
+        /// <param name="valueComparer">Value comparer</param>
+        public static OneToUniqueManyDictionary<TKey, T> ToOneToUniqueManyDictionary<T, TKey>(
+            this IEnumerable<T> collection,
+            Func<T, TKey> keyFinder,
+            IEqualityComparer<TKey> comparer = null,
+            IEqualityComparer<T> valueComparer = null)
+        {
+            return collection.ToOneToUniqueManyDictionary(keyFinder, x => x, comparer, valueComparer);
+        }
+
+        /// <summary>
+        /// Creates and returns an instance of <see cref="OneToUniqueManyDictionary{TKey, TValue}"/> from <paramref name="collection"/> items
+        /// using <paramref name="keyFinder"/> lambda and <paramref name="valueFinder"/> lambda; with provided key <paramref name="comparer"/> (if any).
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection">Collection of Value items</param>
+        /// <param name="keyFinder">Key finder lambda</param>
+        /// <param name="valueFinder">Value finder lambda</param>
+        /// <param name="comparer">Key comparer</param>
+        /// <param name="valueComparer">Value comparer</param>
+        public static OneToUniqueManyDictionary<TKey, TValue> ToOneToUniqueManyDictionary<T, TKey, TValue>(
+            this IEnumerable<T> collection,
+            Func<T, TKey> keyFinder,
+            Func<T, TValue> valueFinder,
+            IEqualityComparer<TKey> comparer = null,
+            IEqualityComparer<TValue> valueComparer = null)
+        {
+            var instance = new OneToUniqueManyDictionary<TKey, TValue>(comparer);
+            collection.ForEach(x => instance.Add(keyFinder(x), valueFinder(x), valueComparer));
+            return instance;
+        }
+        
         /// <summary>
         /// Applies provided <paramref name="action"/> on every item of the given enumerable while observing for cancellation.
         /// </summary>

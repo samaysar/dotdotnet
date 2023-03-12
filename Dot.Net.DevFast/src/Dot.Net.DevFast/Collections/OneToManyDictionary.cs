@@ -19,7 +19,7 @@ namespace Dot.Net.DevFast.Collections
         /// </summary>
         /// <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> implementation to use when comparing keys, or <see langword="null" /> to use the default <see cref="T:System.Collections.Generic.EqualityComparer`1" /> for the type of the key.</param>
         public OneToManyDictionary(IEqualityComparer<TKey> comparer)
-          : base(0, comparer)
+          : this(0, comparer)
         {
         }
 

@@ -77,6 +77,26 @@ namespace Dot.Net.DevFast.Tests.Extensions
         }
 
         [Test]
+        public void ToOneToUniqueManyDictionary_Works_Well()
+        {
+            var l = new[] { new ValueHolder { Val = 1 } };
+            var dico = l.ToOneToUniqueManyDictionary(x => x.Val);
+            Assert.IsTrue(dico.Count == 1);
+            Assert.IsTrue(dico.TryGetValue(1, out var value) && value.SetEquals(l));
+            Assert.IsTrue(dico.TryGetValue(1, out var value1) &&
+                          value1.EqualsItemWise(new[] { new ValueHolder { Val = 1 } }));
+
+            var dico1 = l.ToOneToUniqueManyDictionary(x => x.Val, x => x.Val);
+            Assert.IsTrue(dico1.Count == 1);
+            Assert.IsTrue(dico1.TryGetValue(1, out var value2) && value2.SetEquals(new[] { 1 }));
+
+            l = new[] { new ValueHolder { Val = 1 }, new ValueHolder { Val = 1 } };
+            dico = l.ToOneToUniqueManyDictionary(x => x.Val);
+            Assert.IsTrue(dico.Count == 1);
+            Assert.IsTrue(dico.TryGetValue(1, out var value3) && value3.Count == 1 && value3.SetEquals(new[] { new ValueHolder { Val = 1 } }));
+        }
+
+        [Test]
         public void IEnumerable_ForEach_Applies_Given_Lambda()
         {
             var results = new HashSet<int> { 2, 4, 6 };
