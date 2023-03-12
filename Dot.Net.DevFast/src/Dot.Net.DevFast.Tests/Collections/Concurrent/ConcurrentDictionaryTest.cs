@@ -15,9 +15,11 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
         [Test]
         public void Perf_Test()
         {
+            var proc = Environment.ProcessorCount;
+            var perT = 100000;
             var h = new HashSet<int>();
             var r = new Random();
-            while (h.Count != 4000000)
+            while (h.Count != proc*perT)
             {
                 h.Add(r.Next());
             }
@@ -31,14 +33,13 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
 
             Console.WriteLine(devDico.Count);
             devDico.Clear();
-            var proc = Environment.ProcessorCount;
             var l = new CountdownEvent(proc);
             var sw = new Stopwatch();
             var init = GC.GetTotalMemory(true);
             Parallel.For(0, proc, ii =>
             {
-                var start = ii * 500000;
-                var stop = start + 500000;
+                var start = ii * perT;
+                var stop = start + perT;
                 if (!l.Signal())
                 {
                     l.Wait();
@@ -60,8 +61,8 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
             init = GC.GetTotalMemory(true);
             Parallel.For(0, proc, ii =>
             {
-                var start = ii * 500000;
-                var stop = start + 500000;
+                var start = ii * perT;
+                var stop = start + perT;
                 if (!l.Signal())
                 {
                     l.Wait();
@@ -83,8 +84,8 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
             init = GC.GetTotalMemory(true);
             Parallel.For(0, proc, ii =>
             {
-                var start = ii * 500000;
-                var stop = start + 500000;
+                var start = ii * perT;
+                var stop = start + perT;
                 if (!l.Signal())
                 {
                     l.Wait();
@@ -114,8 +115,8 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
             init = GC.GetTotalMemory(true);
             Parallel.For(0, proc, ii =>
             {
-                var start = ii * 500000;
-                var stop = start + 500000;
+                var start = ii * perT;
+                var stop = start + perT;
                 if (!l.Signal())
                 {
                     l.Wait();
@@ -137,8 +138,8 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
             init = GC.GetTotalMemory(true);
             Parallel.For(0, proc, ii =>
             {
-                var start = ii * 500000;
-                var stop = start + 500000;
+                var start = ii * perT;
+                var stop = start + perT;
                 if (!l.Signal())
                 {
                     l.Wait();
@@ -160,8 +161,8 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
             init = GC.GetTotalMemory(true);
             Parallel.For(0, proc, ii =>
             {
-                var start = ii * 500000;
-                var stop = start + 500000;
+                var start = ii * perT;
+                var stop = start + perT;
                 if (!l.Signal())
                 {
                     l.Wait();

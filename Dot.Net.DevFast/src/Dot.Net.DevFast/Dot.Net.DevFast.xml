@@ -1593,7 +1593,7 @@
         </member>
         <member name="T:Dot.Net.DevFast.Extensions.EnumerableExts">
             <summary>
-            Contains extension methods on <see cref="T:System.Collections.Generic.IEnumerable`1"/>, <see cref="T:System.Collections.IEnumerable"/>.
+            Contains extension methods on <see cref="T:System.Collections.Generic.IEnumerable`1"/>, <see cref="T:System.Collections.IEnumerable"/> and <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/>.
             </summary>
         </member>
         <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.EqualsItemWise``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.ICollection{``0},System.Collections.Generic.IEqualityComparer{``0},System.Boolean)">
@@ -1700,6 +1700,82 @@
             <param name="items">Items</param>
             <param name="action">Action to apply</param>
             <param name="token">Cancellation token to observe</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.ForEachAsync``1(System.Collections.Generic.IAsyncEnumerable{``0},System.Action{``0,System.Threading.CancellationToken},System.Threading.CancellationToken)">
+            <summary>
+            Applies provided <paramref name="action"/> on every item of the given enumerable while observing for cancellation.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="items">Items</param>
+            <param name="action">Action to apply</param>
+            <param name="token">Cancellation token to observe</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.ForEachAsync``1(System.Collections.Generic.IAsyncEnumerable{``0},System.Func{``0,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+            <summary>
+            Applies provided <paramref name="action"/> on every item of the given enumerable while observing for cancellation.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="items">Items</param>
+            <param name="action">Action to apply</param>
+            <param name="token">Cancellation token to observe</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.SelectAsync``2(System.Collections.Generic.IAsyncEnumerable{``0},System.Func{``0,System.Threading.CancellationToken,``1},System.Threading.CancellationToken)">
+            <summary>
+            Applies provided <paramref name="selector"/> lambda on every item of the asynchronous collection asynchronously.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <typeparam name="TR"></typeparam>
+            <param name="items">Items</param>
+            <param name="selector">Selector lambda</param>
+            <param name="token">Token to observe</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.SelectAsync``2(System.Collections.Generic.IAsyncEnumerable{``0},System.Func{``0,System.Threading.CancellationToken,System.Threading.Tasks.Task{``1}},System.Threading.CancellationToken)">
+            <summary>
+            Applies provided <paramref name="selector"/> lambda on every item of the asynchronous collection asynchronously.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <typeparam name="TR"></typeparam>
+            <param name="items">Items</param>
+            <param name="selector">Selector lambda</param>
+            <param name="token">Token to observe</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.WhereAsync``1(System.Collections.Generic.IAsyncEnumerable{``0},System.Func{``0,System.Threading.CancellationToken,System.Boolean},System.Threading.CancellationToken)">
+            <summary>
+            Applies provided <paramref name="predicate"/> lambda on every item of the asynchronous collection asynchronously.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="items">Items</param>
+            <param name="predicate">Selector lambda</param>
+            <param name="token">Token to observe</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.WhereAsync``1(System.Collections.Generic.IAsyncEnumerable{``0},System.Func{``0,System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}},System.Threading.CancellationToken)">
+            <summary>
+            Applies provided <paramref name="predicate"/> lambda on every item of the asynchronous collection asynchronously.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="items">Items</param>
+            <param name="predicate">Selector lambda</param>
+            <param name="token">Token to observe</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.ToListAsync``1(System.Collections.Generic.IAsyncEnumerable{``0},System.Threading.CancellationToken)">
+            <summary>
+            Creates a new list using all the items of the given asynchronous enumerable asynchronously.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="items">Items</param>
+            <param name="token">Token to observe</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.ToListAsync``1(System.Collections.Generic.IAsyncEnumerable{``0},System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Creates a new list using all the items of the given asynchronous enumerable asynchronously; while,
+            respecting the <paramref name="limit"/> provided.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="items">Items</param>
+            <param name="limit">Max. items in the list</param>
+            <param name="token">Token to observe</param>
+            <exception cref="T:Dot.Net.DevFast.Etc.DdnDfException">When enumeration returns more elements than the <paramref name="limit"/> count.
+            Exception ErrorCode is <see cref="F:Dot.Net.DevFast.Etc.DdnDfErrorCode.OverAllocationDemanded"/></exception>
         </member>
         <member name="T:Dot.Net.DevFast.Extensions.JsonExt.CustomJson">
             <summary>
@@ -2446,12 +2522,12 @@
             <summary>
             Expect multiple calls to this function as calls are made whenever some data is 
             available from <seealso cref="T:Dot.Net.DevFast.Extensions.Ppc.IProducer`1"/>.
-            <para><seealso cref="M:System.IDisposable.Dispose"/> will be called when there is 
+            <para><seealso cref="M:System.IAsyncDisposable.DisposeAsync"/> will be called when there is 
             NO more data available.</para>
             <para>Method must return as soon as EITHER data consumption is done
             OR some error has occurred.</para>
             <para>Explicit thread safety is NOT required as long as consumer instances are wholly distinct.</para>
-            <para><seealso cref="M:System.IDisposable.Dispose"/> will be called when there is no more
+            <para><seealso cref="M:System.IAsyncDisposable.DisposeAsync"/> will be called when there is no more
             data available.</para>
             <para>If this method results in an exception, running producers will be signaled to quit producing data
             as soon as possible and the whole pipeline will be destroyed.</para>
@@ -2558,7 +2634,7 @@
         <member name="M:Dot.Net.DevFast.Extensions.Ppc.IProducer`1.InitAsync">
             <summary>
             This method is called ONCE before any call is made to <see cref="M:Dot.Net.DevFast.Extensions.Ppc.IProducer`1.ProduceAsync(Dot.Net.DevFast.Extensions.Ppc.IProducerBuffer{`0},System.Threading.CancellationToken)"/>.
-            <para>Similarly, <seealso cref="M:System.IDisposable.Dispose"/> will be called after
+            <para>Similarly, <seealso cref="M:System.IAsyncDisposable.DisposeAsync"/> will be called after
             the call to <see cref="M:Dot.Net.DevFast.Extensions.Ppc.IProducer`1.ProduceAsync(Dot.Net.DevFast.Extensions.Ppc.IProducerBuffer{`0},System.Threading.CancellationToken)"/> are done.</para>
             <para>If this method results in an exception, running consumers will be signaled to quit consuming
             as soon as possible and the whole pipeline will be destroyed.</para>
@@ -2570,7 +2646,7 @@
             <para>NOTE: This method is called just ONCE after calling <see cref="M:Dot.Net.DevFast.Extensions.Ppc.IProducer`1.InitAsync"/> 
             this method call must return ONLY WHEN EITHER all the data 
             production is done OR any error has occurred.</para>
-            <para>Upon returning from this function, call to <seealso cref="M:System.IDisposable.Dispose"/>
+            <para>Upon returning from this function, call to <seealso cref="M:System.IAsyncDisposable.DisposeAsync"/>
             will be made.</para>
             <para>If this method results in an exception, running consumers will be signaled to quit consuming
             as soon as possible and the whole pipeline will be destroyed.</para>
@@ -7656,7 +7732,7 @@
             <param name="mode">Base64 transform mode</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{Dot.Net.DevFast.IO.PullFuncStream},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{Dot.Net.DevFast.IO.PullFuncStream},System.Func{``0},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
@@ -7665,6 +7741,7 @@
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
+            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="password">password for key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="salt">Salt string to use during key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="hashName">Hash algorithm to use</param>
@@ -7674,20 +7751,21 @@
             <param name="padding">Padding mode to use</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{Dot.Net.DevFast.IO.PullFuncStream},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{Dot.Net.DevFast.IO.PullFuncStream},System.Func{``0},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
+            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="key">key byte array</param>
             <param name="iv">iv byte array</param>
             <param name="cipher">Cipher mode to use</param>
             <param name="padding">Padding mode to use</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{Dot.Net.DevFast.IO.PullFuncStream},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{Dot.Net.DevFast.IO.PullFuncStream},System.Func{``0},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
@@ -7696,6 +7774,7 @@
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
+            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="password">password for key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="salt">Salt string to use during key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="hashName">Hash algorithm to use</param>
@@ -7705,13 +7784,14 @@
             <param name="padding">Padding mode to use</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{Dot.Net.DevFast.IO.PullFuncStream},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{Dot.Net.DevFast.IO.PullFuncStream},System.Func{``0},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
+            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="key">key byte array</param>
             <param name="iv">iv byte array</param>
             <param name="cipher">Cipher mode to use</param>
@@ -7785,7 +7865,7 @@
             <param name="mode">Base64 transform mode</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{System.Threading.Tasks.Task{Dot.Net.DevFast.IO.PullFuncStream}},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{System.Threading.Tasks.Task{Dot.Net.DevFast.IO.PullFuncStream}},System.Func{``0},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
@@ -7794,6 +7874,7 @@
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
+            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="password">password for key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="salt">Salt string to use during key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="hashName">Hash algorithm to use</param>
@@ -7803,20 +7884,21 @@
             <param name="padding">Padding mode to use</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{System.Threading.Tasks.Task{Dot.Net.DevFast.IO.PullFuncStream}},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{System.Threading.Tasks.Task{Dot.Net.DevFast.IO.PullFuncStream}},System.Func{``0},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
+            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="key">key byte array</param>
             <param name="iv">iv byte array</param>
             <param name="cipher">Cipher mode to use</param>
             <param name="padding">Padding mode to use</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{System.Threading.Tasks.Task{Dot.Net.DevFast.IO.PullFuncStream}},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{System.Threading.Tasks.Task{Dot.Net.DevFast.IO.PullFuncStream}},System.Func{``0},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
@@ -7825,6 +7907,7 @@
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
+            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="password">password for key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="salt">Salt string to use during key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="hashName">Hash algorithm to use</param>
@@ -7834,13 +7917,14 @@
             <param name="padding">Padding mode to use</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{System.Threading.Tasks.Task{Dot.Net.DevFast.IO.PullFuncStream}},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{System.Threading.Tasks.Task{Dot.Net.DevFast.IO.PullFuncStream}},System.Func{``0},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
+            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="key">key byte array</param>
             <param name="iv">iv byte array</param>
             <param name="cipher">Cipher mode to use</param>
@@ -8742,38 +8826,35 @@
             <param name="mode">Base64 transform mode</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{Dot.Net.DevFast.IO.PushFuncStream,System.Threading.Tasks.Task},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{Dot.Net.DevFast.IO.PushFuncStream,System.Threading.Tasks.Task},System.Func{``0},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Boolean)">
             <summary>
-            Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
-            and returns a new pipe for chaining.
-            <para>NOTE:You may use <seealso cref="M:Dot.Net.DevFast.Extensions.CreateExts.CreateKeyAndIv(System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Int32,System.Int32,System.Text.Encoding)"/> extension method to create IV and KEY byte arrays
-            using plain text password and salt string.</para>
+            
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
+            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="password">password for key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="salt">Salt string to use during key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="hashName">Hash algorithm to use</param>
             <param name="loopCnt">Loop count</param>
             <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
-            <param name="cipher">Cipher mode to use</param>
-            <param name="padding">Padding mode to use</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{Dot.Net.DevFast.IO.PushFuncStream,System.Threading.Tasks.Task},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{Dot.Net.DevFast.IO.PushFuncStream,System.Threading.Tasks.Task},System.Func{``0},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
+            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="key">key byte array</param>
             <param name="iv">iv byte array</param>
             <param name="cipher">Cipher mode to use</param>
             <param name="padding">Padding mode to use</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{Dot.Net.DevFast.IO.PushFuncStream,System.Threading.Tasks.Task},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{Dot.Net.DevFast.IO.PushFuncStream,System.Threading.Tasks.Task},System.Func{``0},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Boolean)">
             <summary>
             Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
@@ -8782,22 +8863,22 @@
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
+            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="password">password for key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="salt">Salt string to use during key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="hashName">Hash algorithm to use</param>
             <param name="loopCnt">Loop count</param>
             <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
-            <param name="cipher">Cipher mode to use</param>
-            <param name="padding">Padding mode to use</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{Dot.Net.DevFast.IO.PushFuncStream,System.Threading.Tasks.Task},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{Dot.Net.DevFast.IO.PushFuncStream,System.Threading.Tasks.Task},System.Func{``0},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
+            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="key">key byte array</param>
             <param name="iv">iv byte array</param>
             <param name="cipher">Cipher mode to use</param>
@@ -10775,7 +10856,23 @@
             <param name="awaitOn">Task to await on. If not started, then it will started before it is awaited on.</param>
             <param name="disposeIt">Disposable instance</param>
         </member>
+        <member name="M:Dot.Net.DevFast.Extensions.TaskExts.AwaitNDispose(System.Threading.Tasks.Task,System.IAsyncDisposable)">
+            <summary>
+            Awaits on the given task and once task finishes (irrespective of its state), disposes
+            the given disposable instance. Runs everything as a new task.
+            </summary>
+            <param name="awaitOn">Task to await on. If not started, then it will started before it is awaited on.</param>
+            <param name="disposeIt">Disposable instance</param>
+        </member>
         <member name="M:Dot.Net.DevFast.Extensions.TaskExts.AwaitNDisposeAsync(System.Threading.Tasks.Task,System.IDisposable)">
+            <summary>
+            Awaits on the given task and once task finishes (irrespective of its state), disposes
+            the given disposable instance. New task is NOT created.
+            </summary>
+            <param name="awaitOn">Task to await on. If not started, then it will started before it is awaited on.</param>
+            <param name="disposeIt">Disposable instance</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.TaskExts.AwaitNDisposeAsync(System.Threading.Tasks.Task,System.IAsyncDisposable)">
             <summary>
             Awaits on the given task and once task finishes (irrespective of its state), disposes
             the given disposable instance. New task is NOT created.
@@ -11945,153 +12042,6 @@
             <param name="leaveOpen">false to dispose inner or true to leave it open.</param>
         </member>
         <member name="M:Dot.Net.DevFast.IO.ByteCountStream.ResetWith(System.IO.Stream,System.Boolean)">
-            <summary>
-            This is a workaround to support out param in streaming APIs.
-            </summary>
-        </member>
-        <member name="M:Dot.Net.DevFast.IO.ByteCountStream.Flush">
-            <inheritdoc />
-            <summary>
-            Calls the <seealso cref="M:System.IO.Stream.Flush"/> on the inner stream.
-            </summary>
-        </member>
-        <member name="M:Dot.Net.DevFast.IO.ByteCountStream.Seek(System.Int64,System.IO.SeekOrigin)">
-            <inheritdoc />
-            <summary>
-            Calls the <seealso cref="M:System.IO.Stream.Seek(System.Int64,System.IO.SeekOrigin)"/> on the inner stream.
-            </summary>
-        </member>
-        <member name="M:Dot.Net.DevFast.IO.ByteCountStream.SetLength(System.Int64)">
-            <inheritdoc />
-            <summary>
-            Calls the <seealso cref="M:System.IO.Stream.SetLength(System.Int64)"/> on the inner stream.
-            </summary>
-        </member>
-        <member name="M:Dot.Net.DevFast.IO.ByteCountStream.Read(System.Byte[],System.Int32,System.Int32)">
-            <inheritdoc />
-            <summary>
-            Calls <seealso cref="M:System.IO.Stream.Read(System.Byte[],System.Int32,System.Int32)"/> on the inner stream and counts bytes.
-            </summary>
-        </member>
-        <member name="M:Dot.Net.DevFast.IO.ByteCountStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
-            <inheritdoc />
-            <summary>
-            Calls <seealso cref="M:System.IO.Stream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)"/> on the inner stream and counts bytes.
-            </summary>
-        </member>
-        <member name="M:Dot.Net.DevFast.IO.ByteCountStream.Write(System.Byte[],System.Int32,System.Int32)">
-            <inheritdoc />
-            <summary>
-            Calls <seealso cref="M:System.IO.Stream.Write(System.Byte[],System.Int32,System.Int32)"/> on the inner stream and counts bytes.
-            </summary>
-        </member>
-        <member name="M:Dot.Net.DevFast.IO.ByteCountStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
-            <inheritdoc />
-            <summary>
-            Calls <seealso cref="M:System.IO.Stream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)"/> on the inner stream and counts bytes.
-            </summary>
-        </member>
-        <member name="P:Dot.Net.DevFast.IO.ByteCountStream.CanRead">
-            <inheritdoc />
-            <summary>
-            Calls the <seealso cref="P:System.IO.Stream.CanRead"/> on the inner stream.
-            </summary>
-        </member>
-        <member name="P:Dot.Net.DevFast.IO.ByteCountStream.CanSeek">
-            <inheritdoc />
-            <summary>
-            Calls the <seealso cref="P:System.IO.Stream.CanSeek"/> on the inner stream.
-            </summary>
-        </member>
-        <member name="P:Dot.Net.DevFast.IO.ByteCountStream.CanWrite">
-            <inheritdoc />
-            <summary>
-            Calls the <seealso cref="P:System.IO.Stream.CanWrite"/> on the inner stream.
-            </summary>
-        </member>
-        <member name="P:Dot.Net.DevFast.IO.ByteCountStream.Length">
-            <inheritdoc />
-            <summary>
-            Calls the <seealso cref="P:System.IO.Stream.Length"/> on the inner stream.
-            </summary>
-        </member>
-        <member name="P:Dot.Net.DevFast.IO.ByteCountStream.Position">
-            <inheritdoc />
-            <summary>
-            Calls the <seealso cref="P:System.IO.Stream.Position"/> on the inner stream.
-            </summary>
-        </member>
-        <member name="P:Dot.Net.DevFast.IO.ByteCountStream.ByteCount">
-            <inheritdoc />
-            <summary>
-            Count of bytes observed during read/write methods.
-            <para>Property remains accessible after dispose.</para>
-            </summary>
-        </member>
-        <member name="M:Dot.Net.DevFast.IO.ByteCountStream.Dispose(System.Boolean)">
-            <inheritdoc />
-        </member>
-        <member name="P:Dot.Net.DevFast.IO.ByteCountStream.InnerStream">
-            <summary>
-            Gets the associated inner stream.
-            </summary>
-        </member>
-        <member name="T:Dot.Net.DevFast.IO.PullFuncStream">
-            <summary>
-            Data structure to facilitate Pull based functional streaming,
-            i.e., 2ndst Pipe reads from 1st, 3rd reads from 2nd and so on and so forth... /// </summary>
-        </member>
-        <member name="P:Dot.Net.DevFast.IO.PullFuncStream.Readable">
-            <summary>
-            Readable stream
-            </summary>
-        </member>
-        <member name="P:Dot.Net.DevFast.IO.PullFuncStream.Dispose">
-            <summary>
-            If true, stream is disposed at the end of streaming else left open
-            </summary>
-        </member>
-        <member name="M:Dot.Net.DevFast.IO.PullFuncStream.#ctor(System.IO.Stream,System.Boolean)">
-            <summary>
-            Ctor.
-            </summary>
-            <param name="readable">readable stream</param>
-            <param name="dispose">true to dispose at the end of streaming else false</param>
-            <exception cref="T:Dot.Net.DevFast.Etc.DdnDfException"></exception>
-        </member>
-        <member name="T:Dot.Net.DevFast.IO.PushFuncStream">
-            <summary>
-            Data structure to facilitate Push based functional streaming,
-            i.e., 1st Pipe writes on 2nd that writes on 3rd and so on and so forth...
-            </summary>
-        </member>
-        <member name="P:Dot.Net.DevFast.IO.PushFuncStream.Writable">
-            <summary>
-            Writable stream
-            </summary>
-        </member>
-        <member name="P:Dot.Net.DevFast.IO.PushFuncStream.Dispose">
-            <summary>
-            If true, stream is disposed at the end of streaming else left open
-            </summary>
-        </member>
-        <member name="P:Dot.Net.DevFast.IO.PushFuncStream.Token">
-            <summary>
-            Associated Cancellation token
-            </summary>
-        </member>
-        <member name="M:Dot.Net.DevFast.IO.PushFuncStream.#ctor(System.IO.Stream,System.Boolean,System.Threading.CancellationToken)">
-            <summary>
-            Ctor.
-            </summary>
-            <param name="writable">writable stream</param>
-            <param name="dispose">true to dispose at the end of streaming else false</param>
-            <param name="token">Cancellation token to observe</param>
-            <exception cref="T:Dot.Net.DevFast.Etc.DdnDfException"></exception>
-        </member>
-    </members>
-</doc>
-untStream.ResetWith(System.IO.Stream,System.Boolean)">
             <summary>
             This is a workaround to support out param in streaming APIs.
             </summary>
