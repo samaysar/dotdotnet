@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Dot.Net.DevFast.Collections.Concurrent
@@ -18,7 +19,6 @@ namespace Dot.Net.DevFast.Collections.Concurrent
     {
         private readonly IEqualityComparer<TKey> _comparer;
         private readonly Dictionary<TKey, TValue>[] _data;
-        private volatile int _count;
         private readonly int _concurrencyLevel;
         private readonly int _initialCapacity;
 
@@ -76,7 +76,6 @@ namespace Dot.Net.DevFast.Collections.Concurrent
             IEqualityComparer<TKey> comparer = null)
         {
             _comparer = comparer;
-            _count = 0;
             _concurrencyLevel = Math.Max(2, Math.Min(Math.Max(2, concurrencyLevel), Environment.ProcessorCount));
             _data = new Dictionary<TKey, TValue>[_concurrencyLevel];
             _initialCapacity = Math.Max(0, (int)Math.Ceiling(((double)initialCapacity) / _concurrencyLevel));
@@ -87,7 +86,29 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         }
 
         /// <inheritdoc />
-        public int Count => _count;
+        public int Count
+        {
+            get
+            {
+                var count = 0;
+                for (var i = 0; i < _data.Length; i++)
+                {
+                    var d = _data[i];
+                    var lockTaken = false;
+                    try
+                    {
+                        Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
+                        count += d.Count;
+                    }
+                    finally
+                    {
+                        if (lockTaken) Monitor.Exit(d);
+                    }
+                }
+
+                return count;
+            }
+        }
 
         /// <summary>
         /// Truth value whether collection is empty or not.
@@ -133,7 +154,6 @@ namespace Dot.Net.DevFast.Collections.Concurrent
                 try
                 {
                     Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
-                    Interlocked.Add(ref _count, -d.Count);
                     if (releaseMemory)
                     {
                         Interlocked.CompareExchange(ref _data[i],
@@ -211,7 +231,6 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         public bool Remove(KeyValuePair<TKey, TValue> item, IEqualityComparer<TValue> valueComparer)
         {
             var d = GetPartition(item.Key);
-            valueComparer ??= EqualityComparer<TValue>.Default;
             var lockTaken = false;
             bool removed;
             try
@@ -222,17 +241,12 @@ namespace Dot.Net.DevFast.Collections.Concurrent
                 //that by the time we retake the lock on partition,
                 //another thread removed the key and re-added with another value!!!
                 removed = d.TryGetValue(item.Key, out var v) &&
-                          valueComparer.Equals(v, item.Value) &&
+                          (valueComparer ?? EqualityComparer<TValue>.Default).Equals(v, item.Value) &&
                           d.Remove(item.Key);
             }
             finally
             {
                 if (lockTaken) Monitor.Exit(d);
-            }
-
-            if (removed)
-            {
-                Interlocked.Decrement(ref _count);
             }
 
             return removed;
@@ -254,11 +268,6 @@ namespace Dot.Net.DevFast.Collections.Concurrent
                 if (lockTaken) Monitor.Exit(d);
             }
 
-            if (removed)
-            {
-                Interlocked.Decrement(ref _count);
-            }
-
             return removed;
         }
 
@@ -276,20 +285,11 @@ namespace Dot.Net.DevFast.Collections.Concurrent
             try
             {
                 Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
-                //We do not want to take Remove logic out of this
-                //try block, though it is possible (with almost no probability)
-                //that by the time we retake the lock on partition,
-                //another thread removed the key and re-added with another value!!!
                 removed = d.TryGetValue(key, out value) && d.Remove(key);
             }
             finally
             {
                 if (lockTaken) Monitor.Exit(d);
-            }
-
-            if (removed)
-            {
-                Interlocked.Decrement(ref _count);
             }
 
             return removed;
@@ -316,9 +316,7 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         /// <returns>The value for the key. This will be either the existing value for the key if the key is already in the dictionary, or the new value if the key was not in the dictionary.</returns>
         public TValue GetOrAdd(TKey key, TValue value)
         {
-            return TryUpSertCore(key, value, true, out var existingValue, false, default, null)
-                ? value
-                : existingValue;
+            return TryAddCore(key, value, out var existingValue) ? value : existingValue;
         }
 
         /// <summary>
@@ -337,14 +335,45 @@ namespace Dot.Net.DevFast.Collections.Concurrent
             Func<TKey, TValue, TValue> updateValueFactory,
             IEqualityComparer<TValue> comparer = null)
         {
-            while (!TryUpSertCore(key, addValue, true, out var existing, false, default, comparer))
+            while (!TryAddCore(key, addValue, out var existing))
             {
                 var newValue = updateValueFactory(key, existing);
-                if (TryUpSertCore(key, newValue, false, out _, false, existing, comparer))
-                    return newValue;
+                if (TryUpdate(key, newValue, existing, comparer)) return newValue;
             }
 
             return addValue;
+        }
+
+        /// <summary>
+        /// Updates the value associated with <paramref name="key" /> to <paramref name="newValue" />
+        /// if the existing value with <paramref name="key" /> is equal to <paramref name="comparisonValue" />.
+        /// </summary>
+        /// <param name="key">key.</param>
+        /// <param name="newValue">Replacement value.</param>
+        /// <param name="comparisonValue">Value to compare with the existing key value.</param>
+        /// <param name="comparer">Value comparer. If not provided then default implementation will be used.</param>
+        /// <returns><see langword="true" /> if the value with <paramref name="key" /> was equal to <paramref name="comparisonValue" /> and was replaced with <paramref name="newValue" />; otherwise, <see langword="false" />.</returns>
+        public bool TryUpdate(TKey key, TValue newValue, TValue comparisonValue, IEqualityComparer<TValue> comparer = null)
+        {
+            var d = GetPartition(key);
+            var lockTaken = false;
+            var updated = false;
+            try
+            {
+                Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
+                if (d.TryGetValue(key, out var v) &&
+                    (comparer ?? EqualityComparer<TValue>.Default).Equals(v, comparisonValue))
+                {
+                    d[key] = newValue;
+                    updated = true;
+                }
+            }
+            finally
+            {
+                if (lockTaken) Monitor.Exit(d);
+            }
+
+            return updated;
         }
 
         /// <summary>
@@ -355,7 +384,28 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         /// <returns> <see langword="true" /> if the key/value pair was added successfully; <see langword="false" /> if the key already exists.</returns>
         public bool TryAdd(TKey key, TValue value)
         {
-            return TryUpSertCore(key, value, true, out var existing, false, default, null);
+            var d = GetPartition(key);
+            var lockTaken = false;
+            bool added;
+            try
+            {
+                Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
+#if NET5_0_OR_GREATER
+                added = d.TryAdd(key, value);
+#else
+                added = !d.ContainsKey(key);
+                if (added)
+                {
+                    d.Add(key, value);
+                }
+#endif
+            }
+            finally
+            {
+                if (lockTaken) Monitor.Exit(d);
+            }
+
+            return added;
         }
 
         /// <inheritdoc />
@@ -378,8 +428,6 @@ namespace Dot.Net.DevFast.Collections.Concurrent
             {
                 if (lockTaken) Monitor.Exit(d);
             }
-
-            Interlocked.Increment(ref _count);
         }
 
         /// <inheritdoc />
@@ -390,15 +438,18 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         {
             var d = GetPartition(key);
             var lockTaken = false;
+            bool reply;
             try
             {
                 Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
-                return d.ContainsKey(key);
+                reply = d.ContainsKey(key);
             }
             finally
             {
                 if (lockTaken) Monitor.Exit(d);
             }
+
+            return reply;
         }
 
         /// <inheritdoc />
@@ -412,56 +463,38 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         {
             var d = GetPartition(key);
             var lockTaken = false;
+            bool reply;
             try
             {
                 Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
-                return d.TryGetValue(key, out value);
-            }
-            finally
-            {
-                if (lockTaken) Monitor.Exit(d);
-            }
-        }
-
-        /// <summary>
-        /// Updates the value associated with <paramref name="key" /> to <paramref name="newValue" />
-        /// if the existing value with <paramref name="key" /> is equal to <paramref name="comparisonValue" />.
-        /// </summary>
-        /// <param name="key">key.</param>
-        /// <param name="newValue">Replacement value.</param>
-        /// <param name="comparisonValue">Value to compare with the existing key value.</param>
-        /// <param name="comparer">Value comparer. If not provided then default implementation will be used.</param>
-        /// <returns><see langword="true" /> if the value with <paramref name="key" /> was equal to <paramref name="comparisonValue" /> and was replaced with <paramref name="newValue" />; otherwise, <see langword="false" />.</returns>
-        public bool TryUpdate(TKey key, TValue newValue, TValue comparisonValue, IEqualityComparer<TValue> comparer = null)
-        {
-            var d = GetPartition(key);
-            var lockTaken = false;
-            var updated = false;
-            try
-            {
-                Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
-                if (d.TryGetValue(key, out var v))
-                {
-                    if ((comparer ?? EqualityComparer<TValue>.Default).Equals(v, comparisonValue))
-                    {
-                        d[key] = newValue;
-                        updated = true;
-                    }
-                }
+                reply = d.TryGetValue(key, out value);
             }
             finally
             {
                 if (lockTaken) Monitor.Exit(d);
             }
 
-            return updated;
+            return reply;
         }
-        
+
         /// <inheritdoc cref="IDictionary{TKey, TValue}"/>
         public TValue this[TKey key]
         {
             get => TryGetValue(key, out var v) ? v : throw new KeyNotFoundException();
-            set => TryUpSertCore(key, value, false, out _, true, default, null);
+            set
+            {
+                var d = GetPartition(key);
+                var lockTaken = false;
+                try
+                {
+                    Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
+                    d[key] = value;
+                }
+                finally
+                {
+                    if (lockTaken) Monitor.Exit(d);
+                }
+            }
         }
 
         /// <inheritdoc />
@@ -476,36 +509,19 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         /// <inheritdoc />
         IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => new ConcurrentDictionaryValueEnumerable(this);
 
-        private bool TryUpSertCore(TKey key, 
+        private bool TryAddCore(TKey key, 
             TValue newValue, 
-            bool addOnly,
-            out TValue existingValue, 
-            bool forceUpdate,
-            TValue updateComparison,
-            IEqualityComparer<TValue> comparer)
+            out TValue existingValue)
         {
             var d = GetPartition(key);
             var lockTaken = false;
             var added = false;
-            var updated = false;
-            existingValue = default;
             try
             {
                 Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
-                if (d.TryGetValue(key, out var v))
+                if (!d.TryGetValue(key, out existingValue))
                 {
-                    existingValue = v;
-                    if (!addOnly &&
-                        (forceUpdate ||
-                         (comparer ?? EqualityComparer<TValue>.Default).Equals(v, updateComparison)))
-                    {
-                        d[key] = newValue;
-                        updated = true;
-                    }
-                }
-                else
-                {
-                    d[key] = newValue;
+                    d.Add(key, newValue);
                     added = true;
                 }
             }
@@ -514,14 +530,10 @@ namespace Dot.Net.DevFast.Collections.Concurrent
                 if (lockTaken) Monitor.Exit(d);
             }
 
-            if (added)
-            {
-                Interlocked.Increment(ref _count);
-            }
-
-            return added || updated;
+            return added;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private Dictionary<TKey, TValue> GetPartition(TKey key)
         {
             unchecked
