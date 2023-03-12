@@ -67,7 +67,7 @@ namespace Dot.Net.DevFast.Tests.Collections
             Assert.IsTrue(instance.Remove(1, 1));
             Assert.IsFalse(instance.Remove(1, 0));
             Assert.IsTrue(instance.ContainsKey(1));
-            Assert.IsFalse(instance.Remove(1, 1));
+            Assert.IsTrue(instance.Remove(1, 1));
             Assert.IsFalse(instance.ContainsKey(1));
         }
     }
