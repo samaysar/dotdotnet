@@ -16,9 +16,11 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         IReadOnlyDictionary<TKey, TValue>
         where TKey : notnull
     {
+        private readonly IEqualityComparer<TKey> _comparer;
         private readonly Dictionary<TKey, TValue>[] _data;
         private volatile int _count;
         private readonly int _concurrencyLevel;
+        private readonly int _initialCapacity;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConcurrentDictionary{TKey, TValue}" /> class that is empty and
@@ -73,13 +75,14 @@ namespace Dot.Net.DevFast.Collections.Concurrent
             int concurrencyLevel, 
             IEqualityComparer<TKey> comparer = null)
         {
+            _comparer = comparer;
             _count = 0;
             _concurrencyLevel = Math.Max(2, Math.Min(Math.Max(2, concurrencyLevel), Environment.ProcessorCount));
             _data = new Dictionary<TKey, TValue>[_concurrencyLevel];
-            initialCapacity = Math.Max(0, (int)Math.Ceiling(((double)initialCapacity) / _concurrencyLevel));
+            _initialCapacity = Math.Max(0, (int)Math.Ceiling(((double)initialCapacity) / _concurrencyLevel));
             for (var i = 0; i < _concurrencyLevel; i++)
             {
-                _data[i] = new Dictionary<TKey, TValue>(initialCapacity, comparer);
+                _data[i] = new Dictionary<TKey, TValue>(_initialCapacity, _comparer);
             }
         }
 
@@ -112,15 +115,35 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         /// <inheritdoc />
         public void Clear()
         {
+            Clear(true);
+        }
+
+        /// <summary>
+        /// Clear items in the all the partitions.
+        /// </summary>
+        /// <param name="releaseMemory">If <see langword="true"/>, partitions are recreated to release previously allocated memory.</param>
+        public void Clear(bool releaseMemory)
+        {
             //We do not want to take all locks together
             //this call will provide best-effort clearing on whole collection.
-            foreach (var d in _data)
+            for (var i = 0; i < _data.Length; i++)
             {
+                var d = _data[i];
                 var lockTaken = false;
                 try
                 {
                     Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
-                    d.Clear();
+                    Interlocked.Add(ref _count, -d.Count);
+                    if (releaseMemory)
+                    {
+                        Interlocked.CompareExchange(ref _data[i],
+                            new Dictionary<TKey, TValue>(_initialCapacity, _comparer),
+                            d);
+                    }
+                    else
+                    {
+                        d.Clear();
+                    }
                 }
                 finally
                 {
