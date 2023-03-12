@@ -42,6 +42,23 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="ConcurrentDictionary{TKey, TValue}" /> class that
+        /// contains all the items of the provide <paramref name="collection"/> and
+        /// has default concurrency level,
+        /// and uses the default comparer (if provided else default) for the key type.
+        /// </summary>
+        public ConcurrentDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection,
+            IEqualityComparer<TKey> comparer = null) : this(0,
+            Environment.ProcessorCount,
+            comparer)
+        {
+            foreach (var pair in collection)
+            {
+                Add(pair);
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ConcurrentDictionary{TKey, TValue}" /> class that is empty
         /// and has the given initial capacity, has given concurrency level
         /// and uses the comparer (if provided else default) for the key type.
