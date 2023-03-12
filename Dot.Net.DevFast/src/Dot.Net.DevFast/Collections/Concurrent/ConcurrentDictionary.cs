@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Dot.Net.DevFast.Collections.Concurrent
 {
@@ -90,23 +91,22 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         {
             get
             {
-                var count = 0;
-                for (var i = 0; i < _data.Length; i++)
+                int totCount = 0;
+                Parallel.For(0, _concurrencyLevel, () => 0, (int i, ParallelLoopState s, int pCount) =>
                 {
                     var d = _data[i];
-                    var lockTaken = false;
+                    Monitor.Enter(d);
                     try
                     {
-                        Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
-                        count += d.Count;
+                        pCount += d.Count;
                     }
                     finally
                     {
-                        if (lockTaken) Monitor.Exit(d);
+                        Monitor.Exit(d);
                     }
-                }
-
-                return count;
+                    return pCount;
+                }, (int pCount) => Interlocked.Add(ref totCount, pCount));
+                return totCount;
             }
         }
 
@@ -150,10 +150,9 @@ namespace Dot.Net.DevFast.Collections.Concurrent
             for (var i = 0; i < _data.Length; i++)
             {
                 var d = _data[i];
-                var lockTaken = false;
+                Monitor.Enter(d);
                 try
                 {
-                    Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
                     if (releaseMemory)
                     {
                         Interlocked.CompareExchange(ref _data[i],
@@ -167,7 +166,7 @@ namespace Dot.Net.DevFast.Collections.Concurrent
                 }
                 finally
                 {
-                    if (lockTaken) Monitor.Exit(d);
+                    Monitor.Exit(d);
                 }
             }
         }
@@ -188,17 +187,16 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         public bool Contains(KeyValuePair<TKey, TValue> item, IEqualityComparer<TValue> valueComparer)
         {
             var d = GetPartition(item.Key);
-            var lockTaken = false;
             bool foundValue;
             TValue v;
+            Monitor.Enter(d);
             try
             {
-                Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
                 foundValue = d.TryGetValue(item.Key, out v);
             }
             finally
             {
-                if (lockTaken) Monitor.Exit(d);
+                Monitor.Exit(d);
             }
 
             //it is safe to compare value outside of try block
@@ -231,11 +229,10 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         public bool Remove(KeyValuePair<TKey, TValue> item, IEqualityComparer<TValue> valueComparer)
         {
             var d = GetPartition(item.Key);
-            var lockTaken = false;
             bool removed;
+            Monitor.Enter(d);
             try
             {
-                Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
                 //We do not want to take Remove logic out of this
                 //try block, though it is possible (with almost no probability)
                 //that by the time we retake the lock on partition,
@@ -246,7 +243,7 @@ namespace Dot.Net.DevFast.Collections.Concurrent
             }
             finally
             {
-                if (lockTaken) Monitor.Exit(d);
+                Monitor.Exit(d);
             }
 
             return removed;
@@ -256,16 +253,15 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         public bool Remove(TKey key)
         {
             var d = GetPartition(key);
-            var lockTaken = false;
             bool removed;
+            Monitor.Enter(d);
             try
             {
-                Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
                 removed = d.Remove(key);
             }
             finally
             {
-                if (lockTaken) Monitor.Exit(d);
+                Monitor.Exit(d);
             }
 
             return removed;
@@ -280,16 +276,15 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         public bool TryRemove(TKey key, out TValue value)
         {
             var d = GetPartition(key);
-            var lockTaken = false;
             bool removed;
+            Monitor.Enter(d);
             try
             {
-                Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
                 removed = d.TryGetValue(key, out value) && d.Remove(key);
             }
             finally
             {
-                if (lockTaken) Monitor.Exit(d);
+                Monitor.Exit(d);
             }
 
             return removed;
@@ -356,11 +351,10 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         public bool TryUpdate(TKey key, TValue newValue, TValue comparisonValue, IEqualityComparer<TValue> comparer = null)
         {
             var d = GetPartition(key);
-            var lockTaken = false;
             var updated = false;
+            Monitor.Enter(d);
             try
             {
-                Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
                 if (d.TryGetValue(key, out var v) &&
                     (comparer ?? EqualityComparer<TValue>.Default).Equals(v, comparisonValue))
                 {
@@ -370,7 +364,7 @@ namespace Dot.Net.DevFast.Collections.Concurrent
             }
             finally
             {
-                if (lockTaken) Monitor.Exit(d);
+                Monitor.Exit(d);
             }
 
             return updated;
@@ -385,11 +379,10 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         public bool TryAdd(TKey key, TValue value)
         {
             var d = GetPartition(key);
-            var lockTaken = false;
             bool added;
+            Monitor.Enter(d);
             try
-            {
-                Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
+            {            
 #if NET5_0_OR_GREATER
                 added = d.TryAdd(key, value);
 #else
@@ -402,7 +395,7 @@ namespace Dot.Net.DevFast.Collections.Concurrent
             }
             finally
             {
-                if (lockTaken) Monitor.Exit(d);
+                Monitor.Exit(d);
             }
 
             return added;
@@ -418,15 +411,14 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         public void Add(TKey key, TValue value)
         {
             var d = GetPartition(key);
-            var lockTaken = false;
+            Monitor.Enter(d);
             try
             {
-                Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
                 d.Add(key, value);
             }
             finally
             {
-                if (lockTaken) Monitor.Exit(d);
+                Monitor.Exit(d);
             }
         }
 
@@ -437,16 +429,15 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         public bool ContainsKey(TKey key)
         {
             var d = GetPartition(key);
-            var lockTaken = false;
             bool reply;
+            Monitor.Enter(d);
             try
             {
-                Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
                 reply = d.ContainsKey(key);
             }
             finally
             {
-                if (lockTaken) Monitor.Exit(d);
+                Monitor.Exit(d);
             }
 
             return reply;
@@ -462,16 +453,15 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         public bool TryGetValue(TKey key, out TValue value)
         {
             var d = GetPartition(key);
-            var lockTaken = false;
             bool reply;
+            Monitor.Enter(d);
             try
             {
-                Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
                 reply = d.TryGetValue(key, out value);
             }
             finally
             {
-                if (lockTaken) Monitor.Exit(d);
+                Monitor.Exit(d);
             }
 
             return reply;
@@ -484,15 +474,14 @@ namespace Dot.Net.DevFast.Collections.Concurrent
             set
             {
                 var d = GetPartition(key);
-                var lockTaken = false;
+                Monitor.Enter(d);
                 try
                 {
-                    Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
                     d[key] = value;
                 }
                 finally
                 {
-                    if (lockTaken) Monitor.Exit(d);
+                    Monitor.Exit(d);
                 }
             }
         }
@@ -514,11 +503,10 @@ namespace Dot.Net.DevFast.Collections.Concurrent
             out TValue existingValue)
         {
             var d = GetPartition(key);
-            var lockTaken = false;
             var added = false;
+            Monitor.Enter(d);
             try
             {
-                Monitor.TryEnter(d, Timeout.Infinite, ref lockTaken);
                 if (!d.TryGetValue(key, out existingValue))
                 {
                     d.Add(key, newValue);
@@ -527,7 +515,7 @@ namespace Dot.Net.DevFast.Collections.Concurrent
             }
             finally
             {
-                if (lockTaken) Monitor.Exit(d);
+                Monitor.Exit(d);
             }
 
             return added;
@@ -555,34 +543,22 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         {
             private readonly ConcurrentDictionary<TKey, TValue> _instance;
             private int _currentPosition;
-            private bool _acquiredPartition;
-            private bool _lockTaken;
-            private Dictionary<TKey, TValue> _currentPartition;
             private IEnumerator<KeyValuePair<TKey, TValue>> _currentEnumerator;
 
             public ConcurrentDictionaryEnumerator(ConcurrentDictionary<TKey, TValue> instance)
             {
                 _instance = instance;
-                _lockTaken = false;
-                _acquiredPartition = false;
                 Reset();
-            }
-
-            ~ConcurrentDictionaryEnumerator()
-            {
-                Dispose(false);
             }
 
             public bool MoveNext()
             {
                 Current = default;
-                if (!_acquiredPartition) return false;
-                TakeLock();
+                if (_currentEnumerator == null) return false;
                 if (!_currentEnumerator.MoveNext())
                 {
-                    while (MoveNextPartition())
+                    while (AcquireNextEnumerator())
                     {
-                        TakeLock();
                         if (!_currentEnumerator.MoveNext()) continue;
                         Current = _currentEnumerator.Current;
                         return true;
@@ -598,9 +574,8 @@ namespace Dot.Net.DevFast.Collections.Concurrent
 
             public void Reset()
             {
-                ReleaseLock();
                 _currentPosition = 0;
-                AcquirePartition();
+                _currentEnumerator = new List<KeyValuePair<TKey, TValue>>(0).GetEnumerator();
             }
 
             public KeyValuePair<TKey, TValue> Current { get; private set; } = default;
@@ -609,50 +584,30 @@ namespace Dot.Net.DevFast.Collections.Concurrent
 
             public void Dispose()
             {
-                Dispose(true);
-                GC.SuppressFinalize(this);
+                _currentEnumerator?.Dispose();
             }
 
-            private void Dispose(bool _)
+            private bool AcquireNextEnumerator()
             {
-                ReleaseLock();
-            }
-
-            private bool MoveNextPartition()
-            {
-                ReleaseLock();
-                return AcquirePartition();
-            }
-
-            private void TakeLock()
-            {
-                if (!_lockTaken)
+                if(_instance.TryGetPartition(_currentPosition++, out var d))
                 {
-                    Monitor.TryEnter(_currentPartition, Timeout.Infinite, ref _lockTaken);
-                    _currentEnumerator = _currentPartition.GetEnumerator();
-                }
-            }
-
-            private void ReleaseLock()
-            {
-                if (_lockTaken)
-                {
+                    Monitor.Enter(d);
                     try
                     {
-                        _currentEnumerator.Dispose();
+                        _currentEnumerator?.Dispose();
+                        _currentEnumerator = d.ToList().GetEnumerator();
                     }
                     finally
                     {
-                        Monitor.Exit(_currentPartition);
-                        _lockTaken = false;
+                        Monitor.Exit(d);
                     }
+                    return true;
                 }
-            }
-
-            private bool AcquirePartition()
-            {
-                _acquiredPartition = _instance.TryGetPartition(_currentPosition++, out _currentPartition);
-                return _acquiredPartition;
+                else
+                {
+                    _currentEnumerator = null;
+                    return false;
+                }
             }
         }
 
