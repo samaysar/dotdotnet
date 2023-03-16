@@ -13,7 +13,7 @@ namespace Dot.Net.DevFast.Collections.Concurrent
     /// </summary>
     /// <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
     /// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
-    public sealed class ConcurrentDictionary<TKey, TValue> :
+    public sealed class FastDictionary<TKey, TValue> :
         IDictionary<TKey, TValue>,
         IReadOnlyDictionary<TKey, TValue>
         where TKey : notnull
@@ -24,20 +24,20 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         private readonly int _initialCapacity;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConcurrentDictionary{TKey, TValue}" /> class that is empty and
+        /// Initializes a new instance of the <see cref="FastDictionary{TKey, TValue}" /> class that is empty and
         /// has the default initial capacity, has default concurrency level,
-        /// and uses the default comparer for the key type.
+        /// and uses the comparer (if provided else default) for the key type.
         /// </summary>
-        public ConcurrentDictionary() : this(0)
+        public FastDictionary(IEqualityComparer<TKey> comparer = null) : this(0, comparer)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConcurrentDictionary{TKey, TValue}" /> class that is empty and
+        /// Initializes a new instance of the <see cref="FastDictionary{TKey, TValue}" /> class that is empty and
         /// has the given initial capacity, has default concurrency level,
-        /// and uses the default comparer (if provided else default) for the key type.
+        /// and uses the comparer (if provided else default) for the key type.
         /// </summary>
-        public ConcurrentDictionary(int initialCapacity,
+        public FastDictionary(int initialCapacity,
             IEqualityComparer<TKey> comparer = null) : this(initialCapacity,
             Environment.ProcessorCount,
             comparer)
@@ -45,12 +45,12 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConcurrentDictionary{TKey, TValue}" /> class that
+        /// Initializes a new instance of the <see cref="FastDictionary{TKey, TValue}" /> class that
         /// contains all the items of the provide <paramref name="collection"/> and
         /// has default concurrency level,
-        /// and uses the default comparer (if provided else default) for the key type.
+        /// and uses the comparer (if provided else default) for the key type.
         /// </summary>
-        public ConcurrentDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection,
+        public FastDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection,
             IEqualityComparer<TKey> comparer = null) : this(0,
             Environment.ProcessorCount,
             comparer)
@@ -62,7 +62,7 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConcurrentDictionary{TKey, TValue}" /> class that is empty
+        /// Initializes a new instance of the <see cref="FastDictionary{TKey, TValue}" /> class that is empty
         /// and has the given initial capacity, has given concurrency level
         /// and uses the comparer (if provided else default) for the key type.
         /// <para>
@@ -72,7 +72,7 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         /// <param name="initialCapacity">Initial estimated capacity</param>
         /// <param name="concurrencyLevel">Concurrency level</param>
         /// <param name="comparer">Key comparer</param>
-        public ConcurrentDictionary(int initialCapacity, 
+        public FastDictionary(int initialCapacity, 
             int concurrencyLevel, 
             IEqualityComparer<TKey> comparer = null)
         {
@@ -229,7 +229,6 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         public bool Remove(KeyValuePair<TKey, TValue> item, IEqualityComparer<TValue> valueComparer)
         {
             var d = GetPartition(item.Key);
-            bool removed;
             Monitor.Enter(d);
             try
             {
@@ -237,7 +236,7 @@ namespace Dot.Net.DevFast.Collections.Concurrent
                 //try block, though it is possible (with almost no probability)
                 //that by the time we retake the lock on partition,
                 //another thread removed the key and re-added with another value!!!
-                removed = d.TryGetValue(item.Key, out var v) &&
+                return d.TryGetValue(item.Key, out var v) &&
                           (valueComparer ?? EqualityComparer<TValue>.Default).Equals(v, item.Value) &&
                           d.Remove(item.Key);
             }
@@ -245,26 +244,21 @@ namespace Dot.Net.DevFast.Collections.Concurrent
             {
                 Monitor.Exit(d);
             }
-
-            return removed;
         }
 
         /// <inheritdoc />
         public bool Remove(TKey key)
         {
             var d = GetPartition(key);
-            bool removed;
             Monitor.Enter(d);
             try
             {
-                removed = d.Remove(key);
+                return d.Remove(key);
             }
             finally
             {
                 Monitor.Exit(d);
             }
-
-            return removed;
         }
 
         /// <summary>
@@ -276,18 +270,19 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         public bool TryRemove(TKey key, out TValue value)
         {
             var d = GetPartition(key);
-            bool removed;
             Monitor.Enter(d);
             try
             {
-                removed = d.TryGetValue(key, out value) && d.Remove(key);
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
+                return d.Remove(key, out value);
+#else
+                return d.TryGetValue(key, out value) && d.Remove(key);
+#endif
             }
             finally
             {
                 Monitor.Exit(d);
             }
-
-            return removed;
         }
 
         /// <summary>
@@ -351,7 +346,6 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         public bool TryUpdate(TKey key, TValue newValue, TValue comparisonValue, IEqualityComparer<TValue> comparer = null)
         {
             var d = GetPartition(key);
-            var updated = false;
             Monitor.Enter(d);
             try
             {
@@ -359,15 +353,14 @@ namespace Dot.Net.DevFast.Collections.Concurrent
                     (comparer ?? EqualityComparer<TValue>.Default).Equals(v, comparisonValue))
                 {
                     d[key] = newValue;
-                    updated = true;
+                    return true;
                 }
+                return false;
             }
             finally
             {
                 Monitor.Exit(d);
             }
-
-            return updated;
         }
 
         /// <summary>
@@ -379,26 +372,24 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         public bool TryAdd(TKey key, TValue value)
         {
             var d = GetPartition(key);
-            bool added;
             Monitor.Enter(d);
             try
             {            
 #if NET5_0_OR_GREATER
-                added = d.TryAdd(key, value);
+                return d.TryAdd(key, value);
 #else
-                added = !d.ContainsKey(key);
-                if (added)
+                if (!d.ContainsKey(key))
                 {
                     d.Add(key, value);
+                    return true;
                 }
+                return false;
 #endif
             }
             finally
             {
                 Monitor.Exit(d);
             }
-
-            return added;
         }
 
         /// <inheritdoc />
@@ -429,18 +420,15 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         public bool ContainsKey(TKey key)
         {
             var d = GetPartition(key);
-            bool reply;
             Monitor.Enter(d);
             try
             {
-                reply = d.ContainsKey(key);
+                return d.ContainsKey(key);
             }
             finally
             {
                 Monitor.Exit(d);
             }
-
-            return reply;
         }
 
         /// <inheritdoc />
@@ -453,18 +441,15 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         public bool TryGetValue(TKey key, out TValue value)
         {
             var d = GetPartition(key);
-            bool reply;
             Monitor.Enter(d);
             try
             {
-                reply = d.TryGetValue(key, out value);
+                return d.TryGetValue(key, out value);
             }
             finally
             {
                 Monitor.Exit(d);
             }
-
-            return reply;
         }
 
         /// <inheritdoc cref="IDictionary{TKey, TValue}"/>
@@ -503,22 +488,20 @@ namespace Dot.Net.DevFast.Collections.Concurrent
             out TValue existingValue)
         {
             var d = GetPartition(key);
-            var added = false;
             Monitor.Enter(d);
             try
             {
                 if (!d.TryGetValue(key, out existingValue))
                 {
                     d.Add(key, newValue);
-                    added = true;
+                    return true;
                 }
+                return false;
             }
             finally
             {
                 Monitor.Exit(d);
             }
-
-            return added;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -533,19 +516,18 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         private bool TryGetPartition(int position, out Dictionary<TKey, TValue> partition)
         {
             partition = default;
-            if (position < 0) return false;
-            if (position >= _concurrencyLevel) return false;
+            if (position < 0 || position >= _concurrencyLevel) return false;
             partition = _data[position];
             return true;
         }
 
         private sealed class ConcurrentDictionaryEnumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
-            private readonly ConcurrentDictionary<TKey, TValue> _instance;
+            private readonly FastDictionary<TKey, TValue> _instance;
             private int _currentPosition;
             private IEnumerator<KeyValuePair<TKey, TValue>> _currentEnumerator;
 
-            public ConcurrentDictionaryEnumerator(ConcurrentDictionary<TKey, TValue> instance)
+            public ConcurrentDictionaryEnumerator(FastDictionary<TKey, TValue> instance)
             {
                 _instance = instance;
                 Reset();
@@ -605,6 +587,7 @@ namespace Dot.Net.DevFast.Collections.Concurrent
                 }
                 else
                 {
+                    _currentEnumerator?.Dispose();
                     _currentEnumerator = null;
                     return false;
                 }
@@ -613,16 +596,16 @@ namespace Dot.Net.DevFast.Collections.Concurrent
 
         private class ConcurrentDictionaryKeyEnumerable : IEnumerable<TKey>
         {
-            private readonly IEnumerable<KeyValuePair<TKey, TValue>> _instance;
+            private readonly FastDictionary<TKey, TValue> _instance;
 
-            public ConcurrentDictionaryKeyEnumerable(IEnumerable<KeyValuePair<TKey, TValue>> instance)
+            public ConcurrentDictionaryKeyEnumerable(FastDictionary<TKey, TValue> instance)
             {
                 _instance = instance;
             }
 
             public IEnumerator<TKey> GetEnumerator()
             {
-                return new ConcurrentDictionaryKeyEnumerator(_instance.GetEnumerator());
+                return new ConcurrentDictionaryKeyEnumerator(_instance);
             }
 
             IEnumerator IEnumerable.GetEnumerator()
@@ -633,28 +616,41 @@ namespace Dot.Net.DevFast.Collections.Concurrent
 
         private class ConcurrentDictionaryKeyEnumerator : IEnumerator<TKey>
         {
-            private readonly IEnumerator<KeyValuePair<TKey, TValue>> _instance;
+            private readonly FastDictionary<TKey, TValue> _instance;
+            private int _currentPosition;
+            private IEnumerator<TKey> _currentEnumerator;
 
-            public ConcurrentDictionaryKeyEnumerator(IEnumerator<KeyValuePair<TKey, TValue>> instance)
+            public ConcurrentDictionaryKeyEnumerator(FastDictionary<TKey, TValue> instance)
             {
                 _instance = instance;
+                Reset();
             }
 
             public bool MoveNext()
             {
-                if (_instance.MoveNext())
+                Current = default;
+                if (_currentEnumerator == null) return false;
+                if (!_currentEnumerator.MoveNext())
                 {
-                    Current = _instance.Current.Key;
-                    return true;
+                    while (AcquireNextEnumerator())
+                    {
+                        if (!_currentEnumerator.MoveNext()) continue;
+                        Current = _currentEnumerator.Current;
+                        return true;
+                    }
+
+                    Current = default;
+                    return false;
                 }
 
-                Current = default;
-                return false;
+                Current = _currentEnumerator.Current;
+                return true;
             }
 
             public void Reset()
             {
-                _instance.Reset();
+                _currentPosition = 0;
+                _currentEnumerator = new List<TKey>(0).GetEnumerator();
             }
 
             public TKey Current { get; private set; } = default;
@@ -663,22 +659,46 @@ namespace Dot.Net.DevFast.Collections.Concurrent
 
             public void Dispose()
             {
-                _instance.Dispose();
+                _currentEnumerator?.Dispose();
+            }
+
+            private bool AcquireNextEnumerator()
+            {
+                if (_instance.TryGetPartition(_currentPosition++, out var d))
+                {
+                    Monitor.Enter(d);
+                    try
+                    {
+                        _currentEnumerator?.Dispose();
+                        _currentEnumerator = d.Keys.ToList().GetEnumerator();
+                    }
+                    finally
+                    {
+                        Monitor.Exit(d);
+                    }
+                    return true;
+                }
+                else
+                {
+                    _currentEnumerator?.Dispose();
+                    _currentEnumerator = null;
+                    return false;
+                }
             }
         }
 
         private class ConcurrentDictionaryValueEnumerable : IEnumerable<TValue>
         {
-            private readonly IEnumerable<KeyValuePair<TKey, TValue>> _instance;
+            private readonly FastDictionary<TKey, TValue> _instance;
 
-            public ConcurrentDictionaryValueEnumerable(IEnumerable<KeyValuePair<TKey, TValue>> instance)
+            public ConcurrentDictionaryValueEnumerable(FastDictionary<TKey, TValue> instance)
             {
                 _instance = instance;
             }
 
             public IEnumerator<TValue> GetEnumerator()
             {
-                return new ConcurrentDictionaryValueEnumerator(_instance.GetEnumerator());
+                return new ConcurrentDictionaryValueEnumerator(_instance);
             }
 
             IEnumerator IEnumerable.GetEnumerator()
@@ -689,28 +709,41 @@ namespace Dot.Net.DevFast.Collections.Concurrent
 
         private class ConcurrentDictionaryValueEnumerator : IEnumerator<TValue>
         {
-            private readonly IEnumerator<KeyValuePair<TKey, TValue>> _instance;
+            private readonly FastDictionary<TKey, TValue> _instance;
+            private int _currentPosition;
+            private IEnumerator<TValue> _currentEnumerator;
 
-            public ConcurrentDictionaryValueEnumerator(IEnumerator<KeyValuePair<TKey, TValue>> instance)
+            public ConcurrentDictionaryValueEnumerator(FastDictionary<TKey, TValue> instance)
             {
                 _instance = instance;
+                Reset();
             }
 
             public bool MoveNext()
             {
-                if (_instance.MoveNext())
+                Current = default;
+                if (_currentEnumerator == null) return false;
+                if (!_currentEnumerator.MoveNext())
                 {
-                    Current = _instance.Current.Value;
-                    return true;
+                    while (AcquireNextEnumerator())
+                    {
+                        if (!_currentEnumerator.MoveNext()) continue;
+                        Current = _currentEnumerator.Current;
+                        return true;
+                    }
+
+                    Current = default;
+                    return false;
                 }
 
-                Current = default;
-                return false;
+                Current = _currentEnumerator.Current;
+                return true;
             }
 
             public void Reset()
             {
-                _instance.Reset();
+                _currentPosition = 0;
+                _currentEnumerator = new List<TValue>(0).GetEnumerator();
             }
 
             public TValue Current { get; private set; } = default;
@@ -719,7 +752,31 @@ namespace Dot.Net.DevFast.Collections.Concurrent
 
             public void Dispose()
             {
-                _instance.Dispose();
+                _currentEnumerator?.Dispose();
+            }
+
+            private bool AcquireNextEnumerator()
+            {
+                if (_instance.TryGetPartition(_currentPosition++, out var d))
+                {
+                    Monitor.Enter(d);
+                    try
+                    {
+                        _currentEnumerator?.Dispose();
+                        _currentEnumerator = d.Values.ToList().GetEnumerator();
+                    }
+                    finally
+                    {
+                        Monitor.Exit(d);
+                    }
+                    return true;
+                }
+                else
+                {
+                    _currentEnumerator?.Dispose();
+                    _currentEnumerator = null;
+                    return false;
+                }
             }
         }
     }

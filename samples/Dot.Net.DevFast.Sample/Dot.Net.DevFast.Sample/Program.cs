@@ -102,7 +102,12 @@ namespace Dot.Net.DevFast.Sample
             //Console.ReadLine();
 
             //Console.Clear();
-            EnumerableMysqlCompression.Run();
+            //EnumerableMysqlCompression.Run();
+            //Console.Out.WriteLine("Enter to run next sample...");
+            //Console.ReadLine();
+
+            //Console.Clear();
+            FastDicoSample.Run();
             //Console.Out.WriteLine("Enter to run next sample...");
             //Console.ReadLine();
 

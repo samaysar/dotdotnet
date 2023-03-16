@@ -140,38 +140,38 @@
             Applies resizing strategy when heap is full.
             </summary>
         </member>
-        <member name="T:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2">
+        <member name="T:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2">
             <summary>
             Represents a thread-safe collection of key-value pairs that can be accessed by multiple threads concurrently.
             </summary>
             <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
             <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.#ctor">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
             <summary>
-            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2" /> class that is empty and
+            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2" /> class that is empty and
             has the default initial capacity, has default concurrency level,
-            and uses the default comparer for the key type.
+            and uses the comparer (if provided else default) for the key type.
             </summary>
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
             <summary>
-            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2" /> class that is empty and
+            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2" /> class that is empty and
             has the given initial capacity, has default concurrency level,
-            and uses the default comparer (if provided else default) for the key type.
+            and uses the comparer (if provided else default) for the key type.
             </summary>
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},System.Collections.Generic.IEqualityComparer{`0})">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},System.Collections.Generic.IEqualityComparer{`0})">
             <summary>
-            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2" /> class that
+            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2" /> class that
             contains all the items of the provide <paramref name="collection"/> and
             has default concurrency level,
-            and uses the default comparer (if provided else default) for the key type.
+            and uses the comparer (if provided else default) for the key type.
             </summary>
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.#ctor(System.Int32,System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.#ctor(System.Int32,System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
             <summary>
-            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2" /> class that is empty
+            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2" /> class that is empty
             and has the given initial capacity, has given concurrency level
             and uses the comparer (if provided else default) for the key type.
             <para>
@@ -182,39 +182,39 @@
             <param name="concurrencyLevel">Concurrency level</param>
             <param name="comparer">Key comparer</param>
         </member>
-        <member name="P:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.Count">
+        <member name="P:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Count">
             <inheritdoc />
         </member>
-        <member name="P:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.IsEmpty">
+        <member name="P:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.IsEmpty">
             <summary>
             Truth value whether collection is empty or not.
             </summary>
         </member>
-        <member name="P:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IReadOnlyCollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Count">
+        <member name="P:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.System#Collections#Generic#IReadOnlyCollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Count">
             <inheritdoc />
         </member>
-        <member name="P:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.IsReadOnly">
+        <member name="P:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.IsReadOnly">
             <inheritdoc />
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#IEnumerable#GetEnumerator">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.System#Collections#IEnumerable#GetEnumerator">
             <inheritdoc />
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.GetEnumerator">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.GetEnumerator">
             <inheritdoc />
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.Clear">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Clear">
             <inheritdoc />
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.Clear(System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Clear(System.Boolean)">
             <summary>
             Clear items in the all the partitions.
             </summary>
             <param name="releaseMemory">If <see langword="true"/>, partitions are recreated to release previously allocated memory.</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
             <inheritdoc />
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.Contains(System.Collections.Generic.KeyValuePair{`0,`1},System.Collections.Generic.IEqualityComparer{`1})">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Contains(System.Collections.Generic.KeyValuePair{`0,`1},System.Collections.Generic.IEqualityComparer{`1})">
             <summary>
             Checks whether given key/value pair is part of current collection using provided <paramref name="valueComparer"/>.
             If <paramref name="valueComparer"/> is <see langword="null" />, then <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/>
@@ -223,13 +223,13 @@
             <param name="item">Key value pair to check</param>
             <param name="valueComparer">Equality comparer for the value.</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
             <inheritdoc />
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.Remove(System.Collections.Generic.KeyValuePair{`0,`1},System.Collections.Generic.IEqualityComparer{`1})">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Remove(System.Collections.Generic.KeyValuePair{`0,`1},System.Collections.Generic.IEqualityComparer{`1})">
             <summary>
             Removes the given key/value pair from the collection using provided <paramref name="valueComparer"/>.
             If <paramref name="valueComparer"/> is <see langword="null" />, then <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/>
@@ -238,10 +238,10 @@
             <param name="item">Key value pair to be removed.</param>
             <param name="valueComparer">Equality comparer for the value.</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.Remove(`0)">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Remove(`0)">
             <inheritdoc />
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.TryRemove(`0,`1@)">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.TryRemove(`0,`1@)">
             <summary>
             Attempts to remove and return the value that has the specified key.
             </summary>
@@ -249,7 +249,7 @@
             <param name="value">When this method returns, contains the object removed from the collection, or the default value of the <see langword="TValue" /> type if <paramref name="key" /> does not exist.</param>
             <returns><see langword="true" /> if the object was removed successfully; otherwise, <see langword="false" />.</returns>
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.GetOrAdd(`0,System.Func{`0,`1})">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.GetOrAdd(`0,System.Func{`0,`1})">
             <summary>
             Adds a key/value pair to the collection by using the specified function
             if the key does not already exist.
@@ -258,7 +258,7 @@
             <param name="valueFactory">The function used to generate a value for the key.</param>
             <returns>The value for the key. This will be either the existing value for the key if the key is already in the dictionary, or the new value if the key was not in the dictionary.</returns>
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.GetOrAdd(`0,`1)">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.GetOrAdd(`0,`1)">
             <summary>
             Adds a key/value pair to the collection if the key does not already exist.
             Returns the new value, or the existing value if the key exists.
@@ -267,7 +267,7 @@
             <param name="value">Value.</param>
             <returns>The value for the key. This will be either the existing value for the key if the key is already in the dictionary, or the new value if the key was not in the dictionary.</returns>
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.AddOrUpdate(`0,`1,System.Func{`0,`1,`1},System.Collections.Generic.IEqualityComparer{`1})">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.AddOrUpdate(`0,`1,System.Func{`0,`1,`1},System.Collections.Generic.IEqualityComparer{`1})">
             <summary>
             Adds <paramref name="key"/>/<paramref name="addValue"/> pair to the collection
             if the <paramref name="key"/> does not already exist,
@@ -280,7 +280,7 @@
             <param name="comparer">Value comparer. If not provided then default implementation will be used.</param>
             <returns>The new value for the key. This will be either be <paramref name="addValue" /> (if the key was absent) or the result of <paramref name="updateValueFactory" /> (if the key was present).</returns>
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.TryUpdate(`0,`1,`1,System.Collections.Generic.IEqualityComparer{`1})">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.TryUpdate(`0,`1,`1,System.Collections.Generic.IEqualityComparer{`1})">
             <summary>
             Updates the value associated with <paramref name="key" /> to <paramref name="newValue" />
             if the existing value with <paramref name="key" /> is equal to <paramref name="comparisonValue" />.
@@ -291,7 +291,7 @@
             <param name="comparer">Value comparer. If not provided then default implementation will be used.</param>
             <returns><see langword="true" /> if the value with <paramref name="key" /> was equal to <paramref name="comparisonValue" /> and was replaced with <paramref name="newValue" />; otherwise, <see langword="false" />.</returns>
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.TryAdd(`0,`1)">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.TryAdd(`0,`1)">
             <summary>
             Attempts to add the specified key and value to the collection.
             </summary>
@@ -299,37 +299,37 @@
             <param name="value">The value of the element to add.</param>
             <returns> <see langword="true" /> if the key/value pair was added successfully; <see langword="false" /> if the key already exists.</returns>
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.Add(System.Collections.Generic.KeyValuePair{`0,`1})">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Add(System.Collections.Generic.KeyValuePair{`0,`1})">
             <inheritdoc />
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.Add(`0,`1)">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Add(`0,`1)">
             <inheritdoc />
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#ContainsKey(`0)">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#ContainsKey(`0)">
             <inheritdoc />
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.ContainsKey(`0)">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.ContainsKey(`0)">
             <inheritdoc />
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#TryGetValue(`0,`1@)">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#TryGetValue(`0,`1@)">
             <inheritdoc />
         </member>
-        <member name="M:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.TryGetValue(`0,`1@)">
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.TryGetValue(`0,`1@)">
             <inheritdoc />
         </member>
-        <member name="P:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.Item(`0)">
+        <member name="P:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Item(`0)">
             <inheritdoc cref="T:System.Collections.Generic.IDictionary`2"/>
         </member>
-        <member name="P:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.Keys">
+        <member name="P:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Keys">
             <inheritdoc />
         </member>
-        <member name="P:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#Keys">
+        <member name="P:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#Keys">
             <inheritdoc />
         </member>
-        <member name="P:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.Values">
+        <member name="P:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Values">
             <inheritdoc />
         </member>
-        <member name="P:Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#Values">
+        <member name="P:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#Values">
             <inheritdoc />
         </member>
         <member name="T:Dot.Net.DevFast.Collections.Concurrent.LockBasedConcurrentHeap`1">
@@ -1656,6 +1656,30 @@
             <param name="valueFinder">Value finder lambda</param>
             <param name="comparer">Key comparer</param>
             <param name="valueComparer">Value comparer</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.ToFastDictionary``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>
+            Creates and returns an instance of <see cref="T:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2"/> from <paramref name="collection"/> items
+            using <paramref name="keyFinder"/> lambda and provided key <paramref name="comparer"/> (if any).
+            </summary>
+            <typeparam name="T"></typeparam>
+            <typeparam name="TKey"></typeparam>
+            <param name="collection">Collection of Value items</param>
+            <param name="keyFinder">Key finder lambda</param>
+            <param name="comparer">Key comparer</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.ToFastDictionary``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>
+            Creates and returns an instance of <see cref="T:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2"/> from <paramref name="collection"/> items
+            using <paramref name="keyFinder"/> lambda and <paramref name="valueFinder"/> lambda; with provided key <paramref name="comparer"/> (if any).
+            </summary>
+            <typeparam name="TKey"></typeparam>
+            <typeparam name="TValue"></typeparam>
+            <typeparam name="T"></typeparam>
+            <param name="collection">Collection of Value items</param>
+            <param name="keyFinder">Key finder lambda</param>
+            <param name="valueFinder">Value finder lambda</param>
+            <param name="comparer">Key comparer</param>
         </member>
         <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0},System.Threading.CancellationToken)">
             <summary>
@@ -11132,7 +11156,7 @@
             <param name="errorMessageDelegate">error message generating delegate</param>
             <exception cref="T:Dot.Net.DevFast.Etc.DdnDfException">Error code as <seealso cref="F:Dot.Net.DevFast.Etc.DdnDfErrorCode.KeyNotFound"/></exception>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.ThrowIfPredicate.ThrowOnMiss``2(Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary{``0,``1},``0)">
+        <member name="M:Dot.Net.DevFast.Extensions.ThrowIfPredicate.ThrowOnMiss``2(Dot.Net.DevFast.Collections.Concurrent.FastDictionary{``0,``1},``0)">
             <summary>
             Throws exception when provided key is not found in dictionary. Else associated value instance is returned
             to performed method chaining on the value.
@@ -11143,7 +11167,7 @@
             <param name="key">key instance</param>
             <exception cref="T:Dot.Net.DevFast.Etc.DdnDfException">Error code as <seealso cref="F:Dot.Net.DevFast.Etc.DdnDfErrorCode.KeyNotFound"/></exception>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.ThrowIfPredicate.ThrowOnMiss``2(Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary{``0,``1},``0,System.String)">
+        <member name="M:Dot.Net.DevFast.Extensions.ThrowIfPredicate.ThrowOnMiss``2(Dot.Net.DevFast.Collections.Concurrent.FastDictionary{``0,``1},``0,System.String)">
             <summary>
             Throws exception when provided key is not found in dictionary. Else associated value instance is returned
             to performed method chaining on the value.
@@ -11155,7 +11179,7 @@
             <param name="errorMessage">error message of the exception</param>
             <exception cref="T:Dot.Net.DevFast.Etc.DdnDfException">Error code as <seealso cref="F:Dot.Net.DevFast.Etc.DdnDfErrorCode.KeyNotFound"/></exception>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.ThrowIfPredicate.ThrowOnMiss``2(Dot.Net.DevFast.Collections.Concurrent.ConcurrentDictionary{``0,``1},``0,System.Func{System.String})">
+        <member name="M:Dot.Net.DevFast.Extensions.ThrowIfPredicate.ThrowOnMiss``2(Dot.Net.DevFast.Collections.Concurrent.FastDictionary{``0,``1},``0,System.Func{System.String})">
             <summary>
             Throws exception when provided key is not found in dictionary. Else associated value instance is returned
             to performed method chaining on the value.

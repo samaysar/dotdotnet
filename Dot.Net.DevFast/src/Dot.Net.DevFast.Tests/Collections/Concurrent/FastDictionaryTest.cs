@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace Dot.Net.DevFast.Tests.Collections.Concurrent
 {
     [TestFixture]
-    public class ConcurrentDictionaryTest
+    public class FastDictionaryTest
     {
         [Test]
         public void Perf_Test()
@@ -25,7 +25,7 @@ namespace Dot.Net.DevFast.Tests.Collections.Concurrent
             }
 
             var ll = h.ToList();
-            var devDico = new ConcurrentDictionary<int, int>();
+            var devDico = new FastDictionary<int, int>();
             for (int i = 0; i < 10; i++)
             {
                 devDico[i] = i;

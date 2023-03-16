@@ -97,6 +97,18 @@ namespace Dot.Net.DevFast.Tests.Extensions
         }
 
         [Test]
+        public void ToFastDictionary_Works_Well()
+        {
+            var l = new[] { new ValueHolder { Val = 1 } };
+            var dico = l.ToFastDictionary(x => x.Val);
+            Assert.IsTrue(dico.Count == 1);
+            Assert.IsTrue(dico.TryGetValue(1, out var value) && ReferenceEquals(value, l[0]));
+
+            Assert.IsTrue(dico.Remove(1));
+            Assert.IsTrue(dico.Count == 0);
+        }
+
+        [Test]
         public void IEnumerable_ForEach_Applies_Given_Lambda()
         {
             var results = new HashSet<int> { 2, 4, 6 };
