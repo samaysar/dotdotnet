@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Collections;
+using Dot.Net.DevFast.Collections.Concurrent;
 
 namespace Dot.Net.DevFast.Extensions
 {
@@ -165,7 +166,46 @@ namespace Dot.Net.DevFast.Extensions
             collection.ForEach(x => instance.Add(keyFinder(x), valueFinder(x), valueComparer));
             return instance;
         }
-        
+
+        /// <summary>
+        /// Creates and returns an instance of <see cref="FastDictionary{TKey, T}"/> from <paramref name="collection"/> items
+        /// using <paramref name="keyFinder"/> lambda and provided key <paramref name="comparer"/> (if any).
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="collection">Collection of Value items</param>
+        /// <param name="keyFinder">Key finder lambda</param>
+        /// <param name="comparer">Key comparer</param>
+        public static FastDictionary<TKey, T> ToFastDictionary<T, TKey>(
+            this IEnumerable<T> collection,
+            Func<T, TKey> keyFinder,
+            IEqualityComparer<TKey> comparer = null)
+        {
+            return collection.ToFastDictionary(keyFinder, x => x, comparer);
+        }
+
+        /// <summary>
+        /// Creates and returns an instance of <see cref="FastDictionary{TKey, TValue}"/> from <paramref name="collection"/> items
+        /// using <paramref name="keyFinder"/> lambda and <paramref name="valueFinder"/> lambda; with provided key <paramref name="comparer"/> (if any).
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection">Collection of Value items</param>
+        /// <param name="keyFinder">Key finder lambda</param>
+        /// <param name="valueFinder">Value finder lambda</param>
+        /// <param name="comparer">Key comparer</param>
+        public static FastDictionary<TKey, TValue> ToFastDictionary<T, TKey, TValue>(
+            this IEnumerable<T> collection,
+            Func<T, TKey> keyFinder,
+            Func<T, TValue> valueFinder,
+            IEqualityComparer<TKey> comparer = null)
+        {
+            var instance = new FastDictionary<TKey, TValue>(comparer);
+            collection.ForEach(x => instance.Add(keyFinder(x), valueFinder(x)));
+            return instance;
+        }
+
         /// <summary>
         /// Applies provided <paramref name="action"/> on every item of the given enumerable while observing for cancellation.
         /// </summary>

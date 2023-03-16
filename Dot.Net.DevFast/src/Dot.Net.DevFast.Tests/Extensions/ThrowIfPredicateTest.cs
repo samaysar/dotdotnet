@@ -227,7 +227,7 @@ namespace Dot.Net.DevFast.Tests.Extensions
             Assert.True(ex.ErrorCode == DdnDfErrorCode.KeyNotFound);
             Assert.True(ex.Message.Contains("some error message"));
 
-            var concollDevFast = new DevFast.Collections.Concurrent.ConcurrentDictionary<int, int>(coll);
+            var concollDevFast = new DevFast.Collections.Concurrent.FastDictionary<int, int>(coll);
             ex = Assert.Throws<DdnDfException>(() => concollDevFast.ThrowOnMiss(0, "test message"));
             Assert.True(ex.ErrorCode == DdnDfErrorCode.KeyNotFound);
             Assert.True(ex.Message.Contains("test message"));

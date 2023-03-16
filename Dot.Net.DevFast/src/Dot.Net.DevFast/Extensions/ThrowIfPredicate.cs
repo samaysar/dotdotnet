@@ -413,7 +413,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="dictionary">dictionary instance</param>
         /// <param name="key">key instance</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
-        public static TV ThrowOnMiss<TK, TV>(this Collections.Concurrent.ConcurrentDictionary<TK, TV> dictionary, TK key)
+        public static TV ThrowOnMiss<TK, TV>(this Collections.Concurrent.FastDictionary<TK, TV> dictionary, TK key)
         {
             return ThrowOnMissPredicate(dictionary, key, out var value).ThrowIfNot(DdnDfErrorCode.KeyNotFound, value);
         }
@@ -428,7 +428,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="key">key instance</param>
         /// <param name="errorMessage">error message of the exception</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
-        public static TV ThrowOnMiss<TK, TV>(this Collections.Concurrent.ConcurrentDictionary<TK, TV> dictionary, TK key, string errorMessage)
+        public static TV ThrowOnMiss<TK, TV>(this Collections.Concurrent.FastDictionary<TK, TV> dictionary, TK key, string errorMessage)
         {
             return ThrowOnMissPredicate(dictionary, key, out var value)
                 .ThrowIfNot(DdnDfErrorCode.KeyNotFound, errorMessage, value);
@@ -444,7 +444,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="key">key instance</param>
         /// <param name="errorMessageDelegate">error message generating delegate</param>
         /// <exception cref="DdnDfException">Error code as <seealso cref="DdnDfErrorCode.KeyNotFound"/></exception>
-        public static TV ThrowOnMiss<TK, TV>(this Collections.Concurrent.ConcurrentDictionary<TK, TV> dictionary, TK key,
+        public static TV ThrowOnMiss<TK, TV>(this Collections.Concurrent.FastDictionary<TK, TV> dictionary, TK key,
             Func<string> errorMessageDelegate)
         {
             return ThrowOnMissPredicate(dictionary, key, out var value)
