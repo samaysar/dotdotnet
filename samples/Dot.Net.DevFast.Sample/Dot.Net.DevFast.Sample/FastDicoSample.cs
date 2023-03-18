@@ -152,10 +152,8 @@ namespace Dot.Net.DevFast.Sample
         private static void RunFastDico(int proc, int perT, List<int> ll)
         {
             var devDico = new FastDictionary<int, int>();
-            CountdownEvent l;
-            Stopwatch sw;
-            l = new CountdownEvent(proc);
-            sw = new Stopwatch();
+            var l = new CountdownEvent(proc);
+            var sw = new Stopwatch();
             var init = GC.GetTotalMemory(true);
             Parallel.For(0, proc, ii =>
             {
