@@ -36,7 +36,6 @@ namespace Dot.Net.DevFast.Sample
 
             var devDico = new FastDictionary<int, int>();
             var l = new CountdownEvent(proc + 2);
-            var count = 0;
             var sw = Stopwatch.StartNew();
             Parallel.Invoke(() =>
             {
@@ -51,10 +50,7 @@ namespace Dot.Net.DevFast.Sample
 
                     for (int i = start; i < stop; i++)
                     {
-                        if (devDico.TryAdd(adderData[i], i))
-                        {
-                            Interlocked.Increment(ref count);
-                        }
+                        devDico.TryAdd(adderData[i], i);
                     }
                 });
             }, () =>
@@ -69,16 +65,13 @@ namespace Dot.Net.DevFast.Sample
 
                     foreach (var p in data)
                     {
-                        if (devDico.TryRemove(p, out _))
-                        {
-                            Interlocked.Decrement(ref count);
-                        }
+                        devDico.TryRemove(p, out _);
                     }
                 });
             });
 
             sw.Stop();
-            Console.WriteLine(devDico.Count + ", " + sw.ElapsedMilliseconds + ", " + count);
+            Console.WriteLine(devDico.Count + ", " + sw.ElapsedMilliseconds);
             devDico.Clear();
         }
 
@@ -145,7 +138,29 @@ namespace Dot.Net.DevFast.Sample
             });
 
             sw.Stop();
-            Console.WriteLine(msDico.Count + ", " + sw.ElapsedMilliseconds + ", " + (GC.GetTotalMemory(true) - init));
+            Console.WriteLine("ConcurrentDictionary (using " + proc + " threads): Added " + msDico.Count + " in pairs in " + sw.ElapsedMilliseconds + " ms using " + (GC.GetTotalMemory(true) - init) + " bytes of memory");
+            var iniCount = msDico.Count;
+            l = new CountdownEvent(proc);
+            sw = new Stopwatch();
+            IDictionary<int, int> d2 = msDico;
+            ll = ll.OrderBy(x => x).ToList();
+            Parallel.For(0, proc, ii =>
+            {
+                var start = ii * perT;
+                var stop = start + perT;
+                if (!l.Signal())
+                {
+                    l.Wait();
+                }
+                else
+                {
+                    sw.Restart();
+                }
+
+                for (int i = start; i < stop; i++) d2.Remove(ll[i]);
+            });
+            sw.Stop();
+            Console.WriteLine("ConcurrentDictionary (using " + proc + " threads): Removed " + (iniCount - msDico.Count) + " in pairs in " + sw.ElapsedMilliseconds + " ms");
             msDico.Clear();
         }
 
@@ -172,7 +187,28 @@ namespace Dot.Net.DevFast.Sample
             });
 
             sw.Stop();
-            Console.WriteLine(devDico.Count + ", " + sw.ElapsedMilliseconds + ", " + (GC.GetTotalMemory(true) - init));
+            Console.WriteLine("FastDictionary (using " + proc + " threads): Added " + devDico.Count + " in pairs in " + sw.ElapsedMilliseconds + " ms using " + (GC.GetTotalMemory(true) - init) + " bytes of memory");
+            var iniCount = devDico.Count;
+            l = new CountdownEvent(proc);
+            sw = new Stopwatch();
+            ll = ll.OrderBy(x => x).ToList();
+            Parallel.For(0, proc, ii =>
+            {
+                var start = ii * perT;
+                var stop = start + perT;
+                if (!l.Signal())
+                {
+                    l.Wait();
+                }
+                else
+                {
+                    sw.Restart();
+                }
+
+                for (int i = start; i < stop; i++) devDico.Remove(ll[i]);
+            });
+            sw.Stop();
+            Console.WriteLine("FastDictionary (using " + proc + " threads): Removed " + (iniCount - devDico.Count) + " in pairs in " + sw.ElapsedMilliseconds + " ms");
             devDico.Clear();
         }
     }
