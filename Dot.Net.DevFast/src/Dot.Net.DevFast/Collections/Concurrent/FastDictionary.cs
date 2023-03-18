@@ -205,6 +205,24 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         }
 
         /// <inheritdoc />
+        bool IReadOnlyDictionary<TKey, TValue>.ContainsKey(TKey key) => ContainsKey(key);
+
+        /// <inheritdoc />
+        public bool ContainsKey(TKey key)
+        {
+            var d = GetPartition(key);
+            Monitor.Enter(d);
+            try
+            {
+                return d.ContainsKey(key);
+            }
+            finally
+            {
+                Monitor.Exit(d);
+            }
+        }
+
+        /// <inheritdoc />
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
             foreach (var pair in this)
@@ -335,35 +353,6 @@ namespace Dot.Net.DevFast.Collections.Concurrent
         }
 
         /// <summary>
-        /// Updates the value associated with <paramref name="key" /> to <paramref name="newValue" />
-        /// if the existing value with <paramref name="key" /> is equal to <paramref name="comparisonValue" />.
-        /// </summary>
-        /// <param name="key">key.</param>
-        /// <param name="newValue">Replacement value.</param>
-        /// <param name="comparisonValue">Value to compare with the existing key value.</param>
-        /// <param name="comparer">Value comparer. If not provided then default implementation will be used.</param>
-        /// <returns><see langword="true" /> if the value with <paramref name="key" /> was equal to <paramref name="comparisonValue" /> and was replaced with <paramref name="newValue" />; otherwise, <see langword="false" />.</returns>
-        public bool TryUpdate(TKey key, TValue newValue, TValue comparisonValue, IEqualityComparer<TValue> comparer = null)
-        {
-            var d = GetPartition(key);
-            Monitor.Enter(d);
-            try
-            {
-                if (d.TryGetValue(key, out var v) &&
-                    (comparer ?? EqualityComparer<TValue>.Default).Equals(v, comparisonValue))
-                {
-                    d[key] = newValue;
-                    return true;
-                }
-                return false;
-            }
-            finally
-            {
-                Monitor.Exit(d);
-            }
-        }
-
-        /// <summary>
         /// Attempts to add the specified key and value to the collection.
         /// </summary>
         /// <param name="key">The key of the element to add.</param>
@@ -413,17 +402,47 @@ namespace Dot.Net.DevFast.Collections.Concurrent
             }
         }
 
-        /// <inheritdoc />
-        bool IReadOnlyDictionary<TKey, TValue>.ContainsKey(TKey key) => ContainsKey(key);
+        /// <inheritdoc cref="IDictionary{TKey, TValue}"/>
+        public TValue this[TKey key]
+        {
+            get => TryGetValue(key, out var v) ? v : throw new KeyNotFoundException();
+            set
+            {
+                var d = GetPartition(key);
+                Monitor.Enter(d);
+                try
+                {
+                    d[key] = value;
+                }
+                finally
+                {
+                    Monitor.Exit(d);
+                }
+            }
+        }
 
-        /// <inheritdoc />
-        public bool ContainsKey(TKey key)
+        /// <summary>
+        /// Updates the value associated with <paramref name="key" /> to <paramref name="newValue" />
+        /// if the existing value with <paramref name="key" /> is equal to <paramref name="comparisonValue" />.
+        /// </summary>
+        /// <param name="key">key.</param>
+        /// <param name="newValue">Replacement value.</param>
+        /// <param name="comparisonValue">Value to compare with the existing key value.</param>
+        /// <param name="comparer">Value comparer. If not provided then default implementation will be used.</param>
+        /// <returns><see langword="true" /> if the value with <paramref name="key" /> was equal to <paramref name="comparisonValue" /> and was replaced with <paramref name="newValue" />; otherwise, <see langword="false" />.</returns>
+        public bool TryUpdate(TKey key, TValue newValue, TValue comparisonValue, IEqualityComparer<TValue> comparer = null)
         {
             var d = GetPartition(key);
             Monitor.Enter(d);
             try
             {
-                return d.ContainsKey(key);
+                if (d.TryGetValue(key, out var v) &&
+                    (comparer ?? EqualityComparer<TValue>.Default).Equals(v, comparisonValue))
+                {
+                    d[key] = newValue;
+                    return true;
+                }
+                return false;
             }
             finally
             {
@@ -449,25 +468,6 @@ namespace Dot.Net.DevFast.Collections.Concurrent
             finally
             {
                 Monitor.Exit(d);
-            }
-        }
-
-        /// <inheritdoc cref="IDictionary{TKey, TValue}"/>
-        public TValue this[TKey key]
-        {
-            get => TryGetValue(key, out var v) ? v : throw new KeyNotFoundException();
-            set
-            {
-                var d = GetPartition(key);
-                Monitor.Enter(d);
-                try
-                {
-                    d[key] = value;
-                }
-                finally
-                {
-                    Monitor.Exit(d);
-                }
             }
         }
 

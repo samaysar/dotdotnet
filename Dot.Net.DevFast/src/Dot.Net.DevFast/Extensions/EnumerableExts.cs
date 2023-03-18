@@ -94,7 +94,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="collection">Collection of Value items</param>
         /// <param name="keyFinder">Key finder lambda</param>
         /// <param name="comparer">Key comparer</param>
-        public static OneToManyDictionary<TKey, T> ToOneToManyDictionary<T, TKey>(
+        public static OneToManyDictionary<TKey, T> ToOneToManyDictionary<TKey, T>(
             this IEnumerable<T> collection, 
             Func<T, TKey> keyFinder, 
             IEqualityComparer<TKey> comparer = null)
@@ -134,7 +134,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="keyFinder">Key finder lambda</param>
         /// <param name="comparer">Key comparer</param>
         /// <param name="valueComparer">Value comparer</param>
-        public static OneToUniqueManyDictionary<TKey, T> ToOneToUniqueManyDictionary<T, TKey>(
+        public static OneToUniqueManyDictionary<TKey, T> ToOneToUniqueManyDictionary<TKey, T>(
             this IEnumerable<T> collection,
             Func<T, TKey> keyFinder,
             IEqualityComparer<TKey> comparer = null,
@@ -176,7 +176,7 @@ namespace Dot.Net.DevFast.Extensions
         /// <param name="collection">Collection of Value items</param>
         /// <param name="keyFinder">Key finder lambda</param>
         /// <param name="comparer">Key comparer</param>
-        public static FastDictionary<TKey, T> ToFastDictionary<T, TKey>(
+        public static FastDictionary<TKey, T> ToFastDictionary<TKey, T>(
             this IEnumerable<T> collection,
             Func<T, TKey> keyFinder,
             IEqualityComparer<TKey> comparer = null)

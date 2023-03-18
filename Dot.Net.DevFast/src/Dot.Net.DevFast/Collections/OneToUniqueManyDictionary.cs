@@ -10,7 +10,7 @@ namespace Dot.Net.DevFast.Collections
         /// <summary>
         /// Initializes a new instance of the <see cref="OneToManyDictionary{TKey, TValue}" /> class that is empty, has the specified initial capacity, and uses the default equality comparer for the key type.
         /// </summary>
-        public OneToUniqueManyDictionary() : base(0)
+        public OneToUniqueManyDictionary() : this(0, null)
         {
         }
 
@@ -19,7 +19,7 @@ namespace Dot.Net.DevFast.Collections
         /// </summary>
         /// <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> implementation to use when comparing keys, or <see langword="null" /> to use the default <see cref="T:System.Collections.Generic.EqualityComparer`1" /> for the type of the key.</param>
         public OneToUniqueManyDictionary(IEqualityComparer<TKey> comparer)
-            : base(0, comparer)
+            : this(0, comparer)
         {
         }
 
