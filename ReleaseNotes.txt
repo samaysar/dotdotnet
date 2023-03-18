@@ -1,3 +1,10 @@
+Changes to Dot.Net.DevFast 6.2.0
+
+ 1. New feature - Adding FastDictionary in Dot.Net.DevFast.Collections.Concurrent which consumes almost half amount of memory and several times faster compared to COncurrentDictionary of microsoft
+ 2. New feature - Adding OneToManyDictionary in Dot.Net.DevFast.Collections for BAU
+ 3. New feature - Adding OneToUniqueManyDictionary in Dot.Net.DevFast.Collections for BAU
+ 4. New Feature - Adding following extensions ToFastDictionary, ToOneToManyDictionary, ToOneToUniqueManyDictionary to Dot.Net.DevFast.Extensions on IEnumerable<T> to ease the creation of above 3 dictionaries.
+
 Changes to Dot.Net.DevFast 6.1.0
 
  1. Change/Fix - Adding IEnumerable on all implementation of Heaps
