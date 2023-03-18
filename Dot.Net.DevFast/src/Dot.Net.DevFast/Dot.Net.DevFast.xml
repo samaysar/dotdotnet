@@ -140,6 +140,198 @@
             Applies resizing strategy when heap is full.
             </summary>
         </member>
+        <member name="T:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2">
+            <summary>
+            Represents a thread-safe collection of key-value pairs that can be accessed by multiple threads concurrently.
+            </summary>
+            <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
+            <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2" /> class that is empty and
+            has the default initial capacity, has default concurrency level,
+            and uses the comparer (if provided else default) for the key type.
+            </summary>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2" /> class that is empty and
+            has the given initial capacity, has default concurrency level,
+            and uses the comparer (if provided else default) for the key type.
+            </summary>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2" /> class that
+            contains all the items of the provide <paramref name="collection"/> and
+            has default concurrency level,
+            and uses the comparer (if provided else default) for the key type.
+            </summary>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.#ctor(System.Int32,System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2" /> class that is empty
+            and has the given initial capacity, has given concurrency level
+            and uses the comparer (if provided else default) for the key type.
+            <para>
+            NOTE: <paramref name="concurrencyLevel"/> has internal lower bound=2 and upper bound=<see cref="P:System.Environment.ProcessorCount"/>.
+            </para>
+            </summary>
+            <param name="initialCapacity">Initial estimated capacity</param>
+            <param name="concurrencyLevel">Concurrency level</param>
+            <param name="comparer">Key comparer</param>
+        </member>
+        <member name="P:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Count">
+            <inheritdoc />
+        </member>
+        <member name="P:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.IsEmpty">
+            <summary>
+            Truth value whether collection is empty or not.
+            </summary>
+        </member>
+        <member name="P:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.System#Collections#Generic#IReadOnlyCollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Count">
+            <inheritdoc />
+        </member>
+        <member name="P:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.IsReadOnly">
+            <inheritdoc />
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Clear(System.Boolean)">
+            <summary>
+            Clear items in the all the partitions.
+            </summary>
+            <param name="releaseMemory">If <see langword="true"/>, partitions are recreated to release previously allocated memory.</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
+            <inheritdoc />
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Contains(System.Collections.Generic.KeyValuePair{`0,`1},System.Collections.Generic.IEqualityComparer{`1})">
+            <summary>
+            Checks whether given key/value pair is part of current collection using provided <paramref name="valueComparer"/>.
+            If <paramref name="valueComparer"/> is <see langword="null" />, then <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/>
+            will be used.
+            </summary>
+            <param name="item">Key value pair to check</param>
+            <param name="valueComparer">Equality comparer for the value.</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#ContainsKey(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.ContainsKey(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
+            <inheritdoc />
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Remove(System.Collections.Generic.KeyValuePair{`0,`1},System.Collections.Generic.IEqualityComparer{`1})">
+            <summary>
+            Removes the given key/value pair from the collection using provided <paramref name="valueComparer"/>.
+            If <paramref name="valueComparer"/> is <see langword="null" />, then <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/>
+            will be used.
+            </summary>
+            <param name="item">Key value pair to be removed.</param>
+            <param name="valueComparer">Equality comparer for the value.</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Remove(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.TryRemove(`0,`1@)">
+            <summary>
+            Attempts to remove and return the value that has the specified key.
+            </summary>
+            <param name="key">The key of the element to remove and return.</param>
+            <param name="value">When this method returns, contains the object removed from the collection, or the default value of the <see langword="TValue" /> type if <paramref name="key" /> does not exist.</param>
+            <returns><see langword="true" /> if the object was removed successfully; otherwise, <see langword="false" />.</returns>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.GetOrAdd(`0,System.Func{`0,`1})">
+            <summary>
+            Adds a key/value pair to the collection by using the specified function
+            if the key does not already exist.
+            Returns the new value, or the existing value if the key exists.</summary>
+            <param name="key">The key of the element to add.</param>
+            <param name="valueFactory">The function used to generate a value for the key.</param>
+            <returns>The value for the key. This will be either the existing value for the key if the key is already in the dictionary, or the new value if the key was not in the dictionary.</returns>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.GetOrAdd(`0,`1)">
+            <summary>
+            Adds a key/value pair to the collection if the key does not already exist.
+            Returns the new value, or the existing value if the key exists.
+            </summary>
+            <param name="key">Key value.</param>
+            <param name="value">Value.</param>
+            <returns>The value for the key. This will be either the existing value for the key if the key is already in the dictionary, or the new value if the key was not in the dictionary.</returns>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.AddOrUpdate(`0,`1,System.Func{`0,`1,`1},System.Collections.Generic.IEqualityComparer{`1})">
+            <summary>
+            Adds <paramref name="key"/>/<paramref name="addValue"/> pair to the collection
+            if the <paramref name="key"/> does not already exist,
+            or updates <paramref name="key"/>/value pair by using <paramref name="updateValueFactory"/> lambda
+            if the <paramref name="key"/> already exists.
+            </summary>
+            <param name="key">The key to be added or updated</param>
+            <param name="addValue">The value to be added</param>
+            <param name="updateValueFactory">Value generating lambda for an existing key and value</param>
+            <param name="comparer">Value comparer. If not provided then default implementation will be used.</param>
+            <returns>The new value for the key. This will be either be <paramref name="addValue" /> (if the key was absent) or the result of <paramref name="updateValueFactory" /> (if the key was present).</returns>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.TryAdd(`0,`1)">
+            <summary>
+            Attempts to add the specified key and value to the collection.
+            </summary>
+            <param name="key">The key of the element to add.</param>
+            <param name="value">The value of the element to add.</param>
+            <returns> <see langword="true" /> if the key/value pair was added successfully; <see langword="false" /> if the key already exists.</returns>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Add(System.Collections.Generic.KeyValuePair{`0,`1})">
+            <inheritdoc />
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Add(`0,`1)">
+            <inheritdoc />
+        </member>
+        <member name="P:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Item(`0)">
+            <inheritdoc cref="T:System.Collections.Generic.IDictionary`2"/>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.TryUpdate(`0,`1,`1,System.Collections.Generic.IEqualityComparer{`1})">
+            <summary>
+            Updates the value associated with <paramref name="key" /> to <paramref name="newValue" />
+            if the existing value with <paramref name="key" /> is equal to <paramref name="comparisonValue" />.
+            </summary>
+            <param name="key">key.</param>
+            <param name="newValue">Replacement value.</param>
+            <param name="comparisonValue">Value to compare with the existing key value.</param>
+            <param name="comparer">Value comparer. If not provided then default implementation will be used.</param>
+            <returns><see langword="true" /> if the value with <paramref name="key" /> was equal to <paramref name="comparisonValue" /> and was replaced with <paramref name="newValue" />; otherwise, <see langword="false" />.</returns>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#TryGetValue(`0,`1@)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.TryGetValue(`0,`1@)">
+            <inheritdoc />
+        </member>
+        <member name="P:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Keys">
+            <inheritdoc />
+        </member>
+        <member name="P:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#Keys">
+            <inheritdoc />
+        </member>
+        <member name="P:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.Values">
+            <inheritdoc />
+        </member>
+        <member name="P:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#Values">
+            <inheritdoc />
+        </member>
         <member name="T:Dot.Net.DevFast.Collections.Concurrent.LockBasedConcurrentHeap`1">
             <summary>
             Lock based implementation of concurrent heap.
@@ -542,6 +734,121 @@
             </summary>
             <param name="left">Left hand element</param>
             <param name="right">Right hand element</param>
+        </member>
+        <member name="T:Dot.Net.DevFast.Collections.OneToManyDictionary`2">
+            <inheritdoc cref="T:System.Collections.Generic.Dictionary`2"/>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.OneToManyDictionary`2.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.OneToManyDictionary`2" /> class that is empty, has the specified initial capacity, and uses the default equality comparer for the key type.
+            </summary>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.OneToManyDictionary`2.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.OneToManyDictionary`2" /> class that is empty, has the default initial capacity, and uses the specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" />.
+            </summary>
+            <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> implementation to use when comparing keys, or <see langword="null" /> to use the default <see cref="T:System.Collections.Generic.EqualityComparer`1" /> for the type of the key.</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.OneToManyDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.OneToManyDictionary`2" /> class that is empty, has the specified initial capacity, and uses the specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" />.
+            </summary>
+            <param name="capacity">The initial number of elements that the <see cref="T:System.Collections.Generic.OneToManyDictionary`2" /> can contain.</param>
+            <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> implementation to use when comparing keys, or <see langword="null" /> to use the default <see cref="T:System.Collections.Generic.EqualityComparer`1" /> for the type of the key.</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.OneToManyDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Tuple{`0,System.Collections.Generic.List{`1}}},System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.OneToManyDictionary`2" /> class that contains elements copied from the specified <see cref="T:System.Collections.Generic.IDictionary`2" /> and uses the specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" />.</summary>
+            <param name="collection">The <see cref="T:System.Collections.Generic.IEnumerable`1" /> whose elements are copied.</param>
+            <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> implementation to use when comparing keys, or <see langword="null" /> to use the default <see cref="T:System.Collections.Generic.EqualityComparer`1" /> for the type of the key.</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.OneToManyDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,System.Collections.Generic.List{`1}}},System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.OneToManyDictionary`2" /> class that contains elements copied from the specified <see cref="T:System.Collections.Generic.IDictionary`2" /> and uses the specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" />.</summary>
+            <param name="collection">The <see cref="T:System.Collections.Generic.IEnumerable`1" /> whose elements are copied.</param>
+            <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> implementation to use when comparing keys, or <see langword="null" /> to use the default <see cref="T:System.Collections.Generic.EqualityComparer`1" /> for the type of the key.</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.OneToManyDictionary`2.Add(`0,`1)">
+            <summary>
+            Add the provide <paramref name="value"/> to the associated <see cref="T:System.Collections.Generic.List`1"/> when <paramref name="key"/> is found;
+            otherwise, creates a new <see cref="T:System.Collections.Generic.List`1"/> with <paramref name="value"/> in it and adds the key-value pair.
+            </summary>
+            <param name="key">Key instance</param>
+            <param name="value">Value instance</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.OneToManyDictionary`2.Contains(`0,`1)">
+            <summary>
+            Checks if the given <paramref name="key"/> exists and <paramref name="value"/> is part of associated key list.
+            </summary>
+            <param name="key">Key instance</param>
+            <param name="value">Value instance</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.OneToManyDictionary`2.Remove(`0,`1)">
+            <summary>
+            Remove the <paramref name="value"/> if the <paramref name="key"/> exists and <paramref name="value"/> is inside the associated <see cref="T:System.Collections.Generic.List`1"/>.
+            It also removes the <paramref name="key"/>, if the resultant list is empty.
+            </summary>
+            <param name="key">Key instance</param>
+            <param name="value">Value instance</param>
+        </member>
+        <member name="T:Dot.Net.DevFast.Collections.OneToUniqueManyDictionary`2">
+            <inheritdoc cref="T:System.Collections.Generic.Dictionary`2"/>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.OneToUniqueManyDictionary`2.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.OneToManyDictionary`2" /> class that is empty, has the specified initial capacity, and uses the default equality comparer for the key type.
+            </summary>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.OneToUniqueManyDictionary`2.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.OneToManyDictionary`2" /> class that is empty, has the default initial capacity, and uses the specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" />.
+            </summary>
+            <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> implementation to use when comparing keys, or <see langword="null" /> to use the default <see cref="T:System.Collections.Generic.EqualityComparer`1" /> for the type of the key.</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.OneToUniqueManyDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.OneToManyDictionary`2" /> class that is empty, has the specified initial capacity, and uses the specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" />.
+            </summary>
+            <param name="capacity">The initial number of elements that the <see cref="T:System.Collections.Generic.OneToManyDictionary`2" /> can contain.</param>
+            <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> implementation to use when comparing keys, or <see langword="null" /> to use the default <see cref="T:System.Collections.Generic.EqualityComparer`1" /> for the type of the key.</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.OneToUniqueManyDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Tuple{`0,System.Collections.Generic.HashSet{`1}}},System.Collections.Generic.IEqualityComparer{`0},System.Collections.Generic.IEqualityComparer{`1})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.OneToManyDictionary`2" /> class that contains elements copied from the specified <see cref="T:System.Collections.Generic.IDictionary`2" /> and uses the specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" />.</summary>
+            <param name="collection">The <see cref="T:System.Collections.Generic.IEnumerable`1" /> whose elements are copied.</param>
+            <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> implementation to use when comparing keys, or <see langword="null" /> to use the default <see cref="T:System.Collections.Generic.EqualityComparer`1" /> for the type of the key.</param>
+            <param name="valueComparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> implementation to use when comparing keys, or <see langword="null" /> to use the default <see cref="T:System.Collections.Generic.EqualityComparer`1" /> for the type of the value.</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.OneToUniqueManyDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,System.Collections.Generic.HashSet{`1}}},System.Collections.Generic.IEqualityComparer{`0},System.Collections.Generic.IEqualityComparer{`1})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dot.Net.DevFast.Collections.OneToManyDictionary`2" /> class that contains elements copied from the specified <see cref="T:System.Collections.Generic.IDictionary`2" /> and uses the specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" />.</summary>
+            <param name="collection">The <see cref="T:System.Collections.Generic.IEnumerable`1" /> whose elements are copied.</param>
+            <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> implementation to use when comparing keys, or <see langword="null" /> to use the default <see cref="T:System.Collections.Generic.EqualityComparer`1" /> for the type of the key.</param>
+            <param name="valueComparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> implementation to use when comparing keys, or <see langword="null" /> to use the default <see cref="T:System.Collections.Generic.EqualityComparer`1" /> for the type of the value.</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.OneToUniqueManyDictionary`2.Add(`0,`1,System.Collections.Generic.IEqualityComparer{`1})">
+            <summary>
+            Add the provide <paramref name="value"/> to the associated <see cref="T:System.Collections.Generic.HashSet`1"/> when <paramref name="key"/> is found;
+            otherwise, creates a new <see cref="T:System.Collections.Generic.HashSet`1"/> with <paramref name="value"/> in it and adds the key-value pair.
+            </summary>
+            <param name="key">Key instance</param>
+            <param name="value">Value instance</param>
+            <param name="valueComparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> implementation to use when comparing keys, or <see langword="null" /> to use the default <see cref="T:System.Collections.Generic.EqualityComparer`1" /> for the type of the value.</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.OneToUniqueManyDictionary`2.Contains(`0,`1)">
+            <summary>
+            Checks if the given <paramref name="key"/> exists and <paramref name="value"/> is part of associated key set.
+            </summary>
+            <param name="key">Key instance</param>
+            <param name="value">Value instance</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Collections.OneToUniqueManyDictionary`2.Remove(`0,`1)">
+            <summary>
+            Remove the <paramref name="value"/> if the <paramref name="key"/> exists and <paramref name="value"/> is inside the associated <see cref="T:System.Collections.Generic.HashSet`1"/>.
+            It also removes the <paramref name="key"/>, if the resultant set is empty.
+            </summary>
+            <param name="key">Key instance</param>
+            <param name="value">Value instance</param>
         </member>
         <member name="T:Dot.Net.DevFast.Collections.HeapNoResizing">
             <inheritdoc />
@@ -1289,6 +1596,91 @@
             Contains extension methods on <see cref="T:System.Collections.Generic.IEnumerable`1"/>, <see cref="T:System.Collections.IEnumerable"/> and <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/>.
             </summary>
         </member>
+        <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.EqualsItemWise``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.ICollection{``0},System.Collections.Generic.IEqualityComparer{``0},System.Boolean)">
+            <summary>
+            Returns <see langword="true"/> when both (<paramref name="first"/> and <paramref name="second"/>) collections
+            have equal items.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="first">First collection</param>
+            <param name="second">Second collection</param>
+            <param name="equalityComparer">Equality comparator of T, if any.</param>
+            <param name="sameItemOrder">If <see langword="true"/> then item order is taken into account.</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.ToOneToManyDictionary``2(System.Collections.Generic.IEnumerable{``1},System.Func{``1,``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Creates and returns an instance of <see cref="T:Dot.Net.DevFast.Collections.OneToManyDictionary`2"/> from <paramref name="collection"/> items
+            using <paramref name="keyFinder"/> lambda and provided key <paramref name="comparer"/> (if any).
+            </summary>
+            <typeparam name="T"></typeparam>
+            <typeparam name="TKey"></typeparam>
+            <param name="collection">Collection of Value items</param>
+            <param name="keyFinder">Key finder lambda</param>
+            <param name="comparer">Key comparer</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.ToOneToManyDictionary``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>
+            Creates and returns an instance of <see cref="T:Dot.Net.DevFast.Collections.OneToManyDictionary`2"/> from <paramref name="collection"/> items
+            using <paramref name="keyFinder"/> lambda and <paramref name="valueFinder"/> lambda; with provided key <paramref name="comparer"/> (if any).
+            </summary>
+            <typeparam name="TKey"></typeparam>
+            <typeparam name="TValue"></typeparam>
+            <typeparam name="T"></typeparam>
+            <param name="collection">Collection of Value items</param>
+            <param name="keyFinder">Key finder lambda</param>
+            <param name="valueFinder">Value finder lambda</param>
+            <param name="comparer">Key comparer</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.ToOneToUniqueManyDictionary``2(System.Collections.Generic.IEnumerable{``1},System.Func{``1,``0},System.Collections.Generic.IEqualityComparer{``0},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>
+            Creates and returns an instance of <see cref="T:Dot.Net.DevFast.Collections.OneToUniqueManyDictionary`2"/> from <paramref name="collection"/> items
+            using <paramref name="keyFinder"/> lambda and provided key <paramref name="comparer"/> (if any).
+            </summary>
+            <typeparam name="T"></typeparam>
+            <typeparam name="TKey"></typeparam>
+            <param name="collection">Collection of Value items</param>
+            <param name="keyFinder">Key finder lambda</param>
+            <param name="comparer">Key comparer</param>
+            <param name="valueComparer">Value comparer</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.ToOneToUniqueManyDictionary``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1},System.Collections.Generic.IEqualityComparer{``2})">
+            <summary>
+            Creates and returns an instance of <see cref="T:Dot.Net.DevFast.Collections.OneToUniqueManyDictionary`2"/> from <paramref name="collection"/> items
+            using <paramref name="keyFinder"/> lambda and <paramref name="valueFinder"/> lambda; with provided key <paramref name="comparer"/> (if any).
+            </summary>
+            <typeparam name="TKey"></typeparam>
+            <typeparam name="TValue"></typeparam>
+            <typeparam name="T"></typeparam>
+            <param name="collection">Collection of Value items</param>
+            <param name="keyFinder">Key finder lambda</param>
+            <param name="valueFinder">Value finder lambda</param>
+            <param name="comparer">Key comparer</param>
+            <param name="valueComparer">Value comparer</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.ToFastDictionary``2(System.Collections.Generic.IEnumerable{``1},System.Func{``1,``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Creates and returns an instance of <see cref="T:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2"/> from <paramref name="collection"/> items
+            using <paramref name="keyFinder"/> lambda and provided key <paramref name="comparer"/> (if any).
+            </summary>
+            <typeparam name="T"></typeparam>
+            <typeparam name="TKey"></typeparam>
+            <param name="collection">Collection of Value items</param>
+            <param name="keyFinder">Key finder lambda</param>
+            <param name="comparer">Key comparer</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.ToFastDictionary``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>
+            Creates and returns an instance of <see cref="T:Dot.Net.DevFast.Collections.Concurrent.FastDictionary`2"/> from <paramref name="collection"/> items
+            using <paramref name="keyFinder"/> lambda and <paramref name="valueFinder"/> lambda; with provided key <paramref name="comparer"/> (if any).
+            </summary>
+            <typeparam name="TKey"></typeparam>
+            <typeparam name="TValue"></typeparam>
+            <typeparam name="T"></typeparam>
+            <param name="collection">Collection of Value items</param>
+            <param name="keyFinder">Key finder lambda</param>
+            <param name="valueFinder">Value finder lambda</param>
+            <param name="comparer">Key comparer</param>
+        </member>
         <member name="M:Dot.Net.DevFast.Extensions.EnumerableExts.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0},System.Threading.CancellationToken)">
             <summary>
             Applies provided <paramref name="action"/> on every item of the given enumerable while observing for cancellation.
@@ -2025,6 +2417,26 @@
             <param name="sorting">Output sorting (it uses <paramref name="comparer"/>). As the interest is only to find all the required
             number of minimums. It is best to use <seealso cref="F:Dot.Net.DevFast.Etc.SortOrder.None"/> as sorting value
             otherwise, an additional latency might be observed.</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.MiscExts.ToTuple``2(``0,``1)">
+            <summary>
+            Simply creates an instance of <see cref="T:System.Tuple`2"/> and sets <paramref name="t1"/> as <see cref="P:System.Tuple`2.Item1"/>
+            and <paramref name="t2"/> as <see cref="P:System.Tuple`2.Item2"/>.
+            </summary>
+            <typeparam name="T1"></typeparam>
+            <typeparam name="T2"></typeparam>
+            <param name="t1">T1 Instance</param>
+            <param name="t2">T2 Instance</param>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.MiscExts.ToKvp``2(``0,``1)">
+            <summary>
+            Simply creates an instance of <see cref="T:System.Collections.Generic.KeyValuePair`2"/> and sets <paramref name="key"/> as <see cref="P:System.Collections.Generic.KeyValuePair`2.Key"/>
+            and <paramref name="value"/> as <see cref="P:System.Collections.Generic.KeyValuePair`2.Value"/>.
+            </summary>
+            <typeparam name="TKey"></typeparam>
+            <typeparam name="TValue"></typeparam>
+            <param name="key">TKey Instance</param>
+            <param name="value">TValue Instance</param>
         </member>
         <member name="T:Dot.Net.DevFast.Extensions.Ppc.AwaitableAdapter`2">
             <summary>
@@ -7344,7 +7756,7 @@
             <param name="mode">Base64 transform mode</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{Dot.Net.DevFast.IO.PullFuncStream},System.Func{``0},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{Dot.Net.DevFast.IO.PullFuncStream},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
@@ -7353,7 +7765,6 @@
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
-            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="password">password for key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="salt">Salt string to use during key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="hashName">Hash algorithm to use</param>
@@ -7363,21 +7774,20 @@
             <param name="padding">Padding mode to use</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{Dot.Net.DevFast.IO.PullFuncStream},System.Func{``0},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{Dot.Net.DevFast.IO.PullFuncStream},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
-            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="key">key byte array</param>
             <param name="iv">iv byte array</param>
             <param name="cipher">Cipher mode to use</param>
             <param name="padding">Padding mode to use</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{Dot.Net.DevFast.IO.PullFuncStream},System.Func{``0},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{Dot.Net.DevFast.IO.PullFuncStream},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
@@ -7386,7 +7796,6 @@
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
-            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="password">password for key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="salt">Salt string to use during key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="hashName">Hash algorithm to use</param>
@@ -7396,14 +7805,13 @@
             <param name="padding">Padding mode to use</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{Dot.Net.DevFast.IO.PullFuncStream},System.Func{``0},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{Dot.Net.DevFast.IO.PullFuncStream},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
-            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="key">key byte array</param>
             <param name="iv">iv byte array</param>
             <param name="cipher">Cipher mode to use</param>
@@ -7477,7 +7885,7 @@
             <param name="mode">Base64 transform mode</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{System.Threading.Tasks.Task{Dot.Net.DevFast.IO.PullFuncStream}},System.Func{``0},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{System.Threading.Tasks.Task{Dot.Net.DevFast.IO.PullFuncStream}},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
@@ -7486,7 +7894,6 @@
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
-            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="password">password for key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="salt">Salt string to use during key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="hashName">Hash algorithm to use</param>
@@ -7496,21 +7903,20 @@
             <param name="padding">Padding mode to use</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{System.Threading.Tasks.Task{Dot.Net.DevFast.IO.PullFuncStream}},System.Func{``0},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{System.Threading.Tasks.Task{Dot.Net.DevFast.IO.PullFuncStream}},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
-            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="key">key byte array</param>
             <param name="iv">iv byte array</param>
             <param name="cipher">Cipher mode to use</param>
             <param name="padding">Padding mode to use</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{System.Threading.Tasks.Task{Dot.Net.DevFast.IO.PullFuncStream}},System.Func{``0},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{System.Threading.Tasks.Task{Dot.Net.DevFast.IO.PullFuncStream}},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
@@ -7519,7 +7925,6 @@
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
-            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="password">password for key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="salt">Salt string to use during key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="hashName">Hash algorithm to use</param>
@@ -7529,14 +7934,13 @@
             <param name="padding">Padding mode to use</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{System.Threading.Tasks.Task{Dot.Net.DevFast.IO.PullFuncStream}},System.Func{``0},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{System.Threading.Tasks.Task{Dot.Net.DevFast.IO.PullFuncStream}},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
-            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="key">key byte array</param>
             <param name="iv">iv byte array</param>
             <param name="cipher">Cipher mode to use</param>
@@ -8438,35 +8842,38 @@
             <param name="mode">Base64 transform mode</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{Dot.Net.DevFast.IO.PushFuncStream,System.Threading.Tasks.Task},System.Func{``0},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{Dot.Net.DevFast.IO.PushFuncStream,System.Threading.Tasks.Task},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
-            
+            Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
+            and returns a new pipe for chaining.
+            <para>NOTE:You may use <seealso cref="M:Dot.Net.DevFast.Extensions.CreateExts.CreateKeyAndIv(System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Int32,System.Int32,System.Text.Encoding)"/> extension method to create IV and KEY byte arrays
+            using plain text password and salt string.</para>
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
-            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="password">password for key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="salt">Salt string to use during key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="hashName">Hash algorithm to use</param>
             <param name="loopCnt">Loop count</param>
             <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
+            <param name="cipher">Cipher mode to use</param>
+            <param name="padding">Padding mode to use</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{Dot.Net.DevFast.IO.PushFuncStream,System.Threading.Tasks.Task},System.Func{``0},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenEncrypt``1(System.Func{Dot.Net.DevFast.IO.PushFuncStream,System.Threading.Tasks.Task},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Encrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
-            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="key">key byte array</param>
             <param name="iv">iv byte array</param>
             <param name="cipher">Cipher mode to use</param>
             <param name="padding">Padding mode to use</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{Dot.Net.DevFast.IO.PushFuncStream,System.Threading.Tasks.Task},System.Func{``0},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{Dot.Net.DevFast.IO.PushFuncStream,System.Threading.Tasks.Task},System.String,System.String,System.Security.Cryptography.HashAlgorithmName,System.Int32,System.Text.Encoding,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
@@ -8475,22 +8882,22 @@
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
-            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="password">password for key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="salt">Salt string to use during key/IV generation (see <seealso cref="T:System.Security.Cryptography.Rfc2898DeriveBytes"/>)</param>
             <param name="hashName">Hash algorithm to use</param>
             <param name="loopCnt">Loop count</param>
             <param name="enc">Encoding to use to convert password and salt to bytes. If not provided, UTF8Encoding(false) is used</param>
+            <param name="cipher">Cipher mode to use</param>
+            <param name="padding">Padding mode to use</param>
             <param name="include">If true is passed, FromBase64 conversion is performed else ignored</param>
         </member>
-        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{Dot.Net.DevFast.IO.PushFuncStream,System.Threading.Tasks.Task},System.Func{``0},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
+        <member name="M:Dot.Net.DevFast.Extensions.StreamPipeExt.StreamPipeExts.ThenDecrypt``1(System.Func{Dot.Net.DevFast.IO.PushFuncStream,System.Threading.Tasks.Task},System.Byte[],System.Byte[],System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode,System.Boolean)">
             <summary>
             Decrypts the underlying data, of the given functional stream pipe based on give <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/>,
             and returns a new pipe for chaining.
             </summary>
             <typeparam name="T">Type of <seealso cref="T:System.Security.Cryptography.SymmetricAlgorithm"/> to apply</typeparam>
             <param name="src">Current pipe of the pipeline</param>
-            <param name="cryptoProvider">lambda that provides the crypto instance</param>
             <param name="key">key byte array</param>
             <param name="iv">iv byte array</param>
             <param name="cipher">Cipher mode to use</param>
@@ -10744,6 +11151,41 @@
             <param name="errorMessageDelegate">error message generating delegate</param>
             <exception cref="T:Dot.Net.DevFast.Etc.DdnDfException">Error code as <seealso cref="F:Dot.Net.DevFast.Etc.DdnDfErrorCode.KeyNotFound"/></exception>
         </member>
+        <member name="M:Dot.Net.DevFast.Extensions.ThrowIfPredicate.ThrowOnMiss``2(Dot.Net.DevFast.Collections.Concurrent.FastDictionary{``0,``1},``0)">
+            <summary>
+            Throws exception when provided key is not found in dictionary. Else associated value instance is returned
+            to performed method chaining on the value.
+            </summary>
+            <typeparam name="TK">Type of key of the dictionary</typeparam>
+            <typeparam name="TV">Type of value of the dictionary</typeparam>
+            <param name="dictionary">dictionary instance</param>
+            <param name="key">key instance</param>
+            <exception cref="T:Dot.Net.DevFast.Etc.DdnDfException">Error code as <seealso cref="F:Dot.Net.DevFast.Etc.DdnDfErrorCode.KeyNotFound"/></exception>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.ThrowIfPredicate.ThrowOnMiss``2(Dot.Net.DevFast.Collections.Concurrent.FastDictionary{``0,``1},``0,System.String)">
+            <summary>
+            Throws exception when provided key is not found in dictionary. Else associated value instance is returned
+            to performed method chaining on the value.
+            </summary>
+            <typeparam name="TK">Type of key of the dictionary</typeparam>
+            <typeparam name="TV">Type of value of the dictionary</typeparam>
+            <param name="dictionary">dictionary instance</param>
+            <param name="key">key instance</param>
+            <param name="errorMessage">error message of the exception</param>
+            <exception cref="T:Dot.Net.DevFast.Etc.DdnDfException">Error code as <seealso cref="F:Dot.Net.DevFast.Etc.DdnDfErrorCode.KeyNotFound"/></exception>
+        </member>
+        <member name="M:Dot.Net.DevFast.Extensions.ThrowIfPredicate.ThrowOnMiss``2(Dot.Net.DevFast.Collections.Concurrent.FastDictionary{``0,``1},``0,System.Func{System.String})">
+            <summary>
+            Throws exception when provided key is not found in dictionary. Else associated value instance is returned
+            to performed method chaining on the value.
+            </summary>
+            <typeparam name="TK">Type of key of the dictionary</typeparam>
+            <typeparam name="TV">Type of value of the dictionary</typeparam>
+            <param name="dictionary">dictionary instance</param>
+            <param name="key">key instance</param>
+            <param name="errorMessageDelegate">error message generating delegate</param>
+            <exception cref="T:Dot.Net.DevFast.Etc.DdnDfException">Error code as <seealso cref="F:Dot.Net.DevFast.Etc.DdnDfErrorCode.KeyNotFound"/></exception>
+        </member>
         <member name="M:Dot.Net.DevFast.Extensions.ThrowIfPredicate.ThrowOnMiss``2(System.Collections.Generic.IDictionary{``0,``1},``0)">
             <summary>
             Throws exception when provided key is not found in dictionary. Else associated value instance is returned
@@ -11759,6 +12201,13 @@
             Ctor.
             </summary>
             <param name="writable">writable stream</param>
+            <param name="dispose">true to dispose at the end of streaming else false</param>
+            <param name="token">Cancellation token to observe</param>
+            <exception cref="T:Dot.Net.DevFast.Etc.DdnDfException"></exception>
+        </member>
+    </members>
+</doc>
+name="writable">writable stream</param>
             <param name="dispose">true to dispose at the end of streaming else false</param>
             <param name="token">Cancellation token to observe</param>
             <exception cref="T:Dot.Net.DevFast.Etc.DdnDfException"></exception>

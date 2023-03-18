@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dot.Net.DevFast.Etc;
@@ -13,6 +14,98 @@ namespace Dot.Net.DevFast.Tests.Extensions
         private class ValueHolder
         {
             public int Val{ get; set; }
+
+            public override bool Equals(object obj)
+            {
+                return Equals(obj as ValueHolder);
+            }
+
+            public bool Equals(ValueHolder obj)
+            {
+                if(obj == null) return false;
+                return obj.Val == this.Val;
+            }
+
+            public override int GetHashCode()
+            {
+                return Val.GetHashCode();
+            }
+        }
+
+        [Test]
+        public void EqualsItemWise_Returns_False_When_Either_Collection_Is_Null_Or_Not_Of_Same_Length_Or_Items_Differs()
+        {
+            Assert.IsFalse(Array.Empty<object>().EqualsItemWise(null));
+            Assert.IsFalse(((List<object>)null).EqualsItemWise(Array.Empty<object>()));
+            Assert.IsFalse(((List<object>)null).EqualsItemWise(null));
+            Assert.IsFalse(new List<int>{1}.EqualsItemWise(Array.Empty<int>()));
+            Assert.IsFalse(new List<int> { 2 }.EqualsItemWise(new[] { 1 }));
+            Assert.IsFalse(new List<int> { 2, 2, 1 }.EqualsItemWise(new[] { 1, 1, 2 }));
+            Assert.IsFalse(new List<int> { 2, 2, 1 }.EqualsItemWise(new[] { 1, 2, 2 }, sameItemOrder: true));
+        }
+
+        [Test]
+        public void EqualsItemWise_Returns_True_Only_When_Both_Length_And_Items_Are_Same()
+        {
+            Assert.IsTrue(Array.Empty<object>().EqualsItemWise(Array.Empty<object>()));
+            Assert.IsTrue(new List<int> { 1 }.EqualsItemWise(new[] { 1 }));
+            Assert.IsTrue(
+                new List<ValueHolder> { new() { Val = 1 } }.EqualsItemWise(new[]
+                    { new ValueHolder { Val = 1 } }));
+            Assert.IsTrue(new List<int> { 2, 2, 1 }.EqualsItemWise(new[] { 1, 2, 2 }));
+            Assert.IsTrue(new List<int> { 2, 2, 1 }.EqualsItemWise(new[] { 2, 2, 1 }, sameItemOrder: true));
+        }
+
+        [Test]
+        public void ToOneToManyDictionary_Works_Well()
+        {
+            var l = new[] { new ValueHolder { Val = 1 } };
+            var dico = l.ToOneToManyDictionary(x => x.Val);
+            Assert.IsTrue(dico.Count == 1);
+            Assert.IsTrue(dico.TryGetValue(1, out var value) && value.EqualsItemWise(l));
+            Assert.IsTrue(dico.TryGetValue(1, out var value1) &&
+                          value1.EqualsItemWise(new[] { new ValueHolder { Val = 1 } }));
+
+            var dico1 = l.ToOneToManyDictionary(x => x.Val, x => x.Val);
+            Assert.IsTrue(dico1.Count == 1);
+            Assert.IsTrue(dico1.TryGetValue(1, out var value2) && value2.EqualsItemWise(new[] { 1 }));
+
+            l = new[] { new ValueHolder { Val = 1 }, new ValueHolder { Val = 1 } };
+            dico = l.ToOneToManyDictionary(x => x.Val);
+            Assert.IsTrue(dico.Count == 1);
+            Assert.IsTrue(dico.TryGetValue(1, out var value3) && value3.Count == 2 && value3.EqualsItemWise(l));
+        }
+
+        [Test]
+        public void ToOneToUniqueManyDictionary_Works_Well()
+        {
+            var l = new[] { new ValueHolder { Val = 1 } };
+            var dico = l.ToOneToUniqueManyDictionary(x => x.Val);
+            Assert.IsTrue(dico.Count == 1);
+            Assert.IsTrue(dico.TryGetValue(1, out var value) && value.SetEquals(l));
+            Assert.IsTrue(dico.TryGetValue(1, out var value1) &&
+                          value1.EqualsItemWise(new[] { new ValueHolder { Val = 1 } }));
+
+            var dico1 = l.ToOneToUniqueManyDictionary(x => x.Val, x => x.Val);
+            Assert.IsTrue(dico1.Count == 1);
+            Assert.IsTrue(dico1.TryGetValue(1, out var value2) && value2.SetEquals(new[] { 1 }));
+
+            l = new[] { new ValueHolder { Val = 1 }, new ValueHolder { Val = 1 } };
+            dico = l.ToOneToUniqueManyDictionary(x => x.Val);
+            Assert.IsTrue(dico.Count == 1);
+            Assert.IsTrue(dico.TryGetValue(1, out var value3) && value3.Count == 1 && value3.SetEquals(new[] { new ValueHolder { Val = 1 } }));
+        }
+
+        [Test]
+        public void ToFastDictionary_Works_Well()
+        {
+            var l = new[] { new ValueHolder { Val = 1 } };
+            var dico = l.ToFastDictionary(x => x.Val);
+            Assert.IsTrue(dico.Count == 1);
+            Assert.IsTrue(dico.TryGetValue(1, out var value) && ReferenceEquals(value, l[0]));
+
+            Assert.IsTrue(dico.Remove(1));
+            Assert.IsTrue(dico.Count == 0);
         }
 
         [Test]
