@@ -37,8 +37,8 @@
     <Reference Include="BouncyCastle.Crypto, Version=1.9.0.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
       <HintPath>..\packages\Portable.BouncyCastle.1.9.0\lib\net40\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
-    <Reference Include="Dot.Net.DevFast">
-      <HintPath>..\..\..\Dot.Net.DevFast\src\Dot.Net.DevFast\bin\Release\net461\Dot.Net.DevFast.dll</HintPath>
+    <Reference Include="Dot.Net.DevFast, Version=6.2.0.0, Culture=neutral, PublicKeyToken=798f1b0d6cc02439, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dot.Net.DevFast.6.2.0\lib\net461\Dot.Net.DevFast.dll</HintPath>
     </Reference>
     <Reference Include="Google.Protobuf, Version=3.22.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Protobuf.3.22.1\lib\net45\Google.Protobuf.dll</HintPath>
@@ -121,6 +121,8 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Dot.Net.DevFast.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
