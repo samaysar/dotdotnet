@@ -1,5 +1,7 @@
 <!--- <img src="Dot.Net.DevFast/spon_logo/jetbrains.png" width="100" height="100" />[Thanks JetBrains](https://www.jetbrains.com/?from=Dot.Net.DevFast) for supporting this project.) -->
-# THIS PROJECT IS ARCHIVED, USE COMMUNITY FORK INSTEAD.
+# THIS PROJECT IS ARCHIVED. We are working on <strong><a href="https://github.com/samaysar/dotnet.devfast">dotnet.devfast</a></strong> (Targets .Net6 onwards) with best parts of this project along with many more new features.
+For this project, please use community fork instead.
+
 # dotdotnet
 
 ## DevFast (.T to begin with...)
